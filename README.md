@@ -1,2 +1,2 @@
-# compra-ideal
+# Caja QR
 compra-ideal
