@@ -1,6 +1,11 @@
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
+#include <QQmlContext>
+#include <QSqlDatabase>
+#include <QSqlQuery>
 
+#include "database.h"
+#include "database.h"
 
 int main(int argc, char *argv[])
 {
@@ -13,6 +18,9 @@ int main(int argc, char *argv[])
         if (!obj && url == objUrl)
             QCoreApplication::exit(-1);
     }, Qt::QueuedConnection);
+
+    Database db;
+    engine.rootContext()->setContextProperty("db", &db);
     engine.load(url);
 
     return app.exec();

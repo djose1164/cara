@@ -7,6 +7,12 @@ ApplicationWindow {
     visible: true
     title: "RapiK"
 
+    TapHandler {
+        onTapped:
+            Qt.inputMethod.hide()
+
+    }
+
     StackView {
         id: mainStackView
         anchors.fill: parent
