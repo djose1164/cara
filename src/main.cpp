@@ -19,8 +19,8 @@ int main(int argc, char *argv[])
             QCoreApplication::exit(-1);
     }, Qt::QueuedConnection);
 
-    Database db;
-    engine.rootContext()->setContextProperty("db", &db);
+    DatabaseController dbController;
+    engine.rootContext()->setContextProperty("dbController", &dbController);
     engine.load(url);
 
     return app.exec();

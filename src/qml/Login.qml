@@ -80,16 +80,10 @@ Item {
             font.bold: true
             onClicked: {
                 console.log("Button clicked")
-                console.log("busy: ", db.busy())
+                console.log("busy: ", dbController.busy())
 
-                if (usernameInput.text !== "" && passwordInput.text !== ""
-                        && db.validate(usernameInput.text, passwordInput.text))
-                {
-                    console.log("Logged in!")
-                    mainStackView.replace("qrc:/qml/Home.qml")
-                }
-                else
-                    messageDialog.visible = true
+                if (usernameInput.text !== "" && passwordInput.text !== "")
+                    dbController.doValidate(usernameInput.text, passwordInput.text)
             }
         }
 
@@ -110,27 +104,32 @@ Item {
         visible: false
     }
 
-    Popup {
-        id: popupWait
-        width: parent.width/1.5
-        height: parent.height/2
-        anchors.centerIn: Overlay.overlay
-        modal: true
 
-        BusyIndicator {
-            id: busyIndicator
-            anchors.fill: parent
-            running: true
-        }
+    BusyIndicator {
+        id: busyIndicator
+        width: parent.width * .7
+        height: parent.height/2
+        anchors.centerIn: parent
+        running: false
     }
 
     Connections {
-        target: db
+        target: dbController
         function onBusyChanged() {
-            if (db.busy())
-                popupWait.open()
-            //else
-            //    popupWait.close()
+            console.log(`onBusyChanged: busy: ${dbController.busy()}`)
+            if (dbController.busy())
+                busyIndicator.running = true
+            else
+            {
+                busyIndicator.running = false
+                if (dbController.validate())
+                {
+                    console.log("Logged in!")
+                    mainStackView.replace("qrc:/qml/Home.qml")
+                }
+                else
+                    messageDialog.visible = true
+            }
         }
     }
 }
