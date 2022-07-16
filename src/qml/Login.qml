@@ -1,17 +1,22 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
+import QtQuick.Dialogs
+
 
 Item {
-    id: loginRoot
-    anchors.fill: parent
+    id: loginForm
+    Keys.onReturnPressed: Qt.inputMethod.hide()
+    Keys.onEnterPressed: Qt.inputMethod.hide()
+
+
     Label {
         id:loginLbl
         anchors.top:  parent.top
-        anchors.topMargin: 50
+        anchors.topMargin: 20
         anchors.horizontalCenter: parent.horizontalCenter
         text: "Iniciar Sesion"
-        font.pointSize: 20
+        font.pointSize: parent.width * .1
         font.bold: true
     }
 
@@ -33,9 +38,8 @@ Item {
         TextField {
             id: usernameInput
             Layout.preferredWidth: parent.width/1.5
-            Layout.preferredHeight: this.font.pointSize * 2
             Layout.alignment: Qt.AlignCenter
-            Layout.topMargin: -10
+            Layout.topMargin: 5
             placeholderText: "Ingrese su usario..."
             font.pointSize: 15
         }
@@ -53,17 +57,16 @@ Item {
         TextField {
             id: passwordInput
             Layout.preferredWidth: parent.width/1.5
-            Layout.preferredHeight: this.font.pointSize * 2
             Layout.alignment: Qt.AlignCenter
-            Layout.topMargin: -10
+            Layout.topMargin: 5
             placeholderText: "Ingrese su contrasena..."
             font.pointSize: 15
             echoMode: TextField.Password
+            passwordMaskDelay: 600
         }
     }
 
-    RowLayout
-    {
+    RowLayout {
         id: buttonsRowLayout
         anchors.bottom: parent.bottom
         anchors.bottomMargin: 50
@@ -76,8 +79,17 @@ Item {
             font.pointSize: 15
             font.bold: true
             onClicked: {
-                if (usernameInput.text !== "" && passwordInput.text !== "")
+                console.log("Button clicked")
+                console.log("busy: ", db.busy())
+
+                if (usernameInput.text !== "" && passwordInput.text !== ""
+                        && db.validate(usernameInput.text, passwordInput.text))
+                {
+                    console.log("Logged in!")
                     mainStackView.replace("qrc:/qml/Home.qml")
+                }
+                else
+                    messageDialog.visible = true
             }
         }
 
@@ -88,6 +100,37 @@ Item {
             font.bold: true
             onClicked:
                 mainStackView.replace("qrc:/qml/SignUp.qml")
+        }
+    }
+
+    MessageDialog {
+        id: messageDialog
+        title: "Usario o contrasena incorrecto."
+        text: "Displayed if the credentials are not correct."
+        visible: false
+    }
+
+    Popup {
+        id: popupWait
+        width: parent.width/1.5
+        height: parent.height/2
+        anchors.centerIn: Overlay.overlay
+        modal: true
+
+        BusyIndicator {
+            id: busyIndicator
+            anchors.fill: parent
+            running: true
+        }
+    }
+
+    Connections {
+        target: db
+        function onBusyChanged() {
+            if (db.busy())
+                popupWait.open()
+            //else
+            //    popupWait.close()
         }
     }
 }
