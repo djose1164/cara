@@ -13,35 +13,11 @@ public slots:
 
 signals:
     void queryReady(const bool &result);
+    void doingQuery(const bool &status);
 
 private:
     bool isUsernameRegistered(const QString &username);
-
     bool isPasswordRegistered(const QString &password);
-};
-
-class DatabaseController : public QObject
-{
-    Q_OBJECT
-    QThread workerThread;
-
-public:
-    DatabaseController();
-
-    ~DatabaseController();
-
-    void doAuth(const QString &username, const QString &password);
-
-    bool getAuthResult() const;
-
-public slots:
-    void handleResources(const bool &result);
-
-signals:
-    void operate(const QString &username, const QString &password);
-
-private:
-    bool authResult = false;
 };
 
 class Database : public QObject
@@ -55,29 +31,45 @@ public:
 
     static bool tryOpen(QSqlDatabase &db);
 
-    Q_INVOKABLE bool busy() const;
-
-public slots:
-    bool validate(const QString &username, const QString &password);
-
-signals:
-    void busyChanged();
-
 private:
     QString username;
     QString password;
-
-    bool _busy = false;
-
-    DatabaseController dbController;
-
-    bool validateUsername(const QString &username);
-
-    bool validatePassword(const QString &password);
-
-    bool find(const QString &by, const QString &value);
-
-    void setBusy(bool busy);
 };
+
+
+class DatabaseController : public QObject
+{
+    Q_OBJECT
+    QThread workerThread;
+
+public:
+    DatabaseController();
+
+    ~DatabaseController();
+
+    Q_INVOKABLE bool busy() const;
+
+    Q_INVOKABLE void doValidate(const QString &username, const QString &password);
+
+    void setValidate(const bool &validate);
+
+    Q_INVOKABLE bool validate() const;
+
+
+public slots:
+    void handleQuery(const bool &result);
+    void setBusy(const bool &busy);
+
+signals:
+    void operate(const QString &username, const QString &password);
+    void busyChanged();
+
+private:
+    Database db;
+
+    bool _busy;
+    bool _validate;
+};
+
 
 #endif // DATABASE_H

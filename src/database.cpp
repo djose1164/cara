@@ -4,12 +4,15 @@
 #include <QSqlError>
 
 #define boolToString(boolean) ((boolean) ? "true" : "false")
+
 void DatabaseWorker::doQuery(const QString &username, const QString &password)
 {
+    emit doingQuery(true);
     const bool result = isUsernameRegistered(username)
             && isPasswordRegistered(password);
     qDebug() << "doQuery's result: " << boolToString(result);
     emit queryReady(result);
+    emit doingQuery(false);
 }
 
 bool DatabaseWorker::isUsernameRegistered(const QString &username)
@@ -63,30 +66,54 @@ bool DatabaseWorker::isPasswordRegistered(const QString &password)
 }
 
 DatabaseController::DatabaseController()
+    : _busy{false}, _validate{false}
 {
     auto dbWorker = new DatabaseWorker;
     dbWorker->moveToThread(&workerThread);
     connect(&workerThread, &QThread::finished, dbWorker, &QObject::deleteLater);
     connect(this, &DatabaseController::operate, dbWorker, &DatabaseWorker::doQuery);
-    connect(dbWorker, &DatabaseWorker::queryReady, this, &DatabaseController::handleResources);
+    connect(dbWorker, &DatabaseWorker::doingQuery, this, &DatabaseController::setBusy);
+    connect(dbWorker, &DatabaseWorker::queryReady, this, &DatabaseController::handleQuery);
     workerThread.start();
+    qDebug() << "Thread executed!";
 }
 
-void DatabaseController::handleResources(const bool &result)
+void DatabaseController::handleQuery(const bool &result)
 {
-    qDebug() << "handleResources' result: " << boolToString(result);
-    authResult = result;
+    qDebug() << "handleQuery' result: " << boolToString(result);
+    setValidate(result);
 }
 
-void DatabaseController::doAuth(const QString &username, const QString &password)
+void DatabaseController::doValidate(const QString &username, const QString &password)
 {
-    qDebug() << "from " << __func__ << " hola" << username << password;
+    qDebug() << "Validating from C++";
     emit operate(username, password);
 }
 
-bool DatabaseController::getAuthResult() const
+void DatabaseController::setValidate(const bool &validate)
 {
-    return authResult;
+    _validate = validate;
+}
+
+void DatabaseController::setBusy(const bool &busy)
+{
+    qDebug() << "Setting busy";
+    if (_busy != busy)
+    {
+        _busy = busy;
+        emit busyChanged();
+    }
+}
+
+bool DatabaseController::validate() const
+{
+    return _validate;
+}
+
+bool DatabaseController::busy() const
+{
+    qDebug() << "Getting busy";
+    return _busy;
 }
 
 DatabaseController::~DatabaseController()
@@ -117,18 +144,6 @@ void Database::createConnection(QSqlDatabase &db)
         db = QSqlDatabase::database(connectionName, false);
 }
 
-bool Database::validate(const QString &username, const QString &password)
-{
-    qDebug() << "Validating from C++";
-
-    DatabaseController dbController;
-    dbController.doAuth(username, password);
-    const auto result = dbController.getAuthResult();
-
-    qDebug() << "Result from validate: " << (result ? "true" : "false");
-    return result;
-}
-
 bool Database::tryOpen(QSqlDatabase &db)
 {
     if (!db.open())
@@ -137,20 +152,4 @@ bool Database::tryOpen(QSqlDatabase &db)
         return false;
     }
     return true;
-}
-
-void Database::setBusy(bool busy)
-{
-    qDebug() << "Setting busy";
-    if (_busy != busy)
-    {
-        _busy = busy;
-        emit busyChanged();
-    }
-}
-
-bool Database::busy() const
-{
-    qDebug() << "Getting busy";
-    return _busy;
 }
