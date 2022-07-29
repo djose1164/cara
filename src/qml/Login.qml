@@ -28,7 +28,7 @@ Item {
         component MyTextField: TextField {
             onEditingFinished: {
                 focus = false
-                Qt.inputMethod.close()
+                Qt.inputMethod.hide()
             }
         }
 
@@ -109,16 +109,28 @@ Item {
 
     Popup {
         id: popup
-        modal: true
-        focus: true
+        width: parent.width - 10
         anchors.centerIn: parent
+        focus: true
+        modal: true
+
+        property alias text: popupLbl.text
+
         ColumnLayout {
             anchors.fill: parent
+            spacing: 10
+
             Label {
-                text: "Usario o contrasena incorrecto."
+                id: popupLbl
+                Layout.fillWidth: true
+                horizontalAlignment: Text.AlignHCenter
+                wrapMode: Text.Wrap
+                font.pointSize: 20
             }
+
             Button {
                 text: "Ok"
+                Layout.alignment: Qt.AlignHCenter
                 onClicked: popup.close()
             }
         }
@@ -129,15 +141,40 @@ Item {
         id: myWorker
         source: "qrc:/js/database.mjs"
 
-        onMessage: (messageObject) => {
-                       console.log("onMessage: busy: " + messageObject.busy)
-                       console.log("property: onMessage: busy: " + busy)
-                       busyIndicator.close()
-                       if (messageObject.code === "success")
-                       mainStackView.replace("qrc:/qml/Home.qml")
-                       else
-                       popup.open()
-                   }
+        signal resultReady(code: string)
+
+        onMessage: (msgObject) => resultReady(msgObject.code)
+    }
+
+    Connections {
+        target: myWorker
+
+        function noInternetHandler() {
+            popup.text = "Necesitas conectarte a internet.";
+            print("In no internet handler: popu.text: " + popup.text)
+        }
+
+        function failedHandler() {
+            popup.text = "Usario o contrasena incorrecto."
+        }
+
+        function successHandler() {
+            mainStackView.replace("qrc:/qml/Home.qml")
+        }
+
+        property var errorHandlers : {
+            "success": successHandler,
+            "no_internet": noInternetHandler,
+            "failed": failedHandler,
+        }
+
+        function onResultReady(code) {
+            print(code)
+            busyIndicator.close()
+            let func = errorHandlers[code];
+            func();
+            popup.open()
+        }
     }
 
     Popup {
@@ -159,6 +196,6 @@ Item {
         onTapped: {
             usernameInput.focus = false
             passwordInput.focus = false
-            Qt.inputMethod.close()
-    }}
+            Qt.inputMethod.hide()
+        }}
 }
