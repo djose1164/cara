@@ -1,6 +1,8 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
+import QtMultimedia
+
 
 Page {
     id: home
@@ -12,18 +14,27 @@ Page {
         font.pointSize: 20
         font.bold: true
     }
+    CaptureSession {
+            camera: Camera {
+                id: camera
 
-    Rectangle {
-        anchors.fill: parent
-        color: "gray"
-    }
+                focusMode: Camera.FocusModeAutoNear
+                customFocusPoint: Qt.point(0.2, 0.2) // Focus relative to top-left corner
+            }
+            videoOutput: videoOutput
+        }
+
+        VideoOutput {
+            id: videoOutput
+            anchors.fill: parent
+        }
+
 
     RowLayout {
         width: parent.width
 
         Label {
             id: lbl
-            text: helper.getText()
         }
 
 
@@ -31,8 +42,7 @@ Page {
             text: "Click me!"
             onClicked: {
                 ++counter
-                helper.setText("Yay you've clicked me " + counter + " times!")
-                lbl.text = helper.getText()
+                mainStackView.replace("qrc:/qml/Login.qml")
         }}
     }
     footer: ToolBar {

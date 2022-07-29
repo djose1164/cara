@@ -3,12 +3,10 @@ import QtQuick.Controls
 import QtQuick.Layouts
 import QtQuick.Dialogs
 
-
 Item {
     id: loginForm
-    Keys.onReturnPressed: Qt.inputMethod.hide()
-    Keys.onEnterPressed: Qt.inputMethod.hide()
 
+    property bool busy: false
 
     Label {
         id:loginLbl
@@ -27,6 +25,13 @@ Item {
         anchors.topMargin: 100
         spacing: 20
 
+        component MyTextField: TextField {
+            onEditingFinished: {
+                focus = false
+                Qt.inputMethod.close()
+            }
+        }
+
         Label {
             id: usernameLbl
             text: "Usuario"
@@ -35,13 +40,14 @@ Item {
             font.bold: true
         }
 
-        TextField {
+        MyTextField {
             id: usernameInput
             Layout.preferredWidth: parent.width/1.5
             Layout.alignment: Qt.AlignCenter
             Layout.topMargin: 5
             placeholderText: "Ingrese su usario..."
             font.pointSize: 15
+            onEditingFinished: Qt.inputMethod.hide()
         }
 
         Label {
@@ -54,7 +60,7 @@ Item {
 
         }
 
-        TextField {
+        MyTextField {
             id: passwordInput
             Layout.preferredWidth: parent.width/1.5
             Layout.alignment: Qt.AlignCenter
@@ -63,6 +69,7 @@ Item {
             font.pointSize: 15
             echoMode: TextField.Password
             passwordMaskDelay: 600
+
         }
     }
 
@@ -80,10 +87,13 @@ Item {
             font.bold: true
             onClicked: {
                 console.log("Button clicked")
-                console.log("busy: ", dbController.busy())
-
+                busyIndicator.open()
                 if (usernameInput.text !== "" && passwordInput.text !== "")
-                    dbController.doValidate(usernameInput.text, passwordInput.text)
+                    myWorker.sendMessage({
+                                             "username": usernameInput.text,
+                                             "password": passwordInput.text,
+                                             "busy": true
+                                         })
             }
         }
 
@@ -97,39 +107,58 @@ Item {
         }
     }
 
-    MessageDialog {
-        id: messageDialog
-        title: "Usario o contrasena incorrecto."
-        text: "Displayed if the credentials are not correct."
-        visible: false
+    Popup {
+        id: popup
+        modal: true
+        focus: true
+        anchors.centerIn: parent
+        ColumnLayout {
+            anchors.fill: parent
+            Label {
+                text: "Usario o contrasena incorrecto."
+            }
+            Button {
+                text: "Ok"
+                onClicked: popup.close()
+            }
+        }
+
     }
 
+    WorkerScript {
+        id: myWorker
+        source: "qrc:/js/database.mjs"
 
-    BusyIndicator {
+        onMessage: (messageObject) => {
+                       console.log("onMessage: busy: " + messageObject.busy)
+                       console.log("property: onMessage: busy: " + busy)
+                       busyIndicator.close()
+                       if (messageObject.code === "success")
+                       mainStackView.replace("qrc:/qml/Home.qml")
+                       else
+                       popup.open()
+                   }
+    }
+
+    Popup {
         id: busyIndicator
         width: parent.width * .7
         height: parent.height/2
         anchors.centerIn: parent
-        running: false
-    }
+        modal: true
+        focus: true
+        background: Rectangle {
+            color: "transparent"
+        }
 
-    Connections {
-        target: dbController
-        function onBusyChanged() {
-            console.log(`onBusyChanged: busy: ${dbController.busy()}`)
-            if (dbController.busy())
-                busyIndicator.running = true
-            else
-            {
-                busyIndicator.running = false
-                if (dbController.validate())
-                {
-                    console.log("Logged in!")
-                    mainStackView.replace("qrc:/qml/Home.qml")
-                }
-                else
-                    messageDialog.visible = true
-            }
+        BusyIndicator {
+            anchors.fill: parent
         }
     }
+    TapHandler {
+        onTapped: {
+            usernameInput.focus = false
+            passwordInput.focus = false
+            Qt.inputMethod.close()
+    }}
 }

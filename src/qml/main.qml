@@ -5,13 +5,7 @@ ApplicationWindow {
     width: 340
     height: 680
     visible: true
-    title: "RapiK"
-
-    TapHandler {
-        onTapped:
-            Qt.inputMethod.hide()
-
-    }
+    title: "Cara"
 
     StackView {
         id: mainStackView

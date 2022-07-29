@@ -1,15 +1,15 @@
-QT += quick sql core
+QT += quick core multimedia network
 
 SOURCES += \
-        src/database.cpp \
-        src/loginvalidator.cpp \
         src/main.cpp \
         src/userentity.cpp
 
 
-RESOURCES += src/qml.qrc
+RESOURCES += src/qml.qrc \
+    src/js.qrc
 
 CONFIG += console
+
 
 # Additional import path used to resolve QML modules in Qt Creator's code model
 QML_IMPORT_PATH =
@@ -23,8 +23,6 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
 HEADERS += \
-    src/database.h \
-    src/loginvalidator.h \
     src/userentity.h
 
 DISTFILES += \
@@ -41,3 +39,9 @@ contains(ANDROID_TARGET_ARCH,x86) {
     ANDROID_PACKAGE_SOURCE_DIR = \
         $$PWD/android
 }
+
+contains(ANDROID_TARGET_ARCH,armeabi-v7a) {
+    ANDROID_PACKAGE_SOURCE_DIR = \
+        $$PWD/android
+}
+android: include(/home/djose1164/Android/Sdk/android_openssl/openssl.pri)

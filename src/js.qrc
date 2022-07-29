@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/">
+        <file>js/database.mjs</file>
+    </qresource>
+</RCC>
