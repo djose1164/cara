@@ -2,6 +2,7 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 
+
 Item {
     id: signUp
 
@@ -36,15 +37,18 @@ Item {
         spacing: 20
 
         TextField {
+            id: forenameInput
             placeholderText: "Nombre(s)"
             Layout.fillWidth: true
             Layout.leftMargin: 15
             Layout.rightMargin: 15
             font.pixelSize: fontSize
             EnterKey.type: Qt.EnterKeyNext
+            inputMethodHints: Qt.ImhTime
         }
 
         TextField {
+            id: surnameInput
             placeholderText: "Apellido(s)"
             Layout.fillWidth: true
             Layout.alignment: Qt.AlignRight
@@ -64,9 +68,14 @@ Item {
 
 
         TextField {
+            id: emailInput
             Layout.fillWidth: true
             placeholderText: "Correo electronico"
             inputMethodHints: Qt.ImhEmailCharactersOnly | Qt.ImhPreferLowercase | Qt.ImhNoAutoUppercase
+            validator: RegularExpressionValidator {
+                regularExpression: /[a-z0-9]+@[a-z]+\.[a-z]{2,3}/
+            }
+
             Layout.leftMargin: 15
             Layout.rightMargin: 15
             font.pixelSize: fontSize
@@ -74,6 +83,7 @@ Item {
         }
 
         PasswordInput {
+            id: passwordInput
             Layout.fillWidth: true
             Layout.leftMargin: 15
             Layout.rightMargin: 15
@@ -82,26 +92,76 @@ Item {
     }
 
     RowLayout {
-       id: footerRL
-       width: parent.width
-       anchors.bottom: parent.bottom
-       anchors.bottomMargin: 50
-       spacing: 20
+        id: footerRL
+        width: parent.width
+        anchors.bottom: parent.bottom
+        anchors.bottomMargin: 50
+        spacing: 20
 
         Button {
-
             text: "Registrarse"
             font.pixelSize: fontSize
-            onClicked:
-                mainStackView.replace("qrc:/qml/Home.qml")
+            onClicked: {
+                busyIndicator.open()
+                myWorker.sendMessage(
+                            {
+                                "forename": forenameInput.text,
+                                "surname": surnameInput.text,
+                                "email": emailInput.text,
+                                "password": passwordInput.text,
+                                "type": "signup"
+                            }
+                )
+            }
         }
 
         Label {
             id: link_Text
             text: '<html><style type="text/css"></style><a href="http://google.com">google</a></html>'
             onLinkActivated: link => Qt.openUrlExternally(link)
+        }
+    }
 
+    BusyPopup {
+        id: busyIndicator
+    }
+
+    MessagePopup {
+        id: popup
+    }
+
+    Worker {
+        id: myWorker
+    }
+
+    Connections {
+        target: myWorker
+
+        function noInternetHandler() {
+            popup.text = "Necesitas conectarte a internet.";
+            print("In no internet handler: popu.text: " + popup.text)
         }
 
+        function failedHandler() {
+            popup.text = "Usario o contrasena incorrecto."
+        }
+
+        function successHandler() {
+            mainStackView.replace("qrc:/qml/Home.qml")
+        }
+
+        property var errorHandlers : {
+            "success": successHandler,
+            "no_internet": noInternetHandler,
+            "failed": failedHandler,
+        }
+
+        function onResultReady(code) {
+            print(code);
+            busyIndicator.close();
+            errorHandlers[code]();
+            if (code !== "success")
+                popup.open();
+        }
     }
 }
