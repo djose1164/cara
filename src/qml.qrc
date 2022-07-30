@@ -5,5 +5,9 @@
         <file>qml/Home.qml</file>
         <file>qml/SignUp.qml</file>
         <file>qml/PasswordInput.qml</file>
+        <file>qml/Worker.qml</file>
+        <file>qml/MessagePopup.qml</file>
+        <file>qml/BusyPopup.qml</file>
+        <file>qml/CameraPage.qml</file>
     </qresource>
 </RCC>
