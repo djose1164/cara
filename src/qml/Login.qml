@@ -82,13 +82,13 @@ Item {
             font.pointSize: 15
             font.bold: true
             onClicked: {
-                console.log("Button clicked")
                 busyIndicator.open()
                 if (usernameInput.text !== "" && passwordInput.text !== "")
                     myWorker.sendMessage({
                                              "username": usernameInput.text,
                                              "password": passwordInput.text,
-                                             "busy": true
+                                             "busy": true,
+                                             "type": "login"
                                          })
             }
         }
@@ -103,43 +103,12 @@ Item {
         }
     }
 
-    Popup {
+    MessagePopup {
         id: popup
-        width: parent.width - 20
-        anchors.centerIn: parent
-        focus: true
-        modal: true
-
-        property alias text: popupLbl.text
-
-        ColumnLayout {
-            anchors.fill: parent
-            spacing: 10
-
-            Label {
-                id: popupLbl
-                Layout.fillWidth: true
-                horizontalAlignment: Text.AlignHCenter
-                wrapMode: Text.Wrap
-                font.pointSize: 20
-            }
-
-            Button {
-                text: "Ok"
-                Layout.alignment: Qt.AlignHCenter
-                onClicked: popup.close()
-            }
-        }
-
     }
 
-    WorkerScript {
+    Worker {
         id: myWorker
-        source: "qrc:/js/database.mjs"
-
-        signal resultReady(code: string)
-
-        onMessage: (msgObject) => resultReady(msgObject.code)
     }
 
     Connections {
@@ -158,7 +127,7 @@ Item {
             mainStackView.replace("qrc:/qml/Home.qml")
         }
 
-        property var errorHandlers : {
+        property var handlers : {
             "success": successHandler,
             "no_internet": noInternetHandler,
             "failed": failedHandler,
@@ -167,27 +136,16 @@ Item {
         function onResultReady(code) {
             print(code)
             busyIndicator.close()
-            let func = errorHandlers[code];
+            let func = handlers[code];
             func();
             popup.open()
         }
     }
 
-    Popup {
+    BusyPopup {
         id: busyIndicator
-        width: parent.width * .7
-        height: parent.height/2
-        anchors.centerIn: parent
-        modal: true
-        focus: true
-        background: Rectangle {
-            color: "transparent"
-        }
-
-        BusyIndicator {
-            anchors.fill: parent
-        }
     }
+
     TapHandler {
         onTapped: {
             usernameInput.focus = false
