@@ -1,8 +1,9 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
-import QtMultimedia
 
+// TODO: Display user info and later make it a page. Or start it right now in
+// another qml.
 
 Page {
     id: home
@@ -14,37 +15,18 @@ Page {
         font.pointSize: 20
         font.bold: true
     }
-    CaptureSession {
-            camera: Camera {
-                id: camera
-
-                focusMode: Camera.FocusModeAutoNear
-                customFocusPoint: Qt.point(0.2, 0.2) // Focus relative to top-left corner
-            }
-            videoOutput: videoOutput
-        }
-
-        VideoOutput {
-            id: videoOutput
-            anchors.fill: parent
-        }
 
 
-    RowLayout {
+    GridLayout {
         width: parent.width
 
         Label {
             id: lbl
+            Layout.alignment: Qt.AlignCenter
+            text: "Informacion Personal"
         }
-
-
-        Button {
-            text: "Click me!"
-            onClicked: {
-                ++counter
-                mainStackView.replace("qrc:/qml/Login.qml")
-        }}
     }
+
     footer: ToolBar {
         //height: parent.height
         //anchors.fill: parent
@@ -54,9 +36,3 @@ Page {
         }
     }
 }
-
-/*##^##
-Designer {
-    D{i:0;autoSize:true;height:480;width:640}
-}
-##^##*/
