@@ -4,5 +4,6 @@
         <file>qml/Login.qml</file>
         <file>qml/Home.qml</file>
         <file>qml/SignUp.qml</file>
+        <file>qml/PasswordInput.qml</file>
     </qresource>
 </RCC>

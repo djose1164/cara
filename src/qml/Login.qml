@@ -45,7 +45,8 @@ Item {
             Layout.preferredWidth: parent.width/1.5
             Layout.alignment: Qt.AlignCenter
             Layout.topMargin: 5
-            placeholderText: "Ingrese su usario..."
+            placeholderText: "Usuario"
+            inputMethodHints: Qt.ImhLowercaseOnly
             font.pointSize: 15
             onEditingFinished: Qt.inputMethod.hide()
         }
@@ -57,19 +58,14 @@ Item {
             text: "Contraseña"
             font.pointSize: 20
             font.bold: true
-
         }
 
-        MyTextField {
+        PasswordInput {
             id: passwordInput
             Layout.preferredWidth: parent.width/1.5
             Layout.alignment: Qt.AlignCenter
             Layout.topMargin: 5
-            placeholderText: "Ingrese su contrasena..."
             font.pointSize: 15
-            echoMode: TextField.Password
-            passwordMaskDelay: 600
-
         }
     }
 
@@ -109,7 +105,7 @@ Item {
 
     Popup {
         id: popup
-        width: parent.width - 10
+        width: parent.width - 20
         anchors.centerIn: parent
         focus: true
         modal: true

@@ -4,80 +4,104 @@ import QtQuick.Layouts
 
 Item {
     id: signUp
-    Keys.onEnterPressed: Qt.inputMethod.hide()
-    Keys.onReturnPressed: Qt.inputMethod.hide()
+
+    property int fontSize: 22
+
+    Label {
+        id: cara
+        anchors.top: parent.top
+        anchors.topMargin: 20
+        anchors.horizontalCenter: parent.horizontalCenter
+        text: "Cara"
+        font.pixelSize: fontSize*1.6
+        font.bold: true
+    }
 
     Label {
         id: signUpLbl
-        anchors.top: parent.top
-        anchors.topMargin: 30
+        anchors.top: cara.bottom
+        anchors.topMargin: 50
+        anchors.horizontalCenter: parent.horizontalCenter
         text: "Registrarse"
         font.pointSize: 20
         font.bold: true
     }
 
-    GridLayout {
-        id: completeNameGL
-        width: parent.width
+    RowLayout {
+        id: completeNameRL
+        width: signUp.width
         anchors.top: signUpLbl.bottom
         anchors.topMargin: 50
         anchors.horizontalCenter: parent.horizontalCenter
-        columns: 2
-        rows: 2
-        rowSpacing: 0
-        columnSpacing: 40
+        spacing: 20
 
-        Label {
-            text: "Nombre"
-        }
-
-        Label {
-            text: "Apellido"
+        TextField {
+            placeholderText: "Nombre(s)"
+            Layout.fillWidth: true
+            Layout.leftMargin: 15
+            Layout.rightMargin: 15
+            font.pixelSize: fontSize
+            EnterKey.type: Qt.EnterKeyNext
         }
 
         TextField {
-            placeholderText: "Ingrese su nombre..."
-        }
-
-        TextField {
-            placeholderText: "Ingrese su apellido..."
+            placeholderText: "Apellido(s)"
+            Layout.fillWidth: true
+            Layout.alignment: Qt.AlignRight
+            Layout.leftMargin: 15
+            Layout.rightMargin: 15
+            font.pixelSize: fontSize
+            EnterKey.type: Qt.EnterKeyNext
         }
     }
 
     ColumnLayout {
-        anchors.top: completeNameGL.bottom
-        anchors.topMargin: this.height / 4
+        anchors.top: completeNameRL.bottom
+        anchors.topMargin: this.height / 3
         anchors.horizontalCenter: parent.horizontalCenter
         width: parent.width
         spacing: 20
 
-        Label {
-
-            text: "Correo electronico"
-        }
 
         TextField {
-            placeholderText: "Ingrese su correo electronico..."
+            Layout.fillWidth: true
+            placeholderText: "Correo electronico"
+            inputMethodHints: Qt.ImhEmailCharactersOnly | Qt.ImhPreferLowercase | Qt.ImhNoAutoUppercase
+            Layout.leftMargin: 15
+            Layout.rightMargin: 15
+            font.pixelSize: fontSize
+            EnterKey.type: Qt.EnterKeyNext
         }
 
-        Label {
-            text: "Contrasena"
-        }
-
-        TextField {
-            placeholderText: "Ingrese su contrasena..."
-            echoMode: TextField.Password
-            passwordMaskDelay: 600
+        PasswordInput {
+            Layout.fillWidth: true
+            Layout.leftMargin: 15
+            Layout.rightMargin: 15
+            font.pixelSize: fontSize
         }
     }
 
-    Button {
-        width: parent.width/2
-        anchors.bottom: parent.bottom
-        anchors.bottomMargin: this.height * 2
-        anchors.horizontalCenter: parent.horizontalCenter
-        text: "Registrarse"
-        onClicked:
-            mainStackView.replace("qrc:/qml/Home.qml")
+    RowLayout {
+       id: footerRL
+       width: parent.width
+       anchors.bottom: parent.bottom
+       anchors.bottomMargin: 50
+       spacing: 20
+
+        Button {
+
+            text: "Registrarse"
+            font.pixelSize: fontSize
+            onClicked:
+                mainStackView.replace("qrc:/qml/Home.qml")
+        }
+
+        Label {
+            id: link_Text
+            text: '<html><style type="text/css"></style><a href="http://google.com">google</a></html>'
+            onLinkActivated: link => Qt.openUrlExternally(link)
+
+        }
+
     }
 }

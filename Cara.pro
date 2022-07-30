@@ -1,4 +1,4 @@
-QT += quick core multimedia network
+QT += quick core multimedia network svg
 
 SOURCES += \
         src/main.cpp \
@@ -6,7 +6,8 @@ SOURCES += \
 
 
 RESOURCES += src/qml.qrc \
-    src/js.qrc
+    src/js.qrc \
+    src/res.qrc
 
 CONFIG += console
 
