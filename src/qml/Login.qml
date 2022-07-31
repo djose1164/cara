@@ -1,12 +1,9 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
-import QtQuick.Dialogs
 
 Item {
     id: loginForm
-
-    property bool busy: false
 
     Label {
         id:loginLbl
@@ -124,21 +121,22 @@ Item {
         }
 
         function successHandler() {
-            mainStackView.replace("qrc:/qml/Home.qml")
+            mainStackView.replace("qrc:/qml/Home.qml", {"currentUser": usernameInput.text})
         }
 
         property var handlers : {
             "success": successHandler,
             "no_internet": noInternetHandler,
-            "failed": failedHandler,
+            "credentialsNotValid": failedHandler,
         }
 
         function onResultReady(code) {
             print(code)
+            popup.text = "Envianos un correo reportando este bug!"
             busyIndicator.close()
-            let func = handlers[code];
-            func();
-            popup.open()
+            handlers[code]();
+            if (code !== "success")
+                popup.open();
         }
     }
 
