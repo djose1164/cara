@@ -1,5 +1,7 @@
 <RCC>
     <qresource prefix="/">
-        <file>js/database.mjs</file>
+        <file>js/request.mjs</file>
+        <file>js/login_worker.mjs</file>
+        <file>js/signup_worker.mjs</file>
     </qresource>
 </RCC>
