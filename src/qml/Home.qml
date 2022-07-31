@@ -7,24 +7,61 @@ import QtQuick.Layouts
 
 Page {
     id: home
-    property int counter: 0
+    property string currentUser
 
     header: Label {
         id: homeLbl
         text: "Inicio"
-        font.pointSize: 20
+        font.pointSize: 30
         font.bold: true
     }
 
 
-    GridLayout {
-        width: parent.width
+    ListView {
+        id: listView
+        anchors.fill: parent
+        model: listModel
+        delegate: Component {
+            ColumnLayout {
+                spacing: 20
+                Label {
+                    Layout.fillWidth: true
+                    text: "username: " + username
+                    font.pointSize: 30
+                }
 
-        Label {
-            id: lbl
-            Layout.alignment: Qt.AlignCenter
-            text: "Informacion Personal"
+                Label {
+                    Layout.fillWidth: true
+                    text: "email: " + email
+                    font.pointSize: 30
+                }
+
+                Label {
+
+                    Layout.fillWidth: true
+                    text: "forename: " + forename
+                    font.pointSize: 30
+                }
+
+                Label {
+
+                    Layout.fillWidth: true
+                    text: "surname: " + surname
+                    font.pointSize: 30
+                }
+
+                Label {
+
+                    Layout.fillWidth: true
+                    text: "telephone: " + telephone
+                    font.pointSize: 30
+                }
+            }
         }
+    }
+
+    ListModel {
+        id: listModel
     }
 
     footer: ToolBar {
@@ -33,6 +70,23 @@ Page {
         Rectangle {
             anchors.fill: parent
             color: "blue"
+        }
+    }
+
+    BusyPopup {
+        id: busyIndicator
+    }
+
+    Worker {
+        id: requestData
+        onReadyChanged: {
+                busyIndicator.open()
+                requestData.sendMessage({"type": "userInfo", "user": currentUser, "model": listModel})
+
+        }
+        onMessage: {
+            busyIndicator.close();
+            print("Hoalala")
         }
     }
 }
