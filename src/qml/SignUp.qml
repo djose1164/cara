@@ -44,7 +44,6 @@ Item {
             Layout.rightMargin: 15
             font.pixelSize: fontSize
             EnterKey.type: Qt.EnterKeyNext
-            inputMethodHints: Qt.ImhTime
         }
 
         TextField {
@@ -99,6 +98,7 @@ Item {
         spacing: 20
 
         Button {
+            Layout.alignment: Qt.AlignCenter
             text: "Registrarse"
             font.pixelSize: fontSize
             onClicked: {
@@ -116,9 +116,8 @@ Item {
         }
 
         Label {
-            id: link_Text
-            text: '<html><style type="text/css"></style><a href="http://google.com">google</a></html>'
-            onLinkActivated: link => Qt.openUrlExternally(link)
+            text: '<html><style type="text/css"></style><a href="qrc:/qml/Login.qml">Iniciar sesion</a></html>'
+            onLinkActivated: link => mainStackView.replace(link)
         }
     }
 
