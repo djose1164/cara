@@ -1,13 +1,26 @@
 <RCC>
-    <qresource prefix="/">
-        <file>qml/main.qml</file>
-        <file>qml/Login.qml</file>
-        <file>qml/Home.qml</file>
-        <file>qml/SignUp.qml</file>
-        <file>qml/PasswordInput.qml</file>
-        <file>qml/Worker.qml</file>
-        <file>qml/MessagePopup.qml</file>
-        <file>qml/BusyPopup.qml</file>
-        <file>qml/CameraPage.qml</file>
+    <qresource prefix="/main">
+        <file>BusyPopup.qml</file>
+        <file>CameraPage.qml</file>
+        <file>Login.qml</file>
+        <file>main.qml</file>
+        <file>MessagePopup.qml</file>
+        <file>PasswordInput.qml</file>
+        <file>SidePane.qml</file>
+        <file>SignUp.qml</file>
+        <file>Worker.qml</file>
+    </qresource>
+    <qresource prefix="/home">
+        <file>Home.qml</file>
+        <file>HomeHeader.qml</file>
+    </qresource>
+    <qresource prefix="/search">
+        <file>ProductDelegate.qml</file>
+        <file>SearchPage.qml</file>
+    </qresource>
+    <qresource prefix="/bills">
+        <file>BillPage.qml</file>
+        <file>BillPageHeader.qml</file>
+        <file>BillDelegate.qml</file>
     </qresource>
 </RCC>

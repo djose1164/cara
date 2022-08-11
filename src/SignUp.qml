@@ -116,7 +116,7 @@ Item {
         }
 
         Label {
-            text: '<html><style type="text/css"></style><a href="qrc:/qml/Login.qml">Iniciar sesion</a></html>'
+            text: '<html><style type="text/css"></style><a href="qrc:/Login.qml">Iniciar sesion</a></html>'
             onLinkActivated: link => mainStackView.replace(link)
         }
     }
@@ -146,7 +146,7 @@ Item {
         }
 
         function successHandler() {
-            mainStackView.replace("qrc:/qml/Home.qml")
+            mainStackView.replace("qrc:/Home.qml")
         }
 
         property var errorHandlers : {

@@ -96,7 +96,7 @@ Item {
             font.pointSize: 15
             font.bold: true
             onClicked:
-                mainStackView.replace("qrc:/qml/SignUp.qml")
+                mainStackView.replace("qrc:/SignUp.qml")
         }
     }
 
@@ -121,13 +121,17 @@ Item {
         }
 
         function successHandler() {
-            mainStackView.replace("qrc:/qml/Home.qml", {"currentUser": usernameInput.text})
+            settings.username = usernameInput.text
+            settings.password = passwordInput.text
+            mainStackView.replace("qrc:/Home.qml", {"currentUser": usernameInput.text})
         }
+
 
         property var handlers : {
             "success": successHandler,
             "no_internet": noInternetHandler,
             "credentialsNotValid": failedHandler,
+            "notFound": () => popup.text = "Cuenta no registrada.",
         }
 
         function onResultReady(code) {

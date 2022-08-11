@@ -2,5 +2,17 @@
     <qresource prefix="/">
         <file>icons/eye-crossed.svg</file>
         <file>icons/eye.svg</file>
+        <file>icons/home.svg</file>
+        <file>icons/settings.svg</file>
+        <file>icons/menu-burger.svg</file>
+        <file>icons/user.svg</file>
+        <file>icons/search.svg</file>
+        <file>icons/shopping-cart.svg</file>
+        <file>icons/confetti.svg</file>
+        <file>icons/smile.png</file>
+        <file>icons/left_arrow.svg</file>
+        <file>icons/filter.svg</file>
+        <file>icons/bill.svg</file>
+        <file>icons/bill16x16.svg</file>
     </qresource>
 </RCC>

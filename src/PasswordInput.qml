@@ -9,14 +9,13 @@ TextField {
     echoMode: showText ? TextField.Normal : TextField.Password
     passwordMaskDelay: 600
     rightPadding: eyeIcon.width + font.pointSize
-    inputMethodHints: Qt.ImhSensitiveData | Qt.ImhNoPredictiveText
+    inputMethodHints: Qt.ImhSensitiveData | Qt.ImhNoPredictiveText | Qt.ImhNoTextHandles
     renderType: Text.NativeRendering
     cursorDelegate: Rectangle {
         visible: false
         width: 1
         color: "red"
     }
-
     EnterKey.type: Qt.EnterKeyDone
     onEditingFinished: {
         focus = false
