@@ -1,30 +1,20 @@
-import { Request } from "request.mjs"
+    import { Request } from "request.mjs"
 
 const sender = WorkerScript.sendMessage;
 
 class ClientRequest extends Request {
-    constructor(model, base = "https://caraapi.herokuapp.com/api/clients") {
-        super(base);
-        this.model = model;
+    constructor(model = null, base = "caraapi.herokuapp.com/api/clients") {
+        super(model, base);
     }
-
-    updateModel(data, shouldClear=false) {
-            if (shouldClear) {
-                this.model.clear();
-                this.model.sync();
-            }
-            this.model.append(data);
-            this.model.sync();
-        }
 
     findAll() {
         const handle = (response) => {
             const data = response.clients;
-            sender({"code": "success", "clients": data})
+            sender({ "code": "success", "clients": data })
             this.updateModel(data)
         }
         this.request("GET", "/", null, handle);
-        }
+    }
 
     findClientById(id) {
         const handle = (response) => sender({
@@ -46,6 +36,11 @@ class ClientRequest extends Request {
         });
         this.request("GET", "/" + client_id, null, handle);
     }
+
+    createClient(data) {
+        const handle = (response) => sender({"code": response.code});
+        this.request("POST", "/", data, handle);
+    }
 }
 
 WorkerScript.onMessage = obj => {
@@ -62,6 +57,9 @@ WorkerScript.onMessage = obj => {
             break;
         case "findAll":
             clientRequest.findAll();
+            break;
+        case "createClient":
+            clientRequest.createClient(obj.client)
             break;
         default:
             throw new TypeError("None type matched.")

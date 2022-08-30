@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
+import QtQuick.Dialogs
 
 ToolBar {
     background: Rectangle {
@@ -41,9 +42,23 @@ ToolBar {
                 source: "qrc:/icons/confetti.svg"
                 sourceSize: iconSize
             }
+            onClicked: message.open()
             Layout.alignment: Qt.AlignRight
             Layout.topMargin: 5
             Layout.rightMargin: 5
         }
+    }
+
+    MessageDialog {
+        id: message
+        text: "Ups! Aun estamos trabajando en esta opcion!"
+        informativeText: "Mantente al tanto en nuestras redes sociales!"
+        buttons: MessageDialog.Ok
+
+
+        onButtonClicked: code => {
+                             if (code === MessageDialog.Ok)
+                                close();
+                         }
     }
 }

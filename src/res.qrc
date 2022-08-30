@@ -14,5 +14,8 @@
         <file>icons/filter.svg</file>
         <file>icons/bill.svg</file>
         <file>icons/bill16x16.svg</file>
+        <file>icons/done.svg</file>
+        <file>icons/error.svg</file>
+        <file>icons/complete_order.svg</file>
     </qresource>
 </RCC>

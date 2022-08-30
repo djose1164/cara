@@ -1,11 +1,10 @@
 import QtQuick
 import QtQuick.Controls
-import QtQuick.Layouts
 import Qt.labs.settings
 
 ApplicationWindow {
-    width: 340
-    height: 680
+    width: 360
+    height: 640
     visible: true
     title: "Cara"
 
@@ -15,7 +14,7 @@ ApplicationWindow {
     StackView {
         id: mainStackView
         anchors.fill: parent
-        initialItem: source
+        initialItem: BusyIndicator {}
     }
 
     Settings {
@@ -25,11 +24,23 @@ ApplicationWindow {
         property string password
 
         Component.onCompleted: {
-            let username = settings.value("username", false);
-            if (username && settings.value("password", false))
-                mainStackView.replace("qrc:/home/Home.qml", {"currentUser": username});
+            const username = settings.value("username", false);
+            const password = settings.value("password", false);
+            print(username + " " + password);
+            if (username && password)
+                loginWorker.sendMessage({"username": username, "password": password});
             else
-                mainStackView.replace("qrc:/Login.qml");
+                mainStackView.replace("qrc:/main/Login.qml");
         }
+    }
+
+    WorkerScript {
+        id: loginWorker
+        source: "qrc:/js/login.mjs"
+        onMessage: (response) => response.code === "success" ?
+                       mainStackView.replace("qrc:/home/Home.qml", {
+                                                 "currentUser": settings.value("username", false)
+                                             })
+                     : mainStackView.replace("qrc:/main/Login.qml")
     }
 }

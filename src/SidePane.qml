@@ -68,11 +68,12 @@ Drawer {
         id: busyIndicator
     }
 
-    Worker {
+    WorkerScript {
         id: requestData
+        source: "qrc:/js/login.mjs"
         onReadyChanged: {
             busyIndicator.open()
-            requestData.sendMessage({"type": "userInfo", "user": currentUser, "model": userModel})
+            requestData.sendMessage({"username": currentUser, "model": userModel})
 
         }
         onMessage: busyIndicator.close()

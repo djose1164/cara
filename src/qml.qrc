@@ -8,7 +8,6 @@
         <file>PasswordInput.qml</file>
         <file>SidePane.qml</file>
         <file>SignUp.qml</file>
-        <file>Worker.qml</file>
     </qresource>
     <qresource prefix="/home">
         <file>Home.qml</file>
@@ -23,4 +22,16 @@
         <file>BillPageHeader.qml</file>
         <file>BillDelegate.qml</file>
     </qresource>
+    <qresource prefix="/orders">
+        <file>OrderPage.qml</file>
+        <file>Description.qml</file>
+        <file>Entry.qml</file>
+    </qresource>
+    <qresource prefix="/client">
+        <file>ClientForm.qml</file>
+    </qresource>
+    <qresource prefix="/provider">
+        <file>ProviderForm.qml</file>
+    </qresource>
+    <qresource prefix="/utils"/>
 </RCC>

@@ -7,10 +7,6 @@ ColumnLayout {
     /*Label {
         text: "Código: " + id
     }*/
-    Rectangle {
-        anchors.fill: parent
-        color: "lightgray"
-    }
 
     Label {
         text: "Nombre: " + name

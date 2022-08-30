@@ -84,8 +84,6 @@ Item {
                     myWorker.sendMessage({
                                              "username": usernameInput.text,
                                              "password": passwordInput.text,
-                                             "busy": true,
-                                             "type": "login"
                                          })
             }
         }
@@ -96,7 +94,7 @@ Item {
             font.pointSize: 15
             font.bold: true
             onClicked:
-                mainStackView.replace("qrc:/SignUp.qml")
+                mainStackView.replace("qrc:/main/SignUp.qml")
         }
     }
 
@@ -104,8 +102,9 @@ Item {
         id: popup
     }
 
-    Worker {
+    WorkerScript {
         id: myWorker
+        source: "qrc:/js/login.mjs"
     }
 
     Connections {
@@ -123,9 +122,8 @@ Item {
         function successHandler() {
             settings.username = usernameInput.text
             settings.password = passwordInput.text
-            mainStackView.replace("qrc:/Home.qml", {"currentUser": usernameInput.text})
+            mainStackView.replace("qrc:/home/Home.qml", {"currentUser": usernameInput.text})
         }
-
 
         property var handlers : {
             "success": successHandler,
@@ -134,7 +132,8 @@ Item {
             "notFound": () => popup.text = "Cuenta no registrada.",
         }
 
-        function onResultReady(code) {
+        function onMessage(response) {
+            const code = response.code;
             print(code)
             popup.text = "Envianos un correo reportando este bug!"
             busyIndicator.close()
@@ -153,5 +152,6 @@ Item {
             usernameInput.focus = false
             passwordInput.focus = false
             Qt.inputMethod.hide()
-        }}
+        }
+    }
 }

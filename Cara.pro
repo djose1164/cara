@@ -1,4 +1,4 @@
-QT += quick core multimedia network svg
+QT += qml quick multimedia core network svg
 
 SOURCES += \
         src/main.cpp \
@@ -10,7 +10,7 @@ RESOURCES += \
     src/qml.qrc \
     src/res.qrc
 
-CONFIG += c++20 qml console
+CONFIG += c++20 qml console qml_debug
 
 # Additional import path used to resolve QML modules in Qt Creator's code model
 QML_IMPORT_PATH =

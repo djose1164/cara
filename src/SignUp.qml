@@ -109,7 +109,6 @@ Item {
                                 "surname": surnameInput.text,
                                 "email": emailInput.text,
                                 "password": passwordInput.text,
-                                "type": "signup"
                             }
                 )
             }
@@ -129,8 +128,9 @@ Item {
         id: popup
     }
 
-    Worker {
+    WorkerScript {
         id: myWorker
+        source: "qrc:/js/login.mjs"
     }
 
     Connections {
@@ -141,21 +141,25 @@ Item {
             print("In no internet handler: popu.text: " + popup.text)
         }
 
-        function failedHandler() {
-            popup.text = "Usario o contrasena incorrecto."
+        function failedHandler(type) {
+            let text = type === "singUp" ? "Usario o contrasena incorrecto." : "Datos invalidos."
+            popup.text = text;
         }
 
         function successHandler() {
-            mainStackView.replace("qrc:/Home.qml")
+            settings.username = usernameInput.text;
+            settings.password = passwordInput.text;
+            mainStackView.replace("qrc:/home/Home.qml", {"currentUser": username});
         }
 
         property var errorHandlers : {
             "success": successHandler,
             "no_internet": noInternetHandler,
             "failed": failedHandler,
+            "invalidInput": failedHandler
         }
 
-        function onResultReady(code) {
+        function onMessage(code) {
             print(code);
             busyIndicator.close();
             errorHandlers[code]();

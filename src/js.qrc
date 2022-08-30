@@ -1,9 +1,9 @@
 <RCC>
     <qresource prefix="/">
         <file>js/request.mjs</file>
-        <file>js/login_worker.mjs</file>
-        <file>js/local_db.js</file>
+        <file>js/login.mjs</file>
         <file>js/product_request.mjs</file>
         <file>js/client_request.mjs</file>
+        <file>js/order_request.mjs</file>
     </qresource>
 </RCC>

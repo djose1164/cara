@@ -2,32 +2,29 @@ import { Request } from "qrc:/js/request.mjs"
 // .pragma library
 
 class ProductRequest extends Request {
-    constructor(base = "https://caraapi.herokuapp.com/api/products") {
-        super(base)
+    constructor(model = null, base = "https://caraapi.herokuapp.com/api/products") {
+        super(model, base);
     }
 
-    addProductToModel(model, id, name) {
+    addProductToModel(id, name) {
         const handleResource = (resource) => {
             let fetched = resource.product || resource.products;
-            model.clear();
-            model.sync();
-            model.append(fetched);
-            model.sync();
+            this.updateModel(fetched);
             WorkerScript.sendMessage({ "code": "success" });
         }
-        let endpoint = "/";
-        if (id)
-            endpoint += id;
-        else if (name)
-            endpoint += name;
+        let endpoint = "/" + (id ? id : (name ? name : ""));
         print("base: " + this.base);
         print("endpoint: " + endpoint);
         this.request("GET", endpoint, null, handleResource);
     }
+
+
 }
 
 WorkerScript.onMessage = (obj) => {
-    const productRequest = new ProductRequest();
+    const productRequest = new ProductRequest(obj.model);
     if (obj.name && obj.model)
-        productRequest.addProductToModel(obj.model, null, obj.name);
+        productRequest.addProductToModel(null, obj.name);
+    else if (obj.model)
+        productRequest.addProductToModel(null, null);
 }
