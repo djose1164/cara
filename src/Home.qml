@@ -80,7 +80,7 @@ Page {
                     antialiasing: false
                     sourceSize: iconSize
                 }
-                onClicked: mainStackView.push("qrc:/orders/OrderPage.qml")
+                onClicked: mainStackView.push("qrc:/orders/OrderHomePage.qml")
             }
 
             ToolButton {

@@ -57,9 +57,9 @@ StackLayout {
         Description {
             id: orderForm
             width: parent.width
-            height: parent.height * .6
+            height: parent.height * .55
             anchors.top: lbl.bottom
-            anchors.topMargin: 50
+            anchors.topMargin: 30
             anchors.left: parent.left
             anchors.leftMargin: 20
             anchors.right: parent.right
@@ -72,7 +72,7 @@ StackLayout {
             id: btns
             width: parent.width * .9
             anchors.bottom: parent.bottom
-            anchors.bottomMargin: 10
+            anchors.bottomMargin: 5
             anchors.horizontalCenter: parent.horizontalCenter
             spacing: 20
 
@@ -80,17 +80,19 @@ StackLayout {
                 id: okBtn
                 text: "Ok"
                 onClicked: {
+                    print("## client_id" + orderForm.clientID)
                     stackLayout.currentIndex = 0
                     const details = [];
                     for (let i = 0; i < orderModel.count; ++i)
                         details.push(orderModel.get(i).entryValue);
-                    const fullOrder = {"client_id": orderForm.clientID,
+                    const fullOrder = {
+                        "client_id": orderForm.clientID,
                         "date": orderForm.date ? orderForm.date : null,
                         "order_details": details,
                         "payment": {
                             "status": orderForm.payment,
                             "amount_to_pay": orderForm.total,
-                            "amount_paid": orderForm.amountPaid
+                            "paid_amount": orderForm.amountPaid
                         }
                     };
                     print("In okBtn: onClicked: " + JSON.stringify(orderModel))// This is available in all editors.
@@ -108,6 +110,9 @@ StackLayout {
 
         ClientForm {
             id: clientForm
+            onClosed: {
+                print("## On closed drawer")
+                orderForm.updateClientField()}
         }
 
         MessageDialog {
@@ -142,7 +147,5 @@ StackLayout {
                            message.open();
                        }
         }
-
-        Component.onCompleted: busyIndicator.open()
     }
 }

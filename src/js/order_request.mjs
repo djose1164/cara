@@ -1,16 +1,15 @@
-import {Request} from "request.mjs"
+import {Request} from "request.mjs";
 
 const sender = WorkerScript.sendMessage;
 
 class OrderRequest extends Request {
-    constructor(model = null) {
-        super(model);
+    constructor(model = null, base = "https://caraapi.herokuapp.com/api") {
+        super(model, base);
         print("In OrderRequest: base: " + this.base);
     }
 
     saveOrder(order) {
         const endpoint = "/orders";
-            print("order: " + JSON.stringify(order));
         const handle = response => sender({"code": response.code});
         this.request("POST", endpoint, order, handle);
    }
@@ -23,8 +22,7 @@ class OrderRequest extends Request {
 }
 
 WorkerScript.onMessage = obj => {
-    const orderRequest = new OrderRequest("http://127.0.0.1:5000/api");
-    print("order_details: " + JSON.stringify(obj.order_details));
+    const orderRequest = new OrderRequest();
     if (!obj.date)
         delete obj["date"];
     if (obj.client_id && obj.order_details)

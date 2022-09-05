@@ -1,9 +1,10 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
+import "qrc:/client"
 
 GridLayout {
-    property alias clientID: clientField.text
+    property alias clientID: clientField.currentValue
     property alias date: dateField.text
     property int payment: 0
     property int _index: 0
@@ -13,23 +14,27 @@ GridLayout {
 
     signal okClicked
     signal updateTotal
+    signal updateClientField
 
     id: root
     columns: 2
     rowSpacing: 20
 
 
-    TextField {
+    ClientComboBox {
         id: clientField
-        placeholderText: "ID o nombre de cliente"
         Layout.columnSpan: 2
         Layout.fillWidth: true
+
+        Component.onCompleted: root.updateClientField.connect(clientField.updateClientField)
     }
 
     ScrollView {
         Layout.columnSpan: 2
-        Layout.preferredHeight: 100
+        Layout.preferredHeight: 125
         Layout.alignment: Qt.AlignCenter
+        Layout.margins: 5
+        Layout.topMargin: 25
 
         ColumnLayout {
             anchors.fill: parent
@@ -48,6 +53,7 @@ GridLayout {
             }
         }
     }
+
     RowLayout {
         Layout.columnSpan: 2
         Layout.fillWidth: true
@@ -158,5 +164,9 @@ GridLayout {
             if (criteria(model.get(i)))
                 return model.get(i);
         return null;
+    }
+
+    function update() {
+
     }
 }

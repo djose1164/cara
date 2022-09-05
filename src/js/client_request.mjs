@@ -1,18 +1,24 @@
-    import { Request } from "request.mjs"
+import { Request } from "request.mjs"
 
 const sender = WorkerScript.sendMessage;
 
+//https://caraapi.herokuapp.com/api/clients
 class ClientRequest extends Request {
-    constructor(model = null, base = "caraapi.herokuapp.com/api/clients") {
+    constructor(model = null, base = "https://caraapi.herokuapp.com/api/clients") {
         super(model, base);
     }
 
     findAll() {
         const handle = (response) => {
             const data = response.clients;
-            sender({ "code": "success", "clients": data })
-            this.updateModel(data)
+            let clients = [];
+            for (let client of data)
+                clients.push({"name": client.forename + " "
+                    + (client.surname ? client.surname : ""), "identifier": client.id});
+            sender({ "code": response.code, "clients": clients});
+            this.updateModel(clients);
         }
+
         this.request("GET", "/", null, handle);
     }
 
@@ -20,6 +26,7 @@ class ClientRequest extends Request {
         const handle = (response) => sender({
             "code": "success", "client": response.client
         });
+
         this.request("GET", "/" + id, null, handle);
     }
 
@@ -27,6 +34,7 @@ class ClientRequest extends Request {
         const handle = (response) => sender({
             "code": "success", "clients": response.clients
         });
+
         this.request("GET", "/" + name, null, handle);
     }
 
@@ -34,6 +42,7 @@ class ClientRequest extends Request {
         const handle = (response) => sender({
             "code": "success", "orders": response.client.orders
         });
+
         this.request("GET", "/" + client_id, null, handle);
     }
 

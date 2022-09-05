@@ -8,6 +8,7 @@
         <file>PasswordInput.qml</file>
         <file>SidePane.qml</file>
         <file>SignUp.qml</file>
+        <file>MainHome.qml</file>
     </qresource>
     <qresource prefix="/home">
         <file>Home.qml</file>
@@ -16,6 +17,7 @@
     <qresource prefix="/search">
         <file>ProductDelegate.qml</file>
         <file>SearchPage.qml</file>
+        <file>SearchBar.qml</file>
     </qresource>
     <qresource prefix="/bills">
         <file>BillPage.qml</file>
@@ -23,15 +25,22 @@
         <file>BillDelegate.qml</file>
     </qresource>
     <qresource prefix="/orders">
-        <file>OrderPage.qml</file>
+        <file>AddOrderPage.qml</file>
         <file>Description.qml</file>
         <file>Entry.qml</file>
+        <file>OrderHomePage.qml</file>
+        <file>UpdateOrderPage.qml</file>
+        <file>UpdateOrderDelegate.qml</file>
     </qresource>
     <qresource prefix="/client">
         <file>ClientForm.qml</file>
+        <file>ClientComboBox.qml</file>
+        <file>ClientModel.qml</file>
     </qresource>
     <qresource prefix="/provider">
         <file>ProviderForm.qml</file>
     </qresource>
-    <qresource prefix="/utils"/>
+    <qresource prefix="/utils">
+        <file>PageHeader.qml</file>
+    </qresource>
 </RCC>
