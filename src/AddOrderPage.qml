@@ -12,107 +12,63 @@ StackLayout {
 
     Page {
         id: root
-        Layout.fillWidth: true
-        Layout.fillHeight: true
-        header:  ToolBar {
-            id: headerToolBar
-            RowLayout {
-                anchors.fill: parent
-
-                ToolButton {
-                    background: Image {
-                        source: "qrc:/icons/left_arrow.svg"
-                        antialiasing: false
-                        sourceSize: iconSize
-                    }
-                    Layout.alignment: Qt.AlignLeft
-                    onClicked: mainStackView.pop()
-                }
-
-                Label {
-                    text: "Ordenes"
-                    font.bold: true
-                    Layout.alignment: Qt.AlignCenter
-                }
-
-                ToolButton {
-                    background: Image {
-                        source: "qrc:/icons/filter.svg"
-                        antialiasing: false
-                        sourceSize: iconSize
-                    }
-                    Layout.alignment: Qt.AlignRight
-                }
-            }
-        }
-
-        Label {
-            id: lbl
-            anchors.horizontalCenter: parent.horizontalCenter
-            text: "Crear nueva orden"
-            font.bold: true
-            font.pointSize: 18
-        }
-
-        Description {
-            id: orderForm
-            width: parent.width
-            height: parent.height * .55
-            anchors.top: lbl.bottom
-            anchors.topMargin: 30
-            anchors.left: parent.left
-            anchors.leftMargin: 20
-            anchors.right: parent.right
-            anchors.rightMargin: 20
-            anchors.horizontalCenter: parent.horizontalCenter
-            Component.onCompleted: worker.sendMessage({"model": productModel})
-        }
-
-        RowLayout {
-            id: btns
-            width: parent.width * .9
-            anchors.bottom: parent.bottom
-            anchors.bottomMargin: 5
-            anchors.horizontalCenter: parent.horizontalCenter
+        ColumnLayout {
+            id: columnLayout
+            width: parent.width / 1.5
+            height: parent.height/1.5
+            anchors.centerIn: parent
             spacing: 20
 
-            Button {
-                id: okBtn
-                text: "Ok"
-                onClicked: {
-                    print("## client_id" + orderForm.clientID)
-                    stackLayout.currentIndex = 0
-                    const details = [];
-                    for (let i = 0; i < orderModel.count; ++i)
-                        details.push(orderModel.get(i).entryValue);
-                    const fullOrder = {
-                        "client_id": orderForm.clientID,
-                        "date": orderForm.date ? orderForm.date : null,
-                        "order_details": details,
-                        "payment": {
-                            "status": orderForm.payment,
-                            "amount_to_pay": orderForm.total,
-                            "paid_amount": orderForm.amountPaid
-                        }
-                    };
-                    print("In okBtn: onClicked: " + JSON.stringify(orderModel))// This is available in all editors.
-                    saver.sendMessage(fullOrder);
-                }
+            Component.onCompleted: print("Column: w: " + width + " h: " + height)
+            Description {
+                id: orderForm
                 Layout.fillWidth: true
+                Component.onCompleted: {
+                    worker.sendMessage({"model": productModel})
+                    print("w: " + width + " h: " + height)
+                }
             }
 
-            Button {
-                text: "Nuevo cliente"
-                Layout.fillWidth: true
-                onClicked: clientForm.open()
+            RowLayout {
+                id: btns
+                Layout. fillWidth: true
+                spacing: 20
+
+                Button {
+                    id: okBtn
+                    text: "Ok"
+                    onClicked: {
+                        print("## client_id" + orderForm.clientID)
+                        stackLayout.currentIndex = 0
+                        const details = [];
+                        for (let i = 0; i < orderModel.count; ++i)
+                            details.push(orderModel.get(i).entryValue);
+                        const fullOrder = {
+                            "client_id": orderForm.clientID,
+                            "date": orderForm.date ? orderForm.date : null,
+                            "order_details": details,
+                            "payment": {
+                                "status": orderForm.payment,
+                                "amount_to_pay": orderForm.total,
+                                "paid_amount": orderForm.amountPaid
+                            }
+                        };
+                        print("In okBtn: onClicked: " + JSON.stringify(orderModel))// This is available in all editors.
+                        saver.sendMessage(fullOrder);
+                    }
+                    Layout.fillWidth: true
+                }
+
+                Button {
+                    text: "Nuevo cliente"
+                    Layout.fillWidth: true
+                    onClicked: clientForm.open()
+                }
             }
         }
-
         ClientForm {
             id: clientForm
-            onClosed: {
-                print("## On closed drawer")
-                orderForm.updateClientField()}
+            onClosed: orderForm.updateClientField()
         }
 
         MessageDialog {
@@ -141,11 +97,13 @@ StackLayout {
             onMessage: response => {
                            stackLayout.currentIndex = 1;
                            if (response.code === "success")
-                                 message.text = "Datos guardos";
+                           message.text = "Datos guardos";
                            else
-                                message.text = "No se pudo realizar la accion";
+                           message.text = "No se pudo realizar la accion";
                            message.open();
                        }
         }
     }
+    /*AddOrderHeader { id: headerToolBar }
+    Component.onCompleted: app.header = headerToolBar*/
 }

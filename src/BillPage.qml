@@ -1,12 +1,14 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
+import "qrc:/utils" as Utils
 
 Page {
     id: billPage
     title: "Facturas"
-    header: BillPageHeader {}
+
     property var myBusy
+
     ListView {
         id: orderView
         anchors.fill: parent
@@ -24,31 +26,22 @@ Page {
 
                 Label {
                     anchors.centerIn: parent
-                    text: "Todas las facturas"
+                    text: "Clientes con facturas las facturas"
                     font.bold: true
                     font.pointSize: 16
                     visible: !busyIndicator.running
                 }
             }
         }
-        model:  billModel
+        model:  baseModel.model
         delegate: BillDelegate {}
         focus: true
     }
 
-    ListModel {
-        id: billModel
-    }
+    Utils.BaseModel {
+        id: baseModel
+        scriptSource: "qrc:/js/client_request.mjs"
 
-    WorkerScript {
-        id: billWorker
-        source: "qrc:/js/client_request.mjs"
-
-        onMessage: () => myBusy.running = false;
-    }
-
-    Component.onCompleted: {
-        myBusy.running = true
-        billWorker.sendMessage({"type": "findAll", "model": billModel})
+        Component.onCompleted: send({"type": "findAll"})
     }
 }

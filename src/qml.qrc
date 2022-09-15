@@ -1,5 +1,7 @@
 <RCC>
     <qresource prefix="/main">
+        <file>MainHeader.qml</file>
+        <file>MainFooter.qml</file>
         <file>BusyPopup.qml</file>
         <file>CameraPage.qml</file>
         <file>Login.qml</file>
@@ -8,11 +10,11 @@
         <file>PasswordInput.qml</file>
         <file>SidePane.qml</file>
         <file>SignUp.qml</file>
-        <file>MainHome.qml</file>
+        <file>MainPage.qml</file>
+        <file>MainSettings.qml</file>
     </qresource>
     <qresource prefix="/home">
         <file>Home.qml</file>
-        <file>HomeHeader.qml</file>
     </qresource>
     <qresource prefix="/search">
         <file>ProductDelegate.qml</file>
@@ -31,16 +33,22 @@
         <file>OrderHomePage.qml</file>
         <file>UpdateOrderPage.qml</file>
         <file>UpdateOrderDelegate.qml</file>
+        <file>OrderModel.qml</file>
+        <file>UpdatePayment.qml</file>
+        <file>OrderDelegate.qml</file>
+        <file>AddOrderHeader.qml</file>
     </qresource>
     <qresource prefix="/client">
         <file>ClientForm.qml</file>
         <file>ClientComboBox.qml</file>
         <file>ClientModel.qml</file>
+        <file>ClientView.qml</file>
     </qresource>
     <qresource prefix="/provider">
         <file>ProviderForm.qml</file>
     </qresource>
     <qresource prefix="/utils">
         <file>PageHeader.qml</file>
+        <file>BaseModel.qml</file>
     </qresource>
 </RCC>

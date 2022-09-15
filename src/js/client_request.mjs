@@ -11,21 +11,19 @@ class ClientRequest extends Request {
     findAll() {
         const handle = (response) => {
             const data = response.clients;
-            let clients = [];
-            for (let client of data)
-                clients.push({"name": client.forename + " "
-                    + (client.surname ? client.surname : ""), "identifier": client.id});
-            sender({ "code": response.code, "clients": clients});
-            this.updateModel(clients);
+            sender({ "code": response.code, "clients": data});
+            this.updateModel(data);
         }
 
         this.request("GET", "/", null, handle);
     }
 
     findClientById(id) {
-        const handle = (response) => sender({
-            "code": "success", "client": response.client
-        });
+        const handle = (response) => {
+            sender({"code": response.code, "client": response.client});
+            print(JSON.stringify(response.client));
+            this.updateModel(response.client);
+        }
 
         this.request("GET", "/" + id, null, handle);
     }

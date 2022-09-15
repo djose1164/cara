@@ -69,9 +69,17 @@ GridLayout {
         }
 
         Button {
-            text: "Remover"
+            contentItem: Label {
+                text: "Remover"
+                color: "white"
+                horizontalAlignment: Label.AlignHCenter
+            }
             onClicked: repeaterModel.remove(--_index)
             Layout.fillWidth: true
+            background: Rectangle {
+                anchors.fill: parent
+                color: "red"
+            }
         }
     }
 

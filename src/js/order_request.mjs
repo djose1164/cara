@@ -19,6 +19,15 @@ class OrderRequest extends Request {
         const handle = response => sender({"code": response.code});
         this.request("POST", endpoint, details, handle);
    }
+                        
+  findByOrderId(clientId) {
+        const handle = response => {
+            sender({"code": response.code, "orders": response.orders});
+            print(JSON.stringify(response.orders));
+            this.updateModel(response.orders);
+        }
+        this.request("GET", "/" + orderId, null, handle);
+    }
 }
 
 WorkerScript.onMessage = obj => {
@@ -27,4 +36,6 @@ WorkerScript.onMessage = obj => {
         delete obj["date"];
     if (obj.client_id && obj.order_details)
         orderRequest.saveOrder(obj);
+    if (obj.orderId)
+        orderRequest.findByOrderId(orderId);
 }

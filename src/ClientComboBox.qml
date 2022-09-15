@@ -10,19 +10,12 @@ Item {
         width: parent.width
         editable: true
         currentIndex: 0
-        textRole: "name"
-        valueRole: "identifier"
+        textRole: "forename"
+        valueRole: "id"
         model: clientModel
     }
 
-    ListModel {
-        id: clientModel
-
-        ListElement {
-            name: "ID o nombre de cliente"
-            identifier: -1
-        }
-    }
+    ListModel { id: clientModel }
 
     WorkerScript {
         id: clientWorker
@@ -33,6 +26,6 @@ Item {
 
     function updateClientField() {
         print("Updating client field");
-        clientWorker.sendMessage({"type": "findAll", "model": clientModel, "":""});
+        clientWorker.sendMessage({"type": "findAll", "model": clientModel});
     }
 }

@@ -4,6 +4,8 @@ import QtQuick.Layouts
 import QtQuick.Dialogs
 
 ToolBar {
+    signal currentIndexChanged(int newIndex)
+
     background: Rectangle {
         anchors.fill: parent
         color: "floralwhite"
@@ -30,7 +32,7 @@ ToolBar {
             id: homeLbl
             text: "Inicio"
             color: "black"
-            font.pointSize: 24
+            font.pointSize: 18
             font.bold: true
             Layout.alignment: Qt.AlignCenter
             Layout.topMargin: 5
@@ -58,7 +60,26 @@ ToolBar {
 
         onButtonClicked: code => {
                              if (code === MessageDialog.Ok)
-                                close();
+                             close();
                          }
+    }
+
+    Component.onCompleted: currentIndexChanged.connect(updateHeader)
+
+    function updateHeader(idx) {
+        switch (idx) {
+         case 0:
+             homeLbl.text = "Inicio";
+             break;
+         case 1:
+             homeLbl.text = "Buscar";
+             break;
+         case 2:
+             homeLbl.text = "Nueva orden"
+             break;
+         case 3:
+             homeLbl.text = "Facturas"
+             break;
+        }
     }
 }
