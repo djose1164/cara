@@ -64,6 +64,8 @@ Drawer {
         }
     }
 
+    ListModel { id: userModel }
+
     BusyPopup {
         id: busyIndicator
     }

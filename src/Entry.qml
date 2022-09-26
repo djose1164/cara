@@ -47,6 +47,5 @@ RowLayout {
         orderModel.set(currentEntryIndex, {"entryValue": entryValue});
         entryAdded();
         updateTotal();
-        print("Setting orderModel: ", JSON.stringify(orderModel));
     }
 }

@@ -6,6 +6,9 @@ Item {
     id: root
     width: stackLayout.width
     height: stackLayout.height
+    required property var orders
+    required property string forename
+    required property string surname
 
     Label {
         id: lbl
@@ -18,11 +21,13 @@ Item {
     }
 
     ColumnLayout {
+        width: parent.width
         anchors.top: lbl.bottom
         anchors.topMargin: 20
         spacing: 20
 
         Repeater {
+            Layout.fillWidth: true
             model: orders
             delegate:  OrderDelegate {}
         }

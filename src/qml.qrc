@@ -25,6 +25,7 @@
         <file>BillPage.qml</file>
         <file>BillPageHeader.qml</file>
         <file>BillDelegate.qml</file>
+        <file>OptionPopup.qml</file>
     </qresource>
     <qresource prefix="/orders">
         <file>AddOrderPage.qml</file>
@@ -50,5 +51,10 @@
     <qresource prefix="/utils">
         <file>PageHeader.qml</file>
         <file>BaseModel.qml</file>
+        <file>Request.qml</file>
+        <file>Filter.qml</file>
+    </qresource>
+    <qresource prefix="/payment">
+        <file>Payment.qml</file>
     </qresource>
 </RCC>

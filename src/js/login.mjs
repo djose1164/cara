@@ -17,7 +17,6 @@ class LoginRequest extends Request {
     }
 
     authenticate(obj) {
-        print("authenticating...");
         let cb = (response) => {
             if (response.code === "success")
                 sender({ "code": response["code"], "currentUser": obj.username });
@@ -31,7 +30,6 @@ class LoginRequest extends Request {
       If none, the username or email, is passed the current user is assumed.
     */
     signUp(obj) {
-        print("obj: " + JSON.stringify(obj))
         let cb = (response) => sender(response["code"]);
 
         this.request("POST", "/", obj, cb);
@@ -39,7 +37,6 @@ class LoginRequest extends Request {
 
     userInfo(user) {
         const cb = (response) => {
-            print("userInfoHandler: response: " + JSON.stringify(response));
             this.updateModel(response.user);
             sender({ "code": response["code"] });
         }
@@ -49,9 +46,8 @@ class LoginRequest extends Request {
 
 WorkerScript.onMessage = (obj) => {
     let loginRequest = new LoginRequest(obj.model);
-    print("username: " +obj.username)
     if ("model" in obj)
-        loginRequest.userInfo(obj.username)
+        loginRequest.userInfo(obj.username);
     else if ("username" in obj && "password" in obj)
         loginRequest.authenticate(obj);
     else if ("email" in obj)

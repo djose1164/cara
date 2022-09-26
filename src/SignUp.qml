@@ -138,7 +138,6 @@ Item {
 
         function noInternetHandler() {
             popup.text = "Necesitas conectarte a internet.";
-            print("In no internet handler: popu.text: " + popup.text)
         }
 
         function failedHandler(type) {
@@ -160,7 +159,6 @@ Item {
         }
 
         function onMessage(code) {
-            print(code);
             busyIndicator.close();
             errorHandlers[code]();
             if (code !== "success")

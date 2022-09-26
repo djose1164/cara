@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
+import "qrc:/utils"
 
 ToolBar {
     RowLayout {
@@ -28,9 +29,12 @@ ToolBar {
                 source: "qrc:/icons/settings.svg"
                 sourceSize: iconSize
             }
+            onClicked: filter.open()
             Layout.alignment: Qt.AlignRight
             Layout.topMargin: 5
             Layout.rightMargin: 5
         }
     }
+
+    Filter { id: filter }
 }

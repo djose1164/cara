@@ -5,24 +5,17 @@ import QtQuick.Dialogs
 import "qrc:/search" as Search
 import "qrc:/utils" as Utils
 import "qrc:/client" as Client
+import "qrc:/main"
 
 Page {
     id: root
-    header: Utils.PageHeader { title: "Actualizar Ordenes" }
+    property int clientId
 
     StackLayout {
         id: stackLayout
         anchors.fill: parent
-        currentIndex: 1
 
         BusyIndicator {}
-
-        Search.SearchBar {
-            id: searchBar
-            Layout.topMargin: 20
-            placeholderText: "ID de la orden"
-            onFind: handleSearch()
-        }
 
         ListView {
             model: clientModel.model
@@ -33,9 +26,11 @@ Page {
     Client.ClientModel {
         id: clientModel
         onStatusReady: status => {
+            stackLayout.currentIndex = 1;
             if (!status)
                 messageDialog.open();
         }
+        Component.onCompleted: clientModel.addById(clientId)
     }
 
     MessageDialog {
@@ -48,10 +43,11 @@ Page {
         onAccepted: close()
     }
 
-    function handleSearch() {
-        print("toFind: " + searchBar.toFind);
-        stackLayout.currentIndex = 0;
-        clientModel.addById(searchBar.toFind);
-        stackLayout.currentIndex = 2;
+    property var pageHeader: Utils.PageHeader {
+        title: "Actualizar ordenes"
+        stackView: billStackView
     }
+
+    Component.onCompleted: stackLayoutPage.header = pageHeader
+    Component.onDestruction: stackLayoutPage.header = stackLayoutPage.mainHeader
 }

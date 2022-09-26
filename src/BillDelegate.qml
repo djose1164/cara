@@ -23,4 +23,11 @@ ItemDelegate {
             font.pointSize: 16
         }
     }
+
+    onClicked: optionPopup.open()
+
+    OptionPopup {
+        id: optionPopup
+        clientId: id
+    }
 }

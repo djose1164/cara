@@ -17,5 +17,5 @@ ApplicationWindow {
         anchors.fill: parent
     }
 
-    MainSettings {}
+    MainSettings { id: settings }
 }

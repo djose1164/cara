@@ -2,10 +2,11 @@ import {Request} from "request.mjs";
 
 const sender = WorkerScript.sendMessage;
 
+// http://127.0.0.1:5000
+// https://caraapi.herokuapp.com
 class OrderRequest extends Request {
     constructor(model = null, base = "https://caraapi.herokuapp.com/api") {
         super(model, base);
-        print("In OrderRequest: base: " + this.base);
     }
 
     saveOrder(order) {
@@ -23,7 +24,6 @@ class OrderRequest extends Request {
   findByOrderId(clientId) {
         const handle = response => {
             sender({"code": response.code, "orders": response.orders});
-            print(JSON.stringify(response.orders));
             this.updateModel(response.orders);
         }
         this.request("GET", "/" + orderId, null, handle);

@@ -13,8 +13,6 @@ class ProductRequest extends Request {
             WorkerScript.sendMessage({ "code": "success" });
         }
         let endpoint = "/" + (id ? id : (name ? name : ""));
-        print("base: " + this.base);
-        print("endpoint: " + endpoint);
         this.request("GET", endpoint, null, handleResource);
     }
 

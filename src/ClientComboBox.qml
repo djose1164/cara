@@ -25,7 +25,6 @@ Item {
     Component.onCompleted: updateClientField()
 
     function updateClientField() {
-        print("Updating client field");
         clientWorker.sendMessage({"type": "findAll", "model": clientModel});
     }
 }

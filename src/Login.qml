@@ -112,7 +112,6 @@ Item {
 
         function noInternetHandler() {
             popup.text = "Necesitas conectarte a internet.";
-            print("In no internet handler: popu.text: " + popup.text)
         }
 
         function failedHandler() {
@@ -122,7 +121,7 @@ Item {
         function successHandler() {
             settings.username = usernameInput.text
             settings.password = passwordInput.text
-            mainStackView.replace("qrc:/home/Home.qml", {"currentUser": usernameInput.text})
+            mainStackView.replace("qrc:/main/MainPage.qml", {"currentUser": usernameInput.text})
         }
 
         property var handlers : {
@@ -134,7 +133,6 @@ Item {
 
         function onMessage(response) {
             const code = response.code;
-            print(code)
             popup.text = "Envianos un correo reportando este bug!"
             busyIndicator.close()
             handlers[code]();

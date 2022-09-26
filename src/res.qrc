@@ -17,5 +17,6 @@
         <file>icons/done.svg</file>
         <file>icons/error.svg</file>
         <file>icons/complete_order.svg</file>
+        <file alias="crossIcon">icons/cross.svg</file>
     </qresource>
 </RCC>

@@ -8,6 +8,7 @@ Page {
     title: "Facturas"
 
     property var myBusy
+    readonly property var pageHeader: BillPageHeader {}
 
     ListView {
         id: orderView
@@ -26,7 +27,7 @@ Page {
 
                 Label {
                     anchors.centerIn: parent
-                    text: "Clientes con facturas las facturas"
+                    text: "Todas las facturas"
                     font.bold: true
                     font.pointSize: 16
                     visible: !busyIndicator.running

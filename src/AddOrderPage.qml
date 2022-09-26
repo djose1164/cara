@@ -14,19 +14,16 @@ StackLayout {
         id: root
         ColumnLayout {
             id: columnLayout
-            width: parent.width / 1.5
-            height: parent.height/1.5
+            width: parent.width *.8
+            height: parent.height
+            anchors.topMargin: height * .1
             anchors.centerIn: parent
             spacing: 20
 
-            Component.onCompleted: print("Column: w: " + width + " h: " + height)
             Description {
                 id: orderForm
                 Layout.fillWidth: true
-                Component.onCompleted: {
-                    worker.sendMessage({"model": productModel})
-                    print("w: " + width + " h: " + height)
-                }
+                Component.onCompleted: worker.sendMessage({"model": productModel})
             }
 
             RowLayout {
@@ -38,7 +35,6 @@ StackLayout {
                     id: okBtn
                     text: "Ok"
                     onClicked: {
-                        print("## client_id" + orderForm.clientID)
                         stackLayout.currentIndex = 0
                         const details = [];
                         for (let i = 0; i < orderModel.count; ++i)
@@ -53,7 +49,7 @@ StackLayout {
                                 "paid_amount": orderForm.amountPaid
                             }
                         };
-                        print("In okBtn: onClicked: " + JSON.stringify(orderModel))// This is available in all editors.
+
                         saver.sendMessage(fullOrder);
                     }
                     Layout.fillWidth: true

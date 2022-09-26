@@ -4,11 +4,11 @@ import QtQuick.Layouts
 
 Page {
     id: root
-    property alias mainStackLayout: stackLayout
-
-    header: MainHeader { id: mainHeader }
-
+    property var mainHeader: MainHeader { id: mainHeader }
+    readonly property var views: [homeStackView, searchStackView, orderStackView, billStackView]
+    header: mainHeader
     StackLayout {
+        anchors.fill: parent
         id: stackLayout
 
         StackView {
@@ -29,9 +29,20 @@ Page {
         StackView {
             id: billStackView
             initialItem: "qrc:/bills/BillPage.qml"
+            onDepthChanged: {
+                if (depth > 1) {
+                    print("## depth: " + depth);
+                    for (let i = 0; i < depth; ++i)
+                        if (get(i).pageHeader)
+                            root.header = get(i).pageHeader;
+                }
+            }
         }
 
-        onCurrentIndexChanged: mainHeader.currentIndexChanged(currentIndex)
+        onCurrentIndexChanged: {
+            const current = stackLayout.itemAt(currentIndex);
+            root.header = current.get(0).pageHeader;
+        }
     }
 
     footer: MainFooter {}

@@ -69,17 +69,9 @@ GridLayout {
         }
 
         Button {
-            contentItem: Label {
-                text: "Remover"
-                color: "white"
-                horizontalAlignment: Label.AlignHCenter
-            }
+            text: "Remover"
             onClicked: repeaterModel.remove(--_index)
             Layout.fillWidth: true
-            background: Rectangle {
-                anchors.fill: parent
-                color: "red"
-            }
         }
     }
 
@@ -164,7 +156,7 @@ GridLayout {
         validator: RegularExpressionValidator {
             regularExpression: /^([0-2][0-9]|(3)[0-1])(\/)(((0)[0-9])|((1)[0-2]))(\/)\d{4}$/
         }
-        inputMethodHints: Qt.ImhDate
+        inputMethodHints: Qt.ImhNoPredictiveText
     }
 
     function findIn(model, criteria) {

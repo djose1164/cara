@@ -21,6 +21,7 @@ ToolBar {
                 antialiasing: false
                 sourceSize: iconSize
             }
+            onClicked: stackLayout.currentIndex = 0
         }
 
         ToolButton {
@@ -31,10 +32,8 @@ ToolBar {
                 antialiasing: false
                 sourceSize: iconSize
             }
-            onClicked: {
+            onClicked: stackLayout.currentIndex = 1
 
-                stackLayout.currentIndex = 1
-            }
         }
 
         ToolButton {

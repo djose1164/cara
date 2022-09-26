@@ -4,6 +4,7 @@ import QtQuick.Layouts
 
 ToolBar {
     required property string title
+    required property var stackView
 
     RowLayout {
         anchors.fill: parent
@@ -17,7 +18,7 @@ ToolBar {
                 antialiasing: false
             }
 
-            onClicked: mainStackView.pop()
+            onClicked: stackView.pop()
         }
 
         Label {

@@ -3,6 +3,7 @@ import { Request } from "request.mjs"
 const sender = WorkerScript.sendMessage;
 
 //https://caraapi.herokuapp.com/api/clients
+//http://127.0.0.1:5000
 class ClientRequest extends Request {
     constructor(model = null, base = "https://caraapi.herokuapp.com/api/clients") {
         super(model, base);
@@ -21,7 +22,6 @@ class ClientRequest extends Request {
     findClientById(id) {
         const handle = (response) => {
             sender({"code": response.code, "client": response.client});
-            print(JSON.stringify(response.client));
             this.updateModel(response.client);
         }
 
