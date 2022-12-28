@@ -1,5 +1,5 @@
 import QtQuick
-import "qrc:/js/payment_request.mjs" as PaymentRequest
+//import "qrc:/js/payment_request.mjs" as PaymentRequest
 
 Item {
     id: root
@@ -16,14 +16,15 @@ Item {
                             successful = true;
                        else
                             root.message = response.message;
-                       print(root.message);
+                       print("## " + root.message + "--" + response.code);
                    }
     }
 
     function patchPayment() {
-        if (paymentId != 0 && newPaidAmount != 0)
+        if (paymentId > 0 && newPaidAmount > -1)
             worker.sendMessage({"type": "patchPayment", "value": {
                                        "id": paymentId, "paid_amount": newPaidAmount}
                                });
+        print("Patching payment ID#" + paymentId + "paid_amount: " + newPaidAmount);
     }
 }

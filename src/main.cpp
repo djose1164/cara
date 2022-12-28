@@ -1,3 +1,6 @@
+#include "QZXing.h"
+
+
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
@@ -11,6 +14,9 @@ int main(int argc, char *argv[])
     qputenv("QT_NO_ANDROID_TEXT_HANDLES", "1");
 
     QQmlApplicationEngine engine;
+    QZXing::registerQMLTypes();
+    QZXing::registerQMLImageProvider(engine);
+
     const QUrl url(u"qrc:/main/main.qml"_qs);
     QObject::connect(&engine, &QQmlApplicationEngine::objectCreated,
                      &app, [url](QObject *obj, const QUrl &objUrl) {

@@ -3,7 +3,7 @@ import { Request } from "request.mjs"
 const sender = WorkerScript.sendMessage;
 
 class LoginRequest extends Request {
-    constructor(model = null, base = "https://caraapi.herokuapp.com/api/users") {
+    constructor(model = null, base = "https://cara-api.onrender.com/api/users") {
         super(model, base);
         this.isVerified = false;
     }

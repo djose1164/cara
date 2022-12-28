@@ -44,17 +44,27 @@
         <file>ClientComboBox.qml</file>
         <file>ClientModel.qml</file>
         <file>ClientView.qml</file>
+        <file>ClientRequest.qml</file>
     </qresource>
     <qresource prefix="/provider">
         <file>ProviderForm.qml</file>
     </qresource>
     <qresource prefix="/utils">
         <file>PageHeader.qml</file>
-        <file>BaseModel.qml</file>
+        <file>RequestModel.qml</file>
         <file>Request.qml</file>
         <file>Filter.qml</file>
+        <file>CaDrawer.qml</file>
     </qresource>
     <qresource prefix="/payment">
         <file>Payment.qml</file>
+        <file>PaymentStatus.qml</file>
+    </qresource>
+    <qresource prefix="/product">
+        <file>ProductForm.qml</file>
+        <file>ProductRequest.qml</file>
+    </qresource>
+    <qresource prefix="/qr" lang="qml">
+        <file>QR.qml</file>
     </qresource>
 </RCC>

@@ -1,15 +1,17 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
-import QtQuick.Dialogs
+import "qrc:/qr"
 
 ToolBar {
     signal currentIndexChanged(int newIndex)
+
 
     background: Rectangle {
         anchors.fill: parent
         color: "floralwhite"
     }
+
 
     RowLayout {
         anchors.fill: parent
@@ -41,28 +43,17 @@ ToolBar {
         ToolButton {
             background: Image {
                 antialiasing: false
-                source: "qrc:/icons/confetti.svg"
+                source: "qrc:/icons/qrcode-16x16.svg"
                 sourceSize: iconSize
             }
-            onClicked: message.open()
+            onClicked: qrCode.open()
             Layout.alignment: Qt.AlignRight
             Layout.topMargin: 5
             Layout.rightMargin: 5
         }
     }
 
-    MessageDialog {
-        id: message
-        text: "Ups! Aun estamos trabajando en esta opcion!"
-        informativeText: "Mantente al tanto en nuestras redes sociales!"
-        buttons: MessageDialog.Ok
-
-
-        onButtonClicked: code => {
-                             if (code === MessageDialog.Ok)
-                             close();
-                         }
-    }
+    QR { id: qrCode }
 
     Component.onCompleted: currentIndexChanged.connect(updateHeader)
 

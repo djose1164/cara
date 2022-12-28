@@ -5,7 +5,7 @@ const sender = WorkerScript.sendMessage;
 //https://caraapi.herokuapp.com/api/clients
 //http://127.0.0.1:5000
 class ClientRequest extends Request {
-    constructor(model = null, base = "https://caraapi.herokuapp.com/api/clients") {
+    constructor(model = null, base = "https://cara-api.onrender.com/api/clients/") {
         super(model, base);
     }
 
@@ -48,6 +48,18 @@ class ClientRequest extends Request {
         const handle = (response) => sender({"code": response.code});
         this.request("POST", "/", data, handle);
     }
+
+    filter(data) {
+        print("Filtering from client_request");
+        const handle = response => {
+            const data = response.clients;
+            print(JSON.stringify(data));
+            print(JSON.stringify(data));
+            sender({"code": "success", "orders": data});
+            this.updateModel(data, true);
+        }
+        this.request("POST", "/filter", data, handle);
+    }
 }
 
 WorkerScript.onMessage = obj => {
@@ -67,6 +79,10 @@ WorkerScript.onMessage = obj => {
             break;
         case "createClient":
             clientRequest.createClient(obj.client)
+            break;
+        case "filter":
+            print(JSON.stringify(obj));
+            clientRequest.filter(obj.value);
             break;
         default:
             throw new TypeError("None type matched.")

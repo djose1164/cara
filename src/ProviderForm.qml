@@ -3,6 +3,8 @@ import QtQuick.Controls
 import QtQuick.Layouts
 
 Page {
+    readonly property StackView myStack: StackView.view
+
     header: ToolBar {
         RowLayout {
             anchors.fill: parent
@@ -12,7 +14,7 @@ Page {
                     sourceSize: iconSize
                     antialiasing: false
                 }
-                onClicked: mainStackView.pop()
+                onClicked: myStack.pop()
             }
             Label {
                 Layout.alignment: Qt.AlignCenter

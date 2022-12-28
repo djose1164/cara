@@ -1,14 +1,14 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
-import "qrc:/utils" as Utils
+import "qrc:/client" as Client
 
 Page {
     id: billPage
     title: "Facturas"
 
-    property var myBusy
-    readonly property var pageHeader: BillPageHeader {}
+    property BusyIndicator myBusy
+    readonly property var pageHeader: BillPageHeader { model: baseModel }
 
     ListView {
         id: orderView
@@ -21,7 +21,7 @@ Page {
                 BusyIndicator {
                     id: busyIndicator
                     anchors.fill: parent
-                    running: false
+                    running: true
                     Component.onCompleted: myBusy = this
                 }
 
@@ -39,10 +39,11 @@ Page {
         focus: true
     }
 
-    Utils.BaseModel {
+    Client.ClientModel {
         id: baseModel
-        scriptSource: "qrc:/js/client_request.mjs"
+        onCodeChanged: myBusy.running = false
 
-        Component.onCompleted: send({"type": "findAll"})
+        Component.onCompleted: findAll()
     }
+
 }

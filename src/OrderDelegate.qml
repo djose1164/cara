@@ -4,13 +4,15 @@ import QtQuick.Layouts
 
 ColumnLayout {
     width: parent.width
+    height: parent.height * .3
     required property var payment
     required property var order_details
     required property string date
+    required property string id
 
     Label {
         id: orderLbl
-        text: "Orden #" + id + " --- Cliente ID #" + client_id
+        text: "Orden #" + id
         font.pointSize: 14
     }
 
@@ -39,7 +41,6 @@ ColumnLayout {
         Label { text: statusToString(payment.status) }
 
         Button {
-            visible: payment.status === 1 || payment.status === 2
             text: "Actualizar"
             onClicked: updatePayment.open()
         }
@@ -89,5 +90,4 @@ ColumnLayout {
         paid: payment.paid_amount
         paymentID: payment.id
     }
-    Component.onCompleted: print("### paid_amount: " + payment.paid_amount)
 }

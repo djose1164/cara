@@ -7,9 +7,12 @@ import "qrc:/utils" as Utils
 import "qrc:/client" as Client
 import "qrc:/main"
 
+// TODO: Update the view after effecting a payment.
+
 Page {
     id: root
     property int clientId
+    readonly property StackView myStack: StackView.view
 
     StackLayout {
         id: stackLayout
@@ -25,29 +28,27 @@ Page {
 
     Client.ClientModel {
         id: clientModel
-        onStatusReady: status => {
-            stackLayout.currentIndex = 1;
-            if (!status)
-                messageDialog.open();
+        onCodeChanged: stackLayout.currentIndex = 1
+
+        Component.onCompleted: {
+            print("## Adding client...");
+            clientModel.addById(clientId)
         }
-        Component.onCompleted: clientModel.addById(clientId)
-    }
-
-    MessageDialog {
-        id: messageDialog
-        buttons: MessageDialog.Ok
-        text: "Ningun cliente con el ID suministrado ha sido encontrado."
-        informativeText: "Verifique que el ID ingresado sea correcto."
-
-        onButtonClicked: close()
-        onAccepted: close()
     }
 
     property var pageHeader: Utils.PageHeader {
         title: "Actualizar ordenes"
-        stackView: billStackView
+        stackView_: myStack
     }
 
-    Component.onCompleted: stackLayoutPage.header = pageHeader
+    Component.onCompleted: {
+        print("## client_id: " + clientId);
+        stackLayoutPage.header = pageHeader
+    }
     Component.onDestruction: stackLayoutPage.header = stackLayoutPage.mainHeader
+
+    function resetView() {
+        clientModel.clearModel();
+        clientModel.addById(clientId);
+    }
 }

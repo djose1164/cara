@@ -1,5 +1,5 @@
 class Request {
-    constructor(model = null, base = "https://caraapi.herokuapp.com/api") {
+    constructor(model = null, base = "https://cara-api.onrender.com/api") {
         this.base = base;
         this.model = model;
     }

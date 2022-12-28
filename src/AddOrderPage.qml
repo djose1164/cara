@@ -5,12 +5,17 @@ import QtQuick.Dialogs
 import "qrc:/main"
 import "qrc:/client"
 
+// TODO: Update implementation to use the new types.
+
 StackLayout {
     id: stackLayout
 
     BusyIndicator {}
 
-    Page {
+    ScrollView {
+        ScrollBar.horizontal.policy: ScrollBar.AlwaysOff
+
+        Page {
         id: root
         ColumnLayout {
             id: columnLayout
@@ -41,14 +46,14 @@ StackLayout {
                             details.push(orderModel.get(i).entryValue);
                         const fullOrder = {
                             "client_id": orderForm.clientID,
-                            "date": orderForm.date ? orderForm.date : null,
+                            "date": orderForm.date ? orderForm.date : new Date().toLocaleDateString(Qt.locale(), "dd/MM/yyyy"),
                             "order_details": details,
                             "payment": {
-                                "status": orderForm.payment,
                                 "amount_to_pay": orderForm.total,
                                 "paid_amount": orderForm.amountPaid
                             }
                         };
+                        print("fullorder: " + JSON.stringify(fullOrder));
 
                         saver.sendMessage(fullOrder);
                     }
@@ -99,6 +104,7 @@ StackLayout {
                            message.open();
                        }
         }
+    }
     }
     /*AddOrderHeader { id: headerToolBar }
     Component.onCompleted: app.header = headerToolBar*/

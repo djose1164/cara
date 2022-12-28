@@ -3,10 +3,11 @@ import QtQuick.Controls
 import QtQuick.Layouts
 
 Page {
-    id: root
+    id: mainPage
     property var mainHeader: MainHeader { id: mainHeader }
-    readonly property var views: [homeStackView, searchStackView, orderStackView, billStackView]
+
     header: mainHeader
+
     StackLayout {
         anchors.fill: parent
         id: stackLayout
@@ -34,14 +35,14 @@ Page {
                     print("## depth: " + depth);
                     for (let i = 0; i < depth; ++i)
                         if (get(i).pageHeader)
-                            root.header = get(i).pageHeader;
+                            mainPage.header = get(i).pageHeader;
                 }
             }
         }
 
         onCurrentIndexChanged: {
             const current = stackLayout.itemAt(currentIndex);
-            root.header = current.get(0).pageHeader;
+            mainPage.header = current.get(0).pageHeader;
         }
     }
 

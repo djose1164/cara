@@ -1,28 +1,41 @@
-import { Request } from "qrc:/js/request.mjs"
-// .pragma library
+import { Request } from "qrc:/js/request.mjs";
+
+const sender = WorkerScript.sendMessage;
 
 class ProductRequest extends Request {
-    constructor(model = null, base = "https://caraapi.herokuapp.com/api/products") {
+    constructor(model = null, base = "https://cara-api.onrender.com/api/products") {
         super(model, base);
     }
 
-    addProductToModel(id, name) {
+    addSuggetionsToModel(text) {
         const handleResource = (resource) => {
             let fetched = resource.product || resource.products;
             this.updateModel(fetched);
-            WorkerScript.sendMessage({ "code": "success" });
+                print(fetched);
+            sender(resource);
         }
-        let endpoint = "/" + (id ? id : (name ? name : ""));
+        let endpoint = "/" + text;
         this.request("GET", endpoint, null, handleResource);
+        print("Adding suggetions from worker");
     }
 
+    addNewProduct(product) {
+        const handler = resp => sender(resp);
+        this.request("POST", "/", product, handler);
+    }
 
+    findProductByIdentifier(identifier) {
+        this.request("GET", endpoint, null, response => sender(response));
+    }
 }
 
 WorkerScript.onMessage = (obj) => {
-    const productRequest = new ProductRequest(obj.model);
-    if (obj.name && obj.model)
-        productRequest.addProductToModel(null, obj.name);
+    print(JSON.stringify(obj));
+    const productRequest = new ProductRequest(obj.model || null);
+    if (obj.type === "addSuggetionsToModel" && obj.model)
+        productRequest.addSuggetionsToModel(obj.identifier);
+    else if (obj.type === "addNewProduct")
+        productRequest.addNewProduct(obj.identifier);
     else if (obj.model)
-        productRequest.addProductToModel(null, null);
+        productRequest.addSuggetionsToModel("");
 }

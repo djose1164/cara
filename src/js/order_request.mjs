@@ -5,28 +5,37 @@ const sender = WorkerScript.sendMessage;
 // http://127.0.0.1:5000
 // https://caraapi.herokuapp.com
 class OrderRequest extends Request {
-    constructor(model = null, base = "https://caraapi.herokuapp.com/api") {
+    constructor(model = null, base = "https://cara-api.onrender.com/api") {
         super(model, base);
     }
 
     saveOrder(order) {
         const endpoint = "/orders";
+        print(JSON.stringify(order));
         const handle = response => sender({"code": response.code});
         this.request("POST", endpoint, order, handle);
    }
 
-   saverOrderDetails(details) {
+   saveOrderDetails(details) {
         const endpoint = "/order_details";
         const handle = response => sender({"code": response.code});
         this.request("POST", endpoint, details, handle);
    }
                         
-  findByOrderId(clientId) {
+  findOrderById(clientId) {
         const handle = response => {
             sender({"code": response.code, "orders": response.orders});
             this.updateModel(response.orders);
         }
         this.request("GET", "/" + orderId, null, handle);
+    }
+
+    filterBillsBy(filter) {
+        const handle = response => {
+            sender({"code": response.code, "orders": response.orders});
+            this.updateModel(response.orders);
+        }
+        this.request("POST", "/filter", filter, handle);
     }
 }
 
@@ -37,5 +46,7 @@ WorkerScript.onMessage = obj => {
     if (obj.client_id && obj.order_details)
         orderRequest.saveOrder(obj);
     if (obj.orderId)
-        orderRequest.findByOrderId(orderId);
+        orderRequest.findOrderById(orderId);
+    if (obj.filter)
+        orderRequest.filterBillsBy(filter);
 }

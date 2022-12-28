@@ -18,5 +18,7 @@
         <file>icons/error.svg</file>
         <file>icons/complete_order.svg</file>
         <file alias="crossIcon">icons/cross.svg</file>
+        <file>icons/new_product.svg</file>
+        <file>icons/qrcode-16x16.svg</file>
     </qresource>
 </RCC>

@@ -1,11 +1,15 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
+import "qrc:/product" as Products
 
 Item {
     property alias placeholder: productField.placeholderText
 
+    //property alias toFind: productField.busyIndicator
+
     GridLayout {
+        id: gridLayout
         columns: 2
         columnSpacing: 0
         rowSpacing: 0
@@ -16,7 +20,7 @@ Item {
             id: productField
             placeholderText: "Nombre del producto"
             Layout.fillWidth: true
-            Keys.onReturnPressed: addSuggetions(text, busyIndicator)
+            Keys.onReturnPressed: productRequest.addSuggetionsToModel()
             Layout.alignment: Qt.AlignTop
             Layout.margins: 0
             Layout.leftMargin: 10
@@ -28,7 +32,7 @@ Item {
                 source: "qrc:/icons/search.svg"
                 sourceSize: iconSize
             }
-            onClicked: addSuggetions(productField.text, busyIndicator)
+            onClicked: productRequest.addSuggetionsToModel()
             Layout.alignment: Qt.AlignTop
             Layout.margins: 0
             Layout.rightMargin: 10
@@ -41,20 +45,24 @@ Item {
             Layout.margins: 0
             running: false
         }
+
+    }
+
+    ListView {
+        height: parent.height - gridLayout.height
+        width: parent.width
+        anchors.top: gridLayout.bottom
+        anchors.topMargin: 5
+        model: productModel
+        delegate: ProductDelegate {}
     }
 
     ListModel { id: productModel }
 
-    WorkerScript {
-        id: searchWorker
-        source: "qrc:/js/product_request.mjs"
-        property var busyIndicator
-        onMessage: busyIndicator.running = false
-    }
-
-    function addSuggetions(text, busyIndicator) {
-        searchWorker.busyIndicator = busyIndicator
-        busyIndicator.running = true;
-        searchWorker.sendMessage({"name": text, "model": productModel});
+    Products.ProductRequest {
+        id: productRequest
+        model: productModel
+        //busyIndicator: busyIndicator_
+        text: productField.text
     }
 }

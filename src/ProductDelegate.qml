@@ -1,14 +1,20 @@
 import QtQuick
 import QtQuick.Controls
-import QtQuick.Layouts
 
-ColumnLayout {
-    width: searchListView.width
+ItemDelegate {
+    width: parent.width
+    height: 75
+    anchors.topMargin: 20
+    anchors.bottomMargin: 20
+
+
+    //height: 100
     /*Label {
         text: "Código: " + id
     }*/
 
     Label {
+        id: nameLbl
         text: "Nombre: " + name
     }
 
@@ -17,6 +23,9 @@ ColumnLayout {
     }*/
 
     Label {
+        anchors.top: nameLbl.bottom
+        anchors.topMargin: 10
         text: "Precio: " + sell_price
     }
 }
+

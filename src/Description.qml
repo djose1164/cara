@@ -2,6 +2,7 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 import "qrc:/client"
+import "qrc:/payment" as Payments
 
 GridLayout {
     property alias clientID: clientField.currentValue
@@ -10,7 +11,7 @@ GridLayout {
     property int _index: 0
     property var details
     property int total: 0
-    property int amountPaid: total - amountField.text
+    property int amountPaid: amountField.text ? parseInt(amountField.text) : 0
 
     signal okClicked
     signal updateTotal
@@ -80,25 +81,10 @@ GridLayout {
         Component.onCompleted: repeaterModel.append({"currentEntryIndex": _index++})
     }
 
-    RowLayout {
+    Payments.PaymentStatus {
         Layout.columnSpan: 2
         Layout.alignment: Qt.AlignCenter
-
-        RadioButton {
-            checked: true
-            text: "Pago"
-            onClicked: payment = 0
-        }
-
-        RadioButton {
-            text: "Credito"
-            onClicked: payment = 1
-        }
-
-        RadioButton {
-            text: "Abono"
-            onClicked: payment = 2
-        }
+        paymentState: payment
     }
 
     onPaymentChanged: {
@@ -108,6 +94,7 @@ GridLayout {
         switch (payment){
         case 0:
             amountField.placeholderText = "Monto a pagar: " + total;
+            amountPaid = parseInt(amountField.text);
             break;
         case 1:
             amountField.placeholderText = "Credito: " + total;
@@ -143,7 +130,7 @@ GridLayout {
     Label {
         id: amountLabel
         visible: payment === 2
-        text: "Debera " + amountPaid
+        text: "Debera " + (total - amountPaid)
         Layout.fillWidth: true
         Layout.leftMargin: 20
     }
@@ -164,9 +151,5 @@ GridLayout {
             if (criteria(model.get(i)))
                 return model.get(i);
         return null;
-    }
-
-    function update() {
-
     }
 }
