@@ -71,7 +71,7 @@ GridLayout {
 
         Button {
             text: "Remover"
-            onClicked: repeaterModel.remove(--_index)
+            onClicked: removeEntryAt(--_index)
             Layout.fillWidth: true
         }
     }
@@ -151,5 +151,15 @@ GridLayout {
             if (criteria(model.get(i)))
                 return model.get(i);
         return null;
+    }
+
+    // Reset entires to one
+    function resetEntries() {
+        for (let i = _index; i != 0; --i)
+            removeEntryAt(i);
+    }
+
+    function removeEntryAt(idx) {
+        repeaterModel.remove(--_index);
     }
 }

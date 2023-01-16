@@ -56,6 +56,7 @@ StackLayout {
                         print("fullorder: " + JSON.stringify(fullOrder));
 
                         saver.sendMessage(fullOrder);
+                        clearOrderForm();
                     }
                     Layout.fillWidth: true
                 }
@@ -108,4 +109,11 @@ StackLayout {
     }
     /*AddOrderHeader { id: headerToolBar }
     Component.onCompleted: app.header = headerToolBar*/
+
+    /**
+    * Clear & prepare the form to be used on another order.
+    */
+    function clearOrderForm() {
+        orderForm.resetEntries();
+    }
 }
