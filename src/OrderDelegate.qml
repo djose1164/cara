@@ -10,6 +10,8 @@ ColumnLayout {
     required property string date
     required property string id
 
+    signal dataHasChanged
+
     Label {
         id: orderLbl
         text: "Orden #" + id
@@ -85,9 +87,9 @@ ColumnLayout {
 
     UpdatePayment {
         id: updatePayment
-        Layout.fillWidth: true
         debt: payment.amount_to_pay - payment.paid_amount
         paid: payment.paid_amount
         paymentID: payment.id
+        Component.onCompleted: paymentAppliad.connect(dataHasChanged)
     }
 }

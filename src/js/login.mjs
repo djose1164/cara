@@ -3,8 +3,9 @@ import { Request } from "request.mjs"
 const sender = WorkerScript.sendMessage;
 
 class LoginRequest extends Request {
-    constructor(model = null, base = "https://cara-api.onrender.com/api/users") {
-        super(model, base);
+    constructor(model = null) {
+        super(model);
+        this.request_url += "/users";
         this.isVerified = false;
     }
 
@@ -17,11 +18,13 @@ class LoginRequest extends Request {
     }
 
     authenticate(obj) {
+        print("Authenticating...");
         let cb = (response) => {
             if (response.code === "success")
                 sender({ "code": response["code"], "currentUser": obj.username });
             else
                 sender({ "code": response["code"] });
+            print("[authenticate]response: " + JSON.stringify(response, 2));
         }
         this.request("POST", "/login", obj, cb);
     }

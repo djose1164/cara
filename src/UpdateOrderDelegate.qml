@@ -10,6 +10,8 @@ ColumnLayout {
     required property string surname
     required property string id
 
+    signal dataHasChanged
+
     ColumnLayout {
         Layout.preferredWidth: parent.width * .9
         Layout.alignment: Qt.AlignHCenter
@@ -24,7 +26,8 @@ ColumnLayout {
         Repeater {
             Layout.fillWidth: true
             model: orders
-            delegate:  OrderDelegate {}
+            delegate:
+                OrderDelegate { Component.onCompleted: dataHasChanged.connect(root.dataHasChanged) }
         }
     }
 

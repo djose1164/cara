@@ -15,16 +15,26 @@ Popup {
     // client.
     property int newState: debt - parseInt(newPayment.text) == 0 ? 0 : 2
 
+    signal paymentAppliad
+
     modal: true
     width: parent.width * 2
     height: parent.height * .8
     anchors.centerIn: Overlay.overlay
 
+    onClosed: {
+        if (stackLayout.currentIndex === 2)
+            paymentAppliad();
+        stackLayout.currentIndex = 1;
+    }
+
     StackLayout {
         id: stackLayout
         anchors.centerIn: parent
-        currentIndex: debt ? 0 : 2
+        currentIndex: debt ? 1 : 3
         
+        BusyIndicator {}
+
         ColumnLayout {
             spacing: 10
             Layout.alignment: Qt.AlignCenter
@@ -42,7 +52,9 @@ Popup {
             RowLayout {
                 Button {
                     text: "Ok"
-                    onClicked: parseInt(newPayment.text) > debt ? (stackLayout.currentIndex = 1) : requestPatch()
+                    onClicked:
+                        parseInt(newPayment.text) > debt ? (stackLayout.currentIndex = 1) : requestPatch()
+
                     Layout.alignment: Qt.AlignHCenter
                 }
 
@@ -58,7 +70,7 @@ Popup {
 
         Label {
             id: stateLbl
-            text: "Monto introducido excede la deuda"
+            text: "Aprobado"
             font.bold: true
         }
         
@@ -97,14 +109,20 @@ Popup {
 
     Payment {
         id: paymentRequest
-        newPaidAmount: parseInt(newPayment.text)
+        newPaidAmount: parseInt(newPayment.text) + parseInt(paid)
         paymentId: paymentID
         onMessageChanged: stateLbl.text = message
+        request.onMessageSent: stackLayout.currentIndex = 0
+        request.onMessageReceived: {
+            stackLayout.currentIndex = 2;
+        }
     }
 
     function requestPatch() {
         paymentRequest.patchPayment();
-        if (!paymentRequest.successful)
-            stackLayout.currentIndex = 1;
+    }
+
+    function clean() {
+        newPayment.text = "";
     }
 }

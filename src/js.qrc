@@ -6,5 +6,6 @@
         <file>js/client_request.mjs</file>
         <file>js/order_request.mjs</file>
         <file>js/payment_request.mjs</file>
+        <file>js/test.mjs</file>
     </qresource>
 </RCC>

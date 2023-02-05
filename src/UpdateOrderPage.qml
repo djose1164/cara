@@ -11,8 +11,11 @@ import "qrc:/main"
 
 Page {
     id: root
+
     property int clientId
     readonly property StackView myStack: StackView.view
+
+    header: Utils.PageHeader { title: "Actualizar ordenes"; stackView: myStack }
 
     StackLayout {
         id: stackLayout
@@ -22,30 +25,16 @@ Page {
 
         ListView {
             model: clientModel.model
-            delegate: UpdateOrderDelegate {}
+            delegate: UpdateOrderDelegate { onDataHasChanged: clientModel.addById(clientId) }
         }
     }
 
     Client.ClientModel {
         id: clientModel
-        onCodeChanged: stackLayout.currentIndex = 1
+        request.onMessageReceived: stackLayout.currentIndex = 1
 
-        Component.onCompleted: {
-            print("## Adding client...");
-            clientModel.addById(clientId)
-        }
+        Component.onCompleted: addById(clientId)
     }
-
-    property var pageHeader: Utils.PageHeader {
-        title: "Actualizar ordenes"
-        stackView_: myStack
-    }
-
-    Component.onCompleted: {
-        print("## client_id: " + clientId);
-        stackLayoutPage.header = pageHeader
-    }
-    Component.onDestruction: stackLayoutPage.header = stackLayoutPage.mainHeader
 
     function resetView() {
         clientModel.clearModel();

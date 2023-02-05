@@ -6,11 +6,10 @@
         <file>icons/settings.svg</file>
         <file>icons/menu-burger.svg</file>
         <file>icons/user.svg</file>
-        <file>icons/search.svg</file>
         <file>icons/shopping-cart.svg</file>
         <file>icons/confetti.svg</file>
         <file>icons/smile.png</file>
-        <file>icons/left_arrow.svg</file>
+        <file alias="left_arrow">icons/left_arrow.svg</file>
         <file>icons/filter.svg</file>
         <file>icons/bill.svg</file>
         <file>icons/bill16x16.svg</file>
@@ -20,5 +19,7 @@
         <file alias="crossIcon">icons/cross.svg</file>
         <file>icons/new_product.svg</file>
         <file>icons/qrcode-16x16.svg</file>
+        <file>icons/person_add.svg</file>
+        <file>icons/search.svg</file>
     </qresource>
 </RCC>

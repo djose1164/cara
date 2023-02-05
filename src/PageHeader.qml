@@ -4,25 +4,38 @@ import QtQuick.Layouts
 
 ToolBar {
     required property string title
-    required property StackView stackView_
+    property StackView stackView
 
     RowLayout {
+        readonly property int preferredMargin: 8
+
         anchors.fill: parent
+        anchors.leftMargin: preferredMargin
+        anchors.rightMargin: preferredMargin
 
         ToolButton {
             Layout.alignment: Qt.AlignLeading
-            Layout.margins: 5
-            background: Image {
-                source: "qrc:/icons/left_arrow.svg"
+            background: IconImage {
+                source: "qrc:/left_arrow"
                 sourceSize: iconSize
                 antialiasing: false
             }
-
-            onClicked: stackView_.pop()
+            onClicked: stackView.pop()
         }
 
         Label {
             text: title
+            font.bold: true
+            font.pointSize: 14
+            Layout.alignment: Qt.AlignHCenter
+        }
+
+        ToolButton {
+            background: IconImage {
+                source: "qrc:/icons/settings.svg"
+
+            }
+            Layout.alignment: Qt.AlignTrailing
         }
     }
 }

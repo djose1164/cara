@@ -2,11 +2,12 @@ import { Request } from "request.mjs"
 
 const sender = WorkerScript.sendMessage;
 
-//https://caraapi.herokuapp.com/api/clients
-//http://127.0.0.1:5000
+// https://cara-api.onrender.com/api/clients
+// http://127.0.0.1:5000
 class ClientRequest extends Request {
-    constructor(model = null, base = "https://cara-api.onrender.com/api/clients/") {
-        super(model, base);
+    constructor(model = null) {
+        super(model);
+        this.request_url += "/clients";
     }
 
     findAll() {
@@ -22,7 +23,7 @@ class ClientRequest extends Request {
     findClientById(id) {
         const handle = (response) => {
             sender({"code": response.code, "client": response.client});
-            this.updateModel(response.client);
+            this.updateModel(response.client, true);
         }
 
         this.request("GET", "/" + id, null, handle);
@@ -50,19 +51,17 @@ class ClientRequest extends Request {
     }
 
     filter(data) {
-        print("Filtering from client_request");
         const handle = response => {
-            const data = response.clients;
-            print(JSON.stringify(data));
-            print(JSON.stringify(data));
-            sender({"code": "success", "orders": data});
-            this.updateModel(data, true);
+            const fetch = response.clients;
+            sender({"code": response.code, "clients": fetch});
+            this.updateModel(fetch, true);
         }
         this.request("POST", "/filter", data, handle);
     }
 }
 
 WorkerScript.onMessage = obj => {
+                print("---Clients---")
     const clientRequest = new ClientRequest(obj.model);
     switch (obj.type) {
         case "findClientById":
@@ -81,7 +80,6 @@ WorkerScript.onMessage = obj => {
             clientRequest.createClient(obj.client)
             break;
         case "filter":
-            print(JSON.stringify(obj));
             clientRequest.filter(obj.value);
             break;
         default:

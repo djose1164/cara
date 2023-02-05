@@ -7,20 +7,14 @@ import QtQuick.Controls
 Item {
     property alias model: listModel
     property alias count: listModel.count
-    required property string scriptSource
+    property alias request: request
+    property alias source: request.source
+
     property string code
 
     ListModel { id: listModel }
 
-    WorkerScript {
-        id: worker
-        source: scriptSource
-        onMessage: resp => {
-            code = resp.code;
-            //_messageToConsole("received: " + JSON.stringify(resp, null, 2));
-            _messageToConsole("code: " + code);
-        }
-    }
+    Request { id: request }
 
     /**
     * Send a request with or without a model adjunct to it.
@@ -29,10 +23,9 @@ Item {
     */
     function send(obj, withModel=true) {
         if (withModel)
-            worker.sendMessage(Object.assign(obj, {"model": listModel}));
+            request.send(Object.assign(obj, {"model": listModel}));
         else
-            worker.sendMessage(obj);
-        _messageToConsole("sent: " + JSON.stringify(obj, null, 2));
+            request.send(obj);
     }
 
     function find(func) {
@@ -43,7 +36,7 @@ Item {
         return null;
     }
 
-    function _messageToConsole(msg) {
-        print("[RequestModel]" + msg);
+    function _messageToConsole(msg, from="[RequestModel]") {
+        print(from + msg);
     }
 }

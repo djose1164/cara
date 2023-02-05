@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
+import QtCore
 
 ApplicationWindow {
     id: app
@@ -15,7 +16,15 @@ ApplicationWindow {
     StackView {
         id: mainStackView
         anchors.fill: parent
+        initialItem: loginSettings.havePreviousLogin ? "qrc:/main/MainPage.qml" : "qrc:/login/Login.qml"
     }
 
-    MainSettings { id: settings }
+    Settings {
+        id: loginSettings
+        category: "Credentials"
+        property string username
+        property string password
+        //readonly property bool havePreviousLogin: value("username") && value("password");
+        Component.onCompleted: {setValue("username", ""); setValue("password", "")}
+    }
 }

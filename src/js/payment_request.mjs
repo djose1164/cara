@@ -4,8 +4,9 @@ const sender = WorkerScript.sendMessage;
 
 //http://127.0.0.1:5000
 class PaymentRequest extends Request{
-    constructor(model = null, base = "https://cara-api.onrender.com/api/payments") {
-        super(model, base);
+    constructor(model = null) {
+        super(model);
+        this.request_url += "/payments";
     }
 
     patchPayment(obj) {

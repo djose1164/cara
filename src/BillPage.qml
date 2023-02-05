@@ -7,43 +7,27 @@ Page {
     id: billPage
     title: "Facturas"
 
-    property BusyIndicator myBusy
-    readonly property var pageHeader: BillPageHeader { model: baseModel }
+    header: BillPageHeader { clientModel: baseModel }
 
-    ListView {
-        id: orderView
+    StackLayout {
+        id: stackLayout
         anchors.fill: parent
-        headerPositioning: ListView.OverlayHeader
-        header: Component {
-            Rectangle {
-                width: parent.width
-                height: 30
-                BusyIndicator {
-                    id: busyIndicator
-                    anchors.fill: parent
-                    running: true
-                    Component.onCompleted: myBusy = this
-                }
 
-                Label {
-                    anchors.centerIn: parent
-                    text: "Todas las facturas"
-                    font.bold: true
-                    font.pointSize: 16
-                    visible: !busyIndicator.running
-                }
-            }
+        BusyIndicator { id: myBusy }
+
+        ListView {
+            id: orderView
+            headerPositioning: ListView.OverlayHeader
+            model:  baseModel.model
+            delegate: BillDelegate {}
+            focus: true
         }
-        model:  baseModel.model
-        delegate: BillDelegate {}
-        focus: true
     }
 
     Client.ClientModel {
         id: baseModel
-        onCodeChanged: myBusy.running = false
-
+        request.onMessageReceived: stackLayout.currentIndex = 1
+        onFiltering: stackLayout.currentIndex = 0
         Component.onCompleted: findAll()
     }
-
 }

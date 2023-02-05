@@ -1,13 +1,18 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
-import QZXing
+import 'qrc:/main' as Main
+import "qrc:/orders" as Order
 
 Page {
+    readonly property StackView stackView: StackView.view
+    header: Main.MainHeader { id: mainHeader }
+
     Item {
         width: parent.width * .9
-        height:  parent.height / 2
+       height:  parent.height *.8
         anchors.horizontalCenter: parent.horizontalCenter
+        anchors.centerIn: parent
 
         GridLayout {
             id: gridLayout
@@ -15,18 +20,20 @@ Page {
             width: parent.width
             height: width
 
+
             // TODO: Add animation on hover.
             Rectangle {
                 color: "chocolate"
                 Layout.preferredWidth: parent.width/2
                 Layout.preferredHeight: parent.height/2
+
                 Button {
                     anchors.centerIn: parent
                     background: Image {
                         anchors.centerIn: parent
                         source: "qrc:/icons/complete_order.svg"
                     }
-                    onClicked: mainStackView.push("qrc:/provider/ProviderForm.qml");
+                    onClicked: stackView.push("qrc:/provider/ProviderForm.qml");
                 }
             }
 
@@ -34,6 +41,7 @@ Page {
                 color: "chocolate"
                 Layout.preferredWidth: parent.width/2
                 Layout.preferredHeight: parent.height/2
+
                 Button {
                     anchors.centerIn: parent
                     background: Image {
@@ -41,11 +49,24 @@ Page {
                         source: "qrc:/icons/new_product.svg"
                         sourceSize: "48x48"
                     }
-                    onClicked: mainStackView.push("qrc:/product/ProductForm.qml", {"pageHeaderView": mainStackView});
+                    onClicked: stackView.push("qrc:/product/ProductForm.qml", {"pageHeaderView": mainStackView});
                 }
             }
-            Label {
-                text: "The date is: " + new Date().toLocaleDateString(Qt.locale(), "dd/MM/yyyy")
+
+            Rectangle {
+                color: "chocolate"
+                Layout.preferredWidth: parent.width/2
+                Layout.preferredHeight: parent.height/2
+
+                Button {
+                    anchors.centerIn: parent
+                    background: Image {
+                        anchors.centerIn: parent
+                        source: "qrc:/icons/person_add.svg"
+                        sourceSize: "48x48"
+                    }
+                    onClicked: stackView.push("qrc:/client/ClientForm.qml");
+                }
             }
         }
     }

@@ -115,7 +115,7 @@ Item {
         }
 
         Label {
-            text: '<html><style type="text/css"></style><a href="qrc:/Login.qml">Iniciar sesion</a></html>'
+            text: '<html><style type="text/css"></style><a href="qrc:/login/Login.qml">Iniciar sesion</a></html>'
             onLinkActivated: link => mainStackView.replace(link)
         }
     }
@@ -146,8 +146,6 @@ Item {
         }
 
         function successHandler() {
-            settings.username = usernameInput.text;
-            settings.password = passwordInput.text;
             mainStackView.replace("qrc:/home/Home.qml", {"currentUser": username});
         }
 

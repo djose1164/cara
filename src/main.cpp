@@ -1,9 +1,7 @@
-#include "QZXing.h"
-
-
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
+#include <QQuickStyle>
 
 int main(int argc, char *argv[])
 {
@@ -13,9 +11,9 @@ int main(int argc, char *argv[])
     app.setApplicationName("Cara");
     qputenv("QT_NO_ANDROID_TEXT_HANDLES", "1");
 
+    QQuickStyle::setStyle("Material");
+
     QQmlApplicationEngine engine;
-    QZXing::registerQMLTypes();
-    QZXing::registerQMLImageProvider(engine);
 
     const QUrl url(u"qrc:/main/main.qml"_qs);
     QObject::connect(&engine, &QQmlApplicationEngine::objectCreated,

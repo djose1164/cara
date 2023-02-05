@@ -1,7 +1,7 @@
 import QtQuick
 import "qrc:/utils" as Utils
 
-Utils.Request {
+Utils.RequestModel {
     property string text
 
     source: "qrc:/js/product_request.mjs"
@@ -25,12 +25,11 @@ Utils.Request {
     function addSuggetionsToModel() {
         if (!model)
             return;
+
         sender({
             "type": "addSuggetionsToModel",
             "identifier": text,
             "model": model
         });
-        print("model.count: " + model.count);
-        print("Adding suggestions to model...");
     }
 }

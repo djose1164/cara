@@ -15,14 +15,4 @@ Utils.CaDrawer {
         text: "Hello world!"
     }
 
-
-    Image{
-        anchors.top: inputField.bottom
-        anchors.topMargin: 20
-        source: "image://QZXing/encode/" + inputField.text +
-                "?correctionLevel=M" +
-                "&format=qrcode"
-        sourceSize: "100x100"
-    }
-
 }

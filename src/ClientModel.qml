@@ -4,9 +4,9 @@ import "qrc:/utils" as Utils
 Utils.RequestModel {
     id: root
 
-    signal statusReady(bool status)
-    scriptSource: "qrc:/js/client_request.mjs"
-    onCodeChanged: code => print("[ClientModel] code:" + code)
+    signal filtering()
+
+    source: "qrc:/js/client_request.mjs"
 
     function addById(clientId) {
         send({"type": "findClientById", "value": clientId}, true);
@@ -22,12 +22,15 @@ Utils.RequestModel {
 
     function add(client) {
         model.append(client);
-        print("## model.count:" + model.count);
-        print(JSON.stringify(model.get(0)));
     }
 
     function getAt(index) {
         return model.get(index);
+    }
+
+    function filter(msg) {
+        filtering();
+        send(msg);
     }
 
     function clearModel() {

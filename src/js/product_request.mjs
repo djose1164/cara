@@ -3,8 +3,9 @@ import { Request } from "qrc:/js/request.mjs";
 const sender = WorkerScript.sendMessage;
 
 class ProductRequest extends Request {
-    constructor(model = null, base = "https://cara-api.onrender.com/api/products") {
-        super(model, base);
+    constructor(model = null) {
+        super(model);
+        this.request_url += "/products";
     }
 
     addSuggetionsToModel(text) {
@@ -30,7 +31,6 @@ class ProductRequest extends Request {
 }
 
 WorkerScript.onMessage = (obj) => {
-    print(JSON.stringify(obj));
     const productRequest = new ProductRequest(obj.model || null);
     if (obj.type === "addSuggetionsToModel" && obj.model)
         productRequest.addSuggetionsToModel(obj.identifier);

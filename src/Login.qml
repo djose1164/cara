@@ -1,9 +1,20 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
+import "qrc:/js/test.mjs" as Test
+import "qrc:/main"
 
 Item {
-    id: loginForm
+    id: root
+
+    readonly property bool areInputsValid: usernameInput.text !== "" && passwordInput.text !== ""
+    readonly property variant handlers : {
+        "success": successHandler,
+        "no_internet": noInternetHandler,
+        "credentialsNotValid": failedHandler,
+        "invalidInput": failedHandler,
+        "notFound": () => popup.text = "Cuenta no registrada.",
+    }
 
     Label {
         id:loginLbl
@@ -78,14 +89,7 @@ Item {
             text: "Iniciar Sesion"
             font.pointSize: 15
             font.bold: true
-            onClicked: {
-                busyIndicator.open()
-                if (usernameInput.text !== "" && passwordInput.text !== "")
-                    myWorker.sendMessage({
-                                             "username": usernameInput.text,
-                                             "password": passwordInput.text,
-                                         })
-            }
+            onClicked: requestAuthentication()
         }
 
         Button {
@@ -93,8 +97,7 @@ Item {
             text: "Registrarse"
             font.pointSize: 15
             font.bold: true
-            onClicked:
-                mainStackView.replace("qrc:/main/SignUp.qml")
+            onClicked: mainStackView.replace("qrc:/main/SignUp.qml")
         }
     }
 
@@ -102,48 +105,22 @@ Item {
         id: popup
     }
 
-    WorkerScript {
-        id: myWorker
-        source: "qrc:/js/login.mjs"
-    }
-
-    Connections {
-        target: myWorker
-
-        function noInternetHandler() {
-            popup.text = "Necesitas conectarte a internet.";
-        }
-
-        function failedHandler() {
-            popup.text = "Usario o contrasena incorrecto."
-        }
-
-        function successHandler() {
-            settings.username = usernameInput.text
-            settings.password = passwordInput.text
-            mainStackView.replace("qrc:/main/MainPage.qml", {"currentUser": usernameInput.text})
-        }
-
-        property var handlers : {
-            "success": successHandler,
-            "no_internet": noInternetHandler,
-            "credentialsNotValid": failedHandler,
-            "notFound": () => popup.text = "Cuenta no registrada.",
-        }
-
-        function onMessage(response) {
-            const code = response.code;
-            popup.text = "Envianos un correo reportando este bug!"
+    Auth {
+        id: auth
+        request.onMessageSent: busyIndicator.open()
+        request.onMessageReceived: function(response) {
             busyIndicator.close()
-            handlers[code]();
-            if (code !== "success")
+            print(JSON.stringify(response, 2));
+            popup.text = "Envianos un correo reportando este bug!"
+            print("[Auth]request.success: " + request.success);
+            handlers[response.code]();
+            print("handlers: " + handlers);
+            if (!request.success)
                 popup.open();
         }
     }
 
-    BusyPopup {
-        id: busyIndicator
-    }
+    BusyPopup { id: busyIndicator }
 
     TapHandler {
         onTapped: {
@@ -151,5 +128,26 @@ Item {
             passwordInput.focus = false
             Qt.inputMethod.hide()
         }
+    }
+
+    function requestAuthentication() {
+        if (areInputsValid)
+            auth.authenticate({"username": usernameInput.text, "password": passwordInput.text})
+        print("Validating login...");
+    }
+
+    function noInternetHandler() {
+        popup.text = "Necesitas conectarte a internet.";
+    }
+
+    function failedHandler() {
+        popup.text = "Usario o contrasena incorrecto."
+    }
+
+    function successHandler() {
+        print("Valid credentials.");
+        loginSettings.username = usernameInput.text
+        loginSettings.password = passwordInput.text
+        mainStackView.replace("qrc:/main/MainPage.qml")
     }
 }

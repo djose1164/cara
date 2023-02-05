@@ -1,30 +1,28 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
-import "qrc:/client" as Client
+import "qrc:/client"
 
 Drawer {
-    property ListModel listModel
-
     id: root
+
+    required property ClientModel clientModel
+
     width: parent.width
     height: parent.height
     interactive: false
 
     GridLayout {
-        width: parent.width/2
-        height: width
-        anchors {
-            left: parent.left
-            leftMargin: width * .30
-        }
+        Layout.fillWidth: true
         columns: 2
-        rowSpacing: 25
+        rowSpacing: 20
 
         Button {
             background: Image {
-                source: ":/crossIcon"
+                source: "qrc:/left_arrow"
+                sourceSize: "24x24"
             }
+            Layout.columnSpan: 2
         }
 
         Label {
@@ -59,7 +57,7 @@ Drawer {
                 {text: "Cuentas por pagar", value: 1},
                 {text: "Cuentas abonadas", value: 2}
             ]
-            Layout.bottomMargin: 20
+            Layout.fillWidth: true
             flat: true
         }
 
@@ -71,24 +69,21 @@ Drawer {
 
         Button {
             text: "Aplicar"
-            onPressed: {
-                request.filter({
-                        "type": "filter",
-                        "value": {
-                            "orderBy": orderByCB.currentValue,
-                            "status": statusCB.currentValue,
-                            "model": listModel
-                        }
-                    });
-            }
-
+            onPressed: makeRequest()
             onClicked: close()
             Layout.alignment: Qt.AlignRight
         }
     }
 
-    Client.ClientRequest {
-        id: request
-        model: root.listModel
+    function makeRequest() {
+        clientModel.filter({
+                "type": "filter",
+                "value": {
+                    "order_by": orderByCB.currentValue,
+                    "filter_by": "date",
+                    "status": statusCB.currentValue,
+                    "model": clientModel.model
+                }
+            });
     }
 }

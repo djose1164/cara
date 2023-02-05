@@ -1,4 +1,4 @@
-QT += qml quick core network svg
+QT += qml quick core network svg quickcontrols2
 
 SOURCES += \
         src/main.cpp \
@@ -10,7 +10,7 @@ RESOURCES += \
     src/qml.qrc \
     src/res.qrc
 
-CONFIG += c++20 qml console qml_debug qzxing_qml
+CONFIG += c++20 qml console qml_debug
 
 # Additional import path used to resolve QML modules in Qt Creator's code model
 QML_IMPORT_PATH =
@@ -46,4 +46,3 @@ contains(ANDROID_TARGET_ARCH,armeabi-v7a) {
         $$PWD/android
 }
 android: include(/home/djose1164/Android/Sdk/android_openssl/openssl.pri)
-include(lib/QZXing/QZXing.pri)

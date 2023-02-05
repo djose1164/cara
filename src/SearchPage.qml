@@ -3,10 +3,9 @@ import QtQuick.Controls
 import QtQuick.Layouts
 import "qrc:/product" as Products
 
-Item {
-    property alias placeholder: productField.placeholderText
+Page {
 
-    //property alias toFind: productField.busyIndicator
+    header: SearchBar {}
 
     GridLayout {
         id: gridLayout
@@ -16,28 +15,6 @@ Item {
         width: parent.width
         height: 60
 
-        TextField {
-            id: productField
-            placeholderText: "Nombre del producto"
-            Layout.fillWidth: true
-            Keys.onReturnPressed: productRequest.addSuggetionsToModel()
-            Layout.alignment: Qt.AlignTop
-            Layout.margins: 0
-            Layout.leftMargin: 10
-        }
-
-        ToolButton {
-            background: Image {
-                antialiasing: false
-                source: "qrc:/icons/search.svg"
-                sourceSize: iconSize
-            }
-            onClicked: productRequest.addSuggetionsToModel()
-            Layout.alignment: Qt.AlignTop
-            Layout.margins: 0
-            Layout.rightMargin: 10
-        }
-
         BusyIndicator {
             id: busyIndicator
             Layout.alignment: Qt.AlignTop | Qt.AlignHCenter
@@ -45,7 +22,6 @@ Item {
             Layout.margins: 0
             running: false
         }
-
     }
 
     ListView {
@@ -53,16 +29,15 @@ Item {
         width: parent.width
         anchors.top: gridLayout.bottom
         anchors.topMargin: 5
-        model: productModel
+        model: productRequest.model
         delegate: ProductDelegate {}
     }
 
-    ListModel { id: productModel }
+
 
     Products.ProductRequest {
         id: productRequest
-        model: productModel
         //busyIndicator: busyIndicator_
-        text: productField.text
+        //text: productField.text
     }
 }

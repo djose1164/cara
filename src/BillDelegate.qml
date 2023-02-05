@@ -4,10 +4,16 @@ import QtQuick.Controls
 import QtQuick.Layouts
 
 ItemDelegate {
-    width: orderView.width
-    height: orderView.height * .15
+    required property string forename
+    required property string surname
+    required property int id
     readonly property int clientID: id
     readonly property string name: forename + " " + surname
+
+    width: orderView.width
+    height: orderView.height * .15
+
+    onClicked: optionPopup.open()
 
     ColumnLayout {
         anchors.fill: parent
@@ -23,8 +29,6 @@ ItemDelegate {
             font.pointSize: 16
         }
     }
-
-    onClicked: optionPopup.open()
 
     OptionPopup {
         id: optionPopup

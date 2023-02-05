@@ -2,11 +2,9 @@ import {Request} from "request.mjs";
 
 const sender = WorkerScript.sendMessage;
 
-// http://127.0.0.1:5000
-// https://caraapi.herokuapp.com
 class OrderRequest extends Request {
-    constructor(model = null, base = "https://cara-api.onrender.com/api") {
-        super(model, base);
+    constructor(model = null) {
+        super(model);
     }
 
     saveOrder(order) {
@@ -23,6 +21,7 @@ class OrderRequest extends Request {
    }
                         
   findOrderById(clientId) {
+
         const handle = response => {
             sender({"code": response.code, "orders": response.orders});
             this.updateModel(response.orders);
@@ -40,6 +39,7 @@ class OrderRequest extends Request {
 }
 
 WorkerScript.onMessage = obj => {
+                print("---Orders---");
     const orderRequest = new OrderRequest();
     if (!obj.date)
         delete obj["date"];

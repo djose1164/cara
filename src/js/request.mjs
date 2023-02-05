@@ -1,7 +1,9 @@
+const local_url = "http://127.0.0.1:5000/api";
+const remote_url = "https://cara-api.azurewebsites.net/api";
 class Request {
-    constructor(model = null, base = "https://cara-api.onrender.com/api") {
-        this.base = base;
+    constructor(model = null) {
         this.model = model;
+        this.request_url = remote_url;
     }
 
     updateModel(data, shouldClear = false) {
@@ -12,19 +14,31 @@ class Request {
             this.model.clear();
             this.model.sync();
         }
+
         this.model.append(data);
         this.model.sync();
     }
 
     request(verb, endpoint, obj, cb) {
-        const request = this.base + endpoint;
+        const complete_url = this.request_url + endpoint;
+        print(`request: ${complete_url}`);
+
         let xhr = new XMLHttpRequest();
         xhr.onload = function () {
-            if (cb)
-                cb(JSON.parse(xhr.responseText.toString()));
+            if (cb) {
+                const str = xhr.responseText.toString().replace(/null/g, '""');
+                print("[request]onload(): " + str);
+                cb(JSON.parse(str));
+            }
         }
-        xhr.open(verb, request);
-        xhr.onerror = () => WorkerScript.sendMessage({ "code": "no_internet" });
+        xhr.open(verb, complete_url);
+        xhr.onerror = () => {
+            print("no_internet");
+            WorkerScript.sendMessage({ "code": "no_internet" });
+        }
+        xhr.onprogress = function(event) {
+          alert(`Received ${event.loaded} of ${event.total}`);
+        };
         xhr.setRequestHeader('Content-Type', 'application/json');
         xhr.setRequestHeader('Accept', 'application/json');
         let data = obj ? JSON.stringify(obj) : '';

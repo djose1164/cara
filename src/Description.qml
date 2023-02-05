@@ -71,7 +71,7 @@ GridLayout {
 
         Button {
             text: "Remover"
-            onClicked: removeEntryAt(--_index)
+            onClicked: if (_index > 1) removeEntryAt(--_index)
             Layout.fillWidth: true
         }
     }
@@ -160,6 +160,12 @@ GridLayout {
     }
 
     function removeEntryAt(idx) {
-        repeaterModel.remove(--_index);
+        repeaterModel.remove(idx);
+    }
+
+    function clear() {
+        amountPaid = 0;
+        payment = 0;
+        total = 0;
     }
 }

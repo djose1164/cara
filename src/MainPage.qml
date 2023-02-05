@@ -1,16 +1,14 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
+import "qrc:/orders" as Orders
 
 Page {
-    id: mainPage
-    property var mainHeader: MainHeader { id: mainHeader }
-
-    header: mainHeader
+    id: root
 
     StackLayout {
-        anchors.fill: parent
         id: stackLayout
+        anchors.fill: parent
 
         StackView {
             id: homeStackView
@@ -24,25 +22,16 @@ Page {
 
         StackView {
             id: orderStackView
-            initialItem: "qrc:/orders/AddOrderPage.qml"
+
+            readonly property bool currentView: StackLayout.isCurrentItem
+            onCurrentViewChanged: if (currentView) addOrderPage.viewRequested()
+
+            initialItem: Orders.AddOrderPage { id: addOrderPage }
         }
 
         StackView {
             id: billStackView
             initialItem: "qrc:/bills/BillPage.qml"
-            onDepthChanged: {
-                if (depth > 1) {
-                    print("## depth: " + depth);
-                    for (let i = 0; i < depth; ++i)
-                        if (get(i).pageHeader)
-                            mainPage.header = get(i).pageHeader;
-                }
-            }
-        }
-
-        onCurrentIndexChanged: {
-            const current = stackLayout.itemAt(currentIndex);
-            mainPage.header = current.get(0).pageHeader;
         }
     }
 
