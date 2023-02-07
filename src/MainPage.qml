@@ -9,6 +9,7 @@ Page {
     StackLayout {
         id: stackLayout
         anchors.fill: parent
+        currentIndex: bar.currentIndex
 
         StackView {
             id: homeStackView
@@ -35,7 +36,7 @@ Page {
         }
     }
 
-    footer: MainFooter {}
+    footer: MainFooter { id: bar }
 
     SidePane {id: sideMenu}
 }

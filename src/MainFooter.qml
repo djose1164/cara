@@ -2,60 +2,45 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 
-ToolBar {
+TabBar {
     background: Rectangle {
         anchors.fill: parent
         color: "floralwhite"
     }
 
-    RowLayout {
-        anchors.fill: parent
-        anchors.bottomMargin: 5
-        spacing: 30
-
-        ToolButton {
-            id: homeBtn
-            Layout.alignment: Qt.AlignCenter
-            background: Image {
-                source: "qrc:/icons/home.svg"
-                antialiasing: false
-                sourceSize: iconSize
-            }
-            onClicked: stackLayout.currentIndex = 0
+    TabButton {
+        id: homeBtn
+        background: IconImage {
+            source: "qrc:/icons/home.svg"
+            antialiasing: false
+            sourceSize: iconSize
         }
+    }
 
-        ToolButton {
-            id: userBtn
-            Layout.alignment: Qt.AlignCenter
-            background: Image {
-                source: "qrc:/icons/search.svg"
-                antialiasing: false
-                sourceSize: iconSize
-            }
-            onClicked: stackLayout.currentIndex = 1
-
+    TabButton {
+        id: userBtn
+        background: IconImage {
+            source: "qrc:/icons/search.svg"
+            antialiasing: false
+            sourceSize: iconSize
         }
+    }
 
-        ToolButton {
-            id: shopBtn
-            Layout.alignment: Qt.AlignCenter
-            background: Image {
-                source: "qrc:/icons/shopping-cart.svg"
-                antialiasing: false
-                sourceSize: iconSize
-            }
-            onClicked: stackLayout.currentIndex = 2
+    TabButton {
+        id: shopBtn
+        background: IconImage {
+            source: "qrc:/icons/shopping-cart.svg"
+            antialiasing: false
+            sourceSize: iconSize
         }
+    }
 
-        ToolButton {
-            id: billBtn
-            Layout.alignment: Qt.AlignCenter
-            background: Image {
-                source: "qrc:/icons/bill.svg"
-                antialiasing: false
-                sourceSize: "32x32"
-            }
-            onClicked: stackLayout.currentIndex = 3
+    TabButton {
+        id: billBtn
+        background: IconImage {
+            source: "qrc:/icons/bill.svg"
+            antialiasing: false
+            sourceSize: "32x32"
         }
     }
 }
