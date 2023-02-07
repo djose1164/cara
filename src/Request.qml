@@ -1,29 +1,42 @@
 import QtQuick
 import QtQuick.Controls
+import "qrc:/js/request.mjs" as Service
 
 Item {
-    property alias source: worker.source
     readonly property bool success: code === "success"
     property string message
     property string code
+    property string url: "https://cara-api.azurewebsites.net/api"
 
     signal messageSent
     signal messageReceived(variant response)
 
-    WorkerScript {
-        id: worker
-        onMessage: (response) => {
-                       code = response.code;
+    onMessageReceived: resp => {
+        if ("message" in resp)
+            message = resp.code;
+        code = resp.code;
+   }
 
-                       if ("message" in response)
-                            message = response.message;
-
-                       messageReceived(response);
-                   }
+    function request(verb, endpoint, obj) {
+        let req = new Service.Request(url);
+        req.request(verb, endpoint, obj, messageReceived);
+        messageSent();
+        print("Sent")
     }
 
-    function send(entry) {
-        worker.sendMessage(entry);
-        messageSent();
+    function post(endpoint, obj) {
+        request("POST", endpoint, obj);
+    }
+
+    function update(endpoint, obj) {
+        request("UPDATE", endpoint, obj);
+    }
+
+    function get(endpoint, obj) {
+        request("GET", endpoint, obj);
+    }
+
+    function put(endpoint, obj) {
+        request("PUT", endpoint, obj);
     }
 }
