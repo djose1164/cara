@@ -3,19 +3,23 @@ import QtQuick.Controls
 import "qrc:/js/request.mjs" as Service
 
 Item {
-    readonly property bool success: code === "success"
     property string message
     property string code
     property string url: "https://cara-api.azurewebsites.net/api"
 
     signal messageSent
     signal messageReceived(variant response)
+    signal succeed
+    signal failed
 
     onMessageReceived: resp => {
         if ("message" in resp)
             message = resp.code;
         code = resp.code;
-        print("code " + code)
+        if (code === "success")
+            succeed();
+        else
+            failed();
    }
 
     function request(verb, endpoint, obj) {
