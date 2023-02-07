@@ -15,13 +15,13 @@ Item {
         if ("message" in resp)
             message = resp.code;
         code = resp.code;
+        print("code " + code)
    }
 
     function request(verb, endpoint, obj) {
         let req = new Service.Request(url);
         req.request(verb, endpoint, obj, messageReceived);
         messageSent();
-        print("Sent")
     }
 
     function post(endpoint, obj) {

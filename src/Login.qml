@@ -21,9 +21,8 @@ Item {
         anchors.top:  parent.top
         anchors.topMargin: 20
         anchors.horizontalCenter: parent.horizontalCenter
-        text: "Iniciar Sesion"
-        font.pointSize: parent.width * .1
-        font.bold: true
+        text: "Cara"
+        font.pointSize: parent.height * .08
     }
 
     ColumnLayout {
@@ -31,21 +30,13 @@ Item {
         width: parent.width
         anchors.top: loginLbl.bottom
         anchors.topMargin: 100
-        spacing: 20
+        spacing: 40
 
         component MyTextField: TextField {
             onEditingFinished: {
                 focus = false
                 Qt.inputMethod.hide()
             }
-        }
-
-        Label {
-            id: usernameLbl
-            text: "Usuario"
-            Layout.alignment: Qt.AlignCenter
-            font.pointSize: 20
-            font.bold: true
         }
 
         MyTextField {
@@ -59,15 +50,6 @@ Item {
             onEditingFinished: Qt.inputMethod.hide()
         }
 
-        Label {
-            id: passwordLbl
-            Layout.alignment: Qt.AlignCenter
-            Layout.topMargin: 40
-            text: "Contraseña"
-            font.pointSize: 20
-            font.bold: true
-        }
-
         PasswordInput {
             id: passwordInput
             Layout.preferredWidth: parent.width/1.5
@@ -79,25 +61,25 @@ Item {
 
     RowLayout {
         id: buttonsRowLayout
-        anchors.bottom: parent.bottom
-        anchors.bottomMargin: 50
+        width: parent.width * .9
+        anchors.top: loginInfo.bottom
+        anchors.topMargin: 100
         anchors.horizontalCenter: parent.horizontalCenter
-        spacing: 15
 
         Button {
             id: loginBtn
             text: "Iniciar Sesion"
-            font.pointSize: 15
-            font.bold: true
+            font.pointSize: 12
             onClicked: requestAuthentication()
+            Layout.alignment: Qt.AlignCenter
         }
 
         Button {
             id: signupBtn
             text: "Registrarse"
-            font.pointSize: 15
-            font.bold: true
+            font.pointSize: 12
             onClicked: mainStackView.replace("qrc:/main/SignUp.qml")
+            Layout.alignment: Qt.AlignCenter
         }
     }
 
@@ -110,14 +92,12 @@ Item {
         request.onMessageSent: busyIndicator.open()
         request.onMessageReceived: function(response) {
             busyIndicator.close()
-            print(JSON.stringify(response, 2));
             popup.text = "Envianos un correo reportando este bug!"
-            print("[Auth]request.success: " + request.success);
-            handlers[response.code]();
-            print("handlers: " + handlers);
             if (!request.success)
-                popup.open();
+                handlers[response.code]();
         }
+        onAuthenticated: successHandler()
+        onInvalid: popup.open()
     }
 
     BusyPopup { id: busyIndicator }
