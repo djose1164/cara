@@ -1,46 +1,71 @@
 import QtQuick
 import QtQuick.Controls
-import "qrc:/js/request.mjs" as Service
 
 Item {
+    id: root
     property string message
-    property string code
-    property string url: "https://cara-api.azurewebsites.net/api"
+    property string code: ""
+    required property string base
 
-    signal messageSent
-    signal messageReceived(variant response)
-    signal succeed
-    signal failed
+    signal sent
+    signal received(var response)
+    signal succeeded(var response)
+    signal failed(var response)
 
-    onMessageReceived: resp => {
-        if ("message" in resp)
-            message = resp.code;
-        code = resp.code;
-        if (code === "success")
-            succeed();
-        else
-            failed();
-   }
+    function request(verb, endpoint, obj, cb ) {
+        const complete_url = base + endpoint;
+        print(`complete_url: ${complete_url} verb: ${verb}`);
 
-    function request(verb, endpoint, obj) {
-        let req = new Service.Request(url);
-        req.request(verb, endpoint, obj, messageReceived);
-        messageSent();
+        let xhr = new XMLHttpRequest;
+        xhr.open(verb, complete_url);
+
+        xhr.onload = function () {
+            print(`status: ${xhr.status}`);
+            const resp = JSON.parse(xhr.responseText.toString());
+            if ("message" in resp)
+                root.message = resp.message;
+            print(`root.code: ${root.code}`);
+            print(`resp.code: ${resp.code}`);
+            root.code = resp.code;
+
+            root.received(resp);
+
+            if (xhr.status === 200 || xhr.status === 201)
+                root.succeeded(resp);
+            else
+                root.failed(resp);
+
+            if (cb)
+                cb(resp);
+        }
+
+        xhr.onerror = () => {
+            root.code = "no_internet";
+            if (cb)
+                cb({ "code": "no_internet" });
+        }
+
+        xhr.setRequestHeader('Content-Type', 'application/json');
+        xhr.setRequestHeader('Accept', 'application/json');
+
+        let data = obj ? JSON.stringify(obj) : '';
+        xhr.send(data);
+        root.sent();
     }
 
-    function post(endpoint, obj) {
-        request("POST", endpoint, obj);
+    function post(endpoint, obj, cb) {
+        request("POST", endpoint, obj, cb);
     }
 
-    function update(endpoint, obj) {
-        request("UPDATE", endpoint, obj);
+    function get(endpoint, obj, cb) {
+        request("GET", endpoint, obj, cb);
     }
 
-    function get(endpoint, obj) {
-        request("GET", endpoint, obj);
+    function put(endpoint, obj, cb) {
+        request("PUT", endpoint, obj, cb);
     }
 
-    function put(endpoint, obj) {
-        request("PUT", endpoint, obj);
+    function patch(endpoint, obj, cb) {
+        request("PATCH", endpoint, obj, cb);
     }
 }
