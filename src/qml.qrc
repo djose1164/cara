@@ -33,7 +33,6 @@
         <file>UpdateOrderPage.qml</file>
         <file>UpdateOrderDelegate.qml</file>
         <file>OrderModel.qml</file>
-        <file>UpdatePayment.qml</file>
         <file>OrderDelegate.qml</file>
         <file>AddOrderHeader.qml</file>
     </qresource>
@@ -42,6 +41,7 @@
         <file>ClientComboBox.qml</file>
         <file>ClientModel.qml</file>
         <file>ClientView.qml</file>
+        <file>ClientRequest.qml</file>
     </qresource>
     <qresource prefix="/provider">
         <file>ProviderForm.qml</file>
@@ -56,15 +56,16 @@
     <qresource prefix="/payment">
         <file>Payment.qml</file>
         <file>PaymentStatus.qml</file>
+        <file>UpdatePayment.qml</file>
     </qresource>
     <qresource prefix="/product">
         <file>ProductForm.qml</file>
         <file>ProductRequest.qml</file>
     </qresource>
-    <qresource prefix="/qr" lang="qml">
+    <qresource lang="qml" prefix="/qr">
         <file>QR.qml</file>
     </qresource>
-    <qresource prefix="/login" lang="qml">
+    <qresource lang="qml" prefix="/login">
         <file>Auth.qml</file>
         <file>Login.qml</file>
     </qresource>

@@ -9,6 +9,12 @@ Page {
     StackLayout {
         id: stackLayout
         anchors.fill: parent
+        currentIndex: bar.currentIndex
+
+        onCurrentIndexChanged: {
+            if (bar.addOrderIdx === currentIndex)
+                orderStackView.currentItem.viewRequested();
+        }
 
         StackView {
             id: homeStackView
@@ -22,11 +28,7 @@ Page {
 
         StackView {
             id: orderStackView
-
-            readonly property bool currentView: StackLayout.isCurrentItem
-            onCurrentViewChanged: if (currentView) addOrderPage.viewRequested()
-
-            initialItem: Orders.AddOrderPage { id: addOrderPage }
+            initialItem: "qrc:/orders/AddOrderPage.qml"
         }
 
         StackView {
@@ -35,7 +37,7 @@ Page {
         }
     }
 
-    footer: MainFooter {}
+    footer: MainFooter { id: bar }
 
     SidePane {id: sideMenu}
 }

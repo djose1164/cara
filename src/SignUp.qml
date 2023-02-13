@@ -128,10 +128,10 @@ Item {
         id: popup
     }
 
-    WorkerScript {
+    /*WorkerScript {
         id: myWorker
         source: "qrc:/js/login.mjs"
-    }
+    }*/
 
     Connections {
         target: myWorker

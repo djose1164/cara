@@ -10,7 +10,7 @@ ColumnLayout {
     required property string surname
     required property string id
 
-    signal dataHasChanged
+    signal dataChanged
 
     ColumnLayout {
         Layout.preferredWidth: parent.width * .9
@@ -27,7 +27,12 @@ ColumnLayout {
             Layout.fillWidth: true
             model: orders
             delegate:
-                OrderDelegate { Component.onCompleted: dataHasChanged.connect(root.dataHasChanged) }
+                OrderDelegate {
+                onDataChanged: {
+                    print("UpdateOrderDelegate: OrderDelegate: onDataChanged");
+                    root.dataChanged();
+                }
+            }
         }
     }
 

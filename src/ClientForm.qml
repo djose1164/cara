@@ -3,7 +3,8 @@ import QtQuick.Controls
 import QtQuick.Layouts
 import QtQuick.Dialogs
 import "qrc:/utils"
-import "qrc:/orders"
+import "qrc:/client"
+
 
 Page {
     id: root
@@ -99,8 +100,12 @@ Page {
                 client.address["street"] = street.text;
             if (house_num.length)
                 client.address["house_num"] = house_num.text;
-            worker.sendMessage({"type": "createClient", "client": client});
+            clientRequest.create(client);
         }
+    }
+
+    ClientModel {
+        id: clientModel
     }
 
     BusyIndicator {
@@ -116,25 +121,25 @@ Page {
         title: "Crear cliente"
 
         Image {
-            anchors.fill: parent
             source: imgURL
         }
     }
 
-    WorkerScript {
-        id: worker
-        source: "qrc:/js/client_request.mjs"
-        onMessage: (response) => {
-                       busyIndicator.running = false;
-                       if (response.code === "success") {
-                           messageDialog.text = "Cliente agregado con exito!";
-                       } else {
-                           messageDialog.text = "No se ha podido completar la accion."
-                           messageDialog.informativeText = "Comprueba coneccion a internet y/o "
-                           + "datos obligatorios.";
-                           imgURL = "qrc:/icons/error.svg"
-                       }
-                       messageDialog.open()
-                   }
+    ClientRequest {
+        id: clientRequest
+        request.onSucceeded: r => clientCreated(r)
+    }
+
+    function clientCreated(response) {
+        busyIndicator.running = false;
+        if (response.code === "success") {
+            messageDialog.text = "Cliente agregado con exito!";
+        } else {
+            messageDialog.text = "No se ha podido completar la accion."
+            messageDialog.informativeText = "Comprueba coneccion a internet y/o "
+                    + "datos obligatorios.";
+            imgURL = "qrc:/icons/error.svg"
+        }
+        messageDialog.open()
     }
 }

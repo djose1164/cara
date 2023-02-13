@@ -15,7 +15,7 @@ RowLayout {
 
     ComboBox {
         id: productField
-        model: productModel
+        model: productRequest.model
         textRole: "name"
         valueRole: "sell_price"
         currentIndex: 0
@@ -40,7 +40,7 @@ RowLayout {
     }
     function fetchEntry() {
         const entryValue = {
-            "product_id": findIn(productModel, item => item.name === entry.currentText).id,
+            "product_id": findIn(productRequest.model, item => item.name === entry.currentText).id,
             "quantity": quantity,
             "unit_price": price
         };

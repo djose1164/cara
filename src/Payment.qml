@@ -5,23 +5,37 @@ Item {
     id: root
 
     required property int paymentId
-    required property int newPaidAmount
+    required property int debt
 
     property string message
-    property bool successful: false
+    property bool successful: request.code === "success"
 
-    property alias request: request
+    signal requested
+    signal responseReceived
 
     Utils.Request {
         id: request
-        source: "qrc:/js/payment_request.mjs"
+        base: "https://cara-api.azurewebsites.net/api/payments"
+        onSent: root.requested();
+        onReceived: responseReceived();
+
     }
 
-    function patchPayment() {
-        if (paymentId > 0 && newPaidAmount > -1)
-            request.send({"type": "patchPayment", "value": {
-                                       "id": paymentId, "paid_amount": newPaidAmount}
-                               });
-        print("Patching payment ID# " + paymentId + "paid_amount: " + newPaidAmount);
+    function patchPayment(amount) {
+        print("Patching payment")
+        if (paymentId < 1 && amount <= 0)
+            return;
+
+        request.patch("/", {"id": paymentId, "paid_amount": amount}, r => print("Payment: r: ", JSON.stringify(r, 4)));
+        print("ID# " + paymentId + " paid_amount: " + amount);
+    }
+
+    function setAsUnpaid() {
+        patchPayment(0);
+    }
+
+    function setAsPaid() {
+        console.assert(debt !== 0, "Should not be zero");
+        patchPayment(debt);
     }
 }

@@ -1,4 +1,5 @@
 import QtQuick
+import QtCore
 import QtQuick.Controls
 import QtQuick.Layouts
 import "qrc:/js/test.mjs" as Test
@@ -7,6 +8,7 @@ import "qrc:/main"
 Item {
     id: root
 
+    property alias isLoggedin: settings.isLoggedin
     readonly property bool areInputsValid: usernameInput.text !== "" && passwordInput.text !== ""
     readonly property variant handlers : {
         "success": successHandler,
@@ -21,9 +23,8 @@ Item {
         anchors.top:  parent.top
         anchors.topMargin: 20
         anchors.horizontalCenter: parent.horizontalCenter
-        text: "Iniciar Sesion"
-        font.pointSize: parent.width * .1
-        font.bold: true
+        text: "Cara"
+        font.pointSize: parent.height * .08
     }
 
     ColumnLayout {
@@ -31,21 +32,13 @@ Item {
         width: parent.width
         anchors.top: loginLbl.bottom
         anchors.topMargin: 100
-        spacing: 20
+        spacing: 40
 
         component MyTextField: TextField {
             onEditingFinished: {
                 focus = false
                 Qt.inputMethod.hide()
             }
-        }
-
-        Label {
-            id: usernameLbl
-            text: "Usuario"
-            Layout.alignment: Qt.AlignCenter
-            font.pointSize: 20
-            font.bold: true
         }
 
         MyTextField {
@@ -59,15 +52,6 @@ Item {
             onEditingFinished: Qt.inputMethod.hide()
         }
 
-        Label {
-            id: passwordLbl
-            Layout.alignment: Qt.AlignCenter
-            Layout.topMargin: 40
-            text: "Contraseña"
-            font.pointSize: 20
-            font.bold: true
-        }
-
         PasswordInput {
             id: passwordInput
             Layout.preferredWidth: parent.width/1.5
@@ -79,45 +63,43 @@ Item {
 
     RowLayout {
         id: buttonsRowLayout
-        anchors.bottom: parent.bottom
-        anchors.bottomMargin: 50
+        width: parent.width * .9
+        anchors.top: loginInfo.bottom
+        anchors.topMargin: 100
         anchors.horizontalCenter: parent.horizontalCenter
-        spacing: 15
 
         Button {
             id: loginBtn
             text: "Iniciar Sesion"
-            font.pointSize: 15
-            font.bold: true
+            font.pointSize: 12
             onClicked: requestAuthentication()
+            Layout.alignment: Qt.AlignCenter
         }
 
         Button {
             id: signupBtn
             text: "Registrarse"
-            font.pointSize: 15
-            font.bold: true
+            font.pointSize: 12
             onClicked: mainStackView.replace("qrc:/main/SignUp.qml")
+            Layout.alignment: Qt.AlignCenter
         }
     }
 
-    MessagePopup {
-        id: popup
-    }
+    MessagePopup { id: popup }
 
     Auth {
         id: auth
-        request.onMessageSent: busyIndicator.open()
-        request.onMessageReceived: function(response) {
-            busyIndicator.close()
-            print(JSON.stringify(response, 2));
-            popup.text = "Envianos un correo reportando este bug!"
-            print("[Auth]request.success: " + request.success);
-            handlers[response.code]();
-            print("handlers: " + handlers);
-            if (!request.success)
-                popup.open();
-        }
+        request.onSent: busyIndicator.open()
+        request.onReceived: busyIndicator.close()
+        request.onFailed: (response) => handlers[response.code]()
+        onAuthenticated: successHandler()
+        onInvalid: popup.open()
+    }
+
+    Settings {
+        id: settings
+        property bool isLoggedin
+        category: "Credentials"
     }
 
     BusyPopup { id: busyIndicator }
@@ -146,8 +128,7 @@ Item {
 
     function successHandler() {
         print("Valid credentials.");
-        loginSettings.username = usernameInput.text
-        loginSettings.password = passwordInput.text
+        settings.isLoggedin = true;
         mainStackView.replace("qrc:/main/MainPage.qml")
     }
 }

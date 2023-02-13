@@ -1,25 +1,22 @@
 import QtQuick
-import QtCore
-import "qrc:utils"
+import "qrc:/utils"
 
 Item {
     id: root
     property alias request: request
-    property alias credentials: settings
 
-    property bool authenticated: request.success
+    // Triggered if the login was succesful.
+    signal authenticated
+    signal invalid
 
     Request {
         id: request
-        source: "qrc:/js/login.mjs"
-    }
-
-    Settings {
-        id: settings
-        category: "Credentials"
+        base: "https://cara-api.azurewebsites.net/api/users/login"
+        onSucceeded: authenticated()
+        onFailed: invalid()
     }
 
     function authenticate(entity) {
-        request.send(entity);
+        request.post("/", entity, null);
     }
 }

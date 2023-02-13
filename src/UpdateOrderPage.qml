@@ -17,6 +17,8 @@ Page {
 
     header: Utils.PageHeader { title: "Actualizar ordenes"; stackView: myStack }
 
+    Component.onCompleted: clientModel.setById(clientId)
+
     StackLayout {
         id: stackLayout
         anchors.fill: parent
@@ -25,19 +27,17 @@ Page {
 
         ListView {
             model: clientModel.model
-            delegate: UpdateOrderDelegate { onDataHasChanged: clientModel.addById(clientId) }
+            delegate: UpdateOrderDelegate {
+                onDataChanged: {
+                    print("UpdateOrderPage: UpdateOrderDelegate: onDataChanged");
+                    clientModel.setById(clientId);
+                }
+            }
         }
     }
 
     Client.ClientModel {
         id: clientModel
-        request.onMessageReceived: stackLayout.currentIndex = 1
-
-        Component.onCompleted: addById(clientId)
-    }
-
-    function resetView() {
-        clientModel.clearModel();
-        clientModel.addById(clientId);
+        request.onReceived: stackLayout.currentIndex = 1
     }
 }

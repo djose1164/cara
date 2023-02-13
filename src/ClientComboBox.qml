@@ -1,5 +1,6 @@
 import QtQuick
 import QtQuick.Controls
+import "qrc:/utils"
 
 Item {
     property alias currentText: clientField.currentText
@@ -17,14 +18,15 @@ Item {
 
     ListModel { id: clientModel }
 
-    WorkerScript {
-        id: clientWorker
-        source: "qrc:/js/client_request.mjs"
+    Request {
+        id: request
+        base: "https://cara-api.azurewebsites.net/api"
+        onSucceeded: resp => clientModel.append(resp.clients)
     }
 
     Component.onCompleted: updateClientField()
 
     function updateClientField() {
-        clientWorker.sendMessage({"type": "findAll", "model": clientModel});
+        request.get("/clients/");
     }
 }

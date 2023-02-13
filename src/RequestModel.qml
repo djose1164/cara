@@ -1,6 +1,8 @@
 import QtQuick
 import QtQuick.Controls
 
+// TODO: Rethink about the design of this. Looks useless?
+
 /**
 * This component encapsulate a `ListModel` to use it to make requests.
 */
@@ -8,13 +10,10 @@ Item {
     property alias model: listModel
     property alias count: listModel.count
     property alias request: request
-    property alias source: request.source
-
-    property string code
 
     ListModel { id: listModel }
 
-    Request { id: request }
+    Request { id: request; base: "https://cara-api.azurewebsites.net/api" }
 
     /**
     * Send a request with or without a model adjunct to it.
@@ -23,9 +22,9 @@ Item {
     */
     function send(obj, withModel=true) {
         if (withModel)
-            request.send(Object.assign(obj, {"model": listModel}));
+            request.get("/", obj, response => model.append(response));
         else
-            request.send(obj);
+            request.get("/", obj, null);
     }
 
     function find(func) {

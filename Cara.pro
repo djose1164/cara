@@ -6,7 +6,6 @@ SOURCES += \
 
 
 RESOURCES += \
-    src/js.qrc \
     src/qml.qrc \
     src/res.qrc
 
@@ -46,3 +45,8 @@ contains(ANDROID_TARGET_ARCH,armeabi-v7a) {
         $$PWD/android
 }
 android: include(/home/djose1164/Android/Sdk/android_openssl/openssl.pri)
+
+contains(ANDROID_TARGET_ARCH,x86_64) {
+    ANDROID_PACKAGE_SOURCE_DIR = \
+        $$PWD/android
+}
