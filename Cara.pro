@@ -6,7 +6,6 @@ SOURCES += \
 
 
 RESOURCES += \
-    src/js.qrc \
     src/qml.qrc \
     src/res.qrc
 
