@@ -1,4 +1,5 @@
 import QtQuick
+import QtCore
 import QtQuick.Controls
 import QtQuick.Layouts
 import "qrc:/js/test.mjs" as Test
@@ -7,6 +8,7 @@ import "qrc:/main"
 Item {
     id: root
 
+    property alias isLoggedin: settings.isLoggedin
     readonly property bool areInputsValid: usernameInput.text !== "" && passwordInput.text !== ""
     readonly property variant handlers : {
         "success": successHandler,
@@ -83,21 +85,21 @@ Item {
         }
     }
 
-    MessagePopup {
-        id: popup
-    }
+    MessagePopup { id: popup }
 
     Auth {
         id: auth
-        request.onMessageSent: busyIndicator.open()
-        request.onMessageReceived: function(response) {
-            busyIndicator.close()
-            popup.text = "Envianos un correo reportando este bug!"
-            if (!request.success)
-                handlers[response.code]();
-        }
+        request.onSent: busyIndicator.open()
+        request.onReceived: busyIndicator.close()
+        request.onFailed: (response) => handlers[response.code]()
         onAuthenticated: successHandler()
         onInvalid: popup.open()
+    }
+
+    Settings {
+        id: settings
+        property bool isLoggedin
+        category: "Credentials"
     }
 
     BusyPopup { id: busyIndicator }
@@ -126,8 +128,7 @@ Item {
 
     function successHandler() {
         print("Valid credentials.");
-        loginSettings.username = usernameInput.text
-        loginSettings.password = passwordInput.text
+        settings.isLoggedin = true;
         mainStackView.replace("qrc:/main/MainPage.qml")
     }
 }
