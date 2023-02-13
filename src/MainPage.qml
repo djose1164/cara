@@ -11,6 +11,11 @@ Page {
         anchors.fill: parent
         currentIndex: bar.currentIndex
 
+        onCurrentIndexChanged: {
+            if (bar.addOrderIdx === currentIndex)
+                orderStackView.currentItem.viewRequested();
+        }
+
         StackView {
             id: homeStackView
             initialItem: "qrc:/home/Home.qml"
@@ -23,11 +28,7 @@ Page {
 
         StackView {
             id: orderStackView
-
-            readonly property bool currentView: StackLayout.isCurrentItem
-            onCurrentViewChanged: if (currentView) addOrderPage.viewRequested()
-
-            initialItem: Orders.AddOrderPage { id: addOrderPage }
+            initialItem: "qrc:/orders/AddOrderPage.qml"
         }
 
         StackView {

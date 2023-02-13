@@ -3,6 +3,8 @@ import QtQuick.Controls
 import QtQuick.Layouts
 
 TabBar {
+    readonly property int addOrderIdx: shopBtn.TabBar.index
+
     background: Rectangle {
         anchors.fill: parent
         color: "floralwhite"
