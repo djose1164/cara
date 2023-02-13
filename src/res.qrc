@@ -21,6 +21,5 @@
         <file>icons/qrcode-16x16.svg</file>
         <file>icons/person_add.svg</file>
         <file>icons/search.svg</file>
-        <file>icons/home_black_18dp.svg</file>
     </qresource>
 </RCC>
