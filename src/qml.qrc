@@ -41,7 +41,6 @@
         <file>ClientComboBox.qml</file>
         <file>ClientModel.qml</file>
         <file>ClientView.qml</file>
-        <file>ClientRequest.qml</file>
         <file>../ClientModelManager.qml</file>
     </qresource>
     <qresource prefix="/provider">
