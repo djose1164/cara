@@ -4,7 +4,7 @@ import QtQuick.Layouts
 import QtQuick.Dialogs
 import "qrc:/utils"
 import "qrc:/client"
-import "qrc:/js/client_request.mjs" as Service
+
 
 Page {
     id: root
@@ -100,8 +100,7 @@ Page {
                 client.address["street"] = street.text;
             if (house_num.length)
                 client.address["house_num"] = house_num.text;
-            let xhr = new Service.ClientRequest("https://cara-api.azurewebsites.net/api");
-            xhr.createClient(client, );
+            clientRequest.create(client);
         }
     }
 
@@ -124,6 +123,11 @@ Page {
         Image {
             source: imgURL
         }
+    }
+
+    ClientRequest {
+        id: clientRequest
+        request.onSucceeded: r => clientCreated(r)
     }
 
     function clientCreated(response) {
