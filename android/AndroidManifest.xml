@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android" package="com.cara" android:installLocation="auto" android:versionCode="1" android:versionName="1">
-    <uses-sdk android:minSdkVersion="23" />
+    <uses-sdk android:minSdkVersion="23" android:targetSdkVersion="21"/>
 
     <!-- %%INSERT_PERMISSIONS -->
     <!-- %%INSERT_FEATURES -->
