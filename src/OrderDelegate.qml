@@ -1,8 +1,10 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
+import "qrc:/payment"
 
 ColumnLayout {
+    id: root
     width: parent.width
     height: parent.height * .3
     required property var payment
@@ -10,7 +12,10 @@ ColumnLayout {
     required property string date
     required property string id
 
-    signal dataHasChanged
+    signal dataChanged
+
+    // BUG: For some reason this does not work. It works on 6.4.
+    // Component.onCompleted: updatePayment.applied.connect(root.dataChanged);
 
     Label {
         id: orderLbl
@@ -87,9 +92,12 @@ ColumnLayout {
 
     UpdatePayment {
         id: updatePayment
-        debt: payment.amount_to_pay - payment.paid_amount
+        debt: parseInt(payment.amount_to_pay) - parseInt(payment.paid_amount)
         paid: payment.paid_amount
         paymentID: payment.id
-        Component.onCompleted: paymentAppliad.connect(dataHasChanged)
+        onApplied: {
+            print("OrderDelegate: UpdatePayment: onApplied");
+            root.dataChanged();
+        }
     }
 }
