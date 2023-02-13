@@ -26,7 +26,7 @@ Page {
 
     Client.ClientModel {
         id: baseModel
-        request.onMessageReceived: stackLayout.currentIndex = 1
+        request.onSucceeded: stackLayout.currentIndex = 1
         onFiltering: stackLayout.currentIndex = 0
         Component.onCompleted: findAll()
     }

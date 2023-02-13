@@ -3,7 +3,8 @@ import QtQuick.Controls
 import QtQuick.Layouts
 import QtQuick.Dialogs
 import "qrc:/utils"
-import "qrc:/orders"
+import "qrc:/client"
+import "qrc:/js/client_request.mjs" as Service
 
 Page {
     id: root
@@ -99,8 +100,13 @@ Page {
                 client.address["street"] = street.text;
             if (house_num.length)
                 client.address["house_num"] = house_num.text;
-            worker.sendMessage({"type": "createClient", "client": client});
+            let xhr = new Service.ClientRequest("https://cara-api.azurewebsites.net/api");
+            xhr.createClient(client, );
         }
+    }
+
+    ClientModel {
+        id: clientModel
     }
 
     BusyIndicator {
@@ -116,25 +122,20 @@ Page {
         title: "Crear cliente"
 
         Image {
-            anchors.fill: parent
             source: imgURL
         }
     }
 
-    WorkerScript {
-        id: worker
-        source: "qrc:/js/client_request.mjs"
-        onMessage: (response) => {
-                       busyIndicator.running = false;
-                       if (response.code === "success") {
-                           messageDialog.text = "Cliente agregado con exito!";
-                       } else {
-                           messageDialog.text = "No se ha podido completar la accion."
-                           messageDialog.informativeText = "Comprueba coneccion a internet y/o "
-                           + "datos obligatorios.";
-                           imgURL = "qrc:/icons/error.svg"
-                       }
-                       messageDialog.open()
-                   }
+    function clientCreated(response) {
+        busyIndicator.running = false;
+        if (response.code === "success") {
+            messageDialog.text = "Cliente agregado con exito!";
+        } else {
+            messageDialog.text = "No se ha podido completar la accion."
+            messageDialog.informativeText = "Comprueba coneccion a internet y/o "
+                    + "datos obligatorios.";
+            imgURL = "qrc:/icons/error.svg"
+        }
+        messageDialog.open()
     }
 }

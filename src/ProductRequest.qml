@@ -1,18 +1,28 @@
 import QtQuick
+import QtQml
 import "qrc:/utils" as Utils
 
-Utils.RequestModel {
+Item {
     property string text
+    property alias request: request
+    property alias model: model
+    readonly property string endpoint: "/products"
 
-    source: "qrc:/js/product_request.mjs"
+    Utils.Request {
+        id: request
+        base: "https://cara-api.azurewebsites.net/api" + endpoint
+    }
+
+    ListModel { id: model }
 
     function addProduct(name, desc, buy, sell) {
-        sender({"type": "addNewProduct", "value": {
-           "name": name,
-           "description": desc,
-           "buy_price": buy,
-           "sell_price": sell
-       }});
+        const obj = {
+            "name": name,
+            "description": desc,
+            "buy_price": buy,
+            "sell_price": sell
+        };
+        request.post("/", obj, null);
     }
 
     function findProductByIdentifier() {
@@ -23,13 +33,11 @@ Utils.RequestModel {
     }
     
     function addSuggetionsToModel() {
-        if (!model)
-            return;
+        if (model)
+            request.get('/', null, resp => {
+                model.append(resp.products);
+                request.succeeded(resp);
+            });
 
-        sender({
-            "type": "addSuggetionsToModel",
-            "identifier": text,
-            "model": model
-        });
     }
 }
