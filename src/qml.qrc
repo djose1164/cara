@@ -42,6 +42,7 @@
         <file>ClientModel.qml</file>
         <file>ClientView.qml</file>
         <file>../ClientModelManager.qml</file>
+        <file>ClientRequest.qml</file>
     </qresource>
     <qresource prefix="/provider">
         <file>ProviderForm.qml</file>
