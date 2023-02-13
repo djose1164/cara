@@ -70,7 +70,7 @@ Drawer {
         id: busyIndicator
     }
 
-    WorkerScript {
+    /*WorkerScript {
         id: requestData
         source: "qrc:/js/login.mjs"
         onReadyChanged: {
@@ -79,5 +79,5 @@ Drawer {
 
         }
         onMessage: busyIndicator.close()
-    }
+    }*/
 }
