@@ -32,7 +32,7 @@ GridLayout {
 
     ScrollView {
         Layout.columnSpan: 2
-        Layout.preferredHeight: 125
+        Layout.fillHeight: true
         Layout.alignment: Qt.AlignCenter
         Layout.margins: 5
         Layout.topMargin: 25
