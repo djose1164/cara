@@ -1,7 +1,6 @@
 import QtQuick
-import QtQuick.Controls
 
-Item {
+QtObject {
     id: root
     property string message
     property string code: ""
@@ -20,7 +19,8 @@ Item {
         xhr.open(verb, complete_url);
 
         xhr.onload = function () {
-            print(`status: ${xhr.status}`);
+            //if (xhr.status !== 500)
+
             const resp = JSON.parse(xhr.responseText.toString());
             if ("message" in resp)
                 root.message = resp.message;
