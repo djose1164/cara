@@ -2,6 +2,7 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 import "qrc:/orders" as Orders
+import "qrc:/users"
 
 Page {
     id: root
@@ -16,25 +17,16 @@ Page {
                 orderStackView.currentItem.viewRequested();
         }
 
-        StackView {
-            id: homeStackView
-            initialItem: "qrc:/home/Home.qml"
-        }
+        StackView { initialItem: TheCurrentUser.homePath }
 
-        StackView {
-            id: searchStackView
-            initialItem: "qrc:/search/SearchPage.qml"
-        }
+        StackView { initialItem: "qrc:/search/SearchPage.qml" }
 
         StackView {
             id: orderStackView
             initialItem: "qrc:/orders/AddOrderPage.qml"
         }
 
-        StackView {
-            id: billStackView
-            initialItem: "qrc:/bills/BillPage.qml"
-        }
+        StackView { initialItem: "qrc:/bills/BillPage.qml" }
     }
 
     footer: MainFooter { id: bar }
