@@ -7,16 +7,6 @@ ToolBar {
     RowLayout {
         anchors.fill: parent
 
-        ToolButton {
-            background: Image {
-                source: "qrc:/icons/left_arrow.svg"
-                antialiasing: false
-                sourceSize: iconSize
-            }
-            Layout.alignment: Qt.AlignLeft
-            onClicked: mainStackView.pop()
-        }
-
         Label {
             text: "Ordenes"
             font.bold: true
