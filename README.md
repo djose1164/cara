@@ -1,2 +1,2 @@
-# Caja QR
-compra-ideal
+# Cara
+De lo mejor para ti
