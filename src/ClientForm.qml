@@ -4,6 +4,7 @@ import QtQuick.Layouts
 import QtQuick.Dialogs
 import "qrc:/utils"
 import "qrc:/client"
+import "qrc:/main"
 
 
 Page {
@@ -20,10 +21,11 @@ Page {
     }
 
     GridLayout {
-        width: parent.width * .9
-        anchors.centerIn: parent
+        anchors.fill: parent
+        anchors.leftMargin: 15
+        anchors.rightMargin: 15
         columns:  2
-        rowSpacing: 30
+        rowSpacing: 20
 
         TextField {
             id: forename
@@ -80,39 +82,35 @@ Page {
             Layout.columnSpan: 2
             Layout.fillWidth: true
         }
-    }
 
-    footer: Button {
-        text: "Ok"
-        onClicked: {
-            busyIndicator.running = true
-            const client = {
-                "forename": forename.text,
-                "surname": surname.text,
-                "phone_number": phoneNumber.text,
-                "address": {
-                    "country": country.text,
-                    "province": province.text,
-                    "municipality": municipality.text,
-                }
-            };
-            if (street.length)
-                client.address["street"] = street.text;
-            if (house_num.length)
-                client.address["house_num"] = house_num.text;
-            clientRequest.create(client);
+        Button {
+            Layout.columnSpan: 2
+            Layout.alignment: Qt.AlignCenter
+            text: "Ok"
+            onClicked: {
+                busyIndicator.open();
+                const client = {
+                    "forename": forename.text,
+                    "surname": surname.text,
+                    "telephone": phoneNumber.text ? phoneNumber.text : null,
+                    "address": {
+                        "country": country.text,
+                        "province": province.text,
+                        "municipality": municipality.text,
+                    }
+                };
+                if (street.length)
+                    client.address["street"] = street.text;
+                if (house_num.length)
+                    client.address["house_num"] = house_num.text;
+                clientRequest.create(client);
+            }
         }
-    }
+    } // GridLayout
 
-    ClientModel {
-        id: clientModel
-    }
+    ClientModel { id: clientModel }
 
-    BusyIndicator {
-        id: busyIndicator
-        anchors.centerIn: parent
-        running: false
-    }
+    BusyPopup { id: busyIndicator }
 
     MessageDialog {
         id: messageDialog
@@ -120,9 +118,7 @@ Page {
         onButtonClicked: close()
         title: "Crear cliente"
 
-        Image {
-            source: imgURL
-        }
+        Image { source: imgURL }
     }
 
     ClientRequest {
@@ -131,7 +127,7 @@ Page {
     }
 
     function clientCreated(response) {
-        busyIndicator.running = false;
+        busyIndicator.close();
         if (response.code === "success") {
             messageDialog.text = "Cliente agregado con exito!";
         } else {
