@@ -21,11 +21,11 @@ GridLayout {
     columns: 2
     rowSpacing: 20
 
-
     ClientComboBox {
         id: clientField
         Layout.columnSpan: 2
         Layout.fillWidth: true
+        Layout.topMargin: height/2
 
         Component.onCompleted: root.updateClientField.connect(clientField.updateClientField)
     }
@@ -35,7 +35,7 @@ GridLayout {
         Layout.fillHeight: true
         Layout.alignment: Qt.AlignCenter
         Layout.margins: 5
-        Layout.topMargin: 25
+        Layout.topMargin: height/2
 
         ColumnLayout {
             anchors.fill: parent
