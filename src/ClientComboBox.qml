@@ -12,7 +12,7 @@ Item {
         editable: true
         currentIndex: 0
         textRole: "forename"
-        valueRole: "id"
+        valueRole: "customer_id"
         model: clientModel
     }
 
@@ -20,13 +20,13 @@ Item {
 
     Request {
         id: request
-        base: "https://cara-api.azurewebsites.net/api"
-        onSucceeded: resp => clientModel.append(resp.clients)
+        base: "http://127.0.0.1:5000/api"
+        onSucceeded: resp => clientModel.append(resp.customers)
     }
 
     Component.onCompleted: updateClientField()
 
     function updateClientField() {
-        request.get("/clients/");
+        request.get("/customers/");
     }
 }

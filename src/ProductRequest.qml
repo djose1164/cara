@@ -10,7 +10,7 @@ Item {
 
     Utils.Request {
         id: request
-        base: "https://cara-api.azurewebsites.net/api" + endpoint
+        base: "http://127.0.0.1:5000/api" + endpoint
     }
 
     ListModel { id: model }
