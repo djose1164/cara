@@ -1,7 +1,7 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
-
+import "qrc:/utils"
 
 Item {
     id: signUp
@@ -101,17 +101,7 @@ Item {
             Layout.alignment: Qt.AlignCenter
             text: "Registrarse"
             font.pixelSize: fontSize
-            onClicked: {
-                busyIndicator.open()
-                myWorker.sendMessage(
-                            {
-                                "forename": forenameInput.text,
-                                "surname": surnameInput.text,
-                                "email": emailInput.text,
-                                "password": passwordInput.text,
-                            }
-                )
-            }
+            onClicked: onOk()
         }
 
         Label {
@@ -128,39 +118,44 @@ Item {
         id: popup
     }
 
-    /*WorkerScript {
-        id: myWorker
-        source: "qrc:/js/login.mjs"
-    }*/
+    Request {
+        id: request
+        base: "http://127.0.0.1:5000/api/users"
+    }
 
     Connections {
-        target: myWorker
+        target: request
 
         function noInternetHandler() {
             popup.text = "Necesitas conectarte a internet.";
         }
 
-        function failedHandler(type) {
+        function onFailed(type) {
             let text = type === "singUp" ? "Usario o contrasena incorrecto." : "Datos invalidos."
             popup.text = text;
         }
 
-        function successHandler() {
-            mainStackView.replace("qrc:/home/Home.qml", {"currentUser": username});
+        function onSucceeded() {
+            mainStackView.replace("qrc:/home/UserHome.qml");
         }
 
-        property var errorHandlers : {
-            "success": successHandler,
-            "no_internet": noInternetHandler,
-            "failed": failedHandler,
-            "invalidInput": failedHandler
-        }
-
-        function onMessage(code) {
+        function onReceived(response) {
             busyIndicator.close();
-            errorHandlers[code]();
-            if (code !== "success")
+            if (response.code !== "success") {
+                popup.text = response.message;
                 popup.open();
+            }
         }
+    }
+
+    function onOk() {
+        const newUser = {
+            "forename": forenameInput.text,
+            "surname": surnameInput.text,
+            "email": emailInput.text,
+            "password": passwordInput.text,
+        };
+        busyIndicator.open();
+        request.post("/", newUser);
     }
 }
