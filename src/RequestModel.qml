@@ -13,7 +13,7 @@ Item {
 
     ListModel { id: listModel }
 
-    Request { id: request; base: "https://cara-api.azurewebsites.net/api" }
+    Request { id: request; base: "http://127.0.0.1:5000/api" }
 
     /**
     * Send a request with or without a model adjunct to it.

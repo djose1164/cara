@@ -30,7 +30,7 @@ Popup {
             text: "Ordenes"
             Layout.alignment: Qt.AlignCenter
             onClicked: {
-                billStackView.push("qrc:/orders/UpdateOrderPage.qml",
+                billPage.stackView.push("qrc:/orders/UpdateOrderPage.qml",
                                           {"clientId": clientId});
                 root.close();
             }

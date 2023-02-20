@@ -8,7 +8,7 @@ Item {
 
     Request {
         id: request
-        base: "https://cara-api.azurewebsites.net/api/clients"
+        base: "http://127.0.0.1:5000/api/customers"
     }
 
     function create(client) {

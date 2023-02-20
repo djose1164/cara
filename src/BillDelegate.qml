@@ -4,10 +4,9 @@ import QtQuick.Controls
 import QtQuick.Layouts
 
 ItemDelegate {
+    required property int customer_id
     required property string forename
     required property string surname
-    required property int id
-    readonly property int clientID: id
     readonly property string name: forename + " " + surname
 
     width: orderView.width
@@ -20,18 +19,18 @@ ItemDelegate {
 
         Label {
             Layout.topMargin: 15
-            text: forename + " " + surname
+            text: name
             font.pointSize: 18
         }
 
         Label {
-            text: "Cliente ID #" + id
+            text: "Cliente ID #" + customer_id
             font.pointSize: 16
         }
     }
 
     OptionPopup {
         id: optionPopup
-        clientId: id
+        clientId: customer_id
     }
 }

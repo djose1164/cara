@@ -11,7 +11,7 @@ Item {
 
     Utils.Request {
         id: request
-        base: "https://cara-api.azurewebsites.net/api/clients"
+        base: "http://127.0.0.1:5000/api/customers"
     }
 
     ListModel { id: model }
@@ -20,14 +20,18 @@ Item {
         request.get("/" + clientId, null, r => model.set(0, r.client));
     }
 
+    function addById(clientId) {
+        request.get("/" + clientId, null, r => model.append(r.client));
+    }
 
     function getClientByName(name) {
         return find(text => text.forename.indexOf(name) !== -1);
     }
 
     function findAll() {
+        print("Fecthing all customers...");
         request.get("/", null, resp => {
-            model.append(resp.clients);
+            model.append(resp.customers);
             request.succeeded(resp)
         });
     }
@@ -47,5 +51,9 @@ Item {
 
     function clearModel() {
         model.clear();
+    }
+
+    function isModelEmpty() {
+        return model.count === 0;
     }
 }

@@ -15,7 +15,7 @@ Item {
 
     Utils.Request {
         id: request
-        base: "https://cara-api.azurewebsites.net/api/payments"
+        base: "http://127.0.0.1:5000/api/payments"
         onSent: root.requested();
         onReceived: responseReceived();
 

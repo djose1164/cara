@@ -1,14 +1,24 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
+import "qrc:/utils"
+import "qrc:/users"
 
 Drawer {
-    width: .8 * parent.width
+    width: .7 * parent.width
     height: parent.height
+
+    //TheCurrentUser.onComponentReady: addUserById(TheCurrentUser.userId)
+
+    Component.onCompleted: addUserById(TheCurrentUser.userId)
 
     ListView {
         id: listView
-        anchors.fill: parent
+        width: parent.width
+        height: parent.height/2
+        anchors.top: parent.top
+        //Layout.fillWidth: true
+        //Layout.alignment: Qt.AlignHCenter
         headerPositioning: ListView.OverlayHeader
         header: Component {
             Rectangle {
@@ -17,7 +27,7 @@ Drawer {
                 height: 30
                 Label {
                     text: "Informacion Personal"
-                    font.pointSize: 18
+                    font.pointSize: 12
                     font.bold: true
                 }
             }
@@ -25,40 +35,27 @@ Drawer {
         model: userModel
         delegate: Component {
             ColumnLayout {
-                width: parent.width
-                spacing: 20
+                required property string email
+                required property var person_info
+                width: listView.width
+                height: listView.height / 2
 
                 Label {
-                    Layout.fillWidth: true
-                    text: "Usario: " + username
-                    font.pointSize: 14
+                    Layout.alignment: Qt.AlignCenter
+                    text: "Usario: " + person_info.username
+                    font.pointSize: 11
                 }
 
                 Label {
-                    Layout.fillWidth: true
-                    text: "Email: " + email
-                    font.pointSize: 14
+                    Layout.alignment: Qt.AlignCenter
+                    text: person_info.forename + " " + person_info.surname
+                    font.pointSize: 11
                 }
 
                 Label {
-
-                    Layout.fillWidth: true
-                    text: "Nombre: " + forename
-                    font.pointSize: 14
-                }
-
-                Label {
-
-                    Layout.fillWidth: true
-                    text: "Apellido: " + surname
-                    font.pointSize: 14
-                }
-
-                Label {
-
-                    Layout.fillWidth: true
-                    text: "Telefono: " + telephone
-                    font.pointSize: 14
+                    Layout.alignment: Qt.AlignCenter
+                    text: email
+                    font.pointSize: 11
                 }
             }
         }
@@ -66,18 +63,39 @@ Drawer {
 
     ListModel { id: userModel }
 
-    BusyPopup {
-        id: busyIndicator
+    BusyPopup { id: busyIndicator }
+
+    Request {
+        id: request
+        base: "http://127.0.0.1:5000/api/users"
+        onSent: busyIndicator.open()
+        onSucceeded: r => {
+                         print("SidePane: " + JSON.stringify(r));
+                         busyIndicator.close();
+                     }
+        //requestData.sendMessage({"username": loginSettings.username, "model": userModel})
     }
 
-    /*WorkerScript {
-        id: requestData
-        source: "qrc:/js/login.mjs"
-        onReadyChanged: {
-            busyIndicator.open()
-            requestData.sendMessage({"username": loginSettings.username, "model": userModel})
 
+    Button {
+        anchors.top: listView.bottom
+        anchors.topMargin: 20
+        text: "Cerrar sesion"
+        flat: true
+        onClicked: {
+            close();
+            TheCurrentUser.clear();
+            mainStackView.replace("qrc:/login/Login.qml");
         }
-        onMessage: busyIndicator.close()
-    }*/
+    }
+
+    //ColumnLayout { anchors.fill: parent }
+
+    function addUserById(userId) {
+
+        print("addUserById: " + userId);
+        request.get("/" + userId, null, r => {
+                        print("addUserById: " + JSON.stringify(r));
+                        userModel.append(r.user)});
+    }
 }

@@ -1,6 +1,5 @@
 <RCC>
     <qresource prefix="/main">
-        <file>MainHeader.qml</file>
         <file>MainFooter.qml</file>
         <file>BusyPopup.qml</file>
         <file>CameraPage.qml</file>
@@ -13,6 +12,9 @@
     </qresource>
     <qresource prefix="/home">
         <file>Home.qml</file>
+        <file>UserHome.qml</file>
+        <file>HomeHeader.qml</file>
+        <file>AdminHome.qml</file>
     </qresource>
     <qresource prefix="/search">
         <file>ProductDelegate.qml</file>
@@ -62,11 +64,15 @@
         <file>ProductForm.qml</file>
         <file>ProductRequest.qml</file>
     </qresource>
-    <qresource lang="qml" prefix="/qr">
+    <qresource prefix="/qr" lang="qml">
         <file>QR.qml</file>
     </qresource>
-    <qresource lang="qml" prefix="/login">
+    <qresource prefix="/login" lang="qml">
         <file>Auth.qml</file>
         <file>Login.qml</file>
+    </qresource>
+    <qresource prefix="/users" lang="qml">
+        <file>TheCurrentUser.qml</file>
+        <file>qmldir</file>
     </qresource>
 </RCC>

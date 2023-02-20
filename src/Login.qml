@@ -1,15 +1,14 @@
 import QtQuick
-import QtCore
 import QtQuick.Controls
 import QtQuick.Layouts
-import "qrc:/js/test.mjs" as Test
 import "qrc:/main"
+import "qrc:/users"
 
 Item {
     id: root
 
-    property alias isLoggedin: settings.isLoggedin
-    readonly property bool areInputsValid: usernameInput.text !== "" && passwordInput.text !== ""
+    readonly property bool areInputsValid: usernameInput.text !== ""
+                                           && passwordInput.text !== ""
     readonly property variant handlers : {
         "success": successHandler,
         "no_internet": noInternetHandler,
@@ -92,14 +91,12 @@ Item {
         request.onSent: busyIndicator.open()
         request.onReceived: busyIndicator.close()
         request.onFailed: (response) => handlers[response.code]()
-        onAuthenticated: successHandler()
+        onAuthenticated: r => {
+            TheCurrentUser.init(r.user);
+            TheCurrentUser.isLoggedIn = true;
+            successHandler();
+        }
         onInvalid: popup.open()
-    }
-
-    Settings {
-        id: settings
-        property bool isLoggedin
-        category: "Credentials"
     }
 
     BusyPopup { id: busyIndicator }
@@ -114,7 +111,7 @@ Item {
 
     function requestAuthentication() {
         if (areInputsValid)
-            auth.authenticate({"username": usernameInput.text, "password": passwordInput.text})
+            auth.authenticate({"username": usernameInput.text, "password": passwordInput.text});
         print("Validating login...");
     }
 
@@ -128,7 +125,6 @@ Item {
 
     function successHandler() {
         print("Valid credentials.");
-        settings.isLoggedin = true;
         mainStackView.replace("qrc:/main/MainPage.qml")
     }
 }

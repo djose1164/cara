@@ -6,9 +6,10 @@ ColumnLayout {
     id: root
     width: parent.width
     required property var orders
-    required property string forename
-    required property string surname
+    required property var person_info
     required property string id
+    readonly property string fullname: person_info.forename
+                                       + " " + person_info.surname
 
     signal dataChanged
 
@@ -19,7 +20,7 @@ ColumnLayout {
 
         Label {
             id: lbl
-            text: "Propietario de orden: " + forename + surname + " ID #" + id
+            text: "Propietario de orden: " + fullname + " ID #" + id
             font.pointSize: 14
         }
 
