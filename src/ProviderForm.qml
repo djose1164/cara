@@ -1,27 +1,14 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
+import "qrc:/utils"
 
 Page {
     readonly property StackView myStack: StackView.view
 
-    header: ToolBar {
-        RowLayout {
-            anchors.fill: parent
-            ToolButton {
-                background:Image {
-                    source: "qrc:/icons/left_arrow.svg"
-                    sourceSize: iconSize
-                    antialiasing: false
-                }
-                onClicked: myStack.pop()
-            }
-            Label {
-                Layout.alignment: Qt.AlignCenter
-                text: "Orden de compra"
-                horizontalAlignment: Label.horizontalCenter
-            }
-        }
+    header: PageHeader {
+        title: "Orden de Compra"
+        stackView: myStack
     }
 
     GridLayout {
