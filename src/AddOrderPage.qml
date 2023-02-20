@@ -23,10 +23,6 @@ Page {
         BusyIndicator {}
 
         ColumnLayout {
-            id: columnLayout
-
-            spacing: 20
-
             Description {
                 id: orderForm
                 Layout.fillWidth: true
@@ -38,6 +34,7 @@ Page {
                 id: btns
                 Layout. fillWidth: true
                 Layout.alignment: Qt.AlignBottom
+                Layout.bottomMargin: height/2
                 spacing: 20
 
                 Button {
@@ -55,9 +52,8 @@ Page {
             onButtonClicked: close()
         }
     }
-    ListModel {
-        id: orderModel
-    }
+
+    ListModel { id: orderModel }
 
     ProductRequest {
         id: productRequest
@@ -66,17 +62,16 @@ Page {
 
     Request {
         id: saver
-        base: "https://cara-api.azurewebsites.net/api"
-        onReceived: response => {
-                        stackLayout.currentIndex = 1;
-                        if (success) {
-                            message.text = "Datos guardos";
-                            clearOrderForm();
-                        }
-                        else
-                        message.text = "No se pudo realizar la accion";
-                        message.open();
-                    }
+        base: "http://127.0.0.1:5000/api"
+        onReceived: stackLayout.currentIndex = 1;
+        onFailed: {
+            message.text = "No se pudo realizar la accion";
+            message.open();
+        }
+        onSucceeded: {
+            message.text = "Datos guardos";
+            clearOrderForm();
+        }
     }
 
 
