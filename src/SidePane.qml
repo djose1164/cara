@@ -8,9 +8,7 @@ Drawer {
     width: .7 * parent.width
     height: parent.height
 
-    //TheCurrentUser.onComponentReady: addUserById(TheCurrentUser.userId)
-
-    Component.onCompleted: addUserById(TheCurrentUser.userId)
+    Component.onCompleted: addUserById()
 
     ListView {
         id: listView
@@ -69,13 +67,8 @@ Drawer {
         id: request
         base: "http://127.0.0.1:5000/api/users"
         onSent: busyIndicator.open()
-        onSucceeded: r => {
-                         print("SidePane: " + JSON.stringify(r));
-                         busyIndicator.close();
-                     }
-        //requestData.sendMessage({"username": loginSettings.username, "model": userModel})
+        onSucceeded: r => busyIndicator.close();
     }
-
 
     Button {
         anchors.top: listView.bottom
@@ -89,13 +82,7 @@ Drawer {
         }
     }
 
-    //ColumnLayout { anchors.fill: parent }
-
-    function addUserById(userId) {
-
-        print("addUserById: " + userId);
-        request.get("/" + userId, null, r => {
-                        print("addUserById: " + JSON.stringify(r));
-                        userModel.append(r.user)});
+    function addUserById() {
+        request.get("/", null, r => userModel.append(r.user), TheCurrentUser.accessToken);
     }
 }
