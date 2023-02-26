@@ -1,7 +1,7 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
-import "qrc:/client"
+import "qrc:/customers"
 import "qrc:/payment" as Payments
 
 GridLayout {
@@ -39,7 +39,8 @@ GridLayout {
 
         ColumnLayout {
             anchors.fill: parent
-
+            anchors.topMargin: 15
+            spacing: 15
             Repeater {
                 id: repeater
                 model: repeaterModel
