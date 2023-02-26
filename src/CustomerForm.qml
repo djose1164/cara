@@ -3,7 +3,7 @@ import QtQuick.Controls
 import QtQuick.Layouts
 import QtQuick.Dialogs
 import "qrc:/utils"
-import "qrc:/client"
+import "qrc:/customers"
 import "qrc:/main"
 
 
@@ -108,7 +108,7 @@ Page {
         }
     } // GridLayout
 
-    ClientModel { id: clientModel }
+    CustomerModel { id: customerModel }
 
     BusyPopup { id: busyIndicator }
 

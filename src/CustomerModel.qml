@@ -1,5 +1,6 @@
 import QtQuick
-import "qrc:/utils" as Utils
+import "qrc:/users"
+import com.cara
 
 Item {
     id: root
@@ -9,19 +10,32 @@ Item {
 
     signal filtering()
 
-    Utils.Request {
+    Rest {
         id: request
         base: "http://127.0.0.1:5000/api/customers"
+        accessToken: TheCurrentUser.accessToken
+        onSucceeded: r => {
+            print("Rest: onSucceeded: ");
+            model.append(r.customers);
+        }
     }
 
     ListModel { id: model }
 
     function setById(clientId) {
-        request.get("/" + clientId, null, r => model.set(0, r.client));
+        get(r => {
+            print(JSON.stringify(r, 2));
+            model.set(0, r.customer);
+        });
+
     }
 
     function addById(clientId) {
-        request.get("/" + clientId, null, r => model.append(r.client));
+        get(r => {model.append(r.customer); print(JSON.stringify(r, 2))});
+    }
+
+    function get(func) {
+        request.get("/" + clientId, null, func, TheCurrentUser.accessToken);
     }
 
     function getClientByName(name) {
@@ -30,10 +44,7 @@ Item {
 
     function findAll() {
         print("Fecthing all customers...");
-        request.get("/", null, resp => {
-            model.append(resp.customers);
-            request.succeeded(resp)
-        });
+        request.get("/");
     }
 
     function add(client) {
