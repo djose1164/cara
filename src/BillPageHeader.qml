@@ -3,13 +3,12 @@ import QtQuick.Controls
 import QtQuick.Layouts
 import "qrc:/utils"
 import "qrc:/search" as Search
-import "qrc:/client"
+import "qrc:/customers"
 
 ToolBar {
     id: root
 
-    property alias clientModel: filter.clientModel
-    property alias filter: filter
+    signal openFilter
 
     RowLayout {
         anchors.fill: parent
@@ -58,13 +57,8 @@ ToolBar {
                     source: "qrc:/icons/settings.svg"
                     sourceSize: iconSize
                 }
-                onClicked: filter.open()
+                onClicked: openFilter()
             }
         }
-    }
-
-    Filter {
-        id: filter
-        clientModel: clientModel
     }
 }
