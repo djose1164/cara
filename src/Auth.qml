@@ -1,5 +1,6 @@
 import QtQuick
 import "qrc:/utils"
+import com.cara
 
 Item {
     id: root
@@ -14,14 +15,13 @@ Item {
         request.failed.connect(invalid);
     }
 
-    Request {
+    Rest {
         id: request
         base: "http://127.0.0.1:5000/api/users/login"
-        //onSucceeded: authenticated()
-        //onFailed: invalid()
+
     }
 
     function authenticate(entity) {
-        request.post("/", entity, null);
+        request.post("/", entity);
     }
 }
