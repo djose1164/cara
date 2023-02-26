@@ -8,7 +8,8 @@ Popup {
     id: root
 
     required property int debt
-    required property int paid // Any previous payment from the client
+    required property int paid
+    // Any previous payment from the client
     required property int paymentID
     property alias newPayment: newPayment.text
     // NOTE: A special case may happen here, when the client pays more than the debt;
@@ -19,14 +20,13 @@ Popup {
     signal applied
 
     modal: true
-    width: parent.width * 2
-    height: parent.height * .8
+    width: parent.width * .9
+    height: parent.height / 2
     anchors.centerIn: Overlay.overlay
 
-   onClosed: stackLayout.currentIndex = 1;
+    //onClosed: stackLayout.currentIndex = 1
 
     Component.onCompleted: print("UpdatePayment: debt: " + debt)
-
 
     StackLayout {
         id: stackLayout
@@ -55,15 +55,16 @@ Popup {
 
                 Button {
                     text: "Pagado"
-                    onClicked: paymentRequest.setAsPaid();
+                    onClicked: paymentRequest.setAsPaid()
                     Layout.alignment: Qt.AlignLeading
                 }
 
                 Button {
                     text: "Ok"
-                    onClicked: parseInt(newPayment.text) > debt ?
-                                   (stackLayout.currentIndex = 1)
-                                 : paymentRequest.patchPayment(parseInt(newPayment.text) + paid)
+                    onClicked: parseInt(newPayment.text)
+                               > debt ? (stackLayout.currentIndex
+                                         = 1) : paymentRequest.patchPayment(
+                                            parseInt(newPayment.text) + paid)
                     Layout.alignment: Qt.AlignRight
                 }
             }
