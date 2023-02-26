@@ -28,6 +28,7 @@ RowLayout {
         text: "1"
         inputMethodHints: Qt.ImhDigitsOnly | Qt.ImhNoPredictiveText
         onTextEdited: fetchEntry()
+        Layout.preferredHeight: productField.height
     }
 
     Component.onCompleted: {
