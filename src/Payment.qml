@@ -1,5 +1,6 @@
 import QtQuick
 import "qrc:/utils" as Utils
+import "qrc:/users"
 
 Item {
     id: root
@@ -26,7 +27,8 @@ Item {
         if (paymentId < 1 && amount <= 0)
             return;
 
-        request.patch("/", {"id": paymentId, "paid_amount": amount}, r => print("Payment: r: ", JSON.stringify(r, 4)));
+        request.patch("/", {"id": paymentId, "paid_amount": amount}, r => print("Payment: r: ", JSON.stringify(r, 4)),
+                      TheCurrentUser.accessToken);
         print("ID# " + paymentId + " paid_amount: " + amount);
     }
 
