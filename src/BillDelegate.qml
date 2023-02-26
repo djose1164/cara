@@ -4,33 +4,33 @@ import QtQuick.Controls
 import QtQuick.Layouts
 
 ItemDelegate {
-    required property int customer_id
-    required property string forename
-    required property string surname
-    readonly property string name: forename + " " + surname
+    required property var person_info
+    required property var orders
+    required property StackView stackView
+    property string name: person_info.forename
+                          + (person_info.surname !== null ? ` ${person_info.surname}` : "")
+    width: ListView.view.width
+    height: ListView.view.height * .15
 
-    width: orderView.width
-    height: orderView.height * .15
-
-    onClicked: optionPopup.open()
+    onClicked: stackView.push("qrc:/orders/UpdateOrderPage.qml", {
+                                  "person_info": person_info,
+                                  "orders": orders
+                              })
 
     ColumnLayout {
         anchors.fill: parent
+        anchors.leftMargin: 15
 
         Label {
             Layout.topMargin: 15
             text: name
-            font.pointSize: 18
+            font.pointSize: 16
         }
 
         Label {
-            text: "Cliente ID #" + customer_id
-            font.pointSize: 16
+            text: `Cliente ID # ${person_info.customer_id}`
+            font.pointSize: 12
+            Layout.leftMargin: 15
         }
-    }
-
-    OptionPopup {
-        id: optionPopup
-        clientId: customer_id
     }
 }
