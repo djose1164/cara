@@ -2,6 +2,7 @@ QT += qml quick core network svg quickcontrols2
 
 SOURCES += \
         src/main.cpp \
+        src/rest.cpp \
         src/userentity.cpp
 
 
@@ -9,10 +10,13 @@ RESOURCES += \
     src/qml.qrc \
     src/res.qrc
 
-CONFIG += c++20 qml console qml_debug
+CONFIG += c++20 qml console qml_debug qmltypes
 
 # Additional import path used to resolve QML modules in Qt Creator's code model
 QML_IMPORT_PATH =
+
+QML_IMPORT_NAME = Rest
+QML_IMPORT_MAJOR_VERSION = 1
 
 # Additional import path used to resolve QML modules just for Qt Quick Designer
 QML_DESIGNER_IMPORT_PATH =
@@ -23,7 +27,10 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
 HEADERS += \
+    src/rest.h \
     src/userentity.h
+
+INCLUDEPATH += src/
 
 DISTFILES += \
     android/AndroidManifest.xml \

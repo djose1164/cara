@@ -61,7 +61,7 @@ Home {
                         source: "qrc:/icons/person_add.svg"
                         sourceSize: "48x48"
                     }
-                    onClicked: stackView.push("qrc:/client/ClientForm.qml");
+                    onClicked: stackView.push("qrc:/customers/CustomerForm.qml");
                 }
             }
         }

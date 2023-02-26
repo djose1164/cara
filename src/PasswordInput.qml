@@ -3,38 +3,24 @@ import QtQuick.Controls
 
 TextField {
     id: textField
+
     property bool showText: false
 
+    width: parent.width
     placeholderText: "Contraseña"
     echoMode: showText ? TextField.Normal : TextField.Password
     passwordMaskDelay: 600
-    rightPadding: eyeIcon.width + font.pointSize
+    rightPadding: eyeIcon.width
     inputMethodHints: Qt.ImhSensitiveData | Qt.ImhNoPredictiveText | Qt.ImhNoTextHandles
-    renderType: Text.NativeRendering
-    cursorDelegate: Rectangle {
-        visible: false
-        width: 1
-        color: "red"
-    }
     EnterKey.type: Qt.EnterKeyDone
-    onEditingFinished: {
-        focus = false
-        Qt.inputMethod.hide()
-    }
+    hoverEnabled: true
 
-
-    Image {
+    RoundButton {
         id: eyeIcon
-        anchors.right: parent.right
-        anchors.rightMargin: 4
-        anchors.verticalCenter: parent.verticalCenter
-        antialiasing: false
-        source: parent.showText ? "qrc:/icons/eye-crossed.svg" : "qrc:/icons/eye.svg"
-        sourceSize.width: 25
-        sourceSize.height: 25
-
-        TapHandler {
-            onTapped: showText = !showText
-        }
+        anchors.right: textField.right
+        anchors.verticalCenter: textField.verticalCenter
+        flat: true
+        icon.source: showText ? "qrc:/icons/eye-crossed.svg" : "qrc:/icons/eye.svg"
+        onClicked: if (textField.text.length) showText = !showText
     }
 }

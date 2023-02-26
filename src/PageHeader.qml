@@ -5,6 +5,7 @@ import QtQuick.Layouts
 ToolBar {
     required property string title
     property StackView stackView
+    property alias label: lbl
 
     RowLayout {
         readonly property int preferredMargin: 8
@@ -24,6 +25,7 @@ ToolBar {
         }
 
         Label {
+            id: lbl
             text: title
             font.bold: true
             font.pointSize: 14

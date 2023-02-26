@@ -38,10 +38,10 @@
         <file>OrderDelegate.qml</file>
         <file>AddOrderHeader.qml</file>
     </qresource>
-    <qresource prefix="/client">
-        <file>ClientForm.qml</file>
+    <qresource prefix="/customers">
+        <file>CustomerForm.qml</file>
         <file>ClientComboBox.qml</file>
-        <file>ClientModel.qml</file>
+        <file>CustomerModel.qml</file>
         <file>ClientView.qml</file>
         <file>ClientRequest.qml</file>
     </qresource>
@@ -64,15 +64,16 @@
         <file>ProductForm.qml</file>
         <file>ProductRequest.qml</file>
     </qresource>
-    <qresource prefix="/qr" lang="qml">
+    <qresource lang="qml" prefix="/qr">
         <file>QR.qml</file>
     </qresource>
-    <qresource prefix="/login" lang="qml">
+    <qresource lang="qml" prefix="/login">
         <file>Auth.qml</file>
         <file>Login.qml</file>
     </qresource>
-    <qresource prefix="/users" lang="qml">
+    <qresource lang="qml" prefix="/users">
         <file>TheCurrentUser.qml</file>
         <file>qmldir</file>
+        <file>Refresh.qml</file>
     </qresource>
 </RCC>

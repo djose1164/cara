@@ -20,7 +20,7 @@ ColumnLayout {
 
         Label {
             id: lbl
-            text: "Propietario de orden: " + fullname + " ID #" + id
+            text: "Propietario de orden: " + fullname + " ID #" + person_info.customer_id
             font.pointSize: 14
         }
 

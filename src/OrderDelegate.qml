@@ -3,89 +3,93 @@ import QtQuick.Controls
 import QtQuick.Layouts
 import "qrc:/payment"
 
-ColumnLayout {
+Item {
     id: root
-    width: parent.width
-    height: parent.height * .3
     required property var payment
     required property var order_details
     required property string date
     required property string id
 
+    width: ListView.view.width
+    height: ListView.view.height
+    anchors.topMargin: 20
+
     signal dataChanged
 
-    // BUG: For some reason this does not work. It works on 6.4.
-    // Component.onCompleted: updatePayment.applied.connect(root.dataChanged);
-
-    Label {
-        id: orderLbl
-        text: "Orden #" + id
-        font.pointSize: 14
-    }
-
-    Label {
-        id: dateBanner
-        text: "Fecha"
-        font.pointSize: 12
-    }
-
-    Label { text: date }
-
-    Label {
-        text: "Estado de de la orden: "
-        font.pointSize: 12
-    }
-
-    GridLayout {
-        Layout.fillWidth: true
-        columns: 2
+    ColumnLayout {
+        // BUG: For some reason this does not work. It works on 6.4.
+        Component.onCompleted: updatePayment.applied.connect(root.dataChanged);
+        anchors.fill: parent
+        anchors.leftMargin: 20
+        Label {
+            id: orderLbl
+            text: "Orden #" + id
+            font.pointSize: 14
+        }
 
         Label {
-            Layout.columnSpan: 2
-            text: "Estado"
+            id: dateBanner
+            text: "Fecha"
+            font.pointSize: 12
         }
 
-        Label { text: statusToString(payment.status) }
+        Label { text: date }
 
-        Button {
-            text: "Actualizar"
-            onClicked: updatePayment.open()
+        Label {
+            text: "Estado de de la orden: "
+            font.pointSize: 12
         }
-    }
 
-    Label {
-        text: "Detalles"
-        font.pointSize: 12
-    }
+        GridLayout {
 
-    RowLayout {
-        Layout.fillWidth: true
-        spacing: 10
+            columns: 2
 
-        Label { text: "Producto" }
+            Label {
+                Layout.columnSpan: 2
+                text: "Estado"
+            }
 
-        Label { text: "Cantidad" }
-    }
+            Label { text: statusToString(payment.status) }
 
+            Button {
+                text: "Actualizar"
+                onClicked: updatePayment.open()
+            }
+        }
 
-    GridLayout {
-        Layout.fillWidth: true
-        Layout.fillHeight: true
-        Layout.topMargin: 20
-        rowSpacing: 1
-        columnSpacing: 20
-        columns: 2
+        Label {
+            text: "Detalles"
+            font.pointSize: 12
+        }
 
-        Repeater {
-            model: order_details
+        RowLayout {
+            Layout.fillWidth: true
+            spacing: 10
 
-            RowLayout {
-                Layout.fillWidth: true
-                spacing: 10
+            Label { text: "Producto" }
 
-                Label { text: product.name }
+            Label { text: "Cantidad" }
+        }
 
-                Label { text: quantity }
+        GridLayout {
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+            Layout.topMargin: 20
+            rowSpacing: 1
+            columnSpacing: 20
+            columns: 2
+
+            Repeater {
+                model: order_details
+
+                RowLayout {
+                    Layout.fillWidth: true
+                    spacing: 10
+
+                    Label { text: product.name }
+
+                    Label { text: quantity }
+                }
             }
         }
     }
@@ -95,9 +99,21 @@ ColumnLayout {
         debt: parseInt(payment.amount_to_pay) - parseInt(payment.paid_amount)
         paid: payment.paid_amount
         paymentID: payment.id
-        onApplied: {
-            print("OrderDelegate: UpdatePayment: onApplied");
+       /* onApplied: {
             root.dataChanged();
+        }*/
+    }
+
+    function statusToString(status) {
+        switch(status) {
+        case 0:
+            return "Pago";
+        case 1:
+            return "Credito";
+        case 2:
+            return "Abonado";
         }
+
+        return "";
     }
 }

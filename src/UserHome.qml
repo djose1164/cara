@@ -15,6 +15,5 @@ Home {
         text: `¡Bienvenido ${fullName}, mira lo que tenemos disponible para ti!`
         font.pointSize: 13
         wrapMode: Text.WordWrap
-
     }
 }

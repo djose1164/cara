@@ -2,10 +2,12 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 import QtQuick.Dialogs
+import QtQuick.Controls.Material
 import "qrc:/main"
-import "qrc:/client"
+import "qrc:/customers"
 import "qrc:/product"
-import "qrc:/utils"
+import "qrc:/users"
+import com.cara
 
 // TODO: Update implementation to use the new types.
 Page {
@@ -32,9 +34,9 @@ Page {
 
             RowLayout {
                 id: btns
-                Layout. fillWidth: true
+                Layout.fillWidth: true
                 Layout.alignment: Qt.AlignBottom
-                Layout.bottomMargin: height/2
+                Layout.bottomMargin: height / 2
                 spacing: 20
 
                 Button {
@@ -53,57 +55,62 @@ Page {
         }
     }
 
-    ListModel { id: orderModel }
+    ListModel {
+        id: orderModel
+    }
 
     ProductRequest {
         id: productRequest
-        request.onSucceeded: {stackLayout.currentIndex = 1; print("onSucceeded")}
+        request.onSucceeded: {
+            stackLayout.currentIndex = 1
+            print("onSucceeded")
+        }
     }
 
-    Request {
+    Rest {
         id: saver
         base: "http://127.0.0.1:5000/api"
-        onReceived: stackLayout.currentIndex = 1;
-        onFailed: {
+        accessToken: TheCurrentUser.accessToken
+        onReceived: stackLayout.currentIndex = 1
+        onFailed: r => {
             message.text = "No se pudo realizar la accion";
+            message.informativeText = "Error: " + r.message;
             message.open();
         }
         onSucceeded: {
             message.text = "Datos guardos";
+            message.open();
             clearOrderForm();
         }
     }
 
 
-    /*AddOrderHeader { id: headerToolBar }
-    Component.onCompleted: app.header = headerToolBar*/
-
     /**
     * Clear & prepare the form to be used on another order.
     */
     function clearOrderForm() {
-        orderForm.resetEntries();
-        orderForm.clear();
+        orderForm.resetEntries()
+        orderForm.clear()
     }
 
     function okHandler() {
         stackLayout.currentIndex = 0
-        const details = [];
+        const details = []
         for (let i = 0; i < orderModel.count; ++i)
-            details.push(orderModel.get(i).entryValue);
+            details.push(orderModel.get(i).entryValue)
 
         const fullOrder = {
-            "client_id": orderForm.clientID,
-            "date": orderForm.date ? orderForm.date
-                                   : new Date().toLocaleDateString(Qt.locale(), "dd/MM/yyyy"),
+            "customer_id": orderForm.clientID,
+            "date": orderForm.date ? orderForm.date : new Date().toLocaleDateString(
+                                         Qt.locale(), "dd/MM/yyyy"),
             "order_details": details,
             "payment": {
                 "amount_to_pay": orderForm.total,
                 "paid_amount": orderForm.amountPaid
             }
-        };
-        print("fullorder: " + JSON.stringify(fullOrder, 2));
+        }
+        print("fullorder: " + JSON.stringify(fullOrder, null, 2))
 
-        saver.post("/orders/", fullOrder);
+        saver.post("/orders/", fullOrder)
     }
 }

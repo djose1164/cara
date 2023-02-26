@@ -1,32 +1,39 @@
 import QtQuick
 import QtQuick.Controls
 import "qrc:/utils"
+import "qrc:/users"
+import com.cara
 
 Item {
     property alias currentText: clientField.currentText
     property alias currentValue: clientField.currentValue
+
+    Component.onCompleted: updateClientField()
 
     ComboBox {
         id: clientField
         width: parent.width
         editable: true
         currentIndex: 0
-        textRole: "forename"
+        textRole: "name"
         valueRole: "customer_id"
-        model: clientModel
+        model: model
     }
 
-    ListModel { id: clientModel }
-
-    Request {
-        id: request
-        base: "http://127.0.0.1:5000/api"
-        onSucceeded: resp => clientModel.append(resp.customers)
+    ListModel {
+        id: model
     }
 
-    Component.onCompleted: updateClientField()
+    Rest {
+        id: rest
+        base: "http://127.0.0.1:5000/api/customers/info"
+        onSucceeded: resp => model.count ? model.set(
+                                               0,
+                                               resp.customers) : model.append(
+                                               resp.customers)
+    }
 
     function updateClientField() {
-        request.get("/customers/");
+        rest.get("/")
     }
 }
