@@ -11,7 +11,7 @@ QtObject {
     signal succeeded(var response)
     signal failed(var response)
 
-    function request(verb, endpoint, obj, cb ) {
+    function request(verb, endpoint, obj, cb, auth) {
         const complete_url = base + endpoint;
         print(`complete_url: ${complete_url} verb: ${verb}`);
 
@@ -19,15 +19,11 @@ QtObject {
         xhr.open(verb, complete_url);
 
         xhr.onload = function () {
-            //if (xhr.status !== 500)
-
             const resp = JSON.parse(xhr.responseText.toString());
             if ("message" in resp)
                 root.message = resp.message;
-            print(`root.code: ${root.code}`);
-            print(`resp.code: ${resp.code}`);
-            root.code = resp.code;
 
+            root.code = resp.code ? resp.code : "";
             root.received(resp);
 
             if (xhr.status === 200 || xhr.status === 201)
@@ -47,25 +43,26 @@ QtObject {
 
         xhr.setRequestHeader('Content-Type', 'application/json');
         xhr.setRequestHeader('Accept', 'application/json');
-
+        if (auth)
+            xhr.setRequestHeader("Authorization", auth);
         let data = obj ? JSON.stringify(obj) : '';
         xhr.send(data);
         root.sent();
     }
 
-    function post(endpoint, obj, cb) {
-        request("POST", endpoint, obj, cb);
+    function post(endpoint, obj, cb, auth=null) {
+        request("POST", endpoint, obj, cb, auth);
     }
 
-    function get(endpoint, obj, cb) {
-        request("GET", endpoint, obj, cb);
+    function get(endpoint, obj, cb, auth=null) {
+        request("GET", endpoint, obj, cb, auth);
     }
 
-    function put(endpoint, obj, cb) {
-        request("PUT", endpoint, obj, cb);
+    function put(endpoint, obj, cb, auth=null) {
+        request("PUT", endpoint, obj, cb, auth);
     }
 
-    function patch(endpoint, obj, cb) {
-        request("PATCH", endpoint, obj, cb);
+    function patch(endpoint, obj, cb, auth=null) {
+        request("PATCH", endpoint, obj, cb, auth);
     }
 }
