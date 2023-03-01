@@ -1,3 +1,4 @@
+
 /**
  * @author: Daniel Victoriano
  * @title: Rest module
@@ -9,6 +10,7 @@
 #include <QDebug>
 #include <QJsonDocument>
 
+
 Rest::Rest(QObject *parent)
     : QObject{parent}
     , base_{}
@@ -17,8 +19,10 @@ Rest::Rest(QObject *parent)
     , manager_{}
     , reply_{nullptr}
     , buffer_{nullptr}
+    , timer_{std::make_unique<QTimer>(this)}
 {
-
+    timer_->start(840'000);
+    connect(timer_.get(), &QTimer::timeout, this, &Rest::refreshAccessToken);
 }
 
 Rest::~Rest()
@@ -87,8 +91,6 @@ void Rest::request(Rest::Verb verb, const QString &endpoint, const QVariant &obj
 
     if (!accessToken_.isEmpty())
         req.setRawHeader("Authorization", accessToken_.toUtf8());
-    else if (!refreshToken_.isEmpty())
-        req.setRawHeader("Authorization", refreshToken_.toUtf8());
 
     if (!headers_.isEmpty())
     {
@@ -104,13 +106,14 @@ void Rest::request(Rest::Verb verb, const QString &endpoint, const QVariant &obj
 
     case Verb::POST: {
         auto doc{QJsonDocument::fromVariant(obj).toJson(QJsonDocument::Compact)};
-        qDebug() << "doc: " << doc.toStdString();
         reply_ = manager_.post(req, doc);
         break;
     }
-    case Verb::PATCH:
+    case Verb::PATCH: {
+        auto doc{QJsonDocument::fromVariant(obj).toJson(QJsonDocument::Compact)};
+        reply_ = manager_.sendCustomRequest(req, "PATCH", doc);
         break;
-
+    }
     case Verb::PUT:
         break;
     }
@@ -137,6 +140,7 @@ void Rest::put(const QString &endpoint, const QVariantMap &obj)
 
 void Rest::patch(const QString &endpoint, const QVariantMap &obj)
 {
+    qInfo() << "Rest::patch";
     request(Verb::PATCH, endpoint, obj);
 }
 
@@ -145,6 +149,7 @@ void Rest::replyFinished()
     auto reply{reply_->readAll()};
     const auto doc{QJsonDocument::fromJson(reply)};
     buffer_ = std::make_unique<QVariantMap>(doc.toVariant().toMap());
+
     emit received(*buffer_);
 
     if (reply_->error() == QNetworkReply::NoError)
@@ -160,10 +165,41 @@ void Rest::errorOccurred(QNetworkReply::NetworkError error)
     buffer_->insert("code", error);
     buffer_->insert("message", reply_->errorString());
 
+    reply_->deleteLater();
     emit failed(*buffer_);
 
     if (error == QNetworkReply::AuthenticationRequiredError)
         emit unauthorized();
+}
 
-    reply_->deleteLater();
+void Rest::refreshAccessToken()
+{
+    qDebug() << "Refreshing token";
+    if (refreshToken_.isEmpty())
+        return;
+
+    qsizetype idx{};
+    if (base_.indexOf("/api") == -1)
+        return;
+
+    QString str{"/api"};
+    idx = base_.indexOf(str);
+    auto base{base_.sliced(0, idx + str.length())};
+    const auto url{base + "/users/refresh/"};
+
+    QNetworkRequest req{QUrl{url}};
+    qDebug() << "Rest: url " << url;
+
+    req.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
+    req.setRawHeader("Authorization", refreshToken_.toUtf8());
+    qDebug() << "reply_ " << (reply_ ? "true" : "false");
+    auto reply{manager_.get(req)};
+    qDebug() << "reply_ " << (reply_ ? "true" : "false");
+    connect(reply, &QNetworkReply::finished, this, [this, reply]() {
+        const auto data{reply->readAll()};
+        QVariantMap token{QJsonDocument::fromJson(data).toVariant().toMap()};
+        accessToken("Bearer " + token["access_token"].toString());
+
+        reply->deleteLater();
+    });
 }

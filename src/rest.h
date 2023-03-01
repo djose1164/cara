@@ -1,10 +1,10 @@
 #ifndef REST_H
 #define REST_H
 
-#include "qobject.h"
 #include <QtQml/qqmlregistration.h>
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
+#include <QTimer>
 
 namespace Cara {
     class Rest;
@@ -64,10 +64,13 @@ private slots:
 
 public slots:
     void request(Rest::Verb verb, const QString &endpoint, const QVariant &obj);
+
     void get(const QString &endpoint);
     void post(const QString &endpoint, const QVariantMap &obj);
     void put(const QString &endpoint, const QVariantMap &obj);
     void patch(const QString &endpoint, const QVariantMap &obj);
+
+    void refreshAccessToken();
 
 private:
     QString base_; // Base URL for request.
@@ -81,6 +84,7 @@ private:
     QNetworkReply *reply_;
 
     std::unique_ptr<QVariantMap> buffer_;
+    std::unique_ptr<QTimer> timer_;
 };
 
 #endif // REST_H
