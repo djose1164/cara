@@ -3,7 +3,6 @@ import QtQml
 import "qrc:/utils" as Utils
 
 Item {
-    property string text
     property alias request: request
     property alias model: model
     readonly property string endpoint: "/products"
@@ -25,11 +24,10 @@ Item {
         request.post("/", obj, null);
     }
 
-    function findProductByIdentifier() {
-        sender({
-            "type": "findProductByName",
-            "identifier": text
-        });
+    function findProductByIdentifier(text) {
+        print("findProductByIdentifier " + text);
+        model.clear();
+        request.get("/" + text, null, r => model.append(r.products));
     }
     
     function addSuggetionsToModel() {
