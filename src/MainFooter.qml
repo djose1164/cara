@@ -20,15 +20,6 @@ TabBar {
     }
 
     TabButton {
-        id: userBtn
-        background: IconImage {
-            source: "qrc:/icons/search.svg"
-            antialiasing: false
-            sourceSize: iconSize
-        }
-    }
-
-    TabButton {
         id: shopBtn
         background: IconImage {
             source: "qrc:/icons/shopping-cart.svg"
