@@ -3,6 +3,8 @@ import QtQuick.Controls
 import QtQuick.Layouts
 
 ToolBar {
+    required property StackView stackView
+
     background: Rectangle {
         anchors.fill: parent
         color: "floralwhite"
@@ -35,15 +37,14 @@ ToolBar {
             Layout.topMargin: 5
         }
 
-        ToolButton {
-            background: Image {
+        TabButton {
+            id: userBtn
+            background: IconImage {
+                source: "qrc:/icons/search.svg"
                 antialiasing: false
-                source: "qrc:/icons/qrcode-16x16.svg"
                 sourceSize: iconSize
             }
-            Layout.alignment: Qt.AlignRight
-            Layout.topMargin: 5
-            Layout.rightMargin: 5
+            onClicked: stackView.push("qrc:/search/SearchPage.qml")
         }
     }
 }
