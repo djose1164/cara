@@ -9,7 +9,7 @@ Page {
     property var pageHeaderView
     readonly property StackView myStack: StackView.view
 
-    header: Utils.PageHeader {
+    header: Utils.TitleHeader {
         stackView: myStack
         title: "Agregar nuevo producto"
     }
@@ -62,8 +62,8 @@ Page {
                         productRequest.addProduct(productName.text, description.text, priceBuy.text, priceSell.text);
                     }
                 }
-
-            }}
+            }
+        }
     }
 
     MessageDialog {
@@ -77,7 +77,7 @@ Page {
 
     ProductRequest {
         id: productRequest
-        onSuccessChanged: {
+        request.onSucceeded: {
             messageDialog.open();
             stackLayout.currentIndex = 1;
         }

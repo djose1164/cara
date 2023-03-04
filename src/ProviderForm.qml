@@ -6,7 +6,7 @@ import "qrc:/utils"
 Page {
     readonly property StackView myStack: StackView.view
 
-    header: PageHeader {
+    header: TitleHeader {
         title: "Orden de Compra"
         stackView: myStack
     }
