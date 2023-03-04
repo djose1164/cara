@@ -14,11 +14,12 @@ Item {
     height: ListView.view.height
     anchors.topMargin: 20
 
-    signal dataChanged
+    signal paymentApplied
+
+    Component.onCompleted: updatePayment.paymentPatched.connect(paymentApplied);
 
     ColumnLayout {
         // BUG: For some reason this does not work. It works on 6.4.
-        Component.onCompleted: updatePayment.applied.connect(root.dataChanged);
         anchors.fill: parent
         anchors.leftMargin: 20
         Label {
@@ -99,9 +100,6 @@ Item {
         debt: parseInt(payment.amount_to_pay) - parseInt(payment.paid_amount)
         paid: payment.paid_amount
         paymentID: payment.id
-       /* onApplied: {
-            root.dataChanged();
-        }*/
     }
 
     function statusToString(status) {
