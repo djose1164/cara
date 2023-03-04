@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android" package="com.cara" android:installLocation="auto" android:versionCode="1" android:versionName="1">
-    <uses-sdk android:minSdkVersion="23" android:targetSdkVersion="21"/>
+    <uses-sdk android:minSdkVersion="23" android:targetSdkVersion="23"/>
 
     <!-- %%INSERT_PERMISSIONS -->
     <!-- %%INSERT_FEATURES -->
@@ -14,6 +14,8 @@
             <meta-data android:name="android.app.lib_name" android:value="-- %%INSERT_APP_LIB_NAME%% --"/>
             <meta-data android:name="android.app.arguments" android:value="-- %%INSERT_APP_ARGUMENTS%% --"/>
             <meta-data android:name="android.app.extract_android_style" android:value="minimal"/>
+            <meta-data android:name="android.app.splash_screen_drawable" android:resource="@drawable/splashscreen"/>
+            <meta-data android:name="android.app.splash_screen_drawable" android:resource="@drawable/splashscreen"/>
             <meta-data android:name="android.app.splash_screen_drawable" android:resource="@drawable/splashscreen"/>
         </activity>
     </application>
