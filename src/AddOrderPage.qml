@@ -55,22 +55,18 @@ Page {
         }
     }
 
-    ListModel {
-        id: orderModel
-    }
+    ListModel { id: orderModel }
 
     ProductRequest {
         id: productRequest
-        request.onSucceeded: {
-            stackLayout.currentIndex = 1
-            print("onSucceeded")
-        }
+        request.onSucceeded: stackLayout.currentIndex = 1;
     }
 
     Rest {
         id: saver
         base: "http://127.0.0.1:5000/api"
-        accessToken: TheCurrentUser.accessToken
+        refreshToken: TheCurrentUser.refreshToken
+        Component.onCompleted: refreshAccessToken()
         onReceived: stackLayout.currentIndex = 1
         onFailed: r => {
             message.text = "No se pudo realizar la accion";
@@ -81,23 +77,26 @@ Page {
             message.text = "Datos guardos";
             message.open();
             clearOrderForm();
+            if (TheCurrentUser.isAdmin)
+                TheCurrentUser.orderPostedWithUser(orderForm.clientID);
+            else
+                TheCurrentUser.orderPosted();
         }
     }
-
 
     /**
     * Clear & prepare the form to be used on another order.
     */
     function clearOrderForm() {
-        orderForm.resetEntries()
-        orderForm.clear()
+        orderForm.resetEntries();
+        orderForm.clear();
     }
 
     function okHandler() {
-        stackLayout.currentIndex = 0
-        const details = []
+        stackLayout.currentIndex = 0;
+        const details = [];
         for (let i = 0; i < orderModel.count; ++i)
-            details.push(orderModel.get(i).entryValue)
+            details.push(orderModel.get(i).entryValue);
 
         const fullOrder = {
             "customer_id": orderForm.clientID,
@@ -108,9 +107,8 @@ Page {
                 "amount_to_pay": orderForm.total,
                 "paid_amount": orderForm.amountPaid
             }
-        }
-        print("fullorder: " + JSON.stringify(fullOrder, null, 2))
+        };
 
-        saver.post("/orders/", fullOrder)
+        saver.post("/orders/", fullOrder);
     }
 }
