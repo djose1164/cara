@@ -7,8 +7,9 @@ import "qrc:/customers"
 
 ToolBar {
     id: root
-
     signal openFilter
+    required property StackView stackView
+    required property CustomerModel customerModel
 
     RowLayout {
         anchors.fill: parent
@@ -19,26 +20,6 @@ ToolBar {
             font.pointSize: 16
             Layout.alignment: Qt.AlignCenter
         }
-        /*Search.SearchBar {
-            placeholderText: "Ingrese nombre de cliente o ID"
-            //Layout.leftMargin: 20
-            Layout.rightMargin: 40
-            Layout.alignment: Qt.AlignLeading
-            onAccepted: txt => {
-                if (txt.length >= 3) {
-                    const res = JSON.parse(
-                        JSON.stringify(model.getClientByName(txt))
-                    );
-                    print("## res: " + JSON.stringify(res, null, 2));
-
-                    if(res) {
-                        model.clearModel();
-                        model.add(res);
-                        print("## if(res): " + JSON.stringify(res, null, 2));
-                    }
-                }
-            }
-        }*/
 
         RowLayout {
             Layout.alignment: Qt.AlignVCenter | Qt.AlignRight
@@ -50,6 +31,9 @@ ToolBar {
                     sourceSize: iconSize
                 }
                 Layout.rightMargin: 19
+                onClicked: stackView.push("qrc:/bills/BillSearch.qml", {
+                                              "customerModel": customerModel
+                                          })
             }
 
             ToolButton {
