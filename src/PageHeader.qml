@@ -3,41 +3,26 @@ import QtQuick.Controls
 import QtQuick.Layouts
 
 ToolBar {
-    required property string title
-    property StackView stackView
-    property alias label: lbl
+    id: root
+
+    required property StackView stackView
+
+    Rectangle {
+        anchors.fill: parent
+        color: "floralwhite"
+    }
 
     RowLayout {
-        readonly property int preferredMargin: 8
-
         anchors.fill: parent
-        anchors.leftMargin: preferredMargin
-        anchors.rightMargin: preferredMargin
 
         ToolButton {
-            Layout.alignment: Qt.AlignLeading
+            Layout.alignment: Qt.AlignVCenter
             background: IconImage {
                 source: "qrc:/left_arrow"
                 sourceSize: iconSize
                 antialiasing: false
             }
             onClicked: stackView.pop()
-        }
-
-        Label {
-            id: lbl
-            text: title
-            font.bold: true
-            font.pointSize: 14
-            Layout.alignment: Qt.AlignHCenter
-        }
-
-        ToolButton {
-            background: IconImage {
-                source: "qrc:/icons/settings.svg"
-
-            }
-            Layout.alignment: Qt.AlignTrailing
         }
     }
 }
