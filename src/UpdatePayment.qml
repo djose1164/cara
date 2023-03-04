@@ -15,16 +15,17 @@ Popup {
     // NOTE: A special case may happen here, when the client pays more than the debt;
     // if this happens, the negative amount should be saver for future buys from this
     // client.
-    property int newState: debt - parseInt(newPayment.text) == 0 ? 0 : 2
+    // property int newState: debt - parseInt(newPayment.text) == 0 ? 0 : 2
+    property int newState: newPayment.text.trim() === "" ? 2 : (debt - parseInt(newPayment.text) === 0 ? 0 : 2)
 
-    signal applied
+    signal paymentPatched()
 
     modal: true
     width: parent.width * .9
     height: parent.height / 2
     anchors.centerIn: Overlay.overlay
 
-    //onClosed: stackLayout.currentIndex = 1
+    onClosed: if (stackLayout.currentIndex === 2) stackLayout.currentIndex = 1
 
     Component.onCompleted: print("UpdatePayment: debt: " + debt)
 
@@ -70,11 +71,7 @@ Popup {
             }
         }
 
-        Label {
-            id: stateLbl
-            text: "Aprobado"
-            font.bold: true
-        }
+        IconImage { source: "qrc:/icons/done.svg" }
 
         GridLayout {
             columns: 2
@@ -113,17 +110,16 @@ Popup {
         id: paymentRequest
         paymentId: paymentID
         debt: root.debt
-        onMessageChanged: stateLbl.text = message
         onRequested: stackLayout.currentIndex = 0
-        onSuccessfulChanged: {
-            if (successful) {
-                stackLayout.currentIndex = 2;
-                root.applied();
-            }
-        }
+        onPaymentPatched: paymentSucceeded()
     }
 
     function clean() {
         newPayment.text = "";
+    }
+
+    function paymentSucceeded() {
+        root.paymentPatched();
+        stackLayout.currentIndex = 2;
     }
 }
