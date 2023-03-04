@@ -28,8 +28,6 @@ Page {
             initialItem: BusyIndicator {}
         }
 
-        StackView { initialItem: "qrc:/search/SearchPage.qml" }
-
         StackView {
             id: orderStackView
             initialItem: "qrc:/orders/AddOrderPage.qml"
