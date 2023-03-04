@@ -2,7 +2,10 @@ import QtQuick
 import QtQuick.Controls
 
 ItemDelegate {
-    width: parent.width
+    id: root
+    required property string name
+    required property int sell_price
+    width: ListView.view.width
     height: 75
     anchors.topMargin: 20
     anchors.bottomMargin: 20
