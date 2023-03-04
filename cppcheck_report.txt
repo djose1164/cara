@@ -1,0 +1,17 @@
+src/rest.h:30:5: error: There is an unknown macro here somewhere. Configuration is required. If Q_ENUM is a macro then please configure it. [unknownMacro]
+    Q_ENUM(Verb)
+    ^
+src/userentity.h:17:10: style:inconclusive: Technically the member function 'UserEntity::operator==' can be const. [functionConst]
+    bool operator ==(const UserEntity &other);
+         ^
+src/userentity.cpp:12:25: note: Technically the member function 'UserEntity::operator==' can be const.
+inline bool UserEntity::operator==(const UserEntity &other)
+                        ^
+src/userentity.h:17:10: note: Technically the member function 'UserEntity::operator==' can be const.
+    bool operator ==(const UserEntity &other);
+         ^
+src/database.cpp:87:0: style: The function 'doValidate' is never used. [unusedFunction]
+
+^
+nofile:0:0: information: Cppcheck cannot find all the include files (use --check-config for details) [missingIncludeSystem]
+
