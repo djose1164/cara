@@ -118,12 +118,4 @@ Drawer {
         }
         filtered(filteredData);
     }
-
-    function find(func, model) {
-        for (let i = 0; i < model.count; ++i)
-            if (func(model.get(i)))
-                return model.get(i);
-
-        return null;
-    }
 }
