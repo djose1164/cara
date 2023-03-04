@@ -4,18 +4,22 @@ import QtQuick.Controls
 import QtQuick.Layouts
 
 ItemDelegate {
+    id: root
     required property var person_info
     required property var orders
     required property StackView stackView
     property string name: person_info.forename
                           + (person_info.surname !== null ? ` ${person_info.surname}` : "")
+
+    signal updateCustomer(customerId: int)
+
     width: ListView.view.width
     height: ListView.view.height * .15
 
     onClicked: stackView.push("qrc:/orders/UpdateOrderPage.qml", {
-                                  "person_info": person_info,
-                                  "orders": orders
-                              })
+                                      "person_info": person_info,
+                                      "orders": orders
+                                  })
 
     ColumnLayout {
         anchors.fill: parent
