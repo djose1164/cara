@@ -15,7 +15,7 @@ CONFIG += c++20 qml console qml_debug qmltypes
 # Additional import path used to resolve QML modules in Qt Creator's code model
 QML_IMPORT_PATH =
 
-QML_IMPORT_NAME = Rest
+QML_IMPORT_NAME = com.cara
 QML_IMPORT_MAJOR_VERSION = 1
 
 # Additional import path used to resolve QML modules just for Qt Quick Designer

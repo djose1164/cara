@@ -2,40 +2,41 @@ import QtQuick
 import "qrc:/users"
 import com.cara
 
-Item {
+QtObject {
     id: root
 
     property alias model: model
     property alias request: request
 
-    signal filtering()
+    signal filtering
+    signal customerFetched(customer: var)
 
-    Rest {
+    Component.onCompleted: rest.refreshAccessToken()
+
+    property Rest rest: Rest {
         id: request
         base: "http://127.0.0.1:5000/api/customers"
-        accessToken: TheCurrentUser.accessToken
-        onSucceeded: r => {
-            print("Rest: onSucceeded: ");
-            model.append(r.customers);
-        }
+        refreshToken: TheCurrentUser.refreshToken
     }
 
-    ListModel { id: model }
+    property ListModel listModel: ListModel { id: model }
 
-    function setById(clientId) {
-        get(r => {
-            print(JSON.stringify(r, 2));
-            model.set(0, r.customer);
+    function setById(customerId) {
+        //const handler = r => model.set(find(customer => customer.id === customerId), r);
+        request.succeeded.connect(handler)
+        request.get("/" + customerId);
+        request.succeeded.disconnect(handler);
+    }
+
+    function updateCustomer(customerId) {
+        print("updateCustomer: customerId " + customerId);
+        const idx = indexOf(item => item.id === customerId);
+        print(`idx ${idx}`);
+        request.succeeded.connect(function(r) {
+            const fetched = r.customer;
+            set(idx, fetched);
         });
-
-    }
-
-    function addById(clientId) {
-        get(r => {model.append(r.customer); print(JSON.stringify(r, 2))});
-    }
-
-    function get(func) {
-        request.get("/" + clientId, null, func, TheCurrentUser.accessToken);
+        request.get("/" + customerId);
     }
 
     function getClientByName(name) {
@@ -44,11 +45,21 @@ Item {
 
     function findAll() {
         print("Fecthing all customers...");
+        request.succeeded.connect(function(r) {
+            print("findAll " + r);
+            model.append(r.customers)
+        });
         request.get("/");
     }
 
-    function add(client) {
-        model.append(client);
+    function add(customer) {
+        print("Adding customer", customer);
+        model.append(customer);
+    }
+
+    function set(idx, obj) {
+        print("idx "+idx+" typeof(obj) " + obj);
+        model.set(idx, obj);
     }
 
     function getAt(index) {
@@ -57,7 +68,6 @@ Item {
 
     function filter(msg) {
         filtering();
-        send(msg);
     }
 
     function clearModel() {
@@ -66,5 +76,38 @@ Item {
 
     function isModelEmpty() {
         return model.count === 0;
+    }
+
+    function find(func) {
+        for (let i = 0; i < model.count; ++i)
+            if (func(model.get(i)))
+                return model.get(i);
+
+        return null;
+    }
+
+    function likeName(text) {
+        print("lineName: name " + text);
+        let matches = [];
+        const predicate = c => {
+            const name = c.person_info.forename + c.person_info.surname;
+            return name.toLowerCase().includes(text.toLowerCase()) ? c : null;
+        };
+        for (let i = 0; i < model.count; ++i) {
+            const fetched = predicate(model.get(i));
+            if (fetched) {
+                matches.push(fetched);
+                print(JSON.stringify(fetched, null, 2))
+            }
+        }
+        return matches;
+    }
+
+    function indexOf(func) {
+        for (let i = 0; i < model.count; ++i)
+            if (func(model.get(i)))
+                return i;
+
+        return null;
     }
 }

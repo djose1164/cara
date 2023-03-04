@@ -3,11 +3,13 @@ import QtQuick.Controls
 import QtQuick.Layouts
 import "qrc:/customers"
 import "qrc:/payment" as Payments
+import "qrc:/product"
 
-GridLayout {
+ColumnLayout {
+    id: root
     property alias clientID: clientField.currentValue
     property alias date: dateField.text
-    property int payment: 0
+    property int payment: 2
     property int _index: 0
     property var details
     property int total: 0
@@ -17,77 +19,8 @@ GridLayout {
     signal updateTotal
     signal updateClientField
 
-    id: root
-    columns: 2
-    rowSpacing: 20
-
-    ClientComboBox {
-        id: clientField
-        Layout.columnSpan: 2
-        Layout.fillWidth: true
-        Layout.topMargin: height/2
-
-        Component.onCompleted: root.updateClientField.connect(clientField.updateClientField)
-    }
-
-    ScrollView {
-        Layout.columnSpan: 2
-        Layout.fillHeight: true
-        Layout.alignment: Qt.AlignCenter
-        Layout.margins: 5
-        Layout.topMargin: height/2
-
-        ColumnLayout {
-            anchors.fill: parent
-            anchors.topMargin: 15
-            spacing: 15
-            Repeater {
-                id: repeater
-                model: repeaterModel
-
-                Entry {
-                    id: entry
-                    Component.onCompleted: {
-                        root.okClicked.connect(entry.okClicked)
-                        entryAdded.connect(root.updateTotal)
-                    }
-                }
-            }
-        }
-    }
-
-    RowLayout {
-        Layout.columnSpan: 2
-        Layout.fillWidth: true
-        Layout.alignment: Qt.AlignCenter
-        Layout.leftMargin: 20
-        Layout.rightMargin: 20
-        spacing: 10
-
-        Button {
-            text: "Agregar"
-            onClicked: repeaterModel.append({"currentEntryIndex": _index++})
-            Layout.fillWidth: true
-        }
-
-        Button {
-            text: "Remover"
-            onClicked: if (_index > 1) removeEntryAt(--_index)
-            Layout.fillWidth: true
-        }
-    }
-
-    ListModel {
-        id: repeaterModel
-        Component.onCompleted: repeaterModel.append({"currentEntryIndex": _index++})
-    }
-
-    Payments.PaymentStatus {
-        Layout.columnSpan: 2
-        Layout.alignment: Qt.AlignCenter
-        paymentState: payment
-    }
-
+    Component.onCompleted: payment = 0
+    onOkClicked: productEntry.okClicked()
     onPaymentChanged: {
         if (payment !== 2)
             amountField.clear();
@@ -95,7 +28,7 @@ GridLayout {
         switch (payment){
         case 0:
             amountField.placeholderText = "Monto a pagar: " + total;
-            amountPaid = parseInt(amountField.text);
+            amountPaid = amountField.text ? parseInt(amountField.text) : 0;
             break;
         case 1:
             amountField.placeholderText = "Credito: " + total;
@@ -118,22 +51,72 @@ GridLayout {
             amountField.placeholderText = "Credito: " + total;
     }
 
-
-    TextField {
-        id: amountField
-        placeholderText: "Monto a pagar: "
-        enabled: payment == 2
-        inputMethodHints: Qt.ImhDigitsOnly
-        Layout.columnSpan: amountLabel.visible ? 1 : 2
+    ClientComboBox {
+        id: clientField
         Layout.fillWidth: true
+        Layout.topMargin: height/2
+        Component.onCompleted: root.updateClientField.connect(clientField.updateClientField)
     }
 
-    Label {
-        id: amountLabel
-        visible: payment === 2
-        text: "Debera " + (total - amountPaid)
+    ProductEntry {
+        id: productEntry
+        Layout.fillHeight: true
+        Layout.alignment: Qt.AlignCenter
+        Layout.margins: 5
+        Layout.topMargin: height/2
+        Component.onCompleted: updateTotal.connect(root.updateTotal)
+    }
+
+    RowLayout {
         Layout.fillWidth: true
+        Layout.alignment: Qt.AlignCenter
         Layout.leftMargin: 20
+        Layout.rightMargin: 20
+        spacing: 10
+
+        Button {
+            text: "Agregar"
+            onClicked: repeaterModel.append({"currentEntryIndex": _index++})
+            Layout.fillWidth: true
+        }
+
+        Button {
+            text: "Remover"
+            onClicked: if (_index > 1) removeEntryAt(--_index)
+            Layout.fillWidth: true
+        }
+
+    }
+
+    ListModel {
+        id: repeaterModel
+        Component.onCompleted: repeaterModel.append({"currentEntryIndex": _index++})
+    }
+
+    Payments.PaymentStatus {
+        Layout.alignment: Qt.AlignCenter
+        group.onClicked: btn => payment = statusToInt(btn.text)
+    }
+
+    RowLayout {
+        Layout.fillWidth: true
+        Layout.fillHeight: true
+        TextField {
+            id: amountField
+            placeholderText: "Monto a pagar: "
+            enabled: payment == 2
+            inputMethodHints: Qt.ImhDigitsOnly
+            Layout.alignment: Qt.AlignLeading
+            Layout.fillWidth: true
+        }
+
+        Label {
+            id: amountLabel
+            visible: payment === 2
+            text: "Debera " + (total - amountPaid)
+            Layout.alignment: Qt.AlignTrailing
+            Layout.fillWidth: true
+        }
     }
 
     TextField {
@@ -168,5 +151,11 @@ GridLayout {
         amountPaid = 0;
         payment = 0;
         total = 0;
+        amountField.clear();
+    }
+
+    function statusToInt(status) {
+        const map = {"Pago": 0, "Credito": 1, "Abono": 2};
+        return map[status];
     }
 }

@@ -1,17 +1,22 @@
 import QtQuick
-import "qrc:/utils"
+import com.cara
+import "qrc:/users"
 
-Item {
+QtObject {
     id: root
 
-    property alias request: request
-
-    Request {
+    property Rest request: Rest {
         id: request
         base: "http://127.0.0.1:5000/api/customers"
+        refreshToken: TheCurrentUser.refreshToken
+
     }
 
     function create(client) {
-        request.post("/", client, null);
+        print("Posting new client", JSON.stringify(client));
+        request.accessTokenChanged.connect(function() {
+            request.post("/", client);
+        });
+        request.refreshAccessToken();
     }
 }

@@ -15,7 +15,7 @@ Page {
 
     signal clientAdded
 
-    header: PageHeader {
+    header: TitleHeader {
         title: "Nuevo cliente"
         stackView: stackView_
     }

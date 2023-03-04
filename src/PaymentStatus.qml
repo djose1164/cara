@@ -3,22 +3,19 @@ import QtQuick.Controls
 import QtQuick.Layouts
 
 RowLayout {
-    Layout.columnSpan: 2
-    required property int paymentState
+    property alias group: group
+
+    ButtonGroup {
+        id: group
+        buttons: children
+    }
 
     RadioButton {
         checked: true
         text: "Pago"
-        onClicked: payment = 0
     }
 
-    RadioButton {
-        text: "Credito"
-        onClicked: payment = 1
-    }
+    RadioButton { text: "Credito" }
 
-    RadioButton {
-        text: "Abono"
-        onClicked: payment = 2
-    }
+    RadioButton { text: "Abono" }
 }

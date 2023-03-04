@@ -11,7 +11,11 @@ Page {
     readonly property StackView stackView: StackView.view
 
     title: "Facturas"
-    header: BillPageHeader { onOpenFilter: filter.open() }
+    header: BillPageHeader {
+        stackView: root.stackView
+        onOpenFilter: filter.open()
+        customerModel: baseModel
+    }
 
     Connections {
         target: TheCurrentUser
@@ -47,7 +51,11 @@ Page {
         ListView {
             id: orderView
             model:  baseModel.model
-            delegate: BillDelegate { stackView: root.stackView }
+            delegate: BillDelegate {
+                id: billDelegate
+                stackView: root.stackView
+                Component.onCompleted: updateCustomer.connect(baseModel.updateCustomer)
+            }
         }
     }
 
@@ -55,8 +63,17 @@ Page {
         id: baseModel
         request.onSucceeded: stackLayout.currentIndex = 2
         onFiltering: stackLayout.currentIndex = 0
-        request.onFailed: r => {
-            print("request.onFailed: " + r);
+        request.onFailed: r => print("request.onFailed: " + r);
+    }
+
+    Connections {
+        target: TheCurrentUser
+        function onOrderPostedWithUser(customerId) {
+            // Fetch the customer info indetified by `customerId`. Replace the
+            // customer identified by `customerId` in the model with this
+            // updated info.
+
+          //  baseModel.setById(customerId);
         }
     }
 

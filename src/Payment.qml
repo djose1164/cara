@@ -1,8 +1,9 @@
 import QtQuick
 import "qrc:/utils" as Utils
 import "qrc:/users"
+import com.cara
 
-Item {
+QtObject {
     id: root
 
     required property int paymentId
@@ -13,13 +14,17 @@ Item {
 
     signal requested
     signal responseReceived
+    signal paymentPatched()
 
-    Utils.Request {
+    Component.onCompleted: rest.refreshAccessToken()
+
+    property Rest rest: Rest {
         id: request
         base: "http://127.0.0.1:5000/api/payments"
-        onSent: root.requested();
+        refreshToken: TheCurrentUser.refreshToken
+        onSent: root.requested()
         onReceived: responseReceived();
-
+        onSucceeded: a => paymentPatched()
     }
 
     function patchPayment(amount) {
@@ -27,8 +32,7 @@ Item {
         if (paymentId < 1 && amount <= 0)
             return;
 
-        request.patch("/", {"id": paymentId, "paid_amount": amount}, r => print("Payment: r: ", JSON.stringify(r, 4)),
-                      TheCurrentUser.accessToken);
+        request.patch("/", {"id": paymentId, "paid_amount": amount});
         print("ID# " + paymentId + " paid_amount: " + amount);
     }
 

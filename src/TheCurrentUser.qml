@@ -1,6 +1,6 @@
 pragma Singleton
 import QtQuick
-import QtCore
+import Qt.labs.settings
 import "qrc:/utils"
 import com.cara
 
@@ -12,7 +12,8 @@ QtObject {
     readonly property bool previousLogin: settings.value("refreshToken")
     readonly property string homePath: isAdmin ? "qrc:/home/AdminHome.qml"
                                                : "qrc:/home/UserHome.qml"
-    property alias accessToken: settings.accessToken
+    // TODO: This should be deleted
+    property alias refreshToken: settings.refreshToken
     property int userId
     property int customerId
     property string username
@@ -29,32 +30,28 @@ QtObject {
 
     property Settings settings: Settings {
         id: settings
-        property string accessToken
         property string refreshToken
-
         category: "Credentials"
     }
 
     property Rest request: Rest {
         id: request
-        property Refresh refresh: Refresh {
-            id: refresh
-            onAccessTokenReceived: token => initOnRefreshToken("Bearer " + token)
-            onFailed: r => failedToSetUserCredentials(r)
-            refreshToken: settings.refreshToken
-        }
+        refreshToken: settings.refreshToken
         base: "http://127.0.0.1:5000/api/users"
-        accessToken: settings.accessToken
+        onFailed: r => failedToSetUserCredentials(r)
         onSucceeded: r => initWithUser(r.user)
+        onAccessTokenChanged: request.get("/")
 
         function fetchUserInfo() {
             print("fetchUserInfo");
-            refresh.refresh(settings.refreshToken);
+            refreshAccessToken();
         }
     }
 
     signal userCredentialsSet
     signal failedToSetUserCredentials(respose: var)
+    signal orderPosted
+    signal orderPostedWithUser(userId: int)
 
     Component.onCompleted: {
         if (previousLogin) {
@@ -70,16 +67,9 @@ QtObject {
     }
 
     function initOnLogin(response) {
-        settings.accessToken = "Bearer " + response.access_token;
         settings.refreshToken = "Bearer " + response.refresh_token;
 
         initWithUser(response.user);
-    }
-
-    function initOnRefreshToken(token) {
-        settings.accessToken = token;
-
-        request.get("/");
     }
 
     function initWithUser(user) {
@@ -93,6 +83,7 @@ QtObject {
         userTypeId = user.user_type_id;
         userId = user.id;
         customerId = user.customer_id ? user.customer_id : 0;
+        print("user initialized")
         userCredentialsSet();
     }
 
