@@ -41,7 +41,7 @@ RowLayout {
     }
     function fetchEntry() {
         const entryValue = {
-            "product_id": findIn(productRequest.model, item => item.name === entry.currentText).id,
+            "product_id": findIn(productRequest.model, item => item.name === productField.currentText).id,
             "quantity": quantity,
             "unit_price": price
         };
