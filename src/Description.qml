@@ -105,9 +105,4 @@ Item {
         total = 0;
         amountField.clear();
     }
-
-    function statusToInt(status) {
-        const map = {"Pago": 0, "Credito": 1, "Abono": 2};
-        return map[status];
-    }
 }
