@@ -7,14 +7,18 @@ import "qrc:/main"
 import "qrc:/customers"
 import "qrc:/product"
 import "qrc:/users"
-import com.cara
+import com.cara 1.0
 
 // TODO: Update implementation to use the new types.
-Page {
+Item {
     id: root
+    property alias totalToPay: orderForm.total
+    property alias stackLayout: stackLayout
+    property alias orderForm: orderForm
+    property alias request: request
+    property alias orderModel: orderModel
     signal viewRequested
 
-    header: AddOrderHeader {}
     onViewRequested: orderForm.updateClientField()
 
     StackLayout {
@@ -22,37 +26,19 @@ Page {
         anchors.fill: parent
         anchors.leftMargin: 20
         anchors.rightMargin: 20
+
         BusyIndicator {}
 
-        ColumnLayout {
-            Description {
-                id: orderForm
-                Layout.fillWidth: true
-                Layout.fillHeight: true
-                Component.onCompleted: productRequest.addSuggetionsToModel()
-            }
-
-            RowLayout {
-                id: btns
-                Layout.fillWidth: true
-                Layout.alignment: Qt.AlignBottom
-                Layout.bottomMargin: height / 2
-                spacing: 20
-
-                Button {
-                    id: okBtn
-                    text: "Ok"
-                    onClicked: okHandler()
-                    Layout.fillWidth: true
-                }
-            }
+        Description {
+            id: orderForm
+            Component.onCompleted: productRequest.addSuggetionsToModel()
         }
+    }
 
-        MessageDialog {
-            id: message
-            buttons: MessageDialog.Ok
-            onButtonClicked: close()
-        }
+    MessageDialog {
+        id: message
+        buttons: MessageDialog.Ok
+        onButtonClicked: close()
     }
 
     ListModel { id: orderModel }
@@ -63,7 +49,7 @@ Page {
     }
 
     Rest {
-        id: saver
+        id: request
         base: "http://127.0.0.1:5000/api"
         refreshToken: TheCurrentUser.refreshToken
         Component.onCompleted: refreshAccessToken()
@@ -73,14 +59,20 @@ Page {
             message.informativeText = "Error: " + r.message;
             message.open();
         }
-        onSucceeded: {
-            message.text = "Datos guardos";
+        onSucceeded: r => {
+            message.text = "Orden realizada con exito";
+            message.informativeText = "Puedes observar el estado de la orden en"
+                         + "Ordenes Recientes.";
             message.open();
             clearOrderForm();
             if (TheCurrentUser.isAdmin)
                 TheCurrentUser.orderPostedWithUser(orderForm.clientID);
             else
                 TheCurrentUser.orderPosted();
+
+            if (TheCurrentUser.customerId === 0)
+                TheCurrentUser.customerId = r.customer_id;
+            print(JSON.stringify(r, null, 2));
         }
     }
 
@@ -90,25 +82,5 @@ Page {
     function clearOrderForm() {
         orderForm.resetEntries();
         orderForm.clear();
-    }
-
-    function okHandler() {
-        stackLayout.currentIndex = 0;
-        const details = [];
-        for (let i = 0; i < orderModel.count; ++i)
-            details.push(orderModel.get(i).entryValue);
-
-        const fullOrder = {
-            "customer_id": orderForm.clientID,
-            "date": orderForm.date ? orderForm.date : new Date().toLocaleDateString(
-                                         Qt.locale(), "dd/MM/yyyy"),
-            "order_details": details,
-            "payment": {
-                "amount_to_pay": orderForm.total,
-                "paid_amount": orderForm.amountPaid
-            }
-        };
-
-        saver.post("/orders/", fullOrder);
     }
 }
