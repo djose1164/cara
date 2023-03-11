@@ -2,58 +2,34 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 import "qrc:/payment"
+import "qrc:/users"
 
 Item {
     id: root
     required property var payment
     required property var order_details
-    required property string date
-    required property string id
-
-    width: ListView.view.width
-    height: ListView.view.height
-    anchors.topMargin: 20
+    readonly property var product: order_details.product
 
     signal paymentApplied
 
     Component.onCompleted: updatePayment.paymentPatched.connect(paymentApplied);
 
     ColumnLayout {
-        // BUG: For some reason this does not work. It works on 6.4.
         anchors.fill: parent
-        anchors.leftMargin: 20
-        Label {
-            id: orderLbl
-            text: "Orden #" + id
-            font.pointSize: 14
-        }
-
-        Label {
-            id: dateBanner
-            text: "Fecha"
-            font.pointSize: 12
-        }
-
-        Label { text: date }
+        spacing: 10
 
         Label {
             text: "Estado de de la orden: "
             font.pointSize: 12
+            font.bold: true
         }
 
-        GridLayout {
-
-            columns: 2
-
-            Label {
-                Layout.columnSpan: 2
-                text: "Estado"
-            }
-
+        RowLayout {
             Label { text: statusToString(payment.status) }
 
             Button {
                 text: "Actualizar"
+                visible: TheCurrentUser.isAdmin
                 onClicked: updatePayment.open()
             }
         }
@@ -61,11 +37,12 @@ Item {
         Label {
             text: "Detalles"
             font.pointSize: 12
+            font.bold: true
         }
 
         RowLayout {
             Layout.fillWidth: true
-            spacing: 10
+            spacing: 50
 
             Label { text: "Producto" }
 
@@ -77,20 +54,16 @@ Item {
             Layout.fillHeight: true
             Layout.topMargin: 20
             rowSpacing: 1
-            columnSpacing: 20
+            columnSpacing: 10
             columns: 2
 
             Repeater {
                 model: order_details
-
-                RowLayout {
-                    Layout.fillWidth: true
-                    spacing: 10
-
-                    Label { text: product.name }
-
-                    Label { text: quantity }
-                }
+                delegate: Label { text: product.name }
+            }
+            Repeater {
+                model: order_details
+                delegate: Label { text: quantity }
             }
         }
     }
