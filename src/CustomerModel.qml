@@ -1,6 +1,6 @@
 import QtQuick
 import "qrc:/users"
-import com.cara
+import com.cara 1.0
 
 QtObject {
     id: root
@@ -21,8 +21,10 @@ QtObject {
 
     property ListModel listModel: ListModel { id: model }
 
+    // For model
     function setById(customerId) {
-        //const handler = r => model.set(find(customer => customer.id === customerId), r);
+
+        const handler = r => model.set(find(customer => customer.id === customerId), r);
         request.succeeded.connect(handler)
         request.get("/" + customerId);
         request.succeeded.disconnect(handler);
@@ -46,10 +48,26 @@ QtObject {
     function findAll() {
         print("Fecthing all customers...");
         request.succeeded.connect(function(r) {
-            print("findAll " + r);
             model.append(r.customers)
         });
         request.get("/");
+    }
+
+    function findByCustomerId(customerId) {
+        print(`setById ${customerId}`);
+        request.succeeded.connect(function(r) {
+            model.append(r.customer);
+        });
+        request.get(`/${customerId}`);
+    }
+
+    function findOrdersByCustomerId(customerId) {
+        print(`setById ${customerId}`);
+        request.succeeded.connect(function(r) {
+            print(JSON.stringify(r.customer.orders, null, 2));
+            model.append(r.customer.orders);
+        });
+        request.get(`/${customerId}`);
     }
 
     function add(customer) {
