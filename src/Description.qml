@@ -2,13 +2,10 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 import "qrc:/customers"
-import "qrc:/payment" as Payments
 import "qrc:/product"
 
-ColumnLayout {
+Item {
     id: root
-    property alias clientID: clientField.currentValue
-    property alias date: dateField.text
     property int payment: 2
     property int _index: 0
     property var details
@@ -17,7 +14,6 @@ ColumnLayout {
 
     signal okClicked
     signal updateTotal
-    signal updateClientField
 
     Component.onCompleted: payment = 0
     onOkClicked: productEntry.okClicked()
@@ -38,6 +34,7 @@ ColumnLayout {
             break;
         }
     }
+
     onUpdateTotal: {
         total = 0;
         for (let i = 0; i < orderModel.count; ++i) {
@@ -51,27 +48,20 @@ ColumnLayout {
             amountField.placeholderText = "Credito: " + total;
     }
 
-    ClientComboBox {
-        id: clientField
-        Layout.fillWidth: true
-        Layout.topMargin: height/2
-        Component.onCompleted: root.updateClientField.connect(clientField.updateClientField)
-    }
-
     ProductEntry {
         id: productEntry
-        Layout.fillHeight: true
-        Layout.alignment: Qt.AlignCenter
-        Layout.margins: 5
-        Layout.topMargin: height/2
+        width: parent.width
+        height: parent.height * .35
+        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.top: parent.top
+        anchors.topMargin: 20
         Component.onCompleted: updateTotal.connect(root.updateTotal)
     }
 
     RowLayout {
-        Layout.fillWidth: true
-        Layout.alignment: Qt.AlignCenter
-        Layout.leftMargin: 20
-        Layout.rightMargin: 20
+        width: parent.width
+        anchors.top: productEntry.bottom
+        anchors.topMargin: 50
         spacing: 10
 
         Button {
@@ -85,49 +75,11 @@ ColumnLayout {
             onClicked: if (_index > 1) removeEntryAt(--_index)
             Layout.fillWidth: true
         }
-
     }
 
     ListModel {
         id: repeaterModel
         Component.onCompleted: repeaterModel.append({"currentEntryIndex": _index++})
-    }
-
-    Payments.PaymentStatus {
-        Layout.alignment: Qt.AlignCenter
-        group.onClicked: btn => payment = statusToInt(btn.text)
-    }
-
-    RowLayout {
-        Layout.fillWidth: true
-        Layout.fillHeight: true
-        TextField {
-            id: amountField
-            placeholderText: "Monto a pagar: "
-            enabled: payment == 2
-            inputMethodHints: Qt.ImhDigitsOnly
-            Layout.alignment: Qt.AlignLeading
-            Layout.fillWidth: true
-        }
-
-        Label {
-            id: amountLabel
-            visible: payment === 2
-            text: "Debera " + (total - amountPaid)
-            Layout.alignment: Qt.AlignTrailing
-            Layout.fillWidth: true
-        }
-    }
-
-    TextField {
-        id: dateField
-        Layout.columnSpan: 2
-        Layout.fillWidth: true
-        placeholderText: "dia/mes/año"
-        validator: RegularExpressionValidator {
-            regularExpression: /^([0-2][0-9]|(3)[0-1])(\/)(((0)[0-9])|((1)[0-2]))(\/)\d{4}$/
-        }
-        inputMethodHints: Qt.ImhNoPredictiveText
     }
 
     function findIn(model, criteria) {
