@@ -1,34 +1,35 @@
 import QtQuick
 import QtQuick.Controls
+import QtQuick.Layouts
 
 ItemDelegate {
     id: root
     required property string name
     required property int sell_price
-    width: ListView.view.width
-    height: 75
-    anchors.topMargin: 20
-    anchors.bottomMargin: 20
+    required property string image_url
+    required property string description
+    width: ListView.view.width * .8
+    height: ListView.view.height
 
+     StackLayout {
+        id: stackLayout
+        anchors.centerIn: parent
+        BusyIndicator {}
 
-    //height: 100
-    /*Label {
-        text: "Código: " + id
-    }*/
+    ColumnLayout {
+        spacing: 10
+        Image {
+            Layout.alignment: Qt.AlignHCenter
+            source: image_url
+            sourceSize: `${root.height-50}x${root.height-50}`
+            onProgressChanged: if (progress === 1.0) stackLayout.currentIndex = 1
+        }
 
-    Label {
-        id: nameLbl
-        text: "Nombre: " + name
+        Label {
+            text: name
+            font.pointSize: 16
+            Layout.alignment: Qt.AlignHCenter | Qt.AlignBottom
+        }
     }
-
-    /*Label {
-        text: "Descripción: " + description
-    }*/
-
-    Label {
-        anchors.top: nameLbl.bottom
-        anchors.topMargin: 10
-        text: "Precio: " + sell_price
     }
 }
-
