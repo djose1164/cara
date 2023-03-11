@@ -7,21 +7,18 @@ import "qrc:/users"
 Page {
     id: root
     readonly property StackView stackView: StackView.view
-    readonly property string homPath: TheCurrentUser.homePath
 
     //anchors.fill: parent
     footer: MainFooter { id: bar }
 
     StackLayout {
         id: stackLayout
-        width: parent.width > parent.height ? parent.width/2 : parent.width
-        height: parent.height
-        anchors.centerIn: parent
+        anchors.fill: parent
         currentIndex: bar.currentIndex
-        onCurrentIndexChanged: {
+        /*onCurrentIndexChanged: {
             if (bar.addOrderIdx === currentIndex)
                 orderStackView.currentItem.viewRequested();
-        }
+        }*/
 
         StackView {
             id: homeView
@@ -30,7 +27,7 @@ Page {
 
         StackView {
             id: orderStackView
-            initialItem: "qrc:/orders/AddOrderPage.qml"
+            initialItem: BusyIndicator {}
         }
 
         StackView { initialItem: "qrc:/bills/BillPage.qml" }
@@ -41,6 +38,9 @@ Page {
         function onUserCredentialsSet() {
             print("onUserCredentialsSet: " + TheCurrentUser.homePath)
             homeView.push(TheCurrentUser.homePath)
+
+            print("orderStackView pusing: " + TheCurrentUser.orderFormPath);
+            orderStackView.push(TheCurrentUser.orderFormPath);
         }
 
         function onFailedToSetUserCredentials(response) {
@@ -75,11 +75,6 @@ Page {
             }
         }
         }
-    }
-
-    function settingsReady() {
-        print("homeView pusing: " + TheCurrentUser.homePath);
-        homeView.push(TheCurrentUser.homePath)
     }
 
     SidePane { id: sideMenu }
