@@ -2,7 +2,7 @@ import QtQuick
 import QtQuick.Controls
 import "qrc:/utils"
 import "qrc:/users"
-import com.cara
+import com.cara 1.0
 
 Item {
     property alias currentText: clientField.currentText

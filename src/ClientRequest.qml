@@ -1,5 +1,5 @@
 import QtQuick
-import com.cara
+import com.cara 1.0
 import "qrc:/users"
 
 QtObject {
