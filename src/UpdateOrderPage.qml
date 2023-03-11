@@ -9,26 +9,45 @@ import "qrc:/customers" as Client
 
 Page {
     id: root
-
-    required property var person_info
-    required property ListModel orders
+    required property var order_details
+    required property var payment
+    required property string date
+    required property string id
     readonly property StackView myStack: StackView.view
-    readonly property string name: `${person_info.forename} ${person_info.surname}`
 
     signal paymentApplied
 
     header: Utils.TitleHeader {
-        title: "Cliente: "+name+" ID #"+person_info.customer_id;
+        title: "Estado de Orden"
         label.font.pointSize: 12
         stackView: myStack
     }
 
-    ListView {
-        id: listView
+    ColumnLayout {
         anchors.fill: parent
+        anchors.leftMargin: 20
         spacing: 20
-        model: orders
-        delegate: OrderDelegate {
+        Label {
+            id: orderLbl
+            text: "Orden #" + id
+            font.pointSize: 14
+            font.bold: true
+        }
+
+        Label {
+            id: dateBanner
+            text: "Fecha"
+            font.pointSize: 12
+            font.bold: true
+        }
+
+        Label { text: date }
+
+        OrderState {
+            Layout.fillWidth: true
+            Layout.preferredHeight: root.height * .3
+            order_details: root.order_details
+            payment: root.payment
             Component.onCompleted: paymentApplied.connect(root.paymentApplied)
         }
     }
