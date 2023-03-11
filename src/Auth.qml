@@ -1,6 +1,6 @@
 import QtQuick
 import "qrc:/utils"
-import com.cara
+import com.cara 1.0
 
 Item {
     id: root
