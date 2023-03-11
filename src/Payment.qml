@@ -1,7 +1,7 @@
 import QtQuick
 import "qrc:/utils" as Utils
 import "qrc:/users"
-import com.cara
+import com.cara 1.0
 
 QtObject {
     id: root
