@@ -17,7 +17,6 @@
         <file>AdminHome.qml</file>
     </qresource>
     <qresource prefix="/search">
-        <file>ProductDelegate.qml</file>
         <file>SearchPage.qml</file>
         <file>SearchBar.qml</file>
     </qresource>
@@ -27,16 +26,19 @@
         <file>BillDelegate.qml</file>
         <file>OptionPopup.qml</file>
         <file>BillSearch.qml</file>
+        <file>CustomerBill.qml</file>
     </qresource>
     <qresource prefix="/orders">
-        <file>AddOrderPage.qml</file>
+        <file>AddOrder.qml</file>
         <file>Description.qml</file>
         <file>Entry.qml</file>
         <file>OrderHomePage.qml</file>
         <file>UpdateOrderPage.qml</file>
         <file>OrderModel.qml</file>
-        <file>OrderDelegate.qml</file>
+        <file>OrderState.qml</file>
         <file>AddOrderHeader.qml</file>
+        <file>OrderFormUser.qml</file>
+        <file>OrderFormAdmin.qml</file>
     </qresource>
     <qresource prefix="/customers">
         <file>CustomerForm.qml</file>
@@ -66,6 +68,8 @@
         <file>ProductForm.qml</file>
         <file>ProductRequest.qml</file>
         <file>ProductEntry.qml</file>
+        <file>ProductDelegate.qml</file>
+        <file>Product.qml</file>
     </qresource>
     <qresource prefix="/qr" lang="qml">
         <file>QR.qml</file>
