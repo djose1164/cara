@@ -64,7 +64,6 @@ QtObject {
     function findOrdersByCustomerId(customerId) {
         print(`setById ${customerId}`);
         request.succeeded.connect(function(r) {
-            print(JSON.stringify(r.customer.orders, null, 2));
             model.append(r.customer.orders);
         });
         request.get(`/${customerId}`);
