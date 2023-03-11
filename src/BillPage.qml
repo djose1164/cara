@@ -20,11 +20,12 @@ Page {
     Connections {
         target: TheCurrentUser
         function onUserTypeIdChanged() {
-            print("TheCurrentUser.isAdmin: " + TheCurrentUser.isAdmin)
+            print("TheCurrentUser.isCustomer: " + TheCurrentUser.isCostumer
+                  + "\ncustomerId " + TheCurrentUser.customerId)
             if (TheCurrentUser.isAdmin)
                 baseModel.findAll();
             else if (TheCurrentUser.isCostumer)
-                baseModel.setById(TheCurrentUser.userId);
+                baseModel.findOrdersByCustomerId(TheCurrentUser.customerId);
         }
     }
 
@@ -50,12 +51,9 @@ Page {
 
         ListView {
             id: orderView
+            readonly property StackView stackView: root.stackView
             model:  baseModel.model
-            delegate: BillDelegate {
-                id: billDelegate
-                stackView: root.stackView
-                Component.onCompleted: updateCustomer.connect(baseModel.updateCustomer)
-            }
+            delegate: TheCurrentUser.isCostumer ? _.customerBill : _.billDelegate
         }
     }
 
@@ -81,5 +79,19 @@ Page {
         id: filter
         customerModel: baseModel
         onFiltered: data => orderView.model = data
+    }
+
+    QtObject {
+        id: _
+        property Component billDelegate: Component{
+            BillDelegate {
+                Component.onCompleted: updateCustomer.connect(baseModel.updateCustomer)
+            }
+        }
+        property Component customerBill: Component {
+            CustomerBill {
+                Component.onCompleted: updateCustomer.connect(baseModel.updateCustomer)
+            }
+        }
     }
 }
