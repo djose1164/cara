@@ -22,6 +22,7 @@ Page {
 
         StackView {
             id: homeView
+            readonly property TabBar bar: bar
             initialItem: BusyIndicator {}
         }
 
