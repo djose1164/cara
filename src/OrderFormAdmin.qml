@@ -6,6 +6,11 @@ import "qrc:/customers"
 
 Page {
     id: root
+    readonly property bool isACreditOrder: paymentStatus.checkedButton.text === "Credito"
+    readonly property bool isCredited: paymentStatus.checkedButton.text === "Abono"
+    readonly property bool isPaid: paymentStatus.checkedButton.text === "Pago"
+    readonly property int amount: amountField.text ? amountField.text : 0
+    readonly property int total: amountField.text ? addOrder.totalToPay - amount : addOrder.totalToPay
 
     header: AddOrderHeader {}
 
@@ -18,7 +23,6 @@ Page {
         ClientComboBox {
             id: clientField
             Layout.fillWidth: true
-            Component.onCompleted: root.updateClientField.connect(clientField.updateClientField)
         }
 
         AddOrder {
@@ -28,8 +32,8 @@ Page {
         }
 
         Payments.PaymentStatus {
+            id: paymentStatus
             Layout.alignment: Qt.AlignCenter
-            group.onClicked: btn => payment = statusToInt(btn.text)
         }
 
         RowLayout {
@@ -37,8 +41,9 @@ Page {
             Layout.fillHeight: true
             TextField {
                 id: amountField
-                placeholderText: "Monto a pagar: "
-                enabled: root.payment === 2
+                placeholderText: isPaid || isACreditOrder ? `Monto a pagar: ${total}`
+                                                      : "Ingrese monto..."
+                enabled: isCredited
                 inputMethodHints: Qt.ImhDigitsOnly
                 Layout.alignment: Qt.AlignLeading
                 Layout.fillWidth: true
@@ -46,10 +51,9 @@ Page {
 
             Label {
                 id: amountLabel
-                visible: payment === 2
-                text: "Debera " + (total - amountPaid)
-                Layout.alignment: Qt.AlignTrailing
-                Layout.fillWidth: true
+                visible: isCredited
+                text: `Debera: RD$${total}`
+                font.pointSize: 12
             }
         }
 
@@ -70,5 +74,25 @@ Page {
             onClicked: okHandler()
             Layout.fillWidth: true
         }
+    }
+
+    function okHandler() {
+        addOrder.stackLayout.currentIndex = 0;
+        const details = [];
+        for (let i = 0; i < addOrder.orderModel.count; ++i)
+            details.push(addOrder.orderModel.get(i).entryValue);
+
+        const fullOrder = {
+            customer_id: clientField.currentValue,
+            date: dateField.text ? dateField.text : new Date().toLocaleDateString(
+                                         Qt.locale(), "dd/MM/yyyy"),
+            order_details: details,
+            payment: {
+                amount_to_pay: addOrder.totalToPay,
+                paid_amount: amount
+            }
+        };
+        print('fullOrder ', JSON.stringify(fullOrder, null, 2));
+        addOrder.request.post("/orders/", fullOrder);
     }
 }
