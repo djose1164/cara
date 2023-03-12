@@ -13,10 +13,11 @@ Item {
     signal paymentApplied
 
     Component.onCompleted: updatePayment.paymentPatched.connect(paymentApplied);
+    width: ListView.view.width
+    height: ListView.view.height * .55
 
     ColumnLayout {
         anchors.fill: parent
-        spacing: 10
 
         Label {
             text: "Estado de de la orden: "
@@ -25,6 +26,7 @@ Item {
         }
 
         RowLayout {
+            Layout.topMargin: 0
             Label { text: statusToString(payment.status) }
 
             Button {
@@ -40,30 +42,38 @@ Item {
             font.bold: true
         }
 
-        RowLayout {
-            Layout.fillWidth: true
-            spacing: 50
-
-            Label { text: "Producto" }
-
-            Label { text: "Cantidad" }
-        }
-
-        GridLayout {
-            Layout.fillWidth: true
-            Layout.fillHeight: true
-            Layout.topMargin: 20
-            rowSpacing: 1
-            columnSpacing: 10
-            columns: 2
-
-            Repeater {
-                model: order_details
-                delegate: Label { text: product.name }
+        ColumnLayout {
+            id: grid
+            RowLayout {
+                Layout.fillWidth: true
+                spacing: 20
+                Label {
+                    Layout.alignment: Qt.AlignLeading
+                    text: "Producto"
+                    font.pointSize: 11
+                    font.bold: true
+                }
+                Label {
+                    Layout.alignment: Qt.AlignTrailing
+                    text: "Cantidad"
+                    font.pointSize: 11
+                    font.bold: true
+                }
             }
             Repeater {
-                model: order_details
-                delegate: Label { text: quantity }
+            model: order_details
+            delegate: RowLayout {
+                Layout.fillWidth: true
+                spacing: 20
+                Label {
+                    Layout.alignment: Qt.AlignLeading
+                    text: product.name
+                }
+                Label {
+                    Layout.alignment: Qt.AlignTrailing
+                    text: quantity
+                }
+            }
             }
         }
     }
