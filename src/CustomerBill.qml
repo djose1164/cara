@@ -15,11 +15,11 @@ ItemDelegate {
 
     signal updateCustomer(customerId: int)
 
-    width: ListView.view.width/2
+    width: ListView.view.width
     height: orientation === ListView.Horizontal ? ListView.view.height
                                                 : ListView.view.height * .15
 
-    onClicked: stackView.push("qrc:/orders/UpdateOrderPage.qml",
+    onClicked: stackView.push("qrc:/orders/CustomerOrders.qml",
     {
         "date": date, "id": id, "order_details": order_details, "payment": payment
     })
