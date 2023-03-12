@@ -25,7 +25,7 @@ Home {
     Rectangle {
         id: lbl
         width: parent.width
-        height: childrenRect.height
+        height: parent.height * .1
         color: "floralwhite"
         z: 10
         Label {
@@ -48,6 +48,7 @@ Home {
 
     ListView {
         id: listView
+        readonly property StackView stackView: root.stackView
         width: parent.width
         height: parent.height * .4
         anchors.top: lbl.bottom
@@ -79,7 +80,10 @@ Home {
         anchors.horizontalCenter: parent.horizontalCenter
 
         model: customerModel.model
-        delegate: CustomerBill { orientation: ListView.Horizontal }
+        delegate: CustomerBill {
+            width: recentOrders.width/2
+            orientation: ListView.Horizontal
+        }
         orientation: ListView.Horizontal
     }
 
