@@ -1,7 +1,6 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
-import QtQuick.Dialogs
 import "qrc:/utils" as Utils
 import "qrc:/customers" as Client
 
@@ -9,45 +8,26 @@ import "qrc:/customers" as Client
 
 Page {
     id: root
-    required property var order_details
-    required property var payment
-    required property string date
-    required property string id
+
+    required property var person_info
+    required property ListModel orders
     readonly property StackView myStack: StackView.view
+    readonly property string name: `${person_info.forename} ${person_info.surname}`
 
     signal paymentApplied
 
     header: Utils.TitleHeader {
-        title: "Estado de Orden"
+        title: "Cliente: "+name+" ID #"+person_info.customer_id;
         label.font.pointSize: 12
         stackView: myStack
     }
 
-    ColumnLayout {
+    ListView {
+        id: listView
         anchors.fill: parent
-        anchors.leftMargin: 20
         spacing: 20
-        Label {
-            id: orderLbl
-            text: "Orden #" + id
-            font.pointSize: 14
-            font.bold: true
-        }
-
-        Label {
-            id: dateBanner
-            text: "Fecha"
-            font.pointSize: 12
-            font.bold: true
-        }
-
-        Label { text: date }
-
-        OrderState {
-            Layout.fillWidth: true
-            Layout.preferredHeight: root.height * .3
-            order_details: root.order_details
-            payment: root.payment
+        model: orders
+        delegate: OrderState {
             Component.onCompleted: paymentApplied.connect(root.paymentApplied)
         }
     }
