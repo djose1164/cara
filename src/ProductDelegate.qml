@@ -4,9 +4,10 @@ import QtQuick.Layouts
 
 Item {
     id: root
-    required property int id
     required property string name
     required property string image_url
+    required property string description
+    required property int sell_price
     readonly property StackView stackView: ListView.view.stackView
     width: ListView.view.width * .55
     height: ListView.view.height
@@ -23,7 +24,8 @@ Item {
         }
 
         ItemDelegate {
-            onClicked: stackView.push("qrc:/product/Product.qml", {id: id})
+            onClicked: stackView.push("qrc:/product/Product.qml",
+                                      {sell_price, name, image_url, description})
             ColumnLayout {
                 anchors.centerIn: parent
                 spacing: 10
