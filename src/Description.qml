@@ -17,23 +17,6 @@ Item {
 
     Component.onCompleted: payment = 0
     onOkClicked: productEntry.okClicked()
-    onPaymentChanged: {
-        if (payment !== 2)
-            amountField.clear();
-
-        switch (payment){
-        case 0:
-            amountField.placeholderText = "Monto a pagar: " + total;
-            amountPaid = amountField.text ? parseInt(amountField.text) : 0;
-            break;
-        case 1:
-            amountField.placeholderText = "Credito: " + total;
-            break;
-        case 2:
-            amountField.placeholderText = "Ingrese monto";
-            break;
-        }
-    }
 
     onUpdateTotal: {
         total = 0;
@@ -41,11 +24,6 @@ Item {
             let current = orderModel.get(i).entryValue;
             total += current.quantity * current.unit_price;
         }
-
-        if (payment === 0)
-            amountField.placeholderText = "Monto a pagar: " + total;
-        else if (payment === 1)
-            amountField.placeholderText = "Credito: " + total;
     }
 
     ProductEntry {
