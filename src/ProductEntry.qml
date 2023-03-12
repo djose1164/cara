@@ -7,21 +7,18 @@ ScrollView {
     id: root
     signal updateTotal
     signal okClicked
+    width: parent.width
 
-    ColumnLayout {
-        anchors.fill: parent
-        anchors.topMargin: 15
+    Component.onCompleted: {
+        entry.entryAdded.connect(root.updateTotal);
+        entry.okClicked.connect(root.okClicked);
+    }
+    ListView {
+        width: parent.width *.9
+        height: parent.height *.9
+        anchors.centerIn: parent
         spacing: 15
-
-        Repeater {
-            model: repeaterModel
-
-            Entry {
-                Component.onCompleted: {
-                    entryAdded.connect(root.updateTotal);
-                    okClicked.connect(root.okClicked);
-                }
-            }
-        }
+        model: repeaterModel
+        delegate: Entry { id: entry }
     }
 }

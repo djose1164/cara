@@ -1,7 +1,6 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
-import QtQuick.Dialogs
 import "qrc:/utils" as Utils
 import "qrc:/customers" as Client
 
@@ -28,7 +27,7 @@ Page {
         anchors.fill: parent
         spacing: 20
         model: orders
-        delegate: OrderDelegate {
+        delegate: OrderState {
             Component.onCompleted: paymentApplied.connect(root.paymentApplied)
         }
     }

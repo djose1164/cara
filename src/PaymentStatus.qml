@@ -3,7 +3,7 @@ import QtQuick.Controls
 import QtQuick.Layouts
 
 RowLayout {
-    property alias group: group
+    property alias checkedButton: group.checkedButton
 
     ButtonGroup {
         id: group

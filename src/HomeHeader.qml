@@ -3,12 +3,15 @@ import QtQuick.Controls
 import QtQuick.Layouts
 
 ToolBar {
+    id: root
     required property StackView stackView
 
     background: Rectangle {
         anchors.fill: parent
         color: "floralwhite"
     }
+
+    signal acceptedText(text: string)
 
     RowLayout {
         anchors.fill: parent
@@ -44,7 +47,15 @@ ToolBar {
                 antialiasing: false
                 sourceSize: iconSize
             }
-            onClicked: stackView.push("qrc:/search/SearchPage.qml")
+            onClicked: {
+                stackView.push("qrc:/search/SearchPage.qml")
+                const item = stackView.currentItem;
+                // BUG: SearchBar is not working. I don't know even if the model
+                // is being binded to the SearchPage.
+                item.acceptedText.connect(function(t) {
+                    root.acceptedText(t);
+                });
+            }
         }
     }
 }

@@ -2,7 +2,7 @@ pragma Singleton
 import QtQuick
 import Qt.labs.settings
 import "qrc:/utils"
-import com.cara
+import com.cara 1.0
 
 QtObject {
     id: root
@@ -12,6 +12,8 @@ QtObject {
     readonly property bool previousLogin: settings.value("refreshToken")
     readonly property string homePath: isAdmin ? "qrc:/home/AdminHome.qml"
                                                : "qrc:/home/UserHome.qml"
+    readonly property string orderFormPath: isAdmin ? "qrc:/orders/OrderFormAdmin.qml"
+                                                    : "qrc:/orders/OrderFormUser.qml"
     // TODO: This should be deleted
     property alias refreshToken: settings.refreshToken
     property int userId
@@ -78,11 +80,11 @@ QtObject {
         if (person_info) {
             forename = person_info.forename;
             surname = person_info.surname;
+            customerId = person_info.customer_id ? person_info.customer_id : 0;
         }
         email = user.email;
         userTypeId = user.user_type_id;
         userId = user.id;
-        customerId = user.customer_id ? user.customer_id : 0;
         print("user initialized")
         userCredentialsSet();
     }
@@ -94,7 +96,6 @@ QtObject {
         userTypeId = 0;
         userId = 0;
         isLoggedIn = false;
-        settings.accessToken = "";
         settings.refreshToken = "";
     }
 }

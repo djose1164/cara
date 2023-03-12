@@ -13,8 +13,11 @@ RowLayout {
     signal okClicked
     signal entryAdded
 
+    width: ListView.view.width*.95
+    spacing: width*.05
     ComboBox {
         id: productField
+        Layout.fillWidth: true
         model: productRequest.model
         textRole: "name"
         valueRole: "sell_price"
@@ -24,11 +27,11 @@ RowLayout {
 
     TextField {
         id: quantityField
+        Layout.preferredHeight: productField.height
         placeholderText: "Cantidad"
         text: "1"
         inputMethodHints: Qt.ImhDigitsOnly | Qt.ImhNoPredictiveText
         onTextEdited: fetchEntry()
-        Layout.preferredHeight: productField.height
     }
 
     Component.onCompleted: {

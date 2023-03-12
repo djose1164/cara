@@ -9,12 +9,14 @@ Page {
     property ListModel model
     readonly property StackView stackView: StackView.view
 
+    signal acceptedText(text: string)
+
     title: "Buscador"
     header: SearchBar {
         id: searchBar
         stackView: root.stackView
         placeholderText: root.placeholderText ? root.placeholderText : "Buscar en Cara..."
-        onAccepted: t => productRequest.findProductByIdentifier(t)
+        onAccepted: t => acceptedText(t)
     }
 
     GridLayout {
@@ -40,6 +42,6 @@ Page {
         anchors.top: gridLayout.bottom
         anchors.topMargin: 5
         model: model
-        delegate: ProductDelegate {}
+        delegate: Products.ProductDelegate {}
     }
 }

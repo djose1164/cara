@@ -31,11 +31,9 @@ Item {
     }
     
     function addSuggetionsToModel() {
-        if (model)
-            request.get('/', null, resp => {
-                model.append(resp.products);
-                request.succeeded(resp);
-            });
-
+        request.get('/', null, resp => {
+            model.append(resp.products);
+            request.succeeded(resp);
+        });
     }
 }

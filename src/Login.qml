@@ -14,7 +14,6 @@ Page {
         "invalidInput": failedHandler,
         "notFound": () => popup.text = "Cuenta no registrada.",
     }
-    anchors.fill: parent
 
     Item {
 
