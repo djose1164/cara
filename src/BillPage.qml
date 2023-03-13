@@ -22,10 +22,7 @@ Page {
         function onUserTypeIdChanged() {
             print("TheCurrentUser.isCustomer: " + TheCurrentUser.isCostumer
                   + "\ncustomerId " + TheCurrentUser.customerId)
-            if (TheCurrentUser.isAdmin)
-                baseModel.findAll();
-            else if (TheCurrentUser.isCostumer)
-                baseModel.findOrdersByCustomerId(TheCurrentUser.customerId);
+            updateCustomerModel();
         }
     }
 
@@ -66,12 +63,9 @@ Page {
 
     Connections {
         target: TheCurrentUser
-        function onOrderPostedWithUser(customerId) {
-            // Fetch the customer info indetified by `customerId`. Replace the
-            // customer identified by `customerId` in the model with this
-            // updated info.
-
-          //  baseModel.setById(customerId);
+        // TODO: Optimize this for later release.
+        function onOrderPosted() {
+            baseModel.findOrdersByCustomerId(TheCurrentUser.customerId);
         }
     }
 
@@ -93,5 +87,12 @@ Page {
                 Component.onCompleted: updateCustomer.connect(baseModel.updateCustomer)
             }
         }
+    }
+
+    function updateCustomerModel() {
+        if (TheCurrentUser.isAdmin)
+            baseModel.findAll();
+        else if (TheCurrentUser.isCostumer)
+            baseModel.findOrdersByCustomerId(TheCurrentUser.customerId);
     }
 }

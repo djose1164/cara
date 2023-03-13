@@ -23,7 +23,6 @@ QtObject {
 
     // For model
     function setById(customerId) {
-
         const handler = r => model.set(find(customer => customer.id === customerId), r);
         request.succeeded.connect(handler)
         request.get("/" + customerId);
@@ -64,6 +63,7 @@ QtObject {
     function findOrdersByCustomerId(customerId) {
         print(`setById ${customerId}`);
         request.succeeded.connect(function(r) {
+            clearModel();
             model.append(r.customer.orders);
         });
         request.get(`/${customerId}`);
@@ -88,7 +88,8 @@ QtObject {
     }
 
     function clearModel() {
-        model.clear();
+        if (model.count)
+            model.clear();
     }
 
     function isModelEmpty() {

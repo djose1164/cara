@@ -44,7 +44,7 @@ Page {
             order_details: details,
             payment: {
                 amount_to_pay: addOrder.totalToPay,
-                paid_amount: addOrder.orderForm.amountPaid
+                paid_amount: 0
             }
         };
         print('fullOrder ', JSON.stringify(fullOrder, null, 2));
