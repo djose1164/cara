@@ -19,10 +19,15 @@ Page {
 
     Connections {
         target: TheCurrentUser
+
         function onUserTypeIdChanged() {
             print("TheCurrentUser.isCustomer: " + TheCurrentUser.isCostumer
                   + "\ncustomerId " + TheCurrentUser.customerId)
             updateCustomerModel();
+        }
+
+        function onOrderPosted() {
+            baseModel.findOrdersByCustomerId(TheCurrentUser.customerId);
         }
     }
 
