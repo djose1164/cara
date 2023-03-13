@@ -13,14 +13,14 @@ Item {
     signal paymentApplied
 
     Component.onCompleted: updatePayment.paymentPatched.connect(paymentApplied);
-    width: ListView.view.width
-    height: ListView.view.height * .55
+    width: ListView.view ? ListView.view.width : parent.width
+    height: ListView.view ? ListView.view.height * .55 : parent.height * .55
 
     ColumnLayout {
         anchors.fill: parent
 
         Label {
-            text: "Estado de de la orden: "
+            text: "Estado de la orden: "
             font.pointSize: 12
             font.bold: true
         }
