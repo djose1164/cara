@@ -88,4 +88,12 @@ Home {
     }
 
     CustomerModel { id: customerModel }
+
+    Connections {
+        target: TheCurrentUser
+        // TODO: Optimize this for later release.
+        function onOrderPosted() {
+            customerModel.findOrdersByCustomerId(TheCurrentUser.customerId);
+        }
+    }
 }
