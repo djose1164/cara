@@ -61,14 +61,6 @@ Page {
         request.onFailed: r => print("request.onFailed: " + r);
     }
 
-    Connections {
-        target: TheCurrentUser
-        // TODO: Optimize this for later release.
-        function onOrderPosted() {
-            baseModel.findOrdersByCustomerId(TheCurrentUser.customerId);
-        }
-    }
-
     Filter {
         id: filter
         customerModel: baseModel

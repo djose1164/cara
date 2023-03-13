@@ -43,6 +43,7 @@ QtObject {
         onFailed: r => failedToSetUserCredentials(r)
         onSucceeded: r => initWithUser(r.user)
         onAccessTokenChanged: request.get("/")
+        onServiceUnavailable: root.serverUnavailable()
 
         function fetchUserInfo() {
             print("fetchUserInfo");
@@ -53,6 +54,7 @@ QtObject {
     signal userCredentialsSet
     signal failedToSetUserCredentials(respose: var)
     signal orderPosted
+    signal serverUnavailable
 
     Component.onCompleted: {
         if (previousLogin) {

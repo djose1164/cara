@@ -2,6 +2,7 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 import "qrc:/users"
+import "qrc:/errors"
 
 ApplicationWindow {
     id: app
@@ -22,9 +23,10 @@ ApplicationWindow {
     Connections {
         target: TheCurrentUser
 
-        function onFailedToSetUserCredentials(response) {
-            print("onFailedToSetUserCredentials");
-            mainStackView.replace("qrc:/errors/ErrorPage.qml", response);
+        function onServerUnavailable(response) {
+            const message = "Nuestros servidores se encuentran actualmente bajo "
+                          + "mantenimiento. Puedes ver como va en [Twiterr](https://twitter.com/carardoficial).";
+            mainStackView.replace("qrc:/errors/ErrorPage.qml", {message});
         }
     }
 

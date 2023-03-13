@@ -1,12 +1,9 @@
 import QtQuick
 import QtQuick.Controls
+import "qrc:/users"
 
 Item {
-    property alias text: label.text
     required property string message
-    required property int code
-
-    anchors.fill: parent
 
     Rectangle {
         width: parent.width * .9
@@ -21,9 +18,11 @@ Item {
             width: parent.width * .9
             anchors.centerIn: parent
             anchors.margins: 40
-            text: `Error code ${code}: ${message}`
+            text: message
             font.pointSize: 14
             wrapMode: Label.WordWrap
+            textFormat: CheckLabel.MarkdownText
+            onLinkActivated: url => Qt.openUrlExternally(url)
         }
     }
 }
