@@ -54,9 +54,10 @@ signals:
     void received(const QVariantMap &data);
     void succeeded(const QVariantMap &data);
 
-    // HTTP code rror signals
+    // HTTP code error signals
     void failed(const QVariantMap &data); // Handle any error
     void unauthorized(); // 401
+    void serviceUnavailable(); // 503
 
 private slots:
     void replyFinished();
