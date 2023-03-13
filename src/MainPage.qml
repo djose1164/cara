@@ -39,39 +39,6 @@ Page {
             print("orderStackView pusing: " + TheCurrentUser.orderFormPath);
             orderStackView.push(TheCurrentUser.orderFormPath);
         }
-
-        function onFailedToSetUserCredentials(response) {
-            print("onFailedToSetUserCredentials");
-            stackView.replace(errorView, response);
-        }
-    }
-
-    Component {
-        id: errorView
-        Item {
-            property alias text: label.text
-            required property string message
-            required property int code
-            width: parent.width
-            height: parent.height
-            Rectangle {
-                width: parent.width * .9
-                height: parent.height/2
-                anchors.centerIn: parent
-                border.width: 1
-                radius: 10
-                color: "floralwhite"
-            Label {
-                id: label
-                width: parent.width * .9
-                anchors.centerIn: parent
-                anchors.margins: 40
-                text: `Error code ${code}: ${message}`
-                font.pointSize: 14
-                wrapMode: Label.WordWrap
-            }
-        }
-        }
     }
 
     SidePane { id: sideMenu }

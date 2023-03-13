@@ -72,16 +72,19 @@
         <file>ProductDelegate.qml</file>
         <file>Product.qml</file>
     </qresource>
-    <qresource prefix="/qr" lang="qml">
+    <qresource lang="qml" prefix="/qr">
         <file>QR.qml</file>
     </qresource>
-    <qresource prefix="/login" lang="qml">
+    <qresource lang="qml" prefix="/login">
         <file>Auth.qml</file>
         <file>Login.qml</file>
     </qresource>
-    <qresource prefix="/users" lang="qml">
+    <qresource lang="qml" prefix="/users">
         <file>TheCurrentUser.qml</file>
         <file>qmldir</file>
         <file>Refresh.qml</file>
+    </qresource>
+    <qresource lang="qml" prefix="/errors">
+        <file>ErrorPage.qml</file>
     </qresource>
 </RCC>

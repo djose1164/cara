@@ -170,11 +170,12 @@ void Rest::errorOccurred(QNetworkReply::NetworkError error)
 
     if (error == QNetworkReply::AuthenticationRequiredError)
         emit unauthorized();
+    else if (error == QNetworkReply::ConnectionRefusedError)
+        emit serviceUnavailable();
 }
 
 void Rest::refreshAccessToken()
 {
-    qDebug() << "Refreshing token";
     if (refreshToken_.isEmpty())
         return;
 
@@ -192,9 +193,7 @@ void Rest::refreshAccessToken()
 
     req.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
     req.setRawHeader("Authorization", refreshToken_.toUtf8());
-    qDebug() << "reply_ " << (reply_ ? "true" : "false");
     auto reply{manager_.get(req)};
-    qDebug() << "reply_ " << (reply_ ? "true" : "false");
     connect(reply, &QNetworkReply::finished, this, [this, reply]() {
         const auto data{reply->readAll()};
         QVariantMap token{QJsonDocument::fromJson(data).toVariant().toMap()};

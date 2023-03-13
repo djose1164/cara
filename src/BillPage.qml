@@ -19,10 +19,15 @@ Page {
 
     Connections {
         target: TheCurrentUser
+
         function onUserTypeIdChanged() {
             print("TheCurrentUser.isCustomer: " + TheCurrentUser.isCostumer
                   + "\ncustomerId " + TheCurrentUser.customerId)
             updateCustomerModel();
+        }
+
+        function onOrderPosted() {
+            baseModel.findOrdersByCustomerId(TheCurrentUser.customerId);
         }
     }
 
@@ -59,14 +64,6 @@ Page {
         request.onSucceeded: stackLayout.currentIndex = 2
         onFiltering: stackLayout.currentIndex = 0
         request.onFailed: r => print("request.onFailed: " + r);
-    }
-
-    Connections {
-        target: TheCurrentUser
-        // TODO: Optimize this for later release.
-        function onOrderPosted() {
-            baseModel.findOrdersByCustomerId(TheCurrentUser.customerId);
-        }
     }
 
     Filter {
