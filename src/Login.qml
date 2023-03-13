@@ -3,6 +3,7 @@ import QtQuick.Controls
 import QtQuick.Layouts
 import "qrc:/main"
 import "qrc:/users"
+
 Page {
     id: root
     readonly property bool areInputsValid: usernameInput.text !== ""
@@ -97,10 +98,10 @@ Page {
             request.onReceived: busyIndicator.close()
             request.onFailed: (response) => handlers[response.code]()
             onAuthenticated: r => {
-                                 TheCurrentUser.init(r);
-                                 TheCurrentUser.isLoggedIn = true;
-                                 successHandler();
-                             }
+                TheCurrentUser.init(r);
+                TheCurrentUser.isLoggedIn = true;
+                successHandler();
+            }
             onInvalid: popup.open()
         }
 
