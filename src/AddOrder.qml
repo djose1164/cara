@@ -65,10 +65,8 @@ Item {
                          + "Ordenes Recientes.";
             message.open();
             clearOrderForm();
-            if (TheCurrentUser.isAdmin)
-                TheCurrentUser.orderPostedWithUser(orderForm.clientID);
-            else
-                TheCurrentUser.orderPosted();
+
+            TheCurrentUser.orderPosted();
 
             if (TheCurrentUser.customerId === 0)
                 TheCurrentUser.customerId = r.customer_id;

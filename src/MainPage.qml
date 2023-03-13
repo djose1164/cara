@@ -15,10 +15,6 @@ Page {
         id: stackLayout
         anchors.fill: parent
         currentIndex: bar.currentIndex
-        /*onCurrentIndexChanged: {
-            if (bar.addOrderIdx === currentIndex)
-                orderStackView.currentItem.viewRequested();
-        }*/
 
         StackView {
             id: homeView
