@@ -19,6 +19,15 @@ ApplicationWindow {
                                    : "qrc:/login/Login.qml"
     }
 
+    Connections {
+        target: TheCurrentUser
+
+        function onFailedToSetUserCredentials(response) {
+            print("onFailedToSetUserCredentials");
+            mainStackView.replace("qrc:/errors/ErrorPage.qml", response);
+        }
+    }
+
     Shortcut {
         sequence: StandardKey.Quit
         onActivated: Qt.quit()
