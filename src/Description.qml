@@ -9,22 +9,20 @@ Item {
     property int payment: 2
     property int _index: 0
     property var details
-    property int total: 0
-    property int amountPaid: amountField.text ? parseInt(amountField.text) : 0
+    property int total: {
+        let partial_total = 0;
+        for (let i = 0; i < orderModel.count; ++i) {
+            const current = orderModel.get(i).entryValue;
+            partial_total += current.quantity * current.unit_price;
+        }
+        return partial_total;
+    }
 
     signal okClicked
     signal updateTotal
 
     Component.onCompleted: payment = 0
     onOkClicked: productEntry.okClicked()
-
-    onUpdateTotal: {
-        total = 0;
-        for (let i = 0; i < orderModel.count; ++i) {
-            let current = orderModel.get(i).entryValue;
-            total += current.quantity * current.unit_price;
-        }
-    }
 
     ProductEntry {
         id: productEntry
@@ -33,7 +31,6 @@ Item {
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.top: parent.top
         anchors.topMargin: 20
-        Component.onCompleted: updateTotal.connect(root.updateTotal)
     }
 
     RowLayout {
@@ -78,9 +75,7 @@ Item {
     }
 
     function clear() {
-        amountPaid = 0;
         payment = 0;
         total = 0;
-        amountField.clear();
     }
 }
