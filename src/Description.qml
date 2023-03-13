@@ -76,6 +76,5 @@ Item {
 
     function clear() {
         payment = 0;
-        total = 0;
     }
 }
