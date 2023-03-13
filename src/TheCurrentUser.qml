@@ -53,7 +53,6 @@ QtObject {
     signal userCredentialsSet
     signal failedToSetUserCredentials(respose: var)
     signal orderPosted
-    signal orderPostedWithUser(userId: int)
 
     Component.onCompleted: {
         if (previousLogin) {
