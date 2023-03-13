@@ -38,10 +38,8 @@ RowLayout {
        okClicked.connect(fetchEntry)
     }
 
-    Component.onDestruction: {
-        orderModel.remove(currentEntryIndex);
-        updateTotal();
-    }
+    Component.onDestruction: orderModel.remove(currentEntryIndex);
+
     function fetchEntry() {
         const entryValue = {
             "product_id": findIn(productRequest.model, item => item.name === productField.currentText).id,
@@ -50,6 +48,5 @@ RowLayout {
         };
         orderModel.set(currentEntryIndex, {"entryValue": entryValue});
         entryAdded();
-        updateTotal();
     }
 }
