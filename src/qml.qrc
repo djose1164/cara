@@ -87,4 +87,7 @@
     <qresource lang="qml" prefix="/errors">
         <file>ErrorPage.qml</file>
     </qresource>
+    <qresource prefix="/inventory">
+        <file>Inventory.qml</file>
+    </qresource>
 </RCC>
