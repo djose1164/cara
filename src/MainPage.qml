@@ -8,8 +8,7 @@ Page {
     id: root
     readonly property StackView stackView: StackView.view
 
-    //anchors.fill: parent
-    footer: MainFooter { id: bar }
+    footer: MainFooter {id: bar }
 
     StackLayout {
         id: stackLayout
@@ -19,7 +18,7 @@ Page {
         StackView {
             id: homeView
             readonly property TabBar bar: bar
-            initialItem: BusyIndicator {}
+            initialItem: BusyIndicator {}   
         }
 
         StackView {
@@ -34,10 +33,19 @@ Page {
         target: TheCurrentUser
         function onUserCredentialsSet() {
             print("onUserCredentialsSet: " + TheCurrentUser.homePath)
-            homeView.push(TheCurrentUser.homePath)
+            homeView.replace(TheCurrentUser.homePath)
 
             print("orderStackView pusing: " + TheCurrentUser.orderFormPath);
             orderStackView.push(TheCurrentUser.orderFormPath);
+        }
+    }
+
+    Connections {
+        target: bar
+
+        function onHomeClicked() {
+            for (let depth = homeView.depth; depth > 1; --depth)
+                homeView.pop();
         }
     }
 
