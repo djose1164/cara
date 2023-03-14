@@ -18,24 +18,36 @@ Page {
         stackView: root.stackView
     }
 
-    ColumnLayout {
-        anchors.fill: parent
+        ColumnLayout {
+            anchors.centerIn: parent
 
-        Image {
-            id: img
-            source: image_url
-            sourceSize: `${root.width/2}x${root.height/2}`
+            Image {
+                id: img
+                source: image_url
+                sourceSize: `${root.width*.9}x${root.height*.4}`
+            }
+
+            Label {
+                text: name
+                font.pointSize: 14
+            }
+
+            Label {
+                text: `Precio: RD$${sell_price}`
+                font.pointSize: 12
+            }
+
+            Label {
+                text: `Descripción: ${description}`
+                font.pointSize: 12
+            }
+
+            Button {
+                Layout.fillWidth: true
+                text: "Comprar"
+                onClicked: bar.currentIndex = 1
+                font.pointSize: 12
+            }
         }
 
-        Label { text: name }
-
-        Label { text: `Precio: RD$${sell_price}` }
-
-        Label { text: `Descripción: ${description}` }
-
-        Button {
-            text: "Comprar"
-            onClicked: bar.currentIndex = 1
-        }
-    }
 }
