@@ -8,7 +8,7 @@ SOURCES += \
 
 RESOURCES += \
     src/qml.qrc \
-    src/res.qrc
+    res.qrc
 
 CONFIG += c++20 qml console qml_debug qmltypes
 
