@@ -4,66 +4,87 @@ import QtQuick.Layouts
 import "qrc:/orders" as Order
 
 Home {
-    Item {
-        width: parent.width * .9
-       height:  parent.height *.8
-        anchors.horizontalCenter: parent.horizontalCenter
+    GridLayout {
+        id: gridLayout
+        width: parent.width*.9
+        height: parent.height*.7
+        columns: 2
         anchors.centerIn: parent
+        columnSpacing: 15
+        rowSpacing: 15
 
-        GridLayout {
-            id: gridLayout
-            columns: 2
-            width: parent.width
-            height: width
+        Repeater {
+            model: model
+            delegate: iconOption
+        }
+    }
 
-
-            // TODO: Add animation on hover.
-            Rectangle {
-                color: "chocolate"
-                Layout.preferredWidth: parent.width/2
-                Layout.preferredHeight: parent.height/2
-
-                Button {
-                    anchors.centerIn: parent
-                    background: Image {
-                        anchors.centerIn: parent
-                        source: "qrc:/icons/complete_order.svg"
+    Component {
+        id: iconOption
+        Rectangle {
+            id: rec
+            required property string source
+            required property string path
+            color: "chocolate"
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+            states: [
+                State {
+                    name: "hovered"
+                    when: control.hovered
+                    PropertyChanges {
+                        rec {
+                            scale: 1.15
+                            color: "crimson"
+                        }
                     }
-                    onClicked: stackView.push("qrc:/provider/ProviderForm.qml");
                 }
+            ]
+            transitions: [
+                Transition {
+                    PropertyAnimation {
+                        property: "scale"
+                        duration: 200
+                        easing.type: Easing.InOutQuad
+                    }
+
+                    ColorAnimation { duration: 200 }
+                }
+            ]
+
+            Image {
+                anchors.centerIn: parent
+                source: rec.source
+                sourceSize: "48x48"
             }
 
-            Rectangle {
-                color: "chocolate"
-                Layout.preferredWidth: parent.width/2
-                Layout.preferredHeight: parent.height/2
+            TapHandler { onTapped: stackView.push(path) }
 
-                Button {
-                    anchors.centerIn: parent
-                    background: Image {
-                        anchors.centerIn: parent
-                        source: "qrc:/icons/new_product.svg"
-                        sourceSize: "48x48"
-                    }
-                    onClicked: stackView.push("qrc:/product/ProductForm.qml", {"pageHeaderView": mainStackView});
-                }
-            }
+            HoverHandler { id: control }
+        }
+    }
 
-            Rectangle {
-                color: "chocolate"
-                Layout.preferredWidth: parent.width/2
-                Layout.preferredHeight: parent.height/2
+    ListModel {
+        id: model
 
-                Button {
-                    anchors.centerIn: parent
-                    background: Image {
-                        anchors.centerIn: parent
-                        source: "qrc:/icons/person_add.svg"
-                        sourceSize: "48x48"
-                    }
-                    onClicked: stackView.push("qrc:/customers/CustomerForm.qml");
-                }
-            }
+        ListElement {
+            source: "qrc:/icons/complete_order.svg"
+            path: "qrc:/provider/ProviderForm.qml"
+        }
+
+        ListElement {
+            source: "qrc:/icons/new_product.svg"
+            path: "qrc:/product/ProductForm.qml"
+        }
+
+        ListElement {
+            source: "qrc:/icons/person_add.svg"
+            path: "qrc:/customers/CustomerForm.qml"
+        }
+
+        ListElement {
+            source: "qrc:/icons/inventory.svg"
+            path: "qrc:/inventory/Inventory.qml"
         }
     }
 }
