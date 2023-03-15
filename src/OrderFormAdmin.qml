@@ -79,7 +79,6 @@ Page {
     }
 
     function okHandler() {
-        addOrder.stackLayout.currentIndex = 0;
         const order_details = addOrder.entryFormData();
 
         const fullOrder = {
