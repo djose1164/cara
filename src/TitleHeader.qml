@@ -3,7 +3,7 @@ import QtQuick.Controls
 import QtQuick.Layouts
 
 ToolBar {
-    required property string title
+    property alias title: lbl.text
     property StackView stackView
     property alias label: lbl
 
@@ -26,7 +26,6 @@ ToolBar {
 
         Label {
             id: lbl
-            text: title
             font.bold: true
             font.pointSize: 14
             Layout.alignment: Qt.AlignHCenter
