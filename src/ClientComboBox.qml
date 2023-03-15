@@ -12,7 +12,7 @@ Item {
 
     ComboBox {
         id: clientField
-        width: parent.width
+        anchors.fill: parent
         editable: true
         currentIndex: 0
         textRole: "name"
@@ -20,9 +20,7 @@ Item {
         model: model
     }
 
-    ListModel {
-        id: model
-    }
+    ListModel { id: model }
 
     Rest {
         id: rest
