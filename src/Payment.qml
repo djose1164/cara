@@ -21,7 +21,7 @@ QtObject {
     property Rest rest: Rest {
         id: request
         base: "http://127.0.0.1:5000/api/payments"
-        refreshToken: TheCurrentUser.refreshToken
+        accessToken: TheCurrentUser.accessToken
         onSent: root.requested()
         onReceived: responseReceived();
         onSucceeded: a => paymentPatched()
