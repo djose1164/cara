@@ -16,6 +16,7 @@ QtObject {
                                                     : "qrc:/orders/OrderFormUser.qml"
     // TODO: This should be deleted
     property alias refreshToken: settings.refreshToken
+    readonly property alias accessToken: request.accessToken
     property int userId
     property int customerId
     property string username
