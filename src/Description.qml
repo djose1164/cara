@@ -7,16 +7,10 @@ import "qrc:/product"
 Item {
     id: root
     property int payment: 2
-    property int _index: 0
     property var details
-    property int total: {
-        let partial_total = 0;
-        for (let i = 0; i < orderModel.count; ++i) {
-            const current = orderModel.get(i).entryValue;
-            partial_total += current.quantity * current.unit_price;
-        }
-        return partial_total;
-    }
+    property int total: productEntry.total
+    readonly property alias entriesCount: productEntry.count
+    readonly property alias productEntries: productEntry
 
     signal okClicked
     signal updateTotal
@@ -27,34 +21,29 @@ Item {
     ProductEntry {
         id: productEntry
         width: parent.width
-        height: parent.height * .35
+        height: parent.height * .8
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.top: parent.top
-        anchors.topMargin: 20
     }
 
     RowLayout {
         width: parent.width
+        height: parent.height*.1
         anchors.top: productEntry.bottom
-        anchors.topMargin: 50
+        anchors.topMargin: 10
         spacing: 10
 
         Button {
             text: "Agregar"
-            onClicked: repeaterModel.append({"currentEntryIndex": _index++})
+            onClicked: productEntry.addEntry()
             Layout.fillWidth: true
         }
 
         Button {
             text: "Remover"
-            onClicked: if (_index > 1) removeEntryAt(--_index)
+            onClicked: productEntry.pop()
             Layout.fillWidth: true
         }
-    }
-
-    ListModel {
-        id: repeaterModel
-        Component.onCompleted: repeaterModel.append({"currentEntryIndex": _index++})
     }
 
     function findIn(model, criteria) {
@@ -62,16 +51,6 @@ Item {
             if (criteria(model.get(i)))
                 return model.get(i);
         return null;
-    }
-
-    // Reset entires to one
-    function resetEntries() {
-        for (let i = _index; i != 0; --i)
-            removeEntryAt(i);
-    }
-
-    function removeEntryAt(idx) {
-        repeaterModel.remove(idx);
     }
 
     function clear() {
