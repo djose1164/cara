@@ -6,6 +6,7 @@ import "qrc:/users"
 
 Item {
     id: root
+    required property int id
     required property var payment
     required property var order_details
     required property string date
@@ -21,7 +22,7 @@ Item {
         anchors.fill: parent
 
         Label {
-            text: "Estado de la orden: "
+            text: `Estado de la orden #${id}: `
             font.pointSize: 12
             font.bold: true
         }
