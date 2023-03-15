@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
+import "qrc:/product"
 
 RowLayout {
     id: root
@@ -11,14 +12,15 @@ RowLayout {
     required property int currentEntryIndex
 
     signal okClicked
-    signal entryAdded
+    signal added(idx: int, entry: var)
+    signal deleted(idx: int)
 
     width: ListView.view.width*.95
     spacing: width*.05
     ComboBox {
         id: productField
         Layout.fillWidth: true
-        model: productRequest.model
+        model: productModel.model
         textRole: "name"
         valueRole: "sell_price"
         currentIndex: 0
@@ -34,19 +36,21 @@ RowLayout {
         onTextEdited: fetchEntry()
     }
 
+    ProductRequest { id: productModel }
+
     Component.onCompleted: {
-       okClicked.connect(fetchEntry)
+       okClicked.connect(fetchEntry);
+        productModel.addSuggetionsToModel();
     }
 
-    Component.onDestruction: orderModel.remove(currentEntryIndex);
+    Component.onDestruction: deleted(currentEntryIndex);
 
     function fetchEntry() {
         const entryValue = {
-            "product_id": findIn(productRequest.model, item => item.name === productField.currentText).id,
+            "product_id": findIn(productModel.model, item => item.name === productField.currentText).id,
             "quantity": quantity,
             "unit_price": price
         };
-        orderModel.set(currentEntryIndex, {"entryValue": entryValue});
-        entryAdded();
+        added(currentEntryIndex, {entryValue});
     }
 }
