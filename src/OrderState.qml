@@ -8,6 +8,7 @@ Item {
     id: root
     required property var payment
     required property var order_details
+    required property string date
     readonly property var product: order_details.product
 
     signal paymentApplied
@@ -34,6 +35,17 @@ Item {
                 visible: TheCurrentUser.isAdmin
                 onClicked: updatePayment.open()
             }
+        }
+
+        Label {
+            text: "Fecha"
+            font.pointSize: 12
+            font.bold: true
+        }
+
+        Label {
+            text: date
+            font.pointSize: 12
         }
 
         Label {
