@@ -23,6 +23,7 @@ Page {
         ClientComboBox {
             id: clientField
             Layout.fillWidth: true
+            Layout.minimumHeight: root.height*.1
         }
 
         AddOrder {
@@ -34,6 +35,7 @@ Page {
         Payments.PaymentStatus {
             id: paymentStatus
             Layout.alignment: Qt.AlignCenter
+            Layout.topMargin: 40
         }
 
         RowLayout {
@@ -78,15 +80,13 @@ Page {
 
     function okHandler() {
         addOrder.stackLayout.currentIndex = 0;
-        const details = [];
-        for (let i = 0; i < addOrder.orderModel.count; ++i)
-            details.push(addOrder.orderModel.get(i).entryValue);
+        const order_details = addOrder.entryFormData();
 
         const fullOrder = {
             customer_id: clientField.currentValue,
             date: dateField.text ? dateField.text : new Date().toLocaleDateString(
                                          Qt.locale(), "dd/MM/yyyy"),
-            order_details: details,
+            order_details,
             payment: {
                 amount_to_pay: addOrder.totalToPay,
                 paid_amount: amount
