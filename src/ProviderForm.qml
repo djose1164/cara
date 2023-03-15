@@ -2,19 +2,17 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 import "qrc:/utils"
+import "qrc:/orders"
 
-Page {
+HeaderPage {
+    id: root
     readonly property StackView myStack: StackView.view
 
-    header: TitleHeader {
-        title: "Orden de Compra"
-        stackView: myStack
-    }
+    title: "Orden de Compra"
 
-    GridLayout {
+    ColumnLayout {
         id: orderBuyForm
-        width: parent.width
-        columns: 2
+        anchors.fill: parent
 
         ComboBox {
             id: providerComboBox
@@ -26,9 +24,12 @@ Page {
             placeholderText: "dia/mes/año"
         }
 
-        TextField {
-            id: productId
-            placeholderText: "Ingrese ID del producto"
+        Label { text: "Poductos" }
+
+        Description {
+            id: description
+            Layout.fillWidth: true
+            Layout.fillHeight: true
         }
 
         TextField {
@@ -44,14 +45,13 @@ Page {
 
         Label {
             id: totalLabel
-            text: "Total: " + (boughtQuantity.text && unitPrice.text ?
-                                   parseInt(boughtQuantity.text) * parseInt(unitPrice.text) : "0")
+            text: "Total: " + description.total
         }
 
         Button {
             Layout.columnSpan: 2
             Layout.alignment: Qt.AlignCenter
-            text: "Añadir provedor"
+            text: "Ok"
         }
     }
 }
