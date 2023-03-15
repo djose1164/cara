@@ -34,7 +34,7 @@ Page {
     StackLayout {
         id: stackLayout
         anchors.fill: parent
-        currentIndex: TheCurrentUser.isCostumer ? 0 : 1
+        currentIndex: TheCurrentUser.isCostumer ? 1 : 0
 
         BusyIndicator { id: myBusy }
 
