@@ -52,7 +52,7 @@
         <file>ProviderForm.qml</file>
     </qresource>
     <qresource prefix="/utils">
-        <file>PageHeader.qml</file>
+        <file>HeaderPage.qml</file>
         <file>RequestModel.qml</file>
         <file>Request.qml</file>
         <file>Filter.qml</file>
