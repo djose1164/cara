@@ -25,6 +25,7 @@ Page {
     ListView {
         id: listView
         anchors.fill: parent
+        anchors.leftMargin: 15
         spacing: 20
         model: orders
         delegate: OrderState {
