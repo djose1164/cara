@@ -12,9 +12,10 @@ Item {
     required property string date
     readonly property var product: order_details.product
 
-    signal paymentApplied
+    signal paymentApplied(newPayment: var)
 
-    Component.onCompleted: updatePayment.paymentPatched.connect(paymentApplied);
+    onPaymentApplied: p => payment = p
+
     width: ListView.view ? ListView.view.width : parent.width
     height: ListView.view ? ListView.view.height * .55 : parent.height * .55
 
@@ -93,9 +94,8 @@ Item {
 
     UpdatePayment {
         id: updatePayment
-        debt: parseInt(payment.amount_to_pay) - parseInt(payment.paid_amount)
-        paid: payment.paid_amount
-        paymentID: payment.id
+        payment: root.payment
+        Component.onCompleted: paymentPatched.connect(paymentApplied)
     }
 
     function statusToString(status) {
