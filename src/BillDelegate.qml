@@ -10,7 +10,6 @@ ItemDelegate {
     required property var person_info
     required property int id
     required property ListModel orders
-    required property CustomerModel customerModel
     property int orientation : ListView.Vertical
     readonly property StackView stackView: ListView.view.stackView
 
@@ -26,13 +25,6 @@ ItemDelegate {
                            customer_id: id,
                            orders
                        });
-        // NOTE: Looks useless to update `UpdatePayment` component
-        // onPaymentPatched
-       /*const item = stackView.currentItem;
-        item.paymentApplied.connect(function (payment) {
-            print(`item.paymentApplied: ${JSON.stringify(payment, null, 2)}`);
-            //customerModel.setCustomerPayment(payment);
-        });*/
     }
 
     ColumnLayout {
