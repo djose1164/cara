@@ -7,10 +7,12 @@ import QtQuick.Dialogs
 Popup {
     id: root
 
-    required property int debt
-    required property int paid
     // Any previous payment from the client
-    required property int paymentID
+     property var payment
+    readonly property int debt: amountToPay - paidAmount
+    readonly property int amountToPay: payment.amount_to_pay
+    readonly property int paidAmount: payment.paid_amount
+    readonly property int paid: payment.paid_amount
     property alias newPayment: newPayment.text
     // NOTE: A special case may happen here, when the client pays more than the debt;
     // if this happens, the negative amount should be saver for future buys from this
@@ -18,21 +20,17 @@ Popup {
     // property int newState: debt - parseInt(newPayment.text) == 0 ? 0 : 2
     property int newState: newPayment.text.trim() === "" ? 2 : (debt - parseInt(newPayment.text) === 0 ? 0 : 2)
 
-    signal paymentPatched()
+    signal paymentPatched(newPayment: var)
 
     modal: true
-    width: parent.width * .9
-    height: parent.height / 2
     anchors.centerIn: Overlay.overlay
 
-    onClosed: if (stackLayout.currentIndex === 2) stackLayout.currentIndex = 1
-
-    Component.onCompleted: print("UpdatePayment: debt: " + debt)
+    onClosed: payment.status ? stackLayout.currentIndex = 1 : stackLayout.currentIndex = 3
 
     StackLayout {
         id: stackLayout
-        anchors.centerIn: parent
-        currentIndex: debt ? 1 : 3
+        anchors.fill: parent
+        currentIndex: payment.status ? 1 : 3
 
         BusyIndicator {}
 
@@ -71,7 +69,19 @@ Popup {
             }
         }
 
-        IconImage { source: "qrc:/icons/done.svg" }
+        ColumnLayout {
+            Layout.alignment: Qt.AlignCenter
+            Label {
+                text: "¡Cambios realizados sastifactoriamente!"
+                Layout.alignment: Qt.AlignCenter
+            }
+
+            IconImage {
+                source: "qrc:/icons/done.svg"
+                sourceSize: "48x48"
+                Layout.alignment: Qt.AlignCenter
+            }
+        }
 
         GridLayout {
             columns: 2
@@ -100,7 +110,6 @@ Popup {
                 onClicked: {
                     newPayment.text = "0";
                     paymentRequest.patchPayment(0);
-                    close();
                 }
             }
         }
@@ -108,18 +117,18 @@ Popup {
 
     Payment {
         id: paymentRequest
-        paymentId: paymentID
-        debt: root.debt
+        payment: root.payment
         onRequested: stackLayout.currentIndex = 0
-        onPaymentPatched: paymentSucceeded()
+        onPaymentPatched: p => {
+            root.payment = p;
+            root.paymentPatched(p);
+            clean();
+            stackLayout.currentIndex = 2;
+            print(`root.payment = p: ${JSON.stringify(root.payment, null, 2)}`);
+        }
     }
 
     function clean() {
         newPayment.text = "";
-    }
-
-    function paymentSucceeded() {
-        root.paymentPatched();
-        stackLayout.currentIndex = 2;
     }
 }
