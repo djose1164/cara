@@ -2,6 +2,9 @@ import QtQuick
 import "qrc:/users"
 import com.cara 1.0
 
+// TODO: The API must be change to use fetch instead of find to get resources
+// from server
+
 QtObject {
     id: root
 
@@ -16,7 +19,7 @@ QtObject {
     property Rest rest: Rest {
         id: request
         base: "http://127.0.0.1:5000/api/customers"
-        refreshToken: TheCurrentUser.refreshToken
+        accessToken: TheCurrentUser.accessToken
     }
 
     property ListModel listModel: ListModel { id: model }
@@ -40,12 +43,22 @@ QtObject {
         request.get("/" + customerId);
     }
 
+    function setCustomerPayment({ customerId, payment }) {
+        print(`setCustomerPayment: ${customerId} ${JSON.stringify(payment, null, 2)}`);
+        let orders = findOrderByCustomerId(customerId);
+        if (!orders)
+            return;
+        print(`orders ${orders}`)
+        const pred = order => order.payment.id === payment.id;
+        let order = findInModel(pred, orders);
+        order.payment = payment;
+    }
+
     function getClientByName(name) {
         return find(text => text.forename.indexOf(name) !== -1);
     }
 
     function findAll() {
-        print("Fecthing all customers...");
         request.succeeded.connect(function(r) {
             model.append(r.customers)
         });
@@ -67,6 +80,10 @@ QtObject {
             model.append(r.customer.orders);
         });
         request.get(`/${customerId}`);
+    }
+
+    function findOrderByCustomerId(customerId) {
+        return find(customer => customer.id === customerId).orders;
     }
 
     function add(customer) {
@@ -99,6 +116,16 @@ QtObject {
     function find(func) {
         for (let i = 0; i < model.count; ++i)
             if (func(model.get(i)))
+                return model.get(i);
+
+        return null;
+    }
+
+    // TODO: This function should be added to a component that inherits from
+    // ListModel
+    function findInModel(predicate, model) {
+        for (let i = 0; i < model.count; ++i)
+            if (predicate(model.get(i)))
                 return model.get(i);
 
         return null;
