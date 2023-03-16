@@ -6,15 +6,16 @@ import com.cara 1.0
 QtObject {
     id: root
 
-    required property int paymentId
-    required property int debt
+    required property var payment
+    readonly property int debt: payment.amount_to_pay
+    readonly property int totalDebt: debt - payment.paid_amount
 
     property string message
     property bool successful: request.code === "success"
 
     signal requested
     signal responseReceived
-    signal paymentPatched()
+    signal paymentPatched(newPayment: var)
 
     Component.onCompleted: rest.refreshAccessToken()
 
@@ -24,16 +25,26 @@ QtObject {
         accessToken: TheCurrentUser.accessToken
         onSent: root.requested()
         onReceived: responseReceived();
-        onSucceeded: a => paymentPatched()
     }
 
     function patchPayment(amount) {
         print("Patching payment")
-        if (paymentId < 1 && amount <= 0)
+        if (payment.id < 1 && amount <= 0)
             return;
 
-        request.patch("/", {"id": paymentId, "paid_amount": amount});
-        print("ID# " + paymentId + " paid_amount: " + amount);
+        request.succeeded.connect(function () {
+            print("Payment: payment's amount paid updated.");
+            payment.paid_amount = amount;
+            if (debt - amount === 0)
+                payment.status = 0; // Paid
+            else if (amount > 0)
+                payment.status = 2; // Credited
+            else
+                payment.status = 1; // Unpaid
+            paymentPatched(payment)
+        });
+        request.patch("/", {"id": payment.id, "paid_amount": amount});
+        print("ID# " + payment.id + " paid_amount: " + amount);
     }
 
     function setAsUnpaid() {
