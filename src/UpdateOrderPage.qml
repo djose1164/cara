@@ -9,15 +9,15 @@ import "qrc:/customers" as Client
 Page {
     id: root
 
-    required property var person_info
+    required property string name
+    required property int customer_id
     required property ListModel orders
     readonly property StackView myStack: StackView.view
-    readonly property string name: `${person_info.forename} ${person_info.surname}`
 
-    signal paymentApplied
+    signal paymentApplied(customerPayment: var)
 
     header: Utils.TitleHeader {
-        title: "Cliente: "+name+" ID #"+person_info.customer_id;
+        title: "Cliente: "+name+" ID #"+customer_id;
         label.font.pointSize: 12
         stackView: myStack
     }
@@ -29,7 +29,13 @@ Page {
         spacing: 20
         model: orders
         delegate: OrderState {
-            Component.onCompleted: paymentApplied.connect(root.paymentApplied)
+            onPaymentApplied: payment => {
+                root.paymentApplied({payment, customerId: customer_id});
+                const pred = order => order.payment.id === payment.id;
+                for (let i = 0; i < orders.count; ++i)
+                    if (pred(orders.get(i)))
+                        orders.get(i).payment = payment;
+            }
         }
     }
 }
