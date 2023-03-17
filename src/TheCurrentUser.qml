@@ -78,7 +78,6 @@ QtObject {
 
     function initWithUser(user) {
         print("initWithUser");
-        print(`user ${user} ${JSON.stringify(user, null, 2)}`);
         const person_info = user.person_info;
         if (person_info) {
             forename = person_info.forename;
