@@ -17,31 +17,25 @@ Item {
 
     Component.onCompleted: payment = 0
     onOkClicked: productEntry.okClicked()
-
-    ProductEntry {
-        id: productEntry
-        width: parent.width
-        height: parent.height * .8
-        anchors.horizontalCenter: parent.horizontalCenter
-        anchors.top: parent.top
-    }
-
-    RoundButton {
-        width: parent.height*.25
-        height: parent.height*.25
-        anchors.top: productEntry.bottom
-        anchors.horizontalCenter: root.horizontalCenter
-
-        onClicked: productEntry.addEntry()
-        IconImage {
-            anchors.centerIn: parent
-            source: "qrc:/icons/add_circle.svg"
+    ColumnLayout {
+        anchors.fill: parent
+        spacing: 0
+        ProductEntry {
+            id: productEntry
+            Layout.fillWidth: true
+            Layout.leftMargin: 5
+            Layout.maximumHeight: root.height/2
+            Layout.alignment: Qt.AlignTop
         }
-        flat: true
-        Layout.alignment: Qt.AlignCenter
+
+        RoundButton {
+            onClicked: productEntry.addEntry()
+            icon.source: "qrc:/icons/add_circle.svg"
+            icon.width: 36; icon.height: 36
+            flat: true
+            Layout.alignment: Qt.AlignTop | Qt.AlignHCenter
+        }
     }
-
-
     function findIn(model, criteria) {
         for (let i = 0; i < model.count; ++i)
             if (criteria(model.get(i)))
