@@ -63,7 +63,6 @@ RowLayout {
         const fetched = find(pred);
         if (!fetched)
             return null;
-        print(`findProductId: fetched: ${JSON.stringify(fetched, null, 2)}`);
         return fetched.id;
     }
 }
