@@ -1,56 +1,70 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
-import "qrc:/product"
 
 RowLayout {
     id: root
-    property alias quantity: quantityField.text
+    readonly property int quantity: quantityField.value
     readonly property alias price: productField.currentValue
-    property alias currentText: productField.currentText
+    readonly property var entryValue: {
+        "product_id": findProductId(productField.currentText),
+        "quantity": quantity,
+        "unit_price": price
+    }
+    readonly property int total: price * quantity
     required property int index
-    required property int currentEntryIndex
+    readonly property ListModel productsModel: ListView.view.productsModel
 
-    signal okClicked
-    signal added(idx: int, entry: var)
+    signal created(entry: var)
+    signal updated(idx: int, entry: var)
     signal deleted(idx: int)
 
-    width: ListView.view.width*.95
+    onEntryValueChanged: if (entryValue?.unit_price) updated(index, {entryValue})
+
+    width: ListView.view.width
     spacing: width*.05
     ComboBox {
         id: productField
         Layout.fillWidth: true
-        model: productModel.model
+        model: root.productsModel
         textRole: "name"
         valueRole: "sell_price"
         currentIndex: 0
-        onCurrentValueChanged: fetchEntry()
     }
 
-    TextField {
+    SpinBox {
         id: quantityField
+        onValueChanged: updateThis()
         Layout.preferredHeight: productField.height
-        placeholderText: "Cantidad"
-        text: "1"
-        inputMethodHints: Qt.ImhDigitsOnly | Qt.ImhNoPredictiveText
-        onTextEdited: fetchEntry()
+        from: 1
+        editable: true
+        Layout.preferredWidth: root.width*.4
+        Keys.onReturnPressed: Qt.inputMethod.hide()
     }
 
-    ProductRequest { id: productModel }
-
-    Component.onCompleted: {
-       okClicked.connect(fetchEntry);
-        productModel.addSuggetionsToModel();
+    RoundButton {
+        onClicked: deleted(index);
+        IconImage {
+            anchors.centerIn: parent;
+            source: "qrc:/icons/trash-can-outline.svg"
+        }
+        flat: true
+        Layout.alignment: Qt.AlignTrailing
     }
 
-    Component.onDestruction: deleted(currentEntryIndex);
+    function find(criteria) {
+        for (let i = 0; i < productsModel.count; ++i)
+            if (criteria(productsModel.get(i)))
+                return productsModel.get(i);
+        return null;
+    }
 
-    function fetchEntry() {
-        const entryValue = {
-            "product_id": findIn(productModel.model, item => item.name === productField.currentText).id,
-            "quantity": quantity,
-            "unit_price": price
-        };
-        added(currentEntryIndex, {entryValue});
+    function findProductId(productName) {
+        const pred = item => item.name === productName;
+        const fetched = find(pred);
+        if (!fetched)
+            return null;
+        print(`findProductId: fetched: ${JSON.stringify(fetched, null, 2)}`);
+        return fetched.id;
     }
 }
