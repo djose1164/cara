@@ -2,53 +2,57 @@ import QtQuick
 import QtQuick.Layouts
 import QtQuick.Controls
 import "qrc:/orders"
+import "qrc:/product"
 
 ScrollView {
     id: root
-    property int _index: 0
     readonly property alias count: entries.count
-    property int total
-    signal updateTotal
-    signal entryAdded(idx: int, entry: var)
-    signal entryDeleted(idx: int)
-
-    onEntryAdded: (idx, entry) => {
-        entries.set(idx, entry);
-        total = calculateTotal();
+    readonly property int total: {
+        let partial_total = 0;
+        for (let i = 0; i < entries.count; ++i) {
+            const current = entryValueAt(i);
+            partial_total += current.quantity * current.unit_price;
+        }
+        return partial_total;
     }
-    onEntryDeleted: pop()
 
     anchors.fill: parent
 
     ListView {
-        width: parent.width *.9
+        readonly property ListModel productsModel: productModel.model
+        property alias entries: entries
+        width: parent.width
         height: parent.height *.9
         anchors.top: root.top
         spacing: 15
-        model: entries
+        model: numEntries
         delegate: Entry {
-            Component.onCompleted: {
-                added.connect(root.entryAdded);
-                deleted.connect(root.entryDeleted);
-            }
+            onUpdated: (idx, entryValue) => entries.set(idx, entryValue)
+            onDeleted: idx => pop(idx)
         }
     }
 
+    ListModel { id: entries }
+
     ListModel {
-        id: entries
-        Component.onCompleted: append({"currentEntryIndex": _index++})
+        id: numEntries
+        ListElement { idx: 0 }
+    }
+
+    ProductRequest {
+        id: productModel
+        Component.onCompleted: addSuggetionsToModel()
     }
 
     function addEntry(): void {
-        entries.append({"currentEntryIndex": _index++});
-        print(`index: ${_index}`)
+        numEntries.append({idx: numEntries.count});
     }
 
-    function pop() {
-        if (_index <= 1)
+    function pop(idx) {
+        if (idx === 0)
             return;
-        entries.remove(--_index);
-        total = calculateTotal();
+        numEntries.remove(idx);
+        entries.remove(idx);
     }
 
     function entryAt(idx: int): var {
@@ -67,16 +71,7 @@ ScrollView {
     }
 
     function resetEntries() {
-        for (let i = _index; i != 0; --i)
-            pop();
-    }
-
-    function calculateTotal(): int {
-        let partial_total = 0;
-        for (let i = 0; i < entries.count; ++i) {
-            const current = entryValueAt(i);
-            partial_total += current.quantity * current.unit_price;
-        }
-        return partial_total;
+        for (let i = count; i != 0; --i)
+            pop(i);
     }
 }
