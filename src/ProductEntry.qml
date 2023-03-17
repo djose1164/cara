@@ -16,15 +16,11 @@ ScrollView {
         return partial_total;
     }
 
-    anchors.fill: parent
-
     ListView {
         readonly property ListModel productsModel: productModel.model
         property alias entries: entries
-        width: parent.width
-        height: parent.height *.9
-        anchors.top: root.top
-        spacing: 15
+        anchors.fill: parent
+        spacing: 5
         model: numEntries
         delegate: Entry {
             onUpdated: (idx, entryValue) => entries.set(idx, entryValue)
@@ -71,7 +67,7 @@ ScrollView {
     }
 
     function resetEntries() {
-        for (let i = count; i != 0; --i)
+        for (let i = count; i !== 0; --i)
             pop(i);
     }
 }
