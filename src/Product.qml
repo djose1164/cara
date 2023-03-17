@@ -18,36 +18,49 @@ Page {
         stackView: root.stackView
     }
 
-        ColumnLayout {
-            anchors.centerIn: parent
+    StackLayout {
+        id: stackLayout
+        anchors.fill: parent
 
-            Image {
-                id: img
-                source: image_url
-                sourceSize: `${root.width*.9}x${root.height*.4}`
-            }
-
-            Label {
-                text: name
-                font.pointSize: 14
-            }
-
-            Label {
-                text: `Precio: RD$${sell_price}`
-                font.pointSize: 12
-            }
-
-            Label {
-                text: `Descripción: ${description}`
-                font.pointSize: 12
-            }
-
-            Button {
-                Layout.fillWidth: true
-                text: "Comprar"
-                onClicked: bar.currentIndex = 1
-                font.pointSize: 12
+        Item {
+            BusyIndicator {
+                anchors.centerIn: parent
             }
         }
 
+        Item {
+            ColumnLayout {
+                anchors.centerIn: parent
+
+                Image {
+                    id: img
+                    source: image_url
+                    sourceSize: `${root.width*.9}x${root.height*.4}`
+                    onStatusChanged: if (img.status === Image.Ready) stackLayout.currentIndex = 1
+                }
+
+                Label {
+                    text: name
+                    font.pointSize: 14
+                }
+
+                Label {
+                    text: `Precio: RD$${sell_price}`
+                    font.pointSize: 12
+                }
+
+                Label {
+                    text: `Descripción: ${description}`
+                    font.pointSize: 12
+                }
+
+                Button {
+                    Layout.fillWidth: true
+                    text: "Comprar"
+                    onClicked: bar.currentIndex = 1
+                    font.pointSize: 12
+                }
+            }
+        }
+    }
 }
