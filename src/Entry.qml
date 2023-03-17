@@ -34,7 +34,6 @@ RowLayout {
 
     SpinBox {
         id: quantityField
-        onValueChanged: updateThis()
         Layout.preferredHeight: productField.height
         from: 1
         editable: true
