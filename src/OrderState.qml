@@ -6,7 +6,7 @@ import "qrc:/users"
 
 Item {
     id: root
-    required property int id
+    required property int orderId
     required property var payment
     required property var order_details
     required property string date
@@ -23,8 +23,8 @@ Item {
         anchors.fill: parent
 
         Label {
-            text: `Estado de la orden #${id}: `
-            font.pointSize: 12
+            text: `Estado de Orden ID#${orderId}: `
+            font.pointSize: 12.5
             font.bold: true
         }
 
@@ -64,13 +64,13 @@ Item {
                 Label {
                     Layout.alignment: Qt.AlignLeading
                     text: "Producto"
-                    font.pointSize: 11
+                    font.pointSize: 12
                     font.bold: true
                 }
                 Label {
                     Layout.alignment: Qt.AlignTrailing
                     text: "Cantidad"
-                    font.pointSize: 11
+                    font.pointSize: 12
                     font.bold: true
                 }
             }
@@ -82,10 +82,12 @@ Item {
                 Label {
                     Layout.alignment: Qt.AlignLeading
                     text: product.name
+                    font.pointSize: 12
                 }
                 Label {
                     Layout.alignment: Qt.AlignTrailing
                     text: quantity
+                    font.pointSize: 12
                 }
             }
             }
