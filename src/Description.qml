@@ -26,25 +26,21 @@ Item {
         anchors.top: parent.top
     }
 
-    RowLayout {
-        width: parent.width
-        height: parent.height*.1
+    RoundButton {
+        width: parent.height*.25
+        height: parent.height*.25
         anchors.top: productEntry.bottom
-        anchors.topMargin: 10
-        spacing: 10
+        anchors.horizontalCenter: root.horizontalCenter
 
-        Button {
-            text: "Agregar"
-            onClicked: productEntry.addEntry()
-            Layout.fillWidth: true
+        onClicked: productEntry.addEntry()
+        IconImage {
+            anchors.centerIn: parent
+            source: "qrc:/icons/add_circle.svg"
         }
-
-        Button {
-            text: "Remover"
-            onClicked: productEntry.pop()
-            Layout.fillWidth: true
-        }
+        flat: true
+        Layout.alignment: Qt.AlignCenter
     }
+
 
     function findIn(model, criteria) {
         for (let i = 0; i < model.count; ++i)
