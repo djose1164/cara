@@ -9,14 +9,15 @@ Page {
     header: AddOrderHeader {}
 
     ColumnLayout {
-        width: parent.width*.95
-        height: parent.height*.95
-        anchors.centerIn: parent
+        anchors.fill: parent
 
         AddOrder {
             id: addOrder
             Layout.fillWidth: true
             Layout.fillHeight: true
+            Layout.maximumHeight: root.height/2
+            Layout.topMargin: 10
+            Layout.alignment: Qt.AlignTop
         }
 
         Label {
