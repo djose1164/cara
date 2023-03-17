@@ -40,7 +40,7 @@ QtObject {
     property Rest request: Rest {
         id: request
         refreshToken: settings.refreshToken
-        base: "http://127.0.0.1:5000/api/users"
+        base: "https://cara-api.onrender.com/api/users"
         onFailed: r => failedToSetUserCredentials(r)
         onSucceeded: r => initWithUser(r.user)
         onAccessTokenChanged: request.get("/")
@@ -78,6 +78,7 @@ QtObject {
 
     function initWithUser(user) {
         print("initWithUser");
+        print(`user ${user} ${JSON.stringify(user, null, 2)}`);
         const person_info = user.person_info;
         if (person_info) {
             forename = person_info.forename;

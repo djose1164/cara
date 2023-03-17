@@ -21,7 +21,7 @@ QtObject {
 
     property Rest rest: Rest {
         id: request
-        base: "http://127.0.0.1:5000/api/payments"
+        base: "https://cara-api.onrender.com/api/payments"
         accessToken: TheCurrentUser.accessToken
         onSent: root.requested()
         onReceived: responseReceived();

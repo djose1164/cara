@@ -32,7 +32,7 @@ Item {
 
     Rest {
         id: request
-        base: "http://127.0.0.1:5000/api"
+        base: "https://cara-api.onrender.com/api"
         accessToken: TheCurrentUser.accessToken
         onFailed: r => {
             message.text = "No se pudo realizar la accion";
