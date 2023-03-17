@@ -4,9 +4,7 @@ De lo mejor para ti
 ## Screenshots
 ![Login](screenshots/login.png)
 
-![Home](screenshots/home.png)
-
-### UserHome
+### Home
 ![UserHome](screenshots/user_home.png)
 
 ### OderForm
