@@ -21,7 +21,7 @@ ItemDelegate {
 
     onClicked: stackView.push("qrc:/orders/CustomerOrders.qml",
     {
-        "date": date, "id": id, "order_details": order_details, "payment": payment
+        "date": root.date, "id": id, "order_details": order_details, "payment": payment
     })
 
     ColumnLayout {
