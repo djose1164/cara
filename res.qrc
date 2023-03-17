@@ -22,5 +22,8 @@
         <file>icons/person_add.svg</file>
         <file>icons/search.svg</file>
         <file>icons/inventory.svg</file>
+        <file>icons/trash-can-outline.svg</file>
+        <file>icons/add_shopping_cart.svg</file>
+        <file>icons/add_circle.svg</file>
     </qresource>
 </RCC>
