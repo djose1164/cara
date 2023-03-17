@@ -5,6 +5,9 @@ import "qrc:/product"
 import "qrc:/customers"
 import "qrc:/bills"
 
+// TODO: This component it's getting too big! A design by sections sould be make
+// to each section would correspond a custom Component.
+
 Home {
     id: root
 
@@ -62,12 +65,26 @@ Home {
 
     ProductRequest { id: productRequest }
 
-    Label {
-        id: recentOrdersLbl
+    Item {
+        id: recentOrdersItem
         anchors.top: listView.bottom
         anchors.topMargin: 20
-        text: "Compras realizadas recientemente"
-        font.pointSize: 13
+        width: root.width
+        height: 25
+        Label {
+            id: recentOrdersLbl
+            anchors.top: parent.top
+            anchors.verticalCenter: parent.verticalCenter
+            text: "Compras realizadas recientemente "
+            font.pointSize: 13
+        }
+        IconImage {
+            anchors.left: recentOrdersLbl.right
+            anchors.verticalCenter: parent.verticalCenter
+            source: "qrc:/icons/arrow_forward.svg"
+            sourceSize: "18x18"
+        }
+        TapHandler { onTapped: bar.currentIndex = 2 }
     }
 
     ListView {
@@ -75,7 +92,7 @@ Home {
         readonly property StackView stackView: root.stackView
         width: parent.width
         height: parent.height * .2
-        anchors.top: recentOrdersLbl.bottom
+        anchors.top: recentOrdersItem.bottom
         anchors.topMargin: 20
         anchors.horizontalCenter: parent.horizontalCenter
 
