@@ -53,7 +53,7 @@ Page {
                 placeholderText: "Usuario"
                 inputMethodHints: Qt.ImhLowercaseOnly
                 font.pointSize: 15
-                onEditingFinished: Qt.inputMethod.hide()
+                EnterKey.type: Qt.EnterKeyNext
                 focus: true
             }
 
