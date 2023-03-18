@@ -19,12 +19,7 @@ Home {
         print("From UserHome, adding date to recent orders.");
         customerModel.findOrdersByCustomerId(TheCurrentUser.customerId);
     }
-    Connections {
-        target: header
-        function onAcceptedText(t) {
-            productRequest.findProductByIdentifier(t);
-        }
-    }
+
     Rectangle {
         id: lbl
         width: parent.width
