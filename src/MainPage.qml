@@ -34,18 +34,11 @@ Page {
         function onUserCredentialsSet() {
             print("onUserCredentialsSet: " + TheCurrentUser.homePath)
             homeView.replace(TheCurrentUser.homePath)
+            const home = homeView.currentItem;
+            bar.homeClicked.connect(home.homeClicked);
 
             print("orderStackView pusing: " + TheCurrentUser.orderFormPath);
             orderStackView.push(TheCurrentUser.orderFormPath);
-        }
-    }
-
-    Connections {
-        target: bar
-
-        function onHomeClicked() {
-            for (let depth = homeView.depth; depth > 1; --depth)
-                homeView.pop();
         }
     }
 
