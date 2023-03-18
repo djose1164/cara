@@ -45,7 +45,7 @@ ScrollView {
     }
 
     function pop(idx) {
-        if (idx === 0)
+        if (numEntries.count === 1)
             return;
         numEntries.remove(idx);
         entries.remove(idx);
