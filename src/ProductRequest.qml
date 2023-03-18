@@ -9,7 +9,7 @@ Item {
 
     Utils.Request {
         id: request
-        base: "http://127.0.0.1:5000/api" + endpoint
+        base: "https://cara-api.onrender.com/api" + endpoint
     }
 
     ListModel { id: model }

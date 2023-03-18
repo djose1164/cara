@@ -7,71 +7,40 @@ import "qrc:/product"
 Item {
     id: root
     property int payment: 2
-    property int _index: 0
     property var details
-    property int total: {
-        let partial_total = 0;
-        for (let i = 0; i < orderModel.count; ++i) {
-            const current = orderModel.get(i).entryValue;
-            partial_total += current.quantity * current.unit_price;
-        }
-        return partial_total;
-    }
+    property int total: productEntry.total
+    readonly property alias entriesCount: productEntry.count
+    readonly property alias productEntries: productEntry
 
     signal okClicked
     signal updateTotal
 
     Component.onCompleted: payment = 0
     onOkClicked: productEntry.okClicked()
-
-    ProductEntry {
-        id: productEntry
-        width: parent.width
-        height: parent.height * .35
-        anchors.horizontalCenter: parent.horizontalCenter
-        anchors.top: parent.top
-        anchors.topMargin: 20
-    }
-
-    RowLayout {
-        width: parent.width
-        anchors.top: productEntry.bottom
-        anchors.topMargin: 50
-        spacing: 10
-
-        Button {
-            text: "Agregar"
-            onClicked: repeaterModel.append({"currentEntryIndex": _index++})
+    ColumnLayout {
+        anchors.fill: parent
+        spacing: 0
+        ProductEntry {
+            id: productEntry
             Layout.fillWidth: true
+            Layout.leftMargin: 5
+            Layout.maximumHeight: root.height/2
+            Layout.alignment: Qt.AlignTop
         }
 
-        Button {
-            text: "Remover"
-            onClicked: if (_index > 1) removeEntryAt(--_index)
-            Layout.fillWidth: true
+        RoundButton {
+            onClicked: productEntry.addEntry()
+            icon.source: "qrc:/icons/add_circle.svg"
+            icon.width: 36; icon.height: 36
+            flat: true
+            Layout.alignment: Qt.AlignTop | Qt.AlignHCenter
         }
     }
-
-    ListModel {
-        id: repeaterModel
-        Component.onCompleted: repeaterModel.append({"currentEntryIndex": _index++})
-    }
-
     function findIn(model, criteria) {
         for (let i = 0; i < model.count; ++i)
             if (criteria(model.get(i)))
                 return model.get(i);
         return null;
-    }
-
-    // Reset entires to one
-    function resetEntries() {
-        for (let i = _index; i != 0; --i)
-            removeEntryAt(i);
-    }
-
-    function removeEntryAt(idx) {
-        repeaterModel.remove(idx);
     }
 
     function clear() {

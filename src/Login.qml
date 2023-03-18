@@ -53,7 +53,7 @@ Page {
                 placeholderText: "Usuario"
                 inputMethodHints: Qt.ImhLowercaseOnly
                 font.pointSize: 15
-                onEditingFinished: Qt.inputMethod.hide()
+                EnterKey.type: Qt.EnterKeyNext
                 focus: true
             }
 
@@ -80,6 +80,9 @@ Page {
                 font.pointSize: 12
                 onClicked: requestAuthentication()
                 Layout.alignment: Qt.AlignCenter
+                font.capitalization: Font.MixedCase
+                Material.background: Material.Blue
+                Material.foreground: "white"
             }
 
             Button {
@@ -88,6 +91,9 @@ Page {
                 font.pointSize: 12
                 onClicked: mainStackView.replace("qrc:/main/SignUp.qml")
                 Layout.alignment: Qt.AlignCenter
+                font.capitalization: Font.MixedCase
+                Material.background: Material.Blue
+                Material.foreground: "white"
             }
         }
 

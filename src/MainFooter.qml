@@ -5,6 +5,8 @@ import QtQuick.Layouts
 TabBar {
     readonly property int addOrderIdx: shopBtn.TabBar.index
 
+    signal homeClicked
+
     background: Rectangle {
         anchors.fill: parent
         color: "floralwhite"
@@ -17,6 +19,7 @@ TabBar {
             antialiasing: false
             sourceSize: iconSize
         }
+        onClicked: homeClicked()
     }
 
     TabButton {

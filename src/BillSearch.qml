@@ -25,7 +25,7 @@ Page {
             leftMargin: 20
         }
         model: model
-        delegate: BillDelegate { stackView: root.stackView }
+        delegate: BillDelegate {}
     }
 
     ListModel { id: model }

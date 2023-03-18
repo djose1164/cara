@@ -3,23 +3,19 @@ import QtQuick.Controls
 import QtQuick.Layouts
 
 ToolBar {
-    id: headerToolBar
     RowLayout {
         anchors.fill: parent
 
         Label {
             text: "Ordenes"
             font.bold: true
-            Layout.alignment: Qt.AlignCenter
+            Layout.fillWidth: true
+            horizontalAlignment: Label.AlignHCenter
         }
 
         ToolButton {
-            background: Image {
-                source: "qrc:/icons/filter.svg"
-                antialiasing: false
-                sourceSize: iconSize
-            }
-            Layout.alignment: Qt.AlignRight
+            icon.source: "qrc:/icons/filter.svg"
+            Layout.alignment: Qt.AlignTrailing
         }
     }
 }

@@ -6,13 +6,16 @@ import "qrc:/users"
 
 Item {
     id: root
+    required property int orderId
     required property var payment
     required property var order_details
+    required property string date
     readonly property var product: order_details.product
 
-    signal paymentApplied
+    signal paymentApplied(newPayment: var)
 
-    Component.onCompleted: updatePayment.paymentPatched.connect(paymentApplied);
+    onPaymentApplied: p => payment = p
+
     width: ListView.view ? ListView.view.width : parent.width
     height: ListView.view ? ListView.view.height * .55 : parent.height * .55
 
@@ -20,8 +23,8 @@ Item {
         anchors.fill: parent
 
         Label {
-            text: "Estado de la orden: "
-            font.pointSize: 12
+            text: `Estado de Orden ID#${orderId}: `
+            font.pointSize: 12.5
             font.bold: true
         }
 
@@ -34,6 +37,17 @@ Item {
                 visible: TheCurrentUser.isAdmin
                 onClicked: updatePayment.open()
             }
+        }
+
+        Label {
+            text: "Fecha"
+            font.pointSize: 12
+            font.bold: true
+        }
+
+        Label {
+            text: date
+            font.pointSize: 12
         }
 
         Label {
@@ -50,13 +64,13 @@ Item {
                 Label {
                     Layout.alignment: Qt.AlignLeading
                     text: "Producto"
-                    font.pointSize: 11
+                    font.pointSize: 12
                     font.bold: true
                 }
                 Label {
                     Layout.alignment: Qt.AlignTrailing
                     text: "Cantidad"
-                    font.pointSize: 11
+                    font.pointSize: 12
                     font.bold: true
                 }
             }
@@ -68,10 +82,12 @@ Item {
                 Label {
                     Layout.alignment: Qt.AlignLeading
                     text: product.name
+                    font.pointSize: 12
                 }
                 Label {
                     Layout.alignment: Qt.AlignTrailing
                     text: quantity
+                    font.pointSize: 12
                 }
             }
             }
@@ -80,9 +96,8 @@ Item {
 
     UpdatePayment {
         id: updatePayment
-        debt: parseInt(payment.amount_to_pay) - parseInt(payment.paid_amount)
-        paid: payment.paid_amount
-        paymentID: payment.id
+        payment: root.payment
+        Component.onCompleted: paymentPatched.connect(paymentApplied)
     }
 
     function statusToString(status) {

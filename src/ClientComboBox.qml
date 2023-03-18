@@ -12,7 +12,7 @@ Item {
 
     ComboBox {
         id: clientField
-        width: parent.width
+        anchors.fill: parent
         editable: true
         currentIndex: 0
         textRole: "name"
@@ -20,13 +20,11 @@ Item {
         model: model
     }
 
-    ListModel {
-        id: model
-    }
+    ListModel { id: model }
 
     Rest {
         id: rest
-        base: "http://127.0.0.1:5000/api/customers/info"
+        base: "https://cara-api.onrender.com/api/customers/info"
         onSucceeded: resp => model.count ? model.set(
                                                0,
                                                resp.customers) : model.append(

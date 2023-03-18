@@ -12,7 +12,6 @@ Item {
     width: ListView.view.width * .55
     height: ListView.view.height
 
-
     StackLayout {
         id: stackLayout
         anchors.fill: parent
@@ -26,21 +25,19 @@ Item {
         ItemDelegate {
             onClicked: stackView.push("qrc:/product/Product.qml",
                                       {sell_price, name, image_url, description})
-            ColumnLayout {
+            Image {
+                id: img
                 anchors.centerIn: parent
-                spacing: 10
-                Image {
-                    id: img
-                    source: image_url
-                    sourceSize: `${root.height-50}x${root.height-50}`
-                    onProgressChanged: if (img.progress === 1.0) stackLayout.currentIndex = 1
-                }
+                source: image_url
+                sourceSize: `${root.height-60}x${root.height-60}`
+                onStatusChanged: if (img.status === Image.Ready) stackLayout.currentIndex = 1
+            }
 
-                Label {
-                    text: name
-                    font.pointSize: 16
-                    Layout.alignment: Qt.AlignHCenter | Qt.AlignBottom
-                }
+            Label {
+                anchors.bottom: parent.bottom
+                anchors.horizontalCenter: parent.horizontalCenter
+                text: name
+                font.pointSize: 16
             }
         }
     }

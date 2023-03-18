@@ -52,7 +52,7 @@
         <file>ProviderForm.qml</file>
     </qresource>
     <qresource prefix="/utils">
-        <file>PageHeader.qml</file>
+        <file>HeaderPage.qml</file>
         <file>RequestModel.qml</file>
         <file>Request.qml</file>
         <file>Filter.qml</file>
@@ -86,5 +86,8 @@
     </qresource>
     <qresource lang="qml" prefix="/errors">
         <file>ErrorPage.qml</file>
+    </qresource>
+    <qresource prefix="/inventory">
+        <file>Inventory.qml</file>
     </qresource>
 </RCC>

@@ -3,11 +3,12 @@ import QtQuick.Controls
 import QtQuick.Layouts
 import "qrc:/utils"
 
-PageHeader {
+ToolBar {
     id: root
     property alias placeholderText: textField.placeholderText
     readonly property string toFind: textField.text
     property bool suggetions: true
+    property StackView stackView
     // Set minimun number of characters that have to be present on the textfield
     // to emit accepted signal.
     property int minCharactersToSearch: 3
@@ -16,12 +17,15 @@ PageHeader {
 
     RowLayout {
         anchors.fill: parent
-        anchors.left: parent.left
-        anchors.leftMargin: 20
-        anchors.top: parent.top
-        anchors.topMargin: 6
-        anchors.bottom: parent.bottom
 
+        ToolButton {
+            background: IconImage {
+                source: "qrc:/left_arrow"
+                sourceSize: "18x18"
+            }
+            onClicked: stackView.pop()
+            Layout.alignment: Qt.AlignLeading
+        }
 
         TextField {
             id: textField
