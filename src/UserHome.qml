@@ -1,5 +1,6 @@
 import QtQuick
 import QtQuick.Controls
+import QtQuick.Layouts
 import "qrc:/users"
 import "qrc:/product"
 import "qrc:/customers"
@@ -11,13 +12,17 @@ import "qrc:/bills"
 Home {
     id: root
 
-    readonly property string fullName: TheCurrentUser.forename + " "
-                                       + TheCurrentUser.surname
+    readonly property string fullName: TheCurrentUser.previousLogin ?
+                                           ` ${TheCurrentUser.forename} ${TheCurrentUser.surname}`
+                                         : ""
 
     Component.onCompleted: {
         productRequest.addSuggetionsToModel()
         print("From UserHome, adding date to recent orders.");
-        customerModel.findOrdersByCustomerId(TheCurrentUser.customerId);
+        if (!TheCurrentUser.isGuest)
+            customerModel.findOrdersByCustomerId(TheCurrentUser.customerId);
+        else
+            customerModel.model.append({})
     }
 
     Rectangle {
@@ -30,7 +35,7 @@ Home {
             id: label
             width: parent.width
             horizontalAlignment: Text.AlignHCenter
-            text: `¡Bienvenido ${fullName}, mira lo que tenemos disponible para ti!`
+            text: `¡Bienvenido${fullName}, mira lo que tenemos disponible para ti!`
             font.pointSize: 14
             wrapMode: Text.WordWrap
         }
@@ -44,25 +49,37 @@ Home {
         }
     }
 
-    ListView {
-        id: listView
-        readonly property StackView stackView: root.stackView
+    StackLayout {
+        id: offerStackLayout
         width: parent.width
         height: parent.height * .4
         anchors.top: lbl.bottom
         anchors.topMargin: 40
         anchors.horizontalCenter: parent.horizontalCenter
 
-        model: productRequest.model
-        delegate: ProductDelegate {}
-        orientation: ListView.Horizontal
+        BusyIndicator {}
+
+        ListView {
+            id: listView
+            readonly property StackView stackView: root.stackView
+
+            model: productRequest.model
+            delegate: ProductDelegate {}
+            orientation: ListView.Horizontal
+        }
     }
 
-    ProductRequest { id: productRequest }
+    ProductRequest {
+        id: productRequest
+        onSucceeded: {
+            print("Holalalala");
+            offerStackLayout.currentIndex = 1;
+        }
+    }
 
     Item {
         id: recentOrdersItem
-        anchors.top: listView.bottom
+        anchors.top: offerStackLayout.bottom
         anchors.topMargin: 20
         width: root.width
         height: 25
@@ -82,6 +99,7 @@ Home {
         TapHandler { onTapped: bar.currentIndex = 2 }
     }
 
+
     ListView {
         id: recentOrders
         readonly property StackView stackView: root.stackView
@@ -92,10 +110,7 @@ Home {
         anchors.horizontalCenter: parent.horizontalCenter
 
         model: customerModel.model
-        delegate: CustomerBill {
-            width: recentOrders.width/2
-            orientation: ListView.Horizontal
-        }
+        delegate: TheCurrentUser.isGuest ? _.needToLogIn : _.customerBill
         orientation: ListView.Horizontal
     }
 
@@ -106,6 +121,30 @@ Home {
         // TODO: Optimize this for later release.
         function onOrderPosted() {
             customerModel.findOrdersByCustomerId(TheCurrentUser.customerId);
+        }
+    }
+
+    QtObject {
+        id: _
+        property Component customerBill: CustomerBill {
+            width: recentOrders.width/2
+            orientation: ListView.Horizontal
+        }
+        property Component needToLogIn: Item {
+                width: recentOrders.width
+                height: recentOrders.height
+
+                Label {
+                    width: parent.width*.9
+                    height: parent.height*.9
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    text: "Necesitas registrarte para poder ver tus ordenes recientes."
+                    font.pointSize: 14
+                    horizontalAlignment: Label.AlignHCenter
+                    verticalAlignment: Label.AlignVCenter
+                    wrapMode: Label.WordWrap
+                }
+
         }
     }
 }
