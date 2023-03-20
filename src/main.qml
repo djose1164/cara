@@ -16,8 +16,8 @@ ApplicationWindow {
     StackView {
         id: mainStackView
         anchors.fill: parent
-        initialItem: TheCurrentUser.previousLogin ? "qrc:/main/MainPage.qml"
-                                   : "qrc:/login/Login.qml"
+        initialItem: "qrc:/main/MainPage.qml"
+
     }
 
     Connections {
