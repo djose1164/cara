@@ -18,12 +18,12 @@ Page {
         StackView {
             id: homeView
             readonly property TabBar bar: bar
-            initialItem: BusyIndicator {}   
+            initialItem: TheCurrentUser.homePath
         }
 
         StackView {
             id: orderStackView
-            initialItem: BusyIndicator {}
+            initialItem: TheCurrentUser.orderPath
         }
 
         StackView { initialItem: "qrc:/bills/BillPage.qml" }
