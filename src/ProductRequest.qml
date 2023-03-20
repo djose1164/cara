@@ -3,13 +3,17 @@ import QtQml
 import "qrc:/utils" as Utils
 
 Item {
+    id: root
     property alias request: request
     property alias model: model
     readonly property string endpoint: "/products"
 
+    signal succeeded(resp: var)
+
     Utils.Request {
         id: request
         base: "https://cara-api.onrender.com/api" + endpoint
+        onSucceeded: r => root.succeeded(r)
     }
 
     ListModel { id: model }
