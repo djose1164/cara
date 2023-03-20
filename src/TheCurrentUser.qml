@@ -7,11 +7,19 @@ import com.cara 1.0
 QtObject {
     id: root
 
+    property int userType: TheCurrentUser.Types.Guest
     readonly property bool isAdmin: userTypeId === TheCurrentUser.Types.Admin
     readonly property bool isCostumer: customerId > 0
+    readonly property bool isGuest: userType === TheCurrentUser.Types.Guest
     readonly property bool previousLogin: settings.value("refreshToken")
-    readonly property string homePath: isAdmin ? "qrc:/home/AdminHome.qml"
-                                               : "qrc:/home/UserHome.qml"
+    readonly property string homePath: {
+        if (isAdmin)
+            return "qrc:/home/AdminHome.qml";
+        else if (isGuest)
+            return "qrc:/home/UserHome.qml";
+    }
+    readonly property string orderPath: isGuest ? "qrc:/orders/OrderFormUser.qml"
+                                                : "qrc:/orders/OrderFormAdmin.qml"
     readonly property string orderFormPath: isAdmin ? "qrc:/orders/OrderFormAdmin.qml"
                                                     : "qrc:/orders/OrderFormUser.qml"
     // TODO: This should be deleted
@@ -26,9 +34,11 @@ QtObject {
     property string email
     property bool isLoggedIn
 
+
     enum Types {
         Admin = 1,
-        User
+        User,
+        Guest
     }
 
     property Settings settings: Settings {
@@ -58,6 +68,7 @@ QtObject {
     signal serverUnavailable
 
     Component.onCompleted: {
+        print("isGuest: "+isGuest)
         if (previousLogin) {
             print("previousLogin is " + previousLogin)
             TheCurrentUser.init();
