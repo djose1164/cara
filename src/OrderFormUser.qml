@@ -40,7 +40,15 @@ Page {
         Button {
             id: okBtn
             text: "Reservar"
-            onClicked: addOrder.request.post("/orders/", fullOrder)
+            onClicked: {
+                if (TheCurrentUser.isGuest) {
+                    addOrder.messageDialog.text = "No has iniciado sesion."
+                    addOrder.messageDialog.detailedText = "Necesitas registrarte para realizar reservaciones.";
+                    addOrder.messageDialog.open();
+                }
+                else
+                    addOrder.request.post("/orders/", fullOrder)
+            }
             Layout.alignment: Qt.AlignCenter
         }
     }
