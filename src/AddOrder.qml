@@ -15,6 +15,7 @@ Item {
     property alias totalToPay: orderForm.total
     property alias orderForm: orderForm
     property alias request: request
+    property alias messageDialog: message
     signal viewRequested
 
     onViewRequested: orderForm.updateClientField()
