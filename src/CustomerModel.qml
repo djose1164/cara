@@ -135,7 +135,7 @@ QtObject {
         print("lineName: name " + text);
         let matches = [];
         const predicate = c => {
-            const name = c.person_info.forename + c.person_info.surname;
+            const name = c.person_info.name;
             return name.toLowerCase().includes(text.toLowerCase()) ? c : null;
         };
         for (let i = 0; i < model.count; ++i) {
