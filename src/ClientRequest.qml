@@ -7,7 +7,7 @@ QtObject {
 
     property Rest request: Rest {
         id: request
-        base: "https://cara-api.onrender.com/api/customers"
+        base: "https://cara-rd.live/api/customers"
         refreshToken: TheCurrentUser.refreshToken
 
     }

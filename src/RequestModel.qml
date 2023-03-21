@@ -13,7 +13,7 @@ Item {
 
     ListModel { id: listModel }
 
-    Request { id: request; base: "https://cara-api.onrender.com/api" }
+    Request { id: request; base: "https://cara-rd.live/api" }
 
     /**
     * Send a request with or without a model adjunct to it.

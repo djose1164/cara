@@ -24,7 +24,7 @@ Item {
 
     Rest {
         id: rest
-        base: "https://cara-api.onrender.com/api/customers/info"
+        base: "https://cara-rd.live/api/customers/info"
         onSucceeded: resp => model.count ? model.set(
                                                0,
                                                resp.customers) : model.append(
