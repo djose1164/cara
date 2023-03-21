@@ -18,6 +18,7 @@ Page {
 
     ListView {
         id: listView
+        readonly property StackView stackView: root.stackView
         width: parent.width
         height: parent.height
         anchors {

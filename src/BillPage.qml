@@ -74,15 +74,12 @@ Page {
 
     QtObject {
         id: _
-        property Component billDelegate: Component{
-            BillDelegate {
-                Component.onCompleted: updateCustomer.connect(baseModel.updateCustomer)
-            }
+        property Component billDelegate: BillDelegate {
+            Component.onCompleted: updateCustomer.connect(baseModel.updateCustomer)
         }
-        property Component customerBill: Component {
-            CustomerBill {
-                Component.onCompleted: updateCustomer.connect(baseModel.updateCustomer)
-            }
+
+        property Component customerBill: CustomerBill {
+            Component.onCompleted: updateCustomer.connect(baseModel.updateCustomer)
         }
     }
 
