@@ -33,9 +33,7 @@ QtObject {
     }
 
     function updateCustomer(customerId) {
-        print("updateCustomer: customerId " + customerId);
         const idx = indexOf(item => item.id === customerId);
-        print(`idx ${idx}`);
         request.succeeded.connect(function(r) {
             const fetched = r.customer;
             set(idx, fetched);
@@ -44,11 +42,9 @@ QtObject {
     }
 
     function setCustomerPayment({ customerId, payment }) {
-        print(`setCustomerPayment: ${customerId} ${JSON.stringify(payment, null, 2)}`);
         let orders = findOrderByCustomerId(customerId);
         if (!orders)
             return;
-        print(`orders ${orders}`)
         const pred = order => order.payment.id === payment.id;
         let order = findInModel(pred, orders);
         order.payment = payment;
@@ -66,7 +62,6 @@ QtObject {
     }
 
     function findByCustomerId(customerId) {
-        print(`setById ${customerId}`);
         request.succeeded.connect(function(r) {
             model.append(r.customer);
         });
@@ -74,7 +69,6 @@ QtObject {
     }
 
     function findOrdersByCustomerId(customerId) {
-        print(`setById ${customerId}`);
         request.succeeded.connect(function(r) {
             clearModel();
             model.append(r.customer.orders);
@@ -87,12 +81,10 @@ QtObject {
     }
 
     function add(customer) {
-        print("Adding customer", customer);
         model.append(customer);
     }
 
     function set(idx, obj) {
-        print("idx "+idx+" typeof(obj) " + obj);
         model.set(idx, obj);
     }
 
@@ -132,7 +124,6 @@ QtObject {
     }
 
     function likeName(text) {
-        print("lineName: name " + text);
         let matches = [];
         const predicate = c => {
             const name = c.person_info.name;
