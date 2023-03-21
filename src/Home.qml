@@ -8,13 +8,7 @@ Page {
     property bool inHome: false
     signal homeClicked
 
-    onHomeClicked: {
-        if (inHome)
-            for (let depth = stackView.depth; depth > 1; --depth)
-                stackView.pop();
-        else
-            inHome = true;
-    }
+    onHomeClicked: inHome ? stackView.pop(null) : inHome = true;
 
     header: HomeHeader { stackView: root.stackView }
 }
