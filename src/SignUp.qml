@@ -120,7 +120,7 @@ Item {
 
     Request {
         id: request
-        base: "https://cara-api.onrender.com/api/users"
+        base: "https://cara-rd.live/api/users"
     }
 
     Connections {

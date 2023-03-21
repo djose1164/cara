@@ -12,8 +12,7 @@ Item {
 
     Utils.Request {
         id: request
-        base: "https://cara-api.onrender.com/api" + endpoint
-        onSucceeded: r => root.succeeded(r)
+        base: "https://cara-rd.live/api" + endpoint
     }
 
     ListModel { id: model }

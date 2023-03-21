@@ -50,7 +50,7 @@ QtObject {
     property Rest request: Rest {
         id: request
         refreshToken: settings.refreshToken
-        base: "https://cara-api.onrender.com/api/users"
+        base: "https://cara-rd.live/api/users"
         onFailed: r => failedToSetUserCredentials(r)
         onSucceeded: r => initWithUser(r.user)
         onAccessTokenChanged: request.get("/")
