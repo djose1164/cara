@@ -12,14 +12,17 @@ import "qrc:/bills"
 Home {
     id: root
 
-    readonly property string fullName: TheCurrentUser.previousLogin ?
+    readonly property string fullName: TheCurrentUser.isUser ?
                                            ` ${TheCurrentUser.forename} ${TheCurrentUser.surname}`
                                          : ""
 
     Component.onCompleted: {
-        if (TheCurrentUser.isGuest)
+        if (TheCurrentUser.isGuest) {
             customerModel.model.append({});
+            recentordersSL.currentIndex = 2;
+        }
         productRequest.addSuggetionsToModel()
+
     }
     Rectangle {
         id: lbl
@@ -98,7 +101,7 @@ Home {
         height: parent.height * .2
         anchors.top: recentOrdersItem.bottom
         anchors.topMargin: 20
-        currentIndex: if (TheCurrentUser.isGuest || TheCurrentUser.isUser) 2
+        onCurrentIndexChanged: print("recentordersSL: "+currentIndex)
 
         BusyIndicator {}
 
@@ -112,9 +115,9 @@ Home {
 
         Item {
             Label {
-                width: parent.width*.9
-                height: parent.height*.9
-                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.fill: parent
+                anchors.leftMargin: 10
+                anchors.rightMargin: 10
                 text: TheCurrentUser.isGuest ?
                           "Necesitas registrarte para poder ver tus ordenes recientes."
                         : "Aun no haz realizado ninguna orden."
@@ -126,7 +129,10 @@ Home {
         }
     }
 
-    CustomerModel { id: customerModel }
+    CustomerModel {
+        id: customerModel
+        request.onSucceeded: recentordersSL.currentIndex = 1
+    }
 
     Connections {
         target: TheCurrentUser
@@ -143,6 +149,10 @@ Home {
             else
                 customerModel.model.append({})
         }
+
+        function onLoggedOut() {
+            recentordersSL.currentIndex = 2;
+        }
     }
 
     QtObject {
@@ -150,10 +160,6 @@ Home {
         property Component customerBill: CustomerBill {
             width: recentOrders.width/2
             orientation: ListView.Horizontal
-            Rectangle {
-                anchors.fill: parent
-                color: "red"
-            }
         }
     }
 }
