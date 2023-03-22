@@ -24,12 +24,10 @@ Home {
         productRequest.addSuggetionsToModel()
 
     }
-    Rectangle {
+    Item {
         id: lbl
         width: parent.width
         height: parent.height * .1
-        color: "floralwhite"
-        z: 10
         Label {
             id: label
             width: parent.width
@@ -40,10 +38,14 @@ Home {
         }
 
         Label {
-            anchors.top: label.bottom
-            anchors.topMargin: 10
-            anchors.bottom: parent.bottom
-            text: "¡Mira las ofertas que tenemos para ti!"
+            anchors {
+                top: label.bottom
+                topMargin: 10
+                bottom: parent.bottom
+                left: parent.left
+                leftMargin: 5
+            }
+            text: "¡Aprovecha las ofertas que tenemos para ti!"
             font.pointSize: 13
         }
     }
