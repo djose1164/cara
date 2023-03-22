@@ -7,17 +7,18 @@ import com.cara 1.0
 QtObject {
     id: root
 
-    property int userType: TheCurrentUser.Types.Guest
+    property int userType: previousLogin ? (isAdmin ? TheCurrentUser.Types.Admin
+                                                    : TheCurrentUser.Types.User)
+                                         : TheCurrentUser.Types.Guest
     readonly property bool isAdmin: userTypeId === TheCurrentUser.Types.Admin
+    // To be customer, the user must have at least one order made.
     readonly property bool isCostumer: customerId > 0
     readonly property bool isGuest: userType === TheCurrentUser.Types.Guest
     readonly property bool previousLogin: settings.value("refreshToken")
-    readonly property string homePath: {
-        if (isAdmin)
-            return "qrc:/home/AdminHome.qml";
-        else if (isGuest)
-            return "qrc:/home/UserHome.qml";
-    }
+    readonly property string homePath: isAdmin ? "qrc:/home/AdminHome.qml"
+                                               : "qrc:/home/UserHome.qml"
+    readonly property bool isUser: userTypeId === TheCurrentUser.Types.User
+
     readonly property string orderPath: isGuest ? "qrc:/orders/OrderFormUser.qml"
                                                 : "qrc:/orders/OrderFormAdmin.qml"
     readonly property string orderFormPath: isAdmin ? "qrc:/orders/OrderFormAdmin.qml"
@@ -33,7 +34,6 @@ QtObject {
     property int userTypeId
     property string email
     property bool isLoggedIn
-
 
     enum Types {
         Admin = 1,
@@ -66,6 +66,7 @@ QtObject {
     signal failedToSetUserCredentials(respose: var)
     signal orderPosted
     signal serverUnavailable
+    signal loggedOut
 
     Component.onCompleted: {
         print("isGuest: "+isGuest)
@@ -98,7 +99,8 @@ QtObject {
         email = user.email;
         userTypeId = user.user_type_id;
         userId = user.id;
-        print("user initialized")
+        userType = userTypeId;
+        print("user initialized: userTypeId: "+userTypeId+"\nuserType: "+userType)
         userCredentialsSet();
     }
 
@@ -110,5 +112,8 @@ QtObject {
         userId = 0;
         isLoggedIn = false;
         settings.refreshToken = "";
+        userType = TheCurrentUser.Types.Guest;
+        customerId = 0;
+        loggedOut();
     }
 }
