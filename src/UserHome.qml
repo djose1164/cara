@@ -17,14 +17,10 @@ Home {
                                          : ""
 
     Component.onCompleted: {
+        if (TheCurrentUser.isGuest)
+            customerModel.model.append({});
         productRequest.addSuggetionsToModel()
-        print("From UserHome, adding date to recent orders.");
-        if (!TheCurrentUser.isGuest)
-            customerModel.findOrdersByCustomerId(TheCurrentUser.customerId);
-        else
-            customerModel.model.append({})
     }
-
     Rectangle {
         id: lbl
         width: parent.width
@@ -71,10 +67,7 @@ Home {
 
     ProductRequest {
         id: productRequest
-        onSucceeded: {
-            print("Holalalala");
-            offerStackLayout.currentIndex = 1;
-        }
+        onSucceeded: offerStackLayout.currentIndex = 1
     }
 
     Item {
@@ -99,19 +92,38 @@ Home {
         TapHandler { onTapped: bar.currentIndex = 2 }
     }
 
-
-    ListView {
-        id: recentOrders
-        readonly property StackView stackView: root.stackView
+    StackLayout {
+        id: recentordersSL
         width: parent.width
         height: parent.height * .2
         anchors.top: recentOrdersItem.bottom
         anchors.topMargin: 20
-        anchors.horizontalCenter: parent.horizontalCenter
+        currentIndex: if (TheCurrentUser.isGuest || TheCurrentUser.isUser) 2
 
-        model: customerModel.model
-        delegate: TheCurrentUser.isGuest ? _.needToLogIn : _.customerBill
-        orientation: ListView.Horizontal
+        BusyIndicator {}
+
+        ListView {
+            id: recentOrders
+            readonly property StackView stackView: root.stackView
+            model: customerModel.model
+            delegate:   _.customerBill
+            orientation: ListView.Horizontal
+        }
+
+        Item {
+            Label {
+                width: parent.width*.9
+                height: parent.height*.9
+                anchors.horizontalCenter: parent.horizontalCenter
+                text: TheCurrentUser.isGuest ?
+                          "Necesitas registrarte para poder ver tus ordenes recientes."
+                        : "Aun no haz realizado ninguna orden."
+                font.pointSize: 14
+                horizontalAlignment: Label.AlignHCenter
+                verticalAlignment: Label.AlignVCenter
+                wrapMode: Label.WordWrap
+            }
+        }
     }
 
     CustomerModel { id: customerModel }
@@ -122,6 +134,15 @@ Home {
         function onOrderPosted() {
             customerModel.findOrdersByCustomerId(TheCurrentUser.customerId);
         }
+
+        function onUserCredentialsSet() {
+            print("function onUserCredentialsSet() isAdmin: " + TheCurrentUser.isAdmin);
+           // recentordersSL.currentIndex = 1;
+            if (TheCurrentUser.isCostumer)
+                customerModel.findOrdersByCustomerId(TheCurrentUser.customerId);
+            else
+                customerModel.model.append({})
+        }
     }
 
     QtObject {
@@ -129,22 +150,10 @@ Home {
         property Component customerBill: CustomerBill {
             width: recentOrders.width/2
             orientation: ListView.Horizontal
-        }
-        property Component needToLogIn: Item {
-                width: recentOrders.width
-                height: recentOrders.height
-
-                Label {
-                    width: parent.width*.9
-                    height: parent.height*.9
-                    anchors.horizontalCenter: parent.horizontalCenter
-                    text: "Necesitas registrarte para poder ver tus ordenes recientes."
-                    font.pointSize: 14
-                    horizontalAlignment: Label.AlignHCenter
-                    verticalAlignment: Label.AlignVCenter
-                    wrapMode: Label.WordWrap
-                }
-
+            Rectangle {
+                anchors.fill: parent
+                color: "red"
+            }
         }
     }
 }
