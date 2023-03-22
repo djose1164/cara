@@ -4,11 +4,11 @@ import QtQuick.Layouts
 import "qrc:/main"
 import "qrc:/users"
 
-Page {
+Item {
     id: root
     readonly property bool areInputsValid: usernameInput.text !== ""
                                            && passwordInput.text !== ""
-    readonly property variant handlers : {
+    readonly property var handlers : {
         "success": successHandler,
         "no_internet": noInternetHandler,
         "credentialsNotValid": failedHandler,
@@ -16,111 +16,101 @@ Page {
         "notFound": () => popup.text = "Cuenta no registrada.",
     }
 
-    Item {
+    width: parent.width > parent.height ? parent.width/2 : parent.width
+    height: parent.height > parent.width ? parent.height*.95 : parent.height*.6
+    anchors.centerIn: parent
 
-        width: parent.width > parent.height ? parent.width/2 : parent.width
-        height: parent.height > parent.width ? parent.height*.95 : parent.height*.6
+    Image {
+        id:loginLbl
+        anchors.top:  parent.top
+        anchors.topMargin: 20
+        anchors.horizontalCenter: parent.horizontalCenter
+        source: "qrc:/assets/cara-logo-v1.png"
+        sourceSize: "128x128"
+    }
+
+    ColumnLayout {
+        id: loginInfo
+        width: parent.width > root.height ? root.width/2 : root.width*.9
+        height: parent.height * .3
         anchors.centerIn: parent
+        spacing: 20
 
-        Label {
-            id:loginLbl
-            anchors.top:  parent.top
-            anchors.topMargin: 20
-            anchors.horizontalCenter: parent.horizontalCenter
-            text: "Cara"
-            font.pointSize: parent.height * .08
+        TextField {
+            id: usernameInput
+            Layout.fillWidth: true
+            Layout.alignment: Qt.AlignCenter
+            Layout.topMargin: 5
+            placeholderText: "Usuario"
+            inputMethodHints: Qt.ImhLowercaseOnly
+            font.pointSize: 15
+            EnterKey.type: Qt.EnterKeyNext
+            focus: true
         }
 
-        ColumnLayout {
-            id: loginInfo
-            width: parent.width
-            anchors.top: loginLbl.bottom
-            anchors.topMargin: 100
-            spacing: 40
-
-            component MyTextField: TextField {
-                onEditingFinished: {
-                    focus = false
-                    Qt.inputMethod.hide()
-                }
-            }
-
-            MyTextField {
-                id: usernameInput
-                Layout.preferredWidth: parent.width/1.5
-                Layout.alignment: Qt.AlignCenter
-                Layout.topMargin: 5
-                placeholderText: "Usuario"
-                inputMethodHints: Qt.ImhLowercaseOnly
-                font.pointSize: 15
-                EnterKey.type: Qt.EnterKeyNext
-                focus: true
-            }
-
-            PasswordInput {
-                id: passwordInput
-                Layout.preferredWidth: parent.width/1.5
-                Layout.alignment: Qt.AlignCenter
-                Layout.topMargin: 5
-                font.pointSize: 15
-                Keys.onReturnPressed: requestAuthentication()
-            }
-        }
-
-        RowLayout {
-            id: buttonsRowLayout
-            width: parent.width * .9
-            anchors.top: loginInfo.bottom
-            anchors.topMargin: 100
-            anchors.horizontalCenter: parent.horizontalCenter
-
-            Button {
-                id: loginBtn
-                text: "Iniciar Sesion"
-                font.pointSize: 12
-                onClicked: requestAuthentication()
-                Layout.alignment: Qt.AlignCenter
-                font.capitalization: Font.MixedCase
-                Material.background: Material.Blue
-                Material.foreground: "white"
-            }
-
-            Button {
-                id: signupBtn
-                text: "Registrarse"
-                font.pointSize: 12
-                onClicked: mainStackView.replace("qrc:/main/SignUp.qml")
-                Layout.alignment: Qt.AlignCenter
-                font.capitalization: Font.MixedCase
-                Material.background: Material.Blue
-                Material.foreground: "white"
-            }
-        }
-
-        MessagePopup { id: popup }
-
-        Auth {
-            id: auth
-            request.onReceived: busyIndicator.close()
-            request.onFailed: (response) => handlers[response.code]()
-            onAuthenticated: r => {
-                TheCurrentUser.init(r);
-                TheCurrentUser.isLoggedIn = true;
-                successHandler();
-            }
-            onInvalid: popup.open()
-        }
-
-        BusyPopup { id: busyIndicator }
-
-        TapHandler {
-            onTapped: {
-                usernameInput.focus = false
-                passwordInput.focus = false
-                Qt.inputMethod.hide()
-            }
+        PasswordInput {
+            id: passwordInput
+            Layout.fillWidth: true
+            Layout.alignment: Qt.AlignCenter
+            Layout.topMargin: 5
+            font.pointSize: 15
+            Keys.onReturnPressed: requestAuthentication()
         }
     }
+
+    ColumnLayout {
+        id: buttonsRowLayout
+        width: parent.width
+        height: 100
+        anchors.top: loginInfo.bottom
+        anchors.topMargin: 50
+        anchors.horizontalCenter: parent.horizontalCenter
+        spacing: 20
+
+        Button {
+            id: loginBtn
+            text: "Iniciar Sesion"
+            font.pointSize: 12
+            onClicked: areInputsValid ? requestAuthentication() : usernameInput.focus = true
+            Layout.alignment: Qt.AlignCenter
+            font.capitalization: Font.MixedCase
+            Material.background: Material.Blue
+            Material.foreground: "white"
+        }
+
+        Label {
+            text: '¿Aun no tienes una cuenta? [Registrate](qrc:/login/SignUp.qml)'
+            onLinkActivated: link => mainStackView.replace(link)
+            textFormat: Label.MarkdownText
+            Layout.alignment: Qt.AlignCenter
+            font.pointSize: 12
+        }
+    }
+
+    MessagePopup { id: popup }
+
+    Auth {
+        id: auth
+        request.onReceived: busyIndicator.close()
+        request.onFailed: (response) => handlers[response.code]()
+        onAuthenticated: r => {
+                             TheCurrentUser.init(r);
+                             TheCurrentUser.isLoggedIn = true;
+                             successHandler();
+                         }
+        onInvalid: popup.open()
+    }
+
+    BusyPopup { id: busyIndicator }
+
+    TapHandler {
+        onTapped: {
+            usernameInput.focus = false
+            passwordInput.focus = false
+            Qt.inputMethod.hide()
+        }
+    }
+
     function requestAuthentication() {
         busyIndicator.open();
         if (areInputsValid)
