@@ -62,7 +62,8 @@ ToolBar {
         }
     }
     function shouldAccept() {
-        if (textField.text.length >= minCharactersToSearch)
-            accepted(textField.text);
+        const text = textField.text.trim();
+        if (text.length >= minCharactersToSearch)
+            accepted(text);
     }
 }
