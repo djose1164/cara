@@ -7,7 +7,6 @@
         <file>MessagePopup.qml</file>
         <file>PasswordInput.qml</file>
         <file>SidePane.qml</file>
-        <file>SignUp.qml</file>
         <file>MainPage.qml</file>
     </qresource>
     <qresource prefix="/home">
@@ -78,6 +77,7 @@
     <qresource lang="qml" prefix="/login">
         <file>Auth.qml</file>
         <file>Login.qml</file>
+        <file>SignUp.qml</file>
     </qresource>
     <qresource lang="qml" prefix="/users">
         <file>TheCurrentUser.qml</file>
