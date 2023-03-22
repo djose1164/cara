@@ -11,6 +11,8 @@ QtObject {
     signal succeeded(var response)
     signal failed(var response)
 
+    onFailed: r => print("onFailed: " + JSON.stringify(r, null, 2))
+
     function request(verb, endpoint, obj, cb, auth) {
         const complete_url = base + endpoint;
         print(`complete_url: ${complete_url} verb: ${verb}`);
