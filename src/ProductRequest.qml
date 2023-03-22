@@ -8,11 +8,12 @@ Item {
     property alias model: model
     readonly property string endpoint: "/products"
 
-    signal succeeded(resp: var)
+    signal succeeded()
 
     Utils.Request {
         id: request
         base: "https://cara-rd.live/api" + endpoint
+        onSucceeded: root.succeeded()
     }
 
     ListModel { id: model }
