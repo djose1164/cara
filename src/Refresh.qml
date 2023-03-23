@@ -1,8 +1,9 @@
 import QtQuick
-import com.cara 1.0
+import "qrc:/utils"
 
-Rest {
-    base: "https://cara-rd.live/api/users/refresh"
+CaraApi {
+    endpoint: "/users/refresh"
+    accessToken: null
 
     signal accessTokenReceived(token: string)
 

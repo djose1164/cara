@@ -116,11 +116,10 @@ Item {
         id: popup
     }
 
-    Rest {
+    CaraApi {
         id: request
-        base: "https://cara-rd.live/api/users"
-        onSucceeded: stackView.replace("qrc:/home/UserHome.qml");
-
+        endpoint:  "/users"
+        onSucceeded: stackView.replace("qrc:/main/MainPage.qml");
     }
 
     Connections {

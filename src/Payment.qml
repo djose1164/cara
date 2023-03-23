@@ -1,5 +1,5 @@
 import QtQuick
-import "qrc:/utils" as Utils
+import "qrc:/utils"
 import "qrc:/users"
 import com.cara 1.0
 
@@ -19,10 +19,9 @@ QtObject {
 
     Component.onCompleted: rest.refreshAccessToken()
 
-    property Rest rest: Rest {
+    property CaraApi rest: CaraApi {
         id: request
-        base: "https://cara-rd.live/api/payments"
-        accessToken: TheCurrentUser.accessToken
+        endpoint: "/payments"
         onSent: root.requested()
         onReceived: responseReceived();
     }

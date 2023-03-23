@@ -5,11 +5,10 @@ import "qrc:/users"
 QtObject {
     id: root
 
-    property Rest request: Rest {
+    property CaraApi request: CaraApi {
         id: request
-        base: "https://cara-rd.live/api/customers"
-        refreshToken: TheCurrentUser.refreshToken
-
+        endpoint: "/customers"
+        accessToken: TheCurrentUser.accessToken
     }
 
     function create(client) {

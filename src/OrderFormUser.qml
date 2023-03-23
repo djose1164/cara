@@ -6,6 +6,7 @@ import "qrc:/users"
 Page {
     id: root
     readonly property var fullOrder: {
+        "user_id": TheCurrentUser.userId,
         "customer_id": TheCurrentUser.customerId,
         "date": addOrder.orderForm.date ? addOrder.orderForm.date
                                         : new Date().toLocaleDateString(
@@ -47,7 +48,8 @@ Page {
                     addOrder.messageDialog.open();
                 }
                 else
-                    addOrder.request.post("/orders/", fullOrder)
+                    addOrder.request.post("/", fullOrder);
+                print("FullOrder: " + JSON.stringify(fullOrder, null, 2));
             }
             Layout.alignment: Qt.AlignCenter
         }

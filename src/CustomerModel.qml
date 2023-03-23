@@ -1,6 +1,6 @@
 import QtQuick
 import "qrc:/users"
-import com.cara 1.0
+import "qrc:/utils"
 
 // TODO: The API must be change to use fetch instead of find to get resources
 // from server
@@ -16,9 +16,9 @@ QtObject {
 
     Component.onCompleted: rest.refreshAccessToken()
 
-    property Rest rest: Rest {
+    property CaraApi rest: CaraApi {
         id: request
-        base: "https://cara-rd.live/api/customers"
+        endpoint: "/customers"
         accessToken: TheCurrentUser.accessToken
     }
 

@@ -1,19 +1,21 @@
 import QtQuick
 import QtQml
-import "qrc:/utils" as Utils
+import "qrc:/utils"
 
 Item {
     id: root
     property alias request: request
     property alias model: model
-    readonly property string endpoint: "/products"
 
     signal succeeded()
 
-    Utils.Request {
+    CaraApi {
         id: request
-        base: "https://cara-rd.live/api" + endpoint
-        onSucceeded: root.succeeded()
+        endpoint: "/products"
+        onSucceeded: resp => {
+            model.append(resp.products);
+            root.succeeded();
+        }
     }
 
     ListModel { id: model }
@@ -35,9 +37,6 @@ Item {
     }
     
     function addSuggetionsToModel() {
-        request.get('/', null, resp => {
-            model.append(resp.products);
-            request.succeeded(resp);
-        });
+        request.get('/');
     }
 }
