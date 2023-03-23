@@ -21,8 +21,9 @@ Home {
             customerModel.model.append({});
             recentordersSL.currentIndex = 2;
         }
+        if (!TheCurrentUser.isCostumer)
+            recentordersSL.currentIndex = 2;
         productRequest.addSuggetionsToModel()
-
     }
     Item {
         id: lbl
@@ -45,7 +46,7 @@ Home {
                 left: parent.left
                 leftMargin: 5
             }
-            text: "¡Aprovecha las ofertas que tenemos para ti!"
+            text: "¡Aprovecha las ofertas!"
             font.pointSize: 13
         }
     }
