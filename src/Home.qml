@@ -4,7 +4,7 @@ import QtQuick.Layouts
 Page {
     id: root
     readonly property StackView stackView: StackView.view
-    readonly property TabBar bar: stackView.StackLayout.bar
+    readonly property TabBar bar: stackView.bar
     property bool inHome: false
     signal homeClicked
 
