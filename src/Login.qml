@@ -18,7 +18,6 @@ Item {
 
     width: parent.width > parent.height ? parent.width/2 : parent.width
     height: parent.height > parent.width ? parent.height*.95 : parent.height*.6
-    anchors.centerIn: parent
 
     Image {
         id:loginLbl
