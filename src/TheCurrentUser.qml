@@ -34,6 +34,7 @@ QtObject {
     property int userTypeId
     property string email
     property bool isLoggedIn
+    property bool isVerificationDone: false
 
     enum Types {
         Admin = 1,
@@ -70,6 +71,7 @@ QtObject {
     signal adminChanged
     signal homeChanged
     signal notLoggedIn
+    signal verificationDone
 
     Component.onCompleted: {
         print("isGuest: "+isGuest);
@@ -78,12 +80,15 @@ QtObject {
             print("previousLogin is " + previousLogin)
             TheCurrentUser.init();
         } else {
+            print("No previous login");
             root.notLoggedIn();
         }
+        isVerificationDone = true;
     }
 
     onIsAdminChanged: root.adminChanged()
     onHomePathChanged: root.homeChanged()
+    onIsVerificationDoneChanged: if (isVerificationDone) root.verificationDone()
 
     function init(response=null) {
         if (response)
@@ -110,6 +115,7 @@ QtObject {
         userId = user.id;
         userType = userTypeId;
         print("user initialized: userTypeId: "+userTypeId+"\nuserType: "+userType)
+        isVerificationDone = true;
         userCredentialsSet();
     }
 
@@ -123,6 +129,7 @@ QtObject {
         settings.refreshToken = "";
         userType = TheCurrentUser.Types.Guest;
         customerId = 0;
+        isVerificationDone = true;
         loggedOut();
     }
 }
