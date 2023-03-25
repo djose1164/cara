@@ -110,6 +110,7 @@ Drawer {
                 text: "Cerrar sesion"
                 flat: true
                 onClicked: {
+                    close();
                     TheCurrentUser.clear();
                     stackView.replace("qrc:/main/MainPage.qml");
                 }
