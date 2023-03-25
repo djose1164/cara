@@ -12,11 +12,6 @@ Page {
     signal adminChanged
     footer: MainFooter {id: bar }
 
-    Component.onCompleted: {
-        print("orderStackView pusing: " + TheCurrentUser.orderFormPath);
-        orderStackView.replace(TheCurrentUser.orderFormPath);
-    }
-
     StackLayout {
         id: stackLayout
         anchors.fill: parent
@@ -45,16 +40,11 @@ Page {
     Connections {
         target: TheCurrentUser
 
-        function onHomeChanged() {
-            print("homeStackView: " + TheCurrentUser.homePath);
-
-        }
-
         function onUserCredentialsSet() {
-            print("onNotLoggedIn")
             homeView.replace(TheCurrentUser.homePath);
             const home = homeView.currentItem;
             bar.homeClicked.connect(home.homeClicked);
+            orderStackView.replace(TheCurrentUser.orderFormPath);
         }
     }
 }
