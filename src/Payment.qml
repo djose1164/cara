@@ -17,12 +17,11 @@ QtObject {
     signal responseReceived
     signal paymentPatched(newPayment: var)
 
-    Component.onCompleted: rest.refreshAccessToken()
-
     property CaraApi rest: CaraApi {
         id: request
         endpoint: "/payments"
         onSent: root.requested()
+        accessToken: TheCurrentUser.accessToken
         onReceived: responseReceived();
     }
 
