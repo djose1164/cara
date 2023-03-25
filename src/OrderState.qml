@@ -3,27 +3,26 @@ import QtQuick.Controls
 import QtQuick.Layouts
 import "qrc:/payment"
 import "qrc:/users"
+import "qrc:/entity"
 
 Item {
     id: root
-    required property int id
-    required property var payment
-    required property var order_details
-    required property string date
-    readonly property var product: order_details.product
+    required property OrderEntity orderEntity
+    readonly property var payment: orderEntity.payment
+    readonly property var product: orderEntity.orderDetails.product
 
     signal paymentApplied(newPayment: var)
 
     onPaymentApplied: p => payment = p
 
-    width: ListView.view ? ListView.view.width : parent.width
-    height: ListView.view ? ListView.view.height * .55 : parent.height * .55
+   // width: ListView.view ? ListView.view.width : parent.width
+    //height: ListView.view ? ListView.view.height * .55 : parent.height * .55
 
     ColumnLayout {
         anchors.fill: parent
 
         Label {
-            text: `Estado de Orden ID#${id}: `
+            text: `Estado de Orden ID#${orderEntity.orderId}`
             font.pointSize: 12.5
             font.bold: true
         }
@@ -46,7 +45,7 @@ Item {
         }
 
         Label {
-            text: date
+            text: orderEntity.date
             font.pointSize: 12
         }
 
@@ -75,7 +74,7 @@ Item {
                 }
             }
             Repeater {
-            model: order_details
+            model: orderEntity.orderDetails
             delegate: RowLayout {
                 Layout.fillWidth: true
                 spacing: 20

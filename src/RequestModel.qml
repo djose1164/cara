@@ -12,8 +12,8 @@ Item {
     property alias request: request
 
     ListModel { id: listModel }
-
-    Request { id: request; base: "https://cara-rd.live/api" }
+    
+    CaraApi { id: request }
 
     /**
     * Send a request with or without a model adjunct to it.

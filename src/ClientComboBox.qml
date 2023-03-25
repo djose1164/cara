@@ -22,9 +22,10 @@ Item {
 
     ListModel { id: model }
 
-    Rest {
+    CaraApi {
         id: rest
-        base: "https://cara-rd.live/api/customers/info"
+        endpoint: "/customers/info"
+        accessToken: TheCurrentUser.accessToken
         onSucceeded: resp => model.count ? model.set(
                                                0,
                                                resp.customers) : model.append(

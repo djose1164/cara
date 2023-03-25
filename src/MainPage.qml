@@ -7,7 +7,9 @@ import "qrc:/users"
 Page {
     id: root
     readonly property StackView stackView: StackView.view
+    readonly property Component busyIndicator: BusyIndicator {}
 
+    signal adminChanged
     footer: MainFooter {id: bar }
 
     StackLayout {
@@ -18,29 +20,31 @@ Page {
         StackView {
             id: homeView
             readonly property TabBar bar: bar
-            initialItem: BusyIndicator {}   
+            initialItem: TheCurrentUser.isGuest ? TheCurrentUser.homePath
+                                                : busyIndicator
         }
 
         StackView {
             id: orderStackView
-            initialItem: BusyIndicator {}
+            initialItem: TheCurrentUser.orderPath ?? busyIndicator
         }
 
         StackView { initialItem: "qrc:/bills/BillPage.qml" }
     }
 
-    Connections {
-        target: TheCurrentUser
-        function onUserCredentialsSet() {
-            print("onUserCredentialsSet: " + TheCurrentUser.homePath)
-            homeView.replace(TheCurrentUser.homePath)
-            const home = homeView.currentItem;
-            bar.homeClicked.connect(home.homeClicked);
-
-            print("orderStackView pusing: " + TheCurrentUser.orderFormPath);
-            orderStackView.push(TheCurrentUser.orderFormPath);
-        }
+    SidePane {
+        id: sideMenu
+        stackView: root.stackView
     }
 
-    SidePane { id: sideMenu }
+    Connections {
+        target: TheCurrentUser
+
+        function onUserCredentialsSet() {
+            homeView.replace(TheCurrentUser.homePath);
+            const home = homeView.currentItem;
+            bar.homeClicked.connect(home.homeClicked);
+            orderStackView.replace(TheCurrentUser.orderFormPath);
+        }
+    }
 }

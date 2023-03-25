@@ -26,5 +26,6 @@
         <file>icons/add_shopping_cart.svg</file>
         <file>icons/add_circle.svg</file>
         <file>icons/arrow_forward.svg</file>
+        <file>assets/cara-logo-v1.png</file>
     </qresource>
 </RCC>

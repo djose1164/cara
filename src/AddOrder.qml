@@ -7,7 +7,7 @@ import "qrc:/main"
 import "qrc:/customers"
 import "qrc:/product"
 import "qrc:/users"
-import com.cara 1.0
+import "qrc:/utils"
 
 // TODO: Update implementation to use the new types.
 Item {
@@ -15,6 +15,7 @@ Item {
     property alias totalToPay: orderForm.total
     property alias orderForm: orderForm
     property alias request: request
+    property alias messageDialog: message
     signal viewRequested
 
     onViewRequested: orderForm.updateClientField()
@@ -30,9 +31,9 @@ Item {
         onButtonClicked: close()
     }
 
-    Rest {
+    CaraApi {
         id: request
-        base: "https://cara-rd.live/api"
+        endpoint: "/orders"
         accessToken: TheCurrentUser.accessToken
         onFailed: r => {
             message.text = "No se pudo realizar la accion";

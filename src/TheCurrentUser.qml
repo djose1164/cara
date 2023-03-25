@@ -7,11 +7,20 @@ import com.cara 1.0
 QtObject {
     id: root
 
+    property int userType: previousLogin ? (isAdmin ? TheCurrentUser.Types.Admin
+                                                    : TheCurrentUser.Types.User)
+                                         : TheCurrentUser.Types.Guest
     readonly property bool isAdmin: userTypeId === TheCurrentUser.Types.Admin
+    // To be customer, the user must have at least one order made.
     readonly property bool isCostumer: customerId > 0
+    readonly property bool isGuest: userType === TheCurrentUser.Types.Guest
     readonly property bool previousLogin: settings.value("refreshToken")
     readonly property string homePath: isAdmin ? "qrc:/home/AdminHome.qml"
                                                : "qrc:/home/UserHome.qml"
+    readonly property bool isUser: userTypeId === TheCurrentUser.Types.User
+
+    readonly property string orderPath: isGuest ? "qrc:/orders/OrderFormUser.qml"
+                                                : "qrc:/orders/OrderFormAdmin.qml"
     readonly property string orderFormPath: isAdmin ? "qrc:/orders/OrderFormAdmin.qml"
                                                     : "qrc:/orders/OrderFormUser.qml"
     // TODO: This should be deleted
@@ -25,10 +34,12 @@ QtObject {
     property int userTypeId
     property string email
     property bool isLoggedIn
+    property bool isVerificationDone: false
 
     enum Types {
         Admin = 1,
-        User
+        User,
+        Guest
     }
 
     property Settings settings: Settings {
@@ -56,13 +67,28 @@ QtObject {
     signal failedToSetUserCredentials(respose: var)
     signal orderPosted
     signal serverUnavailable
+    signal loggedOut
+    signal adminChanged
+    signal homeChanged
+    signal notLoggedIn
+    signal verificationDone
 
     Component.onCompleted: {
+        print("isGuest: "+isGuest);
+        print("isAdmin: "+isAdmin);
         if (previousLogin) {
             print("previousLogin is " + previousLogin)
             TheCurrentUser.init();
+        } else {
+            print("No previous login");
+            root.notLoggedIn();
         }
+        isVerificationDone = true;
     }
+
+    onIsAdminChanged: root.adminChanged()
+    onHomePathChanged: root.homeChanged()
+    onIsVerificationDoneChanged: if (isVerificationDone) root.verificationDone()
 
     function init(response=null) {
         if (response)
@@ -87,7 +113,9 @@ QtObject {
         email = user.email;
         userTypeId = user.user_type_id;
         userId = user.id;
-        print("user initialized")
+        userType = userTypeId;
+        print("user initialized: userTypeId: "+userTypeId+"\nuserType: "+userType)
+        isVerificationDone = true;
         userCredentialsSet();
     }
 
@@ -99,5 +127,9 @@ QtObject {
         userId = 0;
         isLoggedIn = false;
         settings.refreshToken = "";
+        userType = TheCurrentUser.Types.Guest;
+        customerId = 0;
+        isVerificationDone = true;
+        loggedOut();
     }
 }

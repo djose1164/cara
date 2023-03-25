@@ -3,37 +3,48 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 import "qrc:/users"
+import "qrc:/entity"
 
 ItemDelegate {
     id: root
-    required property var order_details
-    required property var payment
-    required property int id
-    required property string date
+
     property int orientation : ListView.Vertical
     readonly property StackView stackView: ListView.view.stackView
+    required property var payment
+    required property string date
+    required property int id
+    readonly property int orderId: id
+    required property var order_details
+    readonly property int widthLV: ListView.view.width
+    readonly property int heightLV: ListView.view.height
+    readonly property bool isHorizontal: orientation === ListView.Horizontal
 
     signal updateCustomer(customerId: int)
 
-    width: ListView.view.width
-    height: orientation === ListView.Horizontal ? ListView.view.height
-                                                : ListView.view.height * .15
+    width: isHorizontal ? widthLV / 2 : widthLV
+    height: isHorizontal ? heightLV : heightLV * .15
 
     onClicked: stackView.push("qrc:/orders/CustomerOrders.qml",
-    {
-        "date": root.date, "id": id, "order_details": order_details, "payment": payment
-    })
+                              {"orderEntity": orderEntity})
+
+    OrderEntity {
+        id: orderEntity
+        payment: root.payment
+        date: root.date
+        orderId: root.orderId
+        orderDetails: root.order_details
+    }
 
     ColumnLayout {
         anchors.fill: parent
         Label {
             Layout.leftMargin: 5
-            text: `Orden #${id}`
+            text: `Orden #${root.orderId}`
             font.pointSize: 16
         }
         Label {
             Layout.leftMargin: 15
-            text: `**Fecha:** ${date}`
+            text: `**Fecha:** ${root.date}`
             textFormat: Label.MarkdownText
         }
     }

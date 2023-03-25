@@ -1,21 +1,23 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
+import com.cara 1.0
+import "qrc:/main"
 import "qrc:/utils"
 
 Item {
     id: signUp
 
-    property int fontSize: 22
+    readonly property StackView stackView: StackView.view
+    property int fontSize: 14
 
-    Label {
+    Image {
         id: cara
         anchors.top: parent.top
         anchors.topMargin: 20
         anchors.horizontalCenter: parent.horizontalCenter
-        text: "Cara"
-        font.pixelSize: fontSize*1.6
-        font.bold: true
+        source: "https://iili.io/HXfzSQj.png"
+        sourceSize: "128x128"
     }
 
     Label {
@@ -28,13 +30,12 @@ Item {
         font.bold: true
     }
 
-    RowLayout {
+    GridLayout {
         id: completeNameRL
-        width: signUp.width
-        anchors.top: signUpLbl.bottom
-        anchors.topMargin: 50
-        anchors.horizontalCenter: parent.horizontalCenter
-        spacing: 20
+        width: signUp.width*.8 > signUp.height ? signUp.width/2 : signUp.width
+        height: signUp.height/2
+        anchors.centerIn: parent
+        columns: 2
 
         TextField {
             id: forenameInput
@@ -42,7 +43,7 @@ Item {
             Layout.fillWidth: true
             Layout.leftMargin: 15
             Layout.rightMargin: 15
-            font.pixelSize: fontSize
+            font.pointSize: fontSize
             EnterKey.type: Qt.EnterKeyNext
         }
 
@@ -53,44 +54,37 @@ Item {
             Layout.alignment: Qt.AlignRight
             Layout.leftMargin: 15
             Layout.rightMargin: 15
-            font.pixelSize: fontSize
+            font.pointSize: fontSize
             EnterKey.type: Qt.EnterKeyNext
         }
+
+
+    TextField {
+        id: emailInput
+        Layout.fillWidth: true
+        placeholderText: "Correo electronico"
+        inputMethodHints: Qt.ImhEmailCharactersOnly | Qt.ImhPreferLowercase | Qt.ImhNoAutoUppercase
+        validator: RegularExpressionValidator {
+            regularExpression: /[a-z0-9]+@[a-z]+\.[a-z]{2,3}/
+        }
+
+        Layout.leftMargin: 15
+        Layout.rightMargin: 15
+        Layout.columnSpan: 2
+        font.pointSize: fontSize
+        EnterKey.type: Qt.EnterKeyNext
     }
 
+    PasswordInput {
+        id: passwordInput
+        Layout.fillWidth: true
+        Layout.leftMargin: 15
+        Layout.rightMargin: 15
+        font.pointSize: fontSize
+        Layout.columnSpan: 2
+    }
+    }
     ColumnLayout {
-        anchors.top: completeNameRL.bottom
-        anchors.topMargin: this.height / 3
-        anchors.horizontalCenter: parent.horizontalCenter
-        width: parent.width
-        spacing: 20
-
-
-        TextField {
-            id: emailInput
-            Layout.fillWidth: true
-            placeholderText: "Correo electronico"
-            inputMethodHints: Qt.ImhEmailCharactersOnly | Qt.ImhPreferLowercase | Qt.ImhNoAutoUppercase
-            validator: RegularExpressionValidator {
-                regularExpression: /[a-z0-9]+@[a-z]+\.[a-z]{2,3}/
-            }
-
-            Layout.leftMargin: 15
-            Layout.rightMargin: 15
-            font.pixelSize: fontSize
-            EnterKey.type: Qt.EnterKeyNext
-        }
-
-        PasswordInput {
-            id: passwordInput
-            Layout.fillWidth: true
-            Layout.leftMargin: 15
-            Layout.rightMargin: 15
-            font.pixelSize: fontSize
-        }
-    }
-
-    RowLayout {
         id: footerRL
         width: parent.width
         anchors.bottom: parent.bottom
@@ -100,13 +94,17 @@ Item {
         Button {
             Layout.alignment: Qt.AlignCenter
             text: "Registrarse"
-            font.pixelSize: fontSize
+            font.pointSize: fontSize
             onClicked: onOk()
         }
 
+        // TODO: Delete weak reference of `mainStackView`.
         Label {
-            text: '<html><style type="text/css"></style><a href="qrc:/login/Login.qml">Iniciar sesion</a></html>'
+            text: '¿Ya tienes una cuenta? [Inicia sesion](qrc:/login/Login.qml)'
             onLinkActivated: link => mainStackView.replace(link)
+            textFormat: Label.MarkdownText
+            Layout.alignment: Qt.AlignCenter
+            font.pointSize: 12
         }
     }
 
@@ -118,9 +116,10 @@ Item {
         id: popup
     }
 
-    Request {
+    CaraApi {
         id: request
-        base: "https://cara-rd.live/api/users"
+        endpoint:  "/users"
+        onSucceeded: stackView.replace("qrc:/main/MainPage.qml");
     }
 
     Connections {
@@ -133,10 +132,6 @@ Item {
         function onFailed(type) {
             let text = type === "singUp" ? "Usario o contrasena incorrecto." : "Datos invalidos."
             popup.text = text;
-        }
-
-        function onSucceeded() {
-            mainStackView.replace("qrc:/home/UserHome.qml");
         }
 
         function onReceived(response) {
@@ -155,6 +150,7 @@ Item {
             "email": emailInput.text,
             "password": passwordInput.text,
         };
+        print(`OnNewUser: ${JSON.stringify(newUser, null, 2)}`);
         busyIndicator.open();
         request.post("/", newUser);
     }

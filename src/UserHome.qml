@@ -1,5 +1,6 @@
 import QtQuick
 import QtQuick.Controls
+import QtQuick.Layouts
 import "qrc:/users"
 import "qrc:/product"
 import "qrc:/customers"
@@ -11,58 +12,71 @@ import "qrc:/bills"
 Home {
     id: root
 
-    readonly property string fullName: TheCurrentUser.forename + " "
-                                       + TheCurrentUser.surname
+    readonly property string fullName: TheCurrentUser.isUser ?
+                                           ` ${TheCurrentUser.forename} ${TheCurrentUser.surname}`
+                                         : ""
+    readonly property bool isUserAndCustomer: TheCurrentUser.isUser
+                                              && TheCurrentUser.isCostumer
 
     Component.onCompleted: {
+        if (isUserAndCustomer)
+            setCustomerOrders();
         productRequest.addSuggetionsToModel()
-        print("From UserHome, adding date to recent orders.");
-        customerModel.findOrdersByCustomerId(TheCurrentUser.customerId);
     }
-
-    Rectangle {
+    Item {
         id: lbl
         width: parent.width
         height: parent.height * .1
-        color: "floralwhite"
-        z: 10
         Label {
             id: label
             width: parent.width
             horizontalAlignment: Text.AlignHCenter
-            text: `¡Bienvenido ${fullName}, mira lo que tenemos disponible para ti!`
+            text: `¡Bienvenido${fullName}, mira lo que tenemos disponible para ti!`
             font.pointSize: 14
             wrapMode: Text.WordWrap
         }
 
         Label {
-            anchors.top: label.bottom
-            anchors.topMargin: 10
-            anchors.bottom: parent.bottom
-            text: "¡Mira las ofertas que tenemos para ti!"
+            anchors {
+                top: label.bottom
+                topMargin: 10
+                bottom: parent.bottom
+                left: parent.left
+                leftMargin: 5
+            }
+            text: "¡Aprovecha las ofertas!"
             font.pointSize: 13
         }
     }
 
-    ListView {
-        id: listView
-        readonly property StackView stackView: root.stackView
+    StackLayout {
+        id: offerStackLayout
         width: parent.width
         height: parent.height * .4
         anchors.top: lbl.bottom
         anchors.topMargin: 40
         anchors.horizontalCenter: parent.horizontalCenter
 
-        model: productRequest.model
-        delegate: ProductDelegate {}
-        orientation: ListView.Horizontal
+        BusyIndicator {}
+
+        ListView {
+            id: listView
+            readonly property StackView stackView: root.stackView
+
+            model: productRequest.model
+            delegate: ProductDelegate {}
+            orientation: ListView.Horizontal
+        }
     }
 
-    ProductRequest { id: productRequest }
+    ProductRequest {
+        id: productRequest
+        onSucceeded: offerStackLayout.currentIndex = 1
+    }
 
     Item {
         id: recentOrdersItem
-        anchors.top: listView.bottom
+        anchors.top: offerStackLayout.bottom
         anchors.topMargin: 20
         width: root.width
         height: 25
@@ -82,24 +96,45 @@ Home {
         TapHandler { onTapped: bar.currentIndex = 2 }
     }
 
-    ListView {
-        id: recentOrders
-        readonly property StackView stackView: root.stackView
+    StackLayout {
+        id: recentordersSL
         width: parent.width
         height: parent.height * .2
         anchors.top: recentOrdersItem.bottom
         anchors.topMargin: 20
-        anchors.horizontalCenter: parent.horizontalCenter
+        onCurrentIndexChanged: print("recentordersSL: "+currentIndex)
+        currentIndex: isUserAndCustomer ? 0 : 2
 
-        model: customerModel.model
-        delegate: CustomerBill {
-            width: recentOrders.width/2
+        BusyIndicator {}
+
+        ListView {
+            id: recentOrders
+            readonly property StackView stackView: root.stackView
+            model: customerModel.model
+            delegate: CustomerBill { orientation: ListView.Horizontal }
             orientation: ListView.Horizontal
         }
-        orientation: ListView.Horizontal
+
+        Item {
+            Label {
+                anchors.fill: parent
+                anchors.leftMargin: 10
+                anchors.rightMargin: 10
+                text: TheCurrentUser.isGuest ?
+                          "Necesitas registrarte para poder ver tus ordenes recientes."
+                        : "Aun no haz realizado ninguna orden."
+                font.pointSize: 14
+                horizontalAlignment: Label.AlignHCenter
+                verticalAlignment: Label.AlignVCenter
+                wrapMode: Label.WordWrap
+            }
+        }
     }
 
-    CustomerModel { id: customerModel }
+    CustomerModel {
+        id: customerModel
+        request.onSucceeded: recentordersSL.currentIndex = 1
+    }
 
     Connections {
         target: TheCurrentUser
@@ -107,5 +142,16 @@ Home {
         function onOrderPosted() {
             customerModel.findOrdersByCustomerId(TheCurrentUser.customerId);
         }
+
+        function onUserCredentialsSet() {
+            print("function onUserCredentialsSet() isAdmin: " + TheCurrentUser.isAdmin);
+           // recentordersSL.currentIndex = 1;
+            if (TheCurrentUser.isCostumer)
+                customerModel.findOrdersByCustomerId(TheCurrentUser.customerId);
+        }
+    }
+
+    function setCustomerOrders() {
+        customerModel.findOrdersByCustomerId(TheCurrentUser.customerId);
     }
 }

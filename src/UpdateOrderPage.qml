@@ -3,6 +3,7 @@ import QtQuick.Controls
 import QtQuick.Layouts
 import "qrc:/utils" as Utils
 import "qrc:/customers" as Client
+import "qrc:/entity"
 
 // TODO: Update the view after effecting a payment.
 
@@ -28,13 +29,41 @@ Page {
         anchors.leftMargin: 15
         spacing: 20
         model: orders
-        delegate: OrderState {
-            onPaymentApplied: payment => {
-                root.paymentApplied({payment, customerId: customer_id});
-                const pred = order => order.payment.id === payment.id;
-                for (let i = 0; i < orders.count; ++i)
-                    if (pred(orders.get(i)))
-                        orders.get(i).payment = payment;
+        delegate: orderState
+    }
+
+    Component {
+        id: orderState
+        Item{
+            id: item
+            property alias orderEntity: orderEntity
+            required property var payment
+            required property string date
+            required property int id
+            readonly property int orderId: id
+            required property var order_details
+
+            width: listView.width
+            height: listView.height*.6
+
+            OrderEntity {
+                id: orderEntity
+                payment: item.payment
+                date: item.date
+                orderId: item.orderId
+                orderDetails: item.order_details
+            }
+
+            OrderState {
+                anchors.fill: parent
+                orderEntity: item.orderEntity
+                onPaymentApplied: payment => {
+                    root.paymentApplied({payment, customerId: customer_id});
+                    const pred = order => order.payment.id === payment.id;
+                    for (let i = 0; i < orders.count; ++i)
+                        if (pred(orders.get(i)))
+                            orders.get(i).payment = payment;
+                }
             }
         }
     }

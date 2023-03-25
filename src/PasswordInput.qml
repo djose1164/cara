@@ -6,7 +6,7 @@ TextField {
 
     property bool showText: false
 
-    width: parent.width
+
     placeholderText: "Contraseña"
     echoMode: showText ? TextField.Normal : TextField.Password
     passwordMaskDelay: 600

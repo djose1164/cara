@@ -15,10 +15,9 @@ Item {
         request.failed.connect(invalid);
     }
 
-    Rest {
+    CaraApi {
         id: request
-        base: "https://cara-rd.live/api/users/login"
-
+        endpoint: "/users/login"
     }
 
     function authenticate(entity) {
