@@ -13,13 +13,8 @@ Page {
     footer: MainFooter {id: bar }
 
     Component.onCompleted: {
-        //if (homeView.currentItem === busyIndicator)
-        //    homeView.replace(TheCurrentUser.homePath)
-
-
         print("orderStackView pusing: " + TheCurrentUser.orderFormPath);
-        print("homeStackView: " + TheCurrentUser.homePath);
-        orderStackView.push(TheCurrentUser.orderFormPath);
+        orderStackView.replace(TheCurrentUser.orderFormPath);
     }
 
     StackLayout {
@@ -30,7 +25,8 @@ Page {
         StackView {
             id: homeView
             readonly property TabBar bar: bar
-            initialItem: TheCurrentUser.homePath ?? busyIndicator
+            initialItem: TheCurrentUser.isGuest ? TheCurrentUser.homePath
+                                                : busyIndicator
         }
 
         StackView {
@@ -51,6 +47,11 @@ Page {
 
         function onHomeChanged() {
             print("homeStackView: " + TheCurrentUser.homePath);
+
+        }
+
+        function onUserCredentialsSet() {
+            print("onNotLoggedIn")
             homeView.replace(TheCurrentUser.homePath);
             const home = homeView.currentItem;
             bar.homeClicked.connect(home.homeClicked);
