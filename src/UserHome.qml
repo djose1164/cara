@@ -18,8 +18,11 @@ Home {
     readonly property bool isUserAndCustomer: TheCurrentUser.isUser
                                               && TheCurrentUser.isCostumer
 
-    Component.onCompleted: productRequest.addSuggetionsToModel()
-
+    Component.onCompleted: {
+        if (isUserAndCustomer)
+            setCustomerOrders();
+        productRequest.addSuggetionsToModel()
+    }
     Item {
         id: lbl
         width: parent.width
@@ -146,5 +149,9 @@ Home {
             if (TheCurrentUser.isCostumer)
                 customerModel.findOrdersByCustomerId(TheCurrentUser.customerId);
         }
+    }
+
+    function setCustomerOrders() {
+        customerModel.findOrdersByCustomerId(TheCurrentUser.customerId);
     }
 }
