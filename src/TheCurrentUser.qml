@@ -67,14 +67,23 @@ QtObject {
     signal orderPosted
     signal serverUnavailable
     signal loggedOut
+    signal adminChanged
+    signal homeChanged
+    signal notLoggedIn
 
     Component.onCompleted: {
-        print("isGuest: "+isGuest)
+        print("isGuest: "+isGuest);
+        print("isAdmin: "+isAdmin);
         if (previousLogin) {
             print("previousLogin is " + previousLogin)
             TheCurrentUser.init();
+        } else {
+            root.notLoggedIn();
         }
     }
+
+    onIsAdminChanged: root.adminChanged()
+    onHomePathChanged: root.homeChanged()
 
     function init(response=null) {
         if (response)
