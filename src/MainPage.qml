@@ -7,8 +7,20 @@ import "qrc:/users"
 Page {
     id: root
     readonly property StackView stackView: StackView.view
+    readonly property Component busyIndicator: BusyIndicator {}
 
+    signal adminChanged
     footer: MainFooter {id: bar }
+
+    Component.onCompleted: {
+        //if (homeView.currentItem === busyIndicator)
+        //    homeView.replace(TheCurrentUser.homePath)
+
+
+        print("orderStackView pusing: " + TheCurrentUser.orderFormPath);
+        print("homeStackView: " + TheCurrentUser.homePath);
+        orderStackView.push(TheCurrentUser.orderFormPath);
+    }
 
     StackLayout {
         id: stackLayout
@@ -18,29 +30,30 @@ Page {
         StackView {
             id: homeView
             readonly property TabBar bar: bar
-            initialItem: TheCurrentUser.homePath
+            initialItem: TheCurrentUser.homePath ?? busyIndicator
         }
 
         StackView {
             id: orderStackView
-            initialItem: TheCurrentUser.orderPath
+            initialItem: TheCurrentUser.orderPath ?? busyIndicator
         }
 
         StackView { initialItem: "qrc:/bills/BillPage.qml" }
     }
 
-    Connections {
-        target: TheCurrentUser
-        function onUserCredentialsSet() {
-            print("onUserCredentialsSet: " + TheCurrentUser.homePath)
-            homeView.replace(TheCurrentUser.homePath)
-            const home = homeView.currentItem;
-            bar.homeClicked.connect(home.homeClicked);
-
-            print("orderStackView pusing: " + TheCurrentUser.orderFormPath);
-            orderStackView.push(TheCurrentUser.orderFormPath);
-        }
+    SidePane {
+        id: sideMenu
+        stackView: root.stackView
     }
 
-    SidePane { id: sideMenu }
+    Connections {
+        target: TheCurrentUser
+
+        function onHomeChanged() {
+            print("homeStackView: " + TheCurrentUser.homePath);
+            homeView.replace(TheCurrentUser.homePath);
+            const home = homeView.currentItem;
+            bar.homeClicked.connect(home.homeClicked);
+        }
+    }
 }
