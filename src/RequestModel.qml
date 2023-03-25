@@ -12,7 +12,7 @@ Item {
     property alias request: request
 
     ListModel { id: listModel }
-
+    
     CaraApi { id: request }
 
     /**

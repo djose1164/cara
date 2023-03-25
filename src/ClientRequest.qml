@@ -7,7 +7,6 @@ QtObject {
 
     property CaraApi request: CaraApi {
         id: request
-        endpoint: "/customers"
         accessToken: TheCurrentUser.accessToken
     }
 
