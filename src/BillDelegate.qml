@@ -7,9 +7,9 @@ import "qrc:/customers"
 
 ItemDelegate {
     id: root
-     property var person_info
-     property int id
-     property ListModel orders
+    required property var person_info
+    required property int id
+    required property ListModel orders
     property int orientation : ListView.Vertical
     readonly property StackView stackView: ListView.view.stackView
 
