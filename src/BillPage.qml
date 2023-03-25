@@ -34,7 +34,7 @@ Page {
     StackLayout {
         id: stackLayout
         anchors.fill: parent
-        currentIndex: TheCurrentUser.isGuest ? 1 : 0
+        currentIndex: TheCurrentUser.isUser || TheCurrentUser.isGuest ? 1 : 0
 
         BusyIndicator { id: myBusy }
 
@@ -45,7 +45,9 @@ Page {
                 anchors.top: parent.top
                 anchors.topMargin: height/2
                 wrapMode: Label.WordWrap
-                text: "Necesitas registrarte para poder ver tus ordenes recientes."
+                text: TheCurrentUser.isUser && !TheCurrentUser.isCostumer
+                      ? "Aun no haz realizado ninguna orden."
+                        : "Necesitas registrarte para poder ver tus ordenes recientes."
                 font.pointSize: 15
                 horizontalAlignment: Label.AlignHCenter
             }
