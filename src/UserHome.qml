@@ -16,15 +16,8 @@ Home {
                                            ` ${TheCurrentUser.forename} ${TheCurrentUser.surname}`
                                          : ""
 
-    Component.onCompleted: {
-        if (TheCurrentUser.isGuest) {
-            customerModel.model.append({});
-            recentordersSL.currentIndex = 2;
-        }
-        if (!TheCurrentUser.isCostumer)
-            recentordersSL.currentIndex = 2;
-        productRequest.addSuggetionsToModel()
-    }
+    Component.onCompleted: productRequest.addSuggetionsToModel()
+
     Item {
         id: lbl
         width: parent.width
@@ -112,7 +105,7 @@ Home {
             id: recentOrders
             readonly property StackView stackView: root.stackView
             model: customerModel.model
-            delegate:   _.customerBill
+            delegate: CustomerBill { orientation: ListView.Horizontal }
             orientation: ListView.Horizontal
         }
 
@@ -149,20 +142,10 @@ Home {
            // recentordersSL.currentIndex = 1;
             if (TheCurrentUser.isCostumer)
                 customerModel.findOrdersByCustomerId(TheCurrentUser.customerId);
-            else
-                customerModel.model.append({})
         }
 
-        function onLoggedOut() {
-            recentordersSL.currentIndex = 2;
-        }
-    }
+        function onNotLoggedIn() { recentordersSL.currentIndex = 2; }
 
-    QtObject {
-        id: _
-        property Component customerBill: CustomerBill {
-            width: recentOrders.width/2
-            orientation: ListView.Horizontal
-        }
+        function onLoggedOut() { recentordersSL.currentIndex = 2; }
     }
 }
