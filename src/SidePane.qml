@@ -30,6 +30,19 @@ Drawer {
         }
 
         Loader { sourceComponent: TheCurrentUser.isGuest ? guest : logged }
+
+        Label {
+            Layout.fillWidth: true
+            Layout.alignment: Qt.AlignBottom | Qt.AlignHCenter
+            Layout.bottomMargin: 10
+            horizontalAlignment: Label.AlignHCenter
+            text: "Para cualquier sugerencia o reporte de errores, escribenos a: "
+            + "[djsoe1164@gmail.com](mailto:djsoe1164@gmail.com)"
+            wrapMode: Label.WordWrap
+            textFormat: Label.MarkdownText
+            onLinkActivated: url => Qt.openUrlExternally(url)
+            fontSizeMode: Label.Fit
+        }
     }
 
     Component {
@@ -97,9 +110,8 @@ Drawer {
                 text: "Cerrar sesion"
                 flat: true
                 onClicked: {
-                    close();
                     TheCurrentUser.clear();
-                    //mainStackView.replace("qrc:/main/MainPage.qml");
+                    stackView.replace("qrc:/main/MainPage.qml");
                 }
             }
         }
