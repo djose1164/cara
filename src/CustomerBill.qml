@@ -15,12 +15,14 @@ ItemDelegate {
     required property int id
     readonly property int orderId: id
     required property var order_details
+    readonly property int widthLV: ListView.view.width
+    readonly property int heightLV: ListView.view.height
+    readonly property bool isHorizontal: orientation === ListView.Horizontal
 
     signal updateCustomer(customerId: int)
 
-    width: ListView.view.width
-    height: orientation === ListView.Horizontal ? ListView.view.height
-                                                : ListView.view.height * .15
+    width: isHorizontal ? widthLV / 2 : widthLV
+    height: isHorizontal ? heightLV : heightLV * .15
 
     onClicked: stackView.push("qrc:/orders/CustomerOrders.qml",
                               {"orderEntity": orderEntity})
