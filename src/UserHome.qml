@@ -15,6 +15,8 @@ Home {
     readonly property string fullName: TheCurrentUser.isUser ?
                                            ` ${TheCurrentUser.forename} ${TheCurrentUser.surname}`
                                          : ""
+    readonly property bool isUserAndCustomer: TheCurrentUser.isUser
+                                              && TheCurrentUser.isCostumer
 
     Component.onCompleted: productRequest.addSuggetionsToModel()
 
@@ -98,6 +100,7 @@ Home {
         anchors.top: recentOrdersItem.bottom
         anchors.topMargin: 20
         onCurrentIndexChanged: print("recentordersSL: "+currentIndex)
+        currentIndex: isUserAndCustomer ? 0 : 2
 
         BusyIndicator {}
 
@@ -143,9 +146,5 @@ Home {
             if (TheCurrentUser.isCostumer)
                 customerModel.findOrdersByCustomerId(TheCurrentUser.customerId);
         }
-
-        function onNotLoggedIn() { recentordersSL.currentIndex = 2; }
-
-        function onLoggedOut() { recentordersSL.currentIndex = 2; }
     }
 }
