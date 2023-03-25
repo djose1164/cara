@@ -58,6 +58,7 @@
         <file>CaDrawer.qml</file>
         <file>TitleHeader.qml</file>
         <file>SettingsHeader.qml</file>
+        <file>CaraApi.qml</file>
     </qresource>
     <qresource prefix="/payment">
         <file>Payment.qml</file>
@@ -89,5 +90,8 @@
     </qresource>
     <qresource prefix="/inventory">
         <file>Inventory.qml</file>
+    </qresource>
+    <qresource prefix="/entity">
+        <file>OrderEntity.qml</file>
     </qresource>
 </RCC>
