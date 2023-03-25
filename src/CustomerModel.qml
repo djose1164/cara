@@ -14,8 +14,6 @@ QtObject {
     signal filtering
     signal customerFetched(customer: var)
 
-    Component.onCompleted: rest.refreshAccessToken()
-
     property CaraApi rest: CaraApi {
         id: request
         endpoint: "/customers"
