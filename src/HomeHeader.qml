@@ -56,6 +56,8 @@ ToolBar {
                     root.acceptedText(t);
                 });
             }
+            Layout.alignment: Qt.AlignTrailing
+            Layout.rightMargin: 10
         }
     }
 }
