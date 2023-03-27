@@ -31,12 +31,19 @@ Page {
         Item {
             ColumnLayout {
                 anchors.centerIn: parent
+                spacing: 10
 
                 Image {
                     id: img
                     source: image_url
                     sourceSize: `${root.width*.9}x${root.height*.4}`
                     onStatusChanged: if (img.status === Image.Ready) stackLayout.currentIndex = 1
+                }
+
+                StarRating {
+                    Layout.fillWidth: true
+                    Layout.fillHeight: true
+                    Layout.minimumHeight: root.height*.1
                 }
 
                 Label {
