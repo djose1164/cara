@@ -59,6 +59,8 @@
         <file>TitleHeader.qml</file>
         <file>SettingsHeader.qml</file>
         <file>CaraApi.qml</file>
+        <file>Star.qml</file>
+        <file>StarRating.qml</file>
     </qresource>
     <qresource prefix="/payment">
         <file>Payment.qml</file>
