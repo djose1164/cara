@@ -10,7 +10,10 @@ Page {
     readonly property Component busyIndicator: BusyIndicator {}
 
     signal adminChanged
-    footer: MainFooter {id: bar }
+    footer: MainFooter {
+        id: bar
+        onHomeClicked: homeView.pop(null)
+    }
 
     StackLayout {
         id: stackLayout
@@ -42,8 +45,6 @@ Page {
 
         function onUserCredentialsSet() {
             homeView.replace(TheCurrentUser.homePath);
-            const home = homeView.currentItem;
-            bar.homeClicked.connect(home.homeClicked);
             orderStackView.replace(TheCurrentUser.orderFormPath);
         }
     }

@@ -7,7 +7,7 @@ import "qrc:/utils"
 Page {
     id: root
     readonly property StackView stackView: StackView.view
-    readonly property TabBar bar: stackView.bar
+    readonly property TabBar bar: stackView ? stackView.bar : null
     required property string name
     required property int sell_price
     required property string description
