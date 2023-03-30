@@ -21,7 +21,7 @@ Drawer {
     ColumnLayout {
         id: menuLayout
         anchors.fill: parent
-
+        anchors.leftMargin: 15
         Label {
             text: "Menu"
             font.pointSize: 14
@@ -32,16 +32,36 @@ Drawer {
         Loader { sourceComponent: TheCurrentUser.isGuest ? guest : logged }
 
         Label {
-            Layout.fillWidth: true
-            Layout.alignment: Qt.AlignBottom | Qt.AlignHCenter
-            Layout.bottomMargin: 10
-            horizontalAlignment: Label.AlignHCenter
-            text: "Para cualquier sugerencia o reporte de errores, escribenos a: "
-            + "[djsoe1164@gmail.com](mailto:djsoe1164@gmail.com)"
-            wrapMode: Label.WordWrap
+            text: "Contactanos"
+            font.pointSize: 12
+            font.bold: true
+        }
+
+        Label {
+            text: "[Twitter](https://twitter.com/carardoficial)"
+            font.pointSize: 11
             textFormat: Label.MarkdownText
             onLinkActivated: url => Qt.openUrlExternally(url)
-            fontSizeMode: Label.Fit
+        }
+
+        Label {
+            text: "[Correo electronico](mailto:djsoe1164@gmail.com)"
+            font.pointSize: 11
+            textFormat: Label.MarkdownText
+            onLinkActivated: url => Qt.openUrlExternally(url)
+        }
+
+        Button {
+            Layout.alignment: Qt.AlignBottom
+            Layout.bottomMargin: 15
+            text: "Cerrar sesion"
+            flat: true
+            visible: !TheCurrentUser.isGuest
+            onClicked: {
+                close();
+                TheCurrentUser.clear();
+                stackView.replace("qrc:/main/MainPage.qml");
+            }
         }
     }
 
@@ -67,12 +87,7 @@ Drawer {
     Component {
         id: logged
         ColumnLayout {
-            width: root.width
-            height: root.height/2
-            anchors.top: parent.top
-            anchors.left: parent.left
-            anchors.leftMargin: 15
-
+            Layout.fillWidth: true
             Label {
                 text: "Informacion Personal"
                 font.pointSize: 12
@@ -103,17 +118,10 @@ Drawer {
                 font.pointSize: 11
             }
 
-            Label { text: TheCurrentUser.email }
-
-            Button {
-                Layout.alignment: Qt.AlignBottom
-                text: "Cerrar sesion"
-                flat: true
-                onClicked: {
-                    close();
-                    TheCurrentUser.clear();
-                    stackView.replace("qrc:/main/MainPage.qml");
-                }
+            Label {
+                Layout.preferredWidth: menuLayout.width
+                text: TheCurrentUser.email
+                wrapMode: Label.Wrap
             }
         }
     }
