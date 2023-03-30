@@ -42,8 +42,8 @@ Item {
         }
         onSucceeded: r => {
             message.text = "Orden realizada con exito";
-            message.informativeText = "Puedes observar el estado de la orden en"
-                         + "Ordenes Recientes.";
+            message.informativeText = "¡Gracias por su compra!";
+            message.detailedText = "Puedes observar el estado de la orden en Ordenes Recientes.";
             message.open();
             clearOrderForm();
 
