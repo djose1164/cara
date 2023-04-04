@@ -59,6 +59,8 @@ signals:
     void unauthorized(); // 401
     void serviceUnavailable(); // 503
 
+    void timeout();
+
 private slots:
     void replyFinished();
     void errorOccurred(QNetworkReply::NetworkError error);
