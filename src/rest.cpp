@@ -147,6 +147,9 @@ void Rest::patch(const QString &endpoint, const QVariantMap &obj)
 
 void Rest::replyFinished()
 {
+    if (!reply_->isOpen())
+        return;
+
     auto reply{reply_->readAll()};
     const auto doc{QJsonDocument::fromJson(reply)};
     buffer_ = std::make_unique<QVariantMap>(doc.toVariant().toMap());
@@ -173,7 +176,7 @@ void Rest::errorOccurred(QNetworkReply::NetworkError error)
         emit unauthorized();
     else if (error == QNetworkReply::ConnectionRefusedError)
         emit serviceUnavailable();
-    else if (error == QNetworkReply::TimeoutError)
+    else if (error == QNetworkReply::OperationCanceledError)
         emit timeout();
 }
 
