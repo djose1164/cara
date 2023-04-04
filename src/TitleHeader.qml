@@ -8,19 +8,11 @@ ToolBar {
     property alias label: lbl
 
     RowLayout {
-        readonly property int preferredMargin: 8
-
         anchors.fill: parent
-        anchors.leftMargin: preferredMargin
-        anchors.rightMargin: preferredMargin
 
         ToolButton {
             Layout.alignment: Qt.AlignLeading
-            background: IconImage {
-                source: "qrc:/left_arrow"
-                sourceSize: iconSize
-                antialiasing: false
-            }
+            icon.source: "qrc:/left_arrow"
             onClicked: stackView.pop()
         }
 
@@ -28,7 +20,8 @@ ToolBar {
             id: lbl
             font.bold: true
             font.pointSize: 14
-            Layout.alignment: Qt.AlignHCenter
+            horizontalAlignment: Label.AlignHCenter
+           // Layout.alignment: Qt.AlignHCenter
         }
     }
 }
