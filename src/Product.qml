@@ -12,6 +12,7 @@ Page {
     required property int sell_price
     required property string description
     required property string image_url
+    required property int inStock
 
     header: TitleHeader {
         title: "Producto"
@@ -48,6 +49,14 @@ Page {
 
                 Label {
                     text: name
+                    font.pointSize: 14
+                }
+
+                Label {
+                    text: inStock === 1 ? `¡Solo queda ${inStock}!`
+                                        : inStock ? `¡Solo quedan ${inStock}!`
+                                                  : `¡Agotado!`
+                    visible: inStock <= 6
                     font.pointSize: 14
                 }
 
