@@ -88,6 +88,7 @@ void Rest::request(Rest::Verb verb, const QString &endpoint, const QVariant &obj
 
     QNetworkRequest req{QUrl{fullpath}};
     req.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
+    manager_.setTransferTimeout(30000);
 
     if (!accessToken_.isEmpty())
         req.setRawHeader("Authorization", accessToken_.toUtf8());
@@ -172,6 +173,8 @@ void Rest::errorOccurred(QNetworkReply::NetworkError error)
         emit unauthorized();
     else if (error == QNetworkReply::ConnectionRefusedError)
         emit serviceUnavailable();
+    else if (error == QNetworkReply::TimeoutError)
+        emit timeout();
 }
 
 void Rest::refreshAccessToken()
