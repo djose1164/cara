@@ -4,6 +4,8 @@ import QtQuick.Layouts
 
 Item {
     id: root
+    required property int id
+    readonly property int productId: id
     required property string name
     required property string image_url
     required property string description
@@ -26,7 +28,8 @@ Item {
 
         ItemDelegate {
             onClicked: stackView.push("qrc:/product/Product.qml",
-                                      {sell_price, name, image_url, description, inStock})
+                                      {sell_price, name, image_url, description,
+                                       inStock, productId})
             Image {
                 id: img
                 anchors.centerIn: parent
