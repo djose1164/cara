@@ -165,9 +165,20 @@ void Rest::replyFinished()
 void Rest::errorOccurred(QNetworkReply::NetworkError error)
 {
     qWarning() << "Rest: " << reply_->errorString();
-    buffer_ = std::make_unique<QVariantMap>();
-    buffer_->insert("code", error);
-    buffer_->insert("message", reply_->errorString());
+
+    if (!reply_->isReadable())
+    {
+        buffer_ = std::make_unique<QVariantMap>();
+        buffer_->insert("code", error);
+        buffer_->insert("message", reply_->errorString());
+    }
+    else
+    {
+        auto reply{reply_->readAll()};
+
+        const auto doc{QJsonDocument::fromJson(reply)};
+        buffer_ = std::make_unique<QVariantMap>(doc.toVariant().toMap());
+    }
 
     reply_->deleteLater();
     emit failed(*buffer_);
