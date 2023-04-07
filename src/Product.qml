@@ -26,6 +26,7 @@ Page {
     required property string description
     required property string image_url
     required property int inStock
+    required property int rating
 
     header: TitleHeader {
         title: "Producto"
@@ -42,22 +43,29 @@ Page {
             }
         }
 
-        Item {
+        ScrollView {
+            contentWidth: root.width
+            contentHeight: columnLayout.height
+
             ColumnLayout {
-                anchors.centerIn: parent
+                id: columnLayout
+                width: parent.width*.8
+
+                anchors.horizontalCenter: parent.horizontalCenter
                 spacing: 10
 
-                Image {
+                ProductImage {
                     id: img
+                    Layout.alignment: Qt.AlignHCenter
                     source: image_url
                     sourceSize: `${root.width*.9}x${root.height*.4}`
-                    onStatusChanged: if (img.status === Image.Ready) stackLayout.currentIndex = 1
                 }
 
                 StarRating {
                     Layout.fillWidth: true
                     Layout.fillHeight: true
                     Layout.minimumHeight: root.height*.1
+                    Component.onCompleted: if (rating) starClicked(rating-1)
                 }
 
                 TextEdit {
@@ -121,6 +129,14 @@ Page {
                     }
                     font.pointSize: 12
                 }
+
+                Review {
+                    id: review
+                    Layout.fillWidth: true
+                    Layout.fillHeight: true
+                    Layout.minimumHeight: root.height*.45
+                    productId: root.productId
+                }
             }
         }
     }
@@ -139,7 +155,7 @@ Page {
             ColumnLayout {
                 Layout.alignment: Qt.AlignCenter
                 spacing: 20
-    property var sendableProduct
+                property var sendableProduct
                 Label {
                     Layout.fillWidth: true
                     text: `Cantidad disponible en inventario ${inStock}.`
@@ -214,7 +230,7 @@ Page {
             root.sell_price = sellPrice;
         };
 
-       patchProduct({"sell_price":sellPrice}, success);
+        patchProduct({"sell_price":sellPrice}, success);
     }
 
     function patchDescription(description: int): void {
@@ -223,7 +239,7 @@ Page {
             root.description = description;
         };
 
-       patchProduct({"description": description}, success);
+        patchProduct({"description": description}, success);
     }
 
     function patchProduct(toPatch: var, onSuccess: var): void {
