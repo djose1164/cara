@@ -20,7 +20,7 @@ Item {
             }
         }
         Label {
-            text: `${selectedStars} de ${starModel.count} seleccionadas.`
+            text: `${selectedStars} de ${starModel.count} estrellas seleccionadas.`
         }
     }
 
