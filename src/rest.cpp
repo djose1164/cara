@@ -117,6 +117,10 @@ void Rest::request(Rest::Verb verb, const QString &endpoint, const QVariant &obj
     }
     case Verb::PUT:
         break;
+
+    case Verb::DELETE:
+        reply_ = manager_.sendCustomRequest(req, "DELETE");
+        break;
     }
 
     connect(reply_, &QNetworkReply::requestSent, this, &Rest::sent);
@@ -143,6 +147,11 @@ void Rest::patch(const QString &endpoint, const QVariantMap &obj)
 {
     qInfo() << "Rest::patch";
     request(Verb::PATCH, endpoint, obj);
+}
+
+void Rest::delete_(const QString &endpoint)
+{
+    request(Verb::DELETE, endpoint);
 }
 
 void Rest::replyFinished()
