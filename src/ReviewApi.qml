@@ -5,6 +5,7 @@ CaraApi {
     id: api
     signal reviewPosted(resp: var)
     signal reviewFetched(rating: var)
+    signal allReviewsFetched(reviews: var)
     signal reviewDeleted
 
     endpoint: "/rating"
@@ -49,5 +50,14 @@ CaraApi {
         api.succeeded.connect(success);
 
         api.delete_(`/${reviewId}`);
+    }
+
+    function fetchAllReviews(productId) {
+        const success = (r) => {
+            allReviewsFetched(r.ratings);
+            api.succeeded.disconnect(success);
+        }
+        api.succeeded.connect(success);
+        api.get(`/?product_id=${productId}`);
     }
 }
