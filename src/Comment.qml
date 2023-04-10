@@ -7,7 +7,6 @@ StackLayout {
     property alias text: commentMenu.reviewText
     property alias textField: textArea.text
 
-
     signal editClicked
     signal deleteClicked
     signal sendClicked
