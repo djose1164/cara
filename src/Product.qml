@@ -51,7 +51,8 @@ Page {
             ColumnLayout {
                 id: columnLayout
                 width: parent.width*.8
-
+                anchors.bottom: parent.bottom
+                anchors.bottomMargin: 10
                 anchors.horizontalCenter: parent.horizontalCenter
                 spacing: 10
 
@@ -133,10 +134,22 @@ Page {
 
                 Review {
                     id: review
+                    Component.onCompleted: api.fetchReview(customerId, productId)
                     Layout.fillWidth: true
                     Layout.fillHeight: true
-                    Layout.minimumHeight: root.height*.45
+                    Layout.minimumHeight: root.height*.3
                     productId: root.productId
+                }
+
+                ListView {
+                    id: listView
+                    Layout.fillWidth: true
+                    Layout.fillHeight: true
+                    Layout.minimumHeight: root.height*.4
+                    model: reviewsModel
+                    delegate: ReviewDelegate {}
+                    clip: true
+                    spacing: 20
                 }
             }
         }
@@ -148,4 +161,12 @@ Page {
     }
 
     ProductApi { id: api }
+
+    ListModel { id: reviewsModel }
+
+    ReviewApi {
+        id: reviewApi
+        onAllReviewsFetched: r => reviewsModel.append(r)
+        Component.onCompleted: fetchAllReviews(productId)
+    }
 }
