@@ -21,8 +21,6 @@ ColumnLayout {
     property int reviewId
     property alias dateStr: dateLbl.text
 
-    Component.onCompleted: api.fetchReview(customerId, productId)
-
     spacing: 20
 
     Label {
