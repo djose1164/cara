@@ -73,6 +73,9 @@
         <file>ProductEntry.qml</file>
         <file>ProductDelegate.qml</file>
         <file>Product.qml</file>
+        <file>ProductImage.qml</file>
+        <file>ProductApi.qml</file>
+        <file>StockPopup.qml</file>
     </qresource>
     <qresource lang="qml" prefix="/qr">
         <file>QR.qml</file>
@@ -95,5 +98,11 @@
     </qresource>
     <qresource prefix="/entity">
         <file>OrderEntity.qml</file>
+    </qresource>
+    <qresource lang="qml" prefix="/reviews">
+        <file>Review.qml</file>
+        <file>Comment.qml</file>
+        <file>CommentMenu.qml</file>
+        <file>ReviewApi.qml</file>
     </qresource>
 </RCC>
