@@ -6,17 +6,17 @@ Item {
     id: root
     property int selectedStars
 
-
     ColumnLayout {
         anchors.fill: parent
-        spacing: 10
+        spacing: 0
 
         RowLayout {
             Layout.fillWidth: true
             Layout.fillHeight: true
+            spacing: 10
             Repeater {
                 model: starModel
-                delegate: Star { onClicked: idx => starClicked(idx) }
+                delegate: Star { onClicked: idx => selectedStars = idx + 1 }
             }
         }
         Label {
@@ -38,11 +38,10 @@ Item {
         ListElement { selected: false }
     }
 
-    function starClicked(idx) {
-        selectedStars = idx + 1;
+    onSelectedStarsChanged: {
         for (let i = 0; i < starModel.count; ++i) {
             const star = starModel.get(i);
-            if (i <= idx)
+            if (i <= selectedStars-1)
                 star.selected = true;
             else
                 star.selected = false;
