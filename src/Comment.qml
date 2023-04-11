@@ -11,13 +11,11 @@ StackLayout {
     signal deleteClicked
     signal sendClicked
 
-    Layout.fillWidth: true
-    Layout.minimumHeight: root.height*.2
-
-    ColumnLayout {
+    Item {
         ScrollView {
-            Layout.fillWidth: true
-            Layout.minimumHeight: root.height*.2
+            id: editScrollView
+            width: parent.width
+            height: parent*.7
 
             TextArea {
                 id: textArea
@@ -26,12 +24,14 @@ StackLayout {
         }
 
         RowLayout {
-            Layout.alignment: Qt.AlignRight
+            width: parent.width*.6
+            height: parent*.3
+            anchors.top: editScrollView.bottom
+            anchors.right: editScrollView.right
             visible: textArea.focus
-
-            spacing: 20
-
+            spacing: 10
             Button {
+                Layout.alignment: Qt.AlignRight
                 onClicked: {
                     textArea.focus = false;
                     if (commentMenu.hasText)
@@ -42,6 +42,7 @@ StackLayout {
             }
 
             Button {
+                Layout.alignment: Qt.AlignRight
                 text: "Enviar"
                 onClicked: sendClicked()
             }
