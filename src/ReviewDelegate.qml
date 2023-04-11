@@ -16,13 +16,11 @@ ColumnLayout {
 
     Component.onCompleted: {
         setDate(posted_date);
-        starRating.starClicked(rating-1)
-        print(`Review of ${name} ${posted_date} created.`);
+        starRating.selectedStars = rating;
     }
 
     width: ListView.view.width
-    height: ListView.view.height*.6
-    spacing: 20
+    height: ListView.view.height/2
 
     RowLayout {
         Label {
@@ -39,9 +37,7 @@ ColumnLayout {
 
     StarRating {
         id: starRating
-        Layout.fillWidth: true
         Layout.fillHeight: true
-        //Layout.minimumHeight: root.height*.15
         enabled: false
     }
 
