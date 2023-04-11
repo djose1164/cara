@@ -20,7 +20,7 @@ ColumnLayout {
     }
 
     width: ListView.view.width
-    height: ListView.view.height/2
+    height: ListView.view.height/3
 
     RowLayout {
         Label {
