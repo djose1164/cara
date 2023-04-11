@@ -41,15 +41,18 @@ ColumnLayout {
             font.pointSize: 10
         }
     }
+
     StarRating {
         id: starRating
         Layout.fillWidth: true
+        Layout.fillHeight: true
         Layout.minimumHeight: root.height*.2
     }
 
     Comment {
         id: comment
         Layout.fillWidth: true
+        Layout.fillHeight: true
         onEditClicked: stackLayout.currentIndex = 0
         onDeleteClicked: api.deleteReview()
         onSendClicked: {
@@ -74,7 +77,7 @@ ColumnLayout {
         }
         onReviewFetched: rating => root.fillReview(rating)
         onReviewDeleted: {
-            starRating.starClicked(-1)
+            starRating.selectedStars = 0;
             comment.currentIndex = 0;
             reviewId = 0;
             dateStr = "";
@@ -87,7 +90,7 @@ ColumnLayout {
     }
 
     function fillReview(rating: var) {
-        starRating.starClicked(rating.rating-1);
+        starRating.selectedStars = rating.rating;
         comment.text = rating.review;
         comment.currentIndex = 1;
         reviewId = rating.id;
