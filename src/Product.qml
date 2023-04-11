@@ -51,9 +51,9 @@ Page {
 
             ColumnLayout {
                 id: columnLayout
-                width: parent.width*.8
+                width: parent.width*.85
                 anchors.bottom: parent.bottom
-                anchors.bottomMargin: 10
+                anchors.bottomMargin: 20
                 anchors.horizontalCenter: parent.horizontalCenter
                 spacing: 10
 
@@ -134,9 +134,7 @@ Page {
 
                 Review {
                     id: review
-                    Layout.fillWidth: true
                     Layout.fillHeight: true
-                    Layout.minimumHeight: root.height*.4
                     productId: root.productId
                 }
 
@@ -149,7 +147,7 @@ Page {
                     model: reviewsModel
                     delegate: ReviewDelegate {}
                     clip: true
-                    spacing: 20
+                    spacing: 30
                 }
             }
         }
