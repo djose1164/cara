@@ -46,7 +46,7 @@ ColumnLayout {
         id: starRating
         Layout.fillWidth: true
         Layout.fillHeight: true
-        Layout.minimumHeight: root.height*.2
+       // Layout.minimumHeight: root.height*.2
     }
 
     Comment {
@@ -60,6 +60,10 @@ ColumnLayout {
                 openDialogWithText("Debes seleccionar al menos 1 estrella.");
                 return;
             }
+            else if (TheCurrentUser.isGuest){
+               openDialogWithText("Debes estar registrado para dejar tu reseña.");
+               return;
+           }
             api.postReview(review);
         }
     }
