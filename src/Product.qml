@@ -10,6 +10,7 @@ Page {
     readonly property StackView stackView: StackView.view
     readonly property TabBar bar: stackView ? stackView.bar : null
     readonly property bool userIsAdmin: TheCurrentUser.isAdmin
+    readonly property int customerId: TheCurrentUser.customerId
     readonly property var editableProduct: {
         "name": [nameField.text, api.patchName],
         "sell_price": [parseInt(sellPriceField.text), api.patchSellPrice],
@@ -67,7 +68,7 @@ Page {
                     Layout.fillWidth: true
                     Layout.fillHeight: true
                     Layout.minimumHeight: root.height*.1
-                    Component.onCompleted: if (rating) starClicked(rating-1)
+                    Component.onCompleted: if (rating) selectedStars = rating
                 }
 
                 TextEdit {
@@ -124,9 +125,8 @@ Page {
                             const data = editableProduct[key][0];
                             const callable = editableProduct[key][1];
 
-                            if (data !== product[key]) {
-                                print(`--key: ${key} data: ${data}`)
-                                callable(data);}
+                            if (data !== product[key])
+                                callable(data);
                         });
                     }
                     font.pointSize: 12
@@ -134,10 +134,9 @@ Page {
 
                 Review {
                     id: review
-                    Component.onCompleted: api.fetchReview(customerId, productId)
                     Layout.fillWidth: true
                     Layout.fillHeight: true
-                    Layout.minimumHeight: root.height*.3
+                    Layout.minimumHeight: root.height*.4
                     productId: root.productId
                 }
 
@@ -146,6 +145,7 @@ Page {
                     Layout.fillWidth: true
                     Layout.fillHeight: true
                     Layout.minimumHeight: root.height*.4
+                    Layout.topMargin: 20
                     model: reviewsModel
                     delegate: ReviewDelegate {}
                     clip: true
@@ -166,7 +166,14 @@ Page {
 
     ReviewApi {
         id: reviewApi
-        onAllReviewsFetched: r => reviewsModel.append(r)
+        onAllReviewsFetched: r => {
+            const customerReview = r.find(r => r.customer_id === customerId);
+            if (customerReview)
+                review.fillReview(customerReview);
+            reviewsModel.append(
+                r.filter(item => item.customer_id !== customerId)
+            );
+        }
         Component.onCompleted: fetchAllReviews(productId)
     }
 }
