@@ -10,8 +10,10 @@ RowLayout {
     signal deleteClicked
 
     Label {
+        Layout.fillWidth: true
         id: reviewLbl
-        font.pointSize: 14
+        font.pointSize: 11
+        wrapMode: Label.Wrap
     }
 
     RoundButton {
