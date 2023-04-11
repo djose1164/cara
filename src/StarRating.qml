@@ -9,6 +9,7 @@ Item {
     RowLayout {
         id: starsRowLayout
         anchors.top: parent.top
+        anchors.left: parent.left
         width: root.width > 200 ? root.width*.4 : root.width
         height: root.height*.7
         spacing: 10
@@ -17,13 +18,6 @@ Item {
             model: starModel
             delegate: Star { onClicked: idx => selectedStars = idx + 1 }
         }
-    }
-
-    Label {
-        anchors.top: starsRowLayout.bottom
-        width: root.width
-        height: root.height*.3
-        text: `${selectedStars} de ${starModel.count} estrellas seleccionadas.`
     }
 
     ListModel {
