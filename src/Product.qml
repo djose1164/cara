@@ -142,7 +142,7 @@ Page {
                     id: listView
                     Layout.fillWidth: true
                     Layout.fillHeight: true
-                    Layout.minimumHeight: root.height*.4
+                    Layout.minimumHeight: reviewsModel.count ? root.height*.4 : 0
                     Layout.topMargin: 20
                     model: reviewsModel
                     delegate: ReviewDelegate {}
