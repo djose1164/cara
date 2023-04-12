@@ -25,7 +25,8 @@ public:
         GET,
         POST,
         PUT,
-        PATCH
+        PATCH,
+        DELETE
     };
     Q_ENUM(Verb)
 
@@ -59,17 +60,20 @@ signals:
     void unauthorized(); // 401
     void serviceUnavailable(); // 503
 
+    void timeout();
+
 private slots:
     void replyFinished();
     void errorOccurred(QNetworkReply::NetworkError error);
 
 public slots:
-    void request(Rest::Verb verb, const QString &endpoint, const QVariant &obj);
+    void request(Rest::Verb verb, const QString &endpoint, const QVariant &obj=QVariant{});
 
     void get(const QString &endpoint);
     void post(const QString &endpoint, const QVariantMap &obj);
     void put(const QString &endpoint, const QVariantMap &obj);
     void patch(const QString &endpoint, const QVariantMap &obj);
+    void delete_(const QString &endpoint);
 
     void refreshAccessToken();
 

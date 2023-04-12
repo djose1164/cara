@@ -4,10 +4,15 @@ import QtQuick.Layouts
 
 Item {
     id: root
+    required property int id
+    readonly property int productId: id
     required property string name
     required property string image_url
     required property string description
     required property int sell_price
+    required property var stock
+    readonly property int inStock: stock.in_stock
+    required property int rating
     readonly property StackView stackView: ListView.view.stackView
     width: ListView.view.width * .55
     height: ListView.view.height
@@ -24,13 +29,13 @@ Item {
 
         ItemDelegate {
             onClicked: stackView.push("qrc:/product/Product.qml",
-                                      {sell_price, name, image_url, description})
-            Image {
+                                      {sell_price, name, image_url, description,
+                                       inStock, productId, rating})
+            ProductImage {
                 id: img
                 anchors.centerIn: parent
                 source: image_url
                 sourceSize: `${root.height-60}x${root.height-60}`
-                onStatusChanged: if (img.status === Image.Ready) stackLayout.currentIndex = 1
             }
 
             Label {

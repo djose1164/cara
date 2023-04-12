@@ -16,9 +16,6 @@ Item {
     property alias orderForm: orderForm
     property alias request: request
     property alias messageDialog: message
-    signal viewRequested
-
-    onViewRequested: orderForm.updateClientField()
 
     Description {
         id: orderForm
@@ -42,8 +39,8 @@ Item {
         }
         onSucceeded: r => {
             message.text = "Orden realizada con exito";
-            message.informativeText = "Puedes observar el estado de la orden en"
-                         + "Ordenes Recientes.";
+            message.informativeText = "¡Gracias por su compra!";
+            message.detailedText = "Puedes observar el estado de la orden en Ordenes Recientes.";
             message.open();
             clearOrderForm();
 

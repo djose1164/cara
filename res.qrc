@@ -27,5 +27,9 @@
         <file>icons/add_circle.svg</file>
         <file>icons/arrow_forward.svg</file>
         <file>assets/cara-logo-v1.png</file>
+        <file>icons/star_fill.svg</file>
+        <file>icons/star.svg</file>
+        <file>icons/more_vert.svg</file>
+        <file>icons/send.svg</file>
     </qresource>
 </RCC>

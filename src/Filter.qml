@@ -2,6 +2,7 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 import "qrc:/customers"
+import "qrc:/users"
 
 Drawer {
     id: root
@@ -99,14 +100,23 @@ Drawer {
         if (filteredData.count)
             filteredData.clear();
 
+        if (TheCurrentUser.isAdmin)
+            adminFilterOnStatus(status);
+        else
+            customerFilterOnStatus(status);
+        print(JSON.stringify(filteredData, null, 2));
+        filtered(filteredData);
+    }
+
+    function adminFilterOnStatus(status) {
+        let filteredCustomer = {"orders": []};
         for (let i = 0; i < customerModel.model.count; ++i) {
             const customer = customerModel.model.get(i);
-            let filteredCustomer = {"orders": []};
+
             //find(p => p.status === 0, customer.orders);
             for (let j = 0; j <customer.orders.count; ++j) {
                 const order = customer.orders.get(j);
                 const payment = order.payment;
-
 
                 if (payment.status === status) {
                     filteredCustomer.orders.push(order);
@@ -116,6 +126,20 @@ Drawer {
             if (filteredCustomer.orders.length)
                 filteredData.append(filteredCustomer);
         }
-        filtered(filteredData);
+        return filteredData;
+    }
+
+    function customerFilterOnStatus(status) {
+        let filteredOrders = [];
+        for (let i = 0; i < customerModel.model.count; ++i) {
+            const order = customerModel.model.get(i);
+            print("order: "+JSON.stringify(order, null, 2));
+            const payment = order.payment;
+
+            if (payment.status === status)
+                filteredOrders.push(order);
+        }
+        if (filteredOrders.length)
+            filteredData.append(filteredOrders);
     }
 }

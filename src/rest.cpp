@@ -88,6 +88,7 @@ void Rest::request(Rest::Verb verb, const QString &endpoint, const QVariant &obj
 
     QNetworkRequest req{QUrl{fullpath}};
     req.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
+    manager_.setTransferTimeout(30000);
 
     if (!accessToken_.isEmpty())
         req.setRawHeader("Authorization", accessToken_.toUtf8());
@@ -115,6 +116,10 @@ void Rest::request(Rest::Verb verb, const QString &endpoint, const QVariant &obj
         break;
     }
     case Verb::PUT:
+        break;
+
+    case Verb::DELETE:
+        reply_ = manager_.sendCustomRequest(req, "DELETE");
         break;
     }
 
@@ -144,8 +149,16 @@ void Rest::patch(const QString &endpoint, const QVariantMap &obj)
     request(Verb::PATCH, endpoint, obj);
 }
 
+void Rest::delete_(const QString &endpoint)
+{
+    request(Verb::DELETE, endpoint);
+}
+
 void Rest::replyFinished()
 {
+    if (!reply_->isOpen())
+        return;
+
     auto reply{reply_->readAll()};
     const auto doc{QJsonDocument::fromJson(reply)};
     buffer_ = std::make_unique<QVariantMap>(doc.toVariant().toMap());
@@ -161,9 +174,20 @@ void Rest::replyFinished()
 void Rest::errorOccurred(QNetworkReply::NetworkError error)
 {
     qWarning() << "Rest: " << reply_->errorString();
-    buffer_ = std::make_unique<QVariantMap>();
-    buffer_->insert("code", error);
-    buffer_->insert("message", reply_->errorString());
+
+    if (!reply_->isReadable())
+    {
+        buffer_ = std::make_unique<QVariantMap>();
+        buffer_->insert("code", error);
+        buffer_->insert("message", reply_->errorString());
+    }
+    else
+    {
+        auto reply{reply_->readAll()};
+
+        const auto doc{QJsonDocument::fromJson(reply)};
+        buffer_ = std::make_unique<QVariantMap>(doc.toVariant().toMap());
+    }
 
     reply_->deleteLater();
     emit failed(*buffer_);
@@ -172,6 +196,8 @@ void Rest::errorOccurred(QNetworkReply::NetworkError error)
         emit unauthorized();
     else if (error == QNetworkReply::ConnectionRefusedError)
         emit serviceUnavailable();
+    else if (error == QNetworkReply::OperationCanceledError)
+        emit timeout();
 }
 
 void Rest::refreshAccessToken()
