@@ -28,7 +28,7 @@ Page {
     required property string description
     required property string image_url
     required property int inStock
-    required property int rating
+    property int rating
 
     header: TitleHeader {
         title: "Producto"
@@ -68,7 +68,8 @@ Page {
                     Layout.fillWidth: true
                     Layout.fillHeight: true
                     Layout.minimumHeight: root.height*.1
-                    Component.onCompleted: if (rating) selectedStars = rating
+                    selectedStars: root.rating
+                    enabled: false
                 }
 
                 TextEdit {
@@ -166,6 +167,9 @@ Page {
         id: reviewApi
         onAllReviewsFetched: r => {
             const customerReview = r.find(r => r.customer_id === customerId);
+            const ratings = r.map(item => item.rating);
+            setProductRating(ratings);
+
             if (customerReview)
                 review.fillReview(customerReview);
             reviewsModel.append(
@@ -173,5 +177,10 @@ Page {
             );
         }
         Component.onCompleted: fetchAllReviews(productId)
+    }
+
+    function setProductRating(ratings) {
+        const sum = ratings.reduce((total, num) => total + num, 0);
+        root.rating = Math.round(sum / ratings.length);
     }
 }
