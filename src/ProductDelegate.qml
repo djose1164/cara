@@ -12,8 +12,8 @@ Item {
     required property int sell_price
     required property var stock
     readonly property int inStock: stock.in_stock
-    required property int rating
     readonly property StackView stackView: ListView.view.stackView
+
     width: ListView.view.width * .55
     height: ListView.view.height
 
@@ -30,7 +30,7 @@ Item {
         ItemDelegate {
             onClicked: stackView.push("qrc:/product/Product.qml",
                                       {sell_price, name, image_url, description,
-                                       inStock, productId, rating})
+                                       inStock, productId})
             ProductImage {
                 id: img
                 anchors.centerIn: parent
