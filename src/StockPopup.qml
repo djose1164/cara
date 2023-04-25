@@ -5,9 +5,8 @@ import QtQuick.Layouts
 Popup {
     id: root
     property alias stackLayout: popupStackLayout
-    property alias quantity: quantityField.text
 
-    signal okClicked
+    signal okClicked(quantity: int)
 
     width: parent.width*.8
     height: parent.height/2
@@ -31,6 +30,10 @@ Popup {
                 id: quantityField
                 Layout.fillWidth: true
                 placeholderText: "Nueva cantidad..."
+                inputMethodHints: Qt.ImhDigitsOnly
+                validator: IntValidator {
+                    bottom: 0
+                }
             }
 
             RowLayout {
@@ -40,13 +43,13 @@ Popup {
                     Layout.alignment: Qt.AlignLeft
                     Layout.fillWidth: true
                     text: "Cancelar"
-                    onClicked: updateInStock.close()
+                    onClicked: close()
                 }
                 Button {
                     Layout.alignment: Qt.AlignRight
                     Layout.fillWidth: true
                     text: "Ok"
-                    onClicked: okClicked()
+                    onClicked: if (_.quantity) okClicked(_.quantity)
                 }
             }
         }
@@ -59,5 +62,10 @@ Popup {
             text: "Operacion fallida"
             font.pointSize: 14
         }
+    }
+
+    QtObject {
+        id: _
+        readonly property int quantity: parseInt(quantityField.text)
     }
 }
