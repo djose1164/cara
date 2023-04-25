@@ -1,5 +1,6 @@
 import QtQuick
 import "qrc:/utils"
+import "qrc:/users"
 
 CaraApi {
     id: api
@@ -7,6 +8,8 @@ CaraApi {
     signal reviewFetched(rating: var)
     signal allReviewsFetched(reviews: var)
     signal reviewDeleted
+
+    onFailed: r => openDialogWithText(r.message);
 
     endpoint: "/rating"
 
@@ -42,7 +45,7 @@ CaraApi {
         api.get(`/${ratingId}`);
     }
 
-    function deleteReview() {
+    function deleteReview(reviewId: int) {
         const success = () => {
             reviewDeleted();
             api.succeeded.disconnect(success);
