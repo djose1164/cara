@@ -28,7 +28,7 @@ Item {
         }
 
         ItemDelegate {
-            onClicked: stackView.push("qrc:/product/Product.qml",
+            onClicked: stackView.push("qrc:/product/ProductPage.qml",
                                       {sell_price, name, image_url, description,
                                        inStock, productId})
             ProductImage {
