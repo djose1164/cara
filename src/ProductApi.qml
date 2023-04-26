@@ -1,17 +1,15 @@
 import QtQuick
 import "qrc:/utils"
+import "qrc:/users"
 
 CaraApi {
     id: api
     endpoint: "/products"
-    onFailed: () => popupStackLayout.currentIndex = 2
+    onFailed: r => print(JSON.stringify(r, null, 2))
+    accessToken: TheCurrentUser.accessToken
 
-    function patchStock(inStock: int): void {
-        const success = () => {
-            popupStackLayout.currentIndex = 1;
-            root.inStock = inStock;
-        };
-
+    function patchStock(inStock: int, success, fail): void {
+        failed.connect(fail);
         patchProduct({"in_stock": inStock}, success);
     }
 
