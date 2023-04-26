@@ -4,18 +4,21 @@ import QtQuick.Layouts
 
 StackLayout {
     id: root
-    property alias text: commentMenu.reviewText
+    property alias text: reviewLbl.text
     property alias textField: textArea.text
 
-    signal editClicked
-    signal deleteClicked
     signal sendClicked
+
+    onCurrentIndexChanged: {
+        if (currentIndex === 0)
+            textArea.text = root.text;
+    }
 
     Item {
         ScrollView {
             id: editScrollView
             width: parent.width
-            height: parent*.7
+            height: 50
 
             TextArea {
                 id: textArea
@@ -25,7 +28,7 @@ StackLayout {
 
         RowLayout {
             width: parent.width*.6
-            height: parent*.3
+            height: 40
             anchors.top: editScrollView.bottom
             anchors.right: editScrollView.right
             visible: textArea.focus
@@ -34,7 +37,7 @@ StackLayout {
                 Layout.alignment: Qt.AlignRight
                 onClicked: {
                     textArea.focus = false;
-                    if (commentMenu.hasText)
+                    if (text.length)
                         gotoCommentView();
 
                 }
@@ -49,9 +52,11 @@ StackLayout {
         }
     }
 
-    CommentMenu {
-        id: commentMenu
-        onDeleteClicked: root.deleteClicked()
+    Label {
+        id: reviewLbl
+        font.pointSize: 11
+        wrapMode: Label.Wrap
+        textFormat: Label.MarkdownText
     }
 
     function gotoCommentView() {
