@@ -1,4 +1,5 @@
 import QtQuick
+import QtQuick.Controls
 import "qrc:/utils"
 
 Rectangle {
@@ -17,23 +18,32 @@ Rectangle {
     Column {
         id: column
         spacing: 20
-        leftPadding: 10
         bottomPadding: 10
 
-        ProductImage {
-            id: img
-            sourceSize: `${256}x${256}`
+        Item {
+            width: root.width
+            height: img.height
+
+            ProductImage {
+                id: img
+                anchors.centerIn: parent
+                sourceSize: "256x256"
+            }
         }
+
+        ToolSeparator { width: root.width; orientation: Qt.Horizontal }
 
         StarRating {
             id: starRating
-            width: root.width/2
-            height: 50
+            anchors.left: parent.left
+            anchors.leftMargin: 10
             enabled: false
         }
 
         TextEdit {
             id: nameField
+            anchors.left: parent.left
+            anchors.leftMargin: 10
             font.pointSize: 14
         }
     }
