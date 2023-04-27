@@ -16,12 +16,18 @@ ColumnLayout {
         "customer_id": TheCurrentUser.customerId,
         "product_id": productId
     }
+    readonly property var reviewToPatch: {
+        "review": comment.textField,
+        "rating": starRating.selectedStars
+    }
+
     readonly property int customerId: TheCurrentUser.customerId
     readonly property string name: `${TheCurrentUser.forename} ${TheCurrentUser.surname}`
     readonly property bool isReviewOwner: reviewCustomerId === customerId
     property int reviewId
     property bool isCommentable
-
+    property bool isEditing
+    property int selectedStarsBeforePatch
     property string reviewText
     property int reviewRating
     property string customerName
@@ -78,14 +84,18 @@ ColumnLayout {
         customerNameTxt: customerName
         dateTxt: agoDate
         canModify: isReviewOwner && reviewText
-        onEditClicked: comment.currentIndex = 0
+        onEditClicked: {
+            isEditing = true;
+            comment.currentIndex = 0;
+            selectedStarsBeforePatch = starRating.selectedStars;
+        }
         onDeleteClicked: api.deleteReview(reviewId)
     }
 
     StarRating {
         id: starRating
         selectedStars: reviewRating
-        enabled: isReviewOwner
+        enabled: isReviewOwner && isEditing
     }
 
     Comment {
@@ -94,6 +104,10 @@ ColumnLayout {
         Layout.fillHeight: true
         Layout.topMargin: 20
         Layout.bottomMargin: 20
+        onCancelClicked: {
+            starRating.selectedStars = selectedStarsBeforePatch;
+            isEditing = false;
+        }
         onSendClicked: {
             if (!starRating.selectedStars) {
                 openDialogWithText("Debes seleccionar al menos 1 estrella.");
@@ -103,7 +117,12 @@ ColumnLayout {
                openDialogWithText("Debes estar registrado para dejar tu reseña.");
                return;
            }
-            api.postReview(review);
+            if (isEditing) {
+                api.patchReview(reviewId, reviewToPatch);
+                isEditing = false;
+            }
+            else
+                api.postReview(review);
         }
         currentIndex: reviewText ? 1
                                  : isReviewOwner ? 0 : 1
@@ -125,6 +144,11 @@ ColumnLayout {
             reviewId = r.rating_id;
             agoDate = "Justo ahora";
             customerName = name;
+        }
+        onReviewPatched: {
+            isEditing = false;
+            comment.gotoCommentView();
+            reviewText = comment.textField;
         }
         onReviewFetched: rating => root.fillReview(rating)
         onReviewDeleted: {
