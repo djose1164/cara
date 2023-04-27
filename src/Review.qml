@@ -34,12 +34,11 @@ ColumnLayout {
         let formattedDate = reviewPostedDate.replace( /[-]/g, '/' );
         // parse the proper date string from the formatted string.
         formattedDate = Date.parse( formattedDate );
-        let options = { timeZone: "America/Santo_Domingo" };
+
         let jsDate = new Date(formattedDate);
         let currentDate = new Date();
-        print(`formattedDate: ${formattedDate}\njsDate: ${jsDate.toLocaleString()}\ncurrentDate: ${currentDate.toLocaleString()}`)
         let msec = currentDate - jsDate;
-        print(`msec: ${msec}`);
+
         if (Math.floor(msec/1000) <= 60)
             return `Hace ${Math.floor(msec/1000)} segundos`;
         else if (Math.floor(msec/1000/60) <= 60)
@@ -145,21 +144,6 @@ ColumnLayout {
     function setCommentText(text: string) {
         comment.text = text;
         comment.currentIndex = 1;
-    }
-
-    function changeTimeZone(date, timeZone) {
-        if (typeof date === 'string') {
-            return new Date(
-                new Date(date).toLocaleString('en-US', {
-                    timeZone,
-                }),
-            );
-        }
-
-        return new Date(date.toLocaleString('en-US', {
-                timeZone,
-            }),
-        );
     }
 
     function getDaysInCurrentMonth() {
