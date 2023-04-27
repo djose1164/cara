@@ -110,5 +110,7 @@
         <file>ReviewApi.qml</file>
         <file>Reviews.qml</file>
         <file>ReviewHeader.qml</file>
+        <file>CommentEntry.qml</file>
+        <file>ReviewDelegate.qml</file>
     </qresource>
 </RCC>
