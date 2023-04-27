@@ -81,8 +81,6 @@ ColumnLayout {
 
     StarRating {
         id: starRating
-        Layout.fillWidth: true
-        Layout.fillHeight: true
         selectedStars: reviewRating
         enabled: isReviewOwner
     }
