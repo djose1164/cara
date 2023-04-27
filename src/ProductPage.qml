@@ -21,9 +21,6 @@ Page {
         "sell_price": sell_price,
         "description": description,
     }
-    readonly property var emptyReview: {
-        "customer_id": customerId
-    }
 
     required property int productId
     required property string name
@@ -126,10 +123,7 @@ Page {
                 Reviews {
                     id: reviews
                     Layout.fillWidth: true
-                    Layout.fillHeight: true
-                    Layout.minimumHeight: reviewsModel.count ? root.height*.4 : root.height*.25
-                    Layout.topMargin: 20
-                    model: reviewsModel
+                    productId: root.productId
                 }
             }
         }
@@ -145,23 +139,27 @@ Page {
 
     ProductApi { id: api }
 
-    ListModel { id: reviewsModel }
-
     ReviewApi {
         id: reviewApi
-        onAllReviewsFetched: r => {
-            const ratings = r.map(item => item.rating);
-            setProductRating(ratings);
-            reviewsModel.append(r.filter(item => item.customer_id !== customerId));
-            const res = r.find(item => item.customer_id === customerId);
-            if (res)
-                reviewsModel.insert(0, res);
+        readonly property var emptyReview: {
+            "customer_id": customerId,
+            "product_id": productId
         }
         Component.onCompleted: fetchAllReviews(productId)
-    }
-
-    function setProductRating(ratings) {
-        const sum = ratings.reduce((total, num) => total + num, 0);
-        root.rating = Math.round(sum / ratings.length);
+        onAllReviewsFetched: r => {
+            const ratings = r.map(item => item.rating);
+            const model = reviews.model;
+            setProductRating(ratings);
+            model.append(r.filter(item => item.customer_id !== customerId));
+            const res = r.find(item => item.customer_id === customerId);
+            if (res)
+                model.insert(0, res);
+            else if (ratings?.length)
+                model.insert(0, emptyReview);
+        }
+        function setProductRating(ratings) {
+            const sum = ratings.reduce((total, num) => total + num, 0);
+            root.rating = (Math.round(sum / ratings.length));
+        }
     }
 }
