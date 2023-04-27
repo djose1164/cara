@@ -8,6 +8,7 @@ StackLayout {
     property alias textField: commentEntry.commentText
 
     signal sendClicked
+    signal cancelClicked
 
     onCurrentIndexChanged: {
         if (currentIndex === 0)
@@ -16,9 +17,7 @@ StackLayout {
 
     width: 200
 
-    CommentEntry {
-        id: commentEntry
-    }
+    CommentEntry { id: commentEntry }
 
     Label {
         id: reviewLbl
