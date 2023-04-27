@@ -65,6 +65,10 @@ ColumnLayout {
         }
     }
 
+    onReviewTextChanged: {
+        comment.text = reviewText;
+    }
+
     ReviewHeader {
         id: reviewHeader
         Layout.fillWidth: true
@@ -73,7 +77,7 @@ ColumnLayout {
         Layout.maximumWidth: Constants.appWidth*1.5
         customerNameTxt: customerName
         dateTxt: agoDate
-        canModify: isReviewOwner
+        canModify: isReviewOwner && reviewText
         onEditClicked: comment.currentIndex = 0
         onDeleteClicked: api.deleteReview(reviewId)
     }
@@ -101,7 +105,8 @@ ColumnLayout {
            }
             api.postReview(review);
         }
-        currentIndex: 1
+        currentIndex: reviewText ? 1
+                                 : isReviewOwner ? 0 : 1
     }
 
     MessageDialog {
@@ -114,17 +119,19 @@ ColumnLayout {
     ReviewApi {
         id: api
         onReviewPosted: r => {
-            comment.text = review.review;
+            reviewText = review.review;
             comment.currentIndex = 1;
             openDialogWithText("¡Reseña posteada con exito!");
             reviewId = r.rating_id;
             agoDate = "Justo ahora";
+            customerName = name;
         }
         onReviewFetched: rating => root.fillReview(rating)
         onReviewDeleted: {
             starRating.selectedStars = 0;
             comment.currentIndex = 0;
             reviewId = 0;
+            comment.textField = reviewText = agoDate = "";
         }
     }
 
@@ -143,7 +150,6 @@ ColumnLayout {
 
     function setCommentText(text: string) {
         comment.text = text;
-        comment.currentIndex = 1;
     }
 
     function getDaysInCurrentMonth() {
