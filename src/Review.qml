@@ -26,7 +26,6 @@ ColumnLayout {
     readonly property bool isReviewOwner: reviewCustomerId === customerId
     property int reviewId
     property bool isCommentable
-    property bool isEditing
     property int selectedStarsBeforePatch
     property string reviewText
     property int reviewRating
@@ -75,18 +74,20 @@ ColumnLayout {
         comment.text = reviewText;
     }
 
+    width: parent.width
+    height: comment.isEditing ? 200
+                              : reviewText ? 140 : 80
+    spacing: 10
+
     ReviewHeader {
         id: reviewHeader
-        Layout.fillWidth: true
-        Layout.fillHeight: true
         Layout.preferredWidth: isReviewOwner ? root.width : root.width/2
         Layout.maximumWidth: Constants.appWidth*1.5
         customerNameTxt: customerName
         dateTxt: agoDate
         canModify: isReviewOwner && reviewText
         onEditClicked: {
-            isEditing = true;
-            comment.currentIndex = 0;
+            comment.gotoCommentEdit(true);
             selectedStarsBeforePatch = starRating.selectedStars;
         }
         onDeleteClicked: api.deleteReview(reviewId)
@@ -95,18 +96,16 @@ ColumnLayout {
     StarRating {
         id: starRating
         selectedStars: reviewRating
-        enabled: isReviewOwner && isEditing
+        enabled: isReviewOwner && comment.isEditing
     }
 
     Comment {
         id: comment
         Layout.fillWidth: true
         Layout.fillHeight: true
-        Layout.topMargin: 20
-        Layout.bottomMargin: 20
         onCancelClicked: {
             starRating.selectedStars = selectedStarsBeforePatch;
-            isEditing = false;
+            reviewHeader.isEditing = false;
         }
         onSendClicked: {
             if (!starRating.selectedStars) {
@@ -117,9 +116,9 @@ ColumnLayout {
                openDialogWithText("Debes estar registrado para dejar tu reseña.");
                return;
            }
-            if (isEditing) {
+            if (reviewHeader.isEditing) {
                 api.patchReview(reviewId, reviewToPatch);
-                isEditing = false;
+                reviewHeader.isEditing = false;
             }
             else
                 api.postReview(review);
@@ -146,7 +145,7 @@ ColumnLayout {
             customerName = name;
         }
         onReviewPatched: {
-            isEditing = false;
+            reviewHeader.isEditing = false;
             comment.gotoCommentView();
             reviewText = comment.textField;
         }
@@ -169,7 +168,6 @@ ColumnLayout {
         reviewId = rating.id;
         customerName = rating.name;
         setCommentText(rating.review);
-        setDate(rating.posted_date);
     }
 
     function setCommentText(text: string) {
