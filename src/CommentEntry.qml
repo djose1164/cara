@@ -2,13 +2,18 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 
-ColumnLayout {
+Item {
     readonly property StackLayout stackLayout: StackLayout.layout
     property alias commentText: textArea.text
+    property alias textArea: textArea
+
+    width: parent.width
+    height: childrenRect.height
 
     ScrollView {
-        Layout.fillWidth: true
-
+        id: scrollView
+        width: parent.width
+        Layout.columnSpan: 2
         TextArea {
             id: textArea
             focus: true
@@ -16,10 +21,9 @@ ColumnLayout {
         }
     }
 
-    Row {
-        Layout.alignment: Qt.AlignRight
-        Layout.maximumHeight: 20
-        visible: textArea.focus
+    RowLayout {
+        anchors.top: scrollView.bottom
+        anchors.right: parent.right
         spacing: 20
 
         Button {
