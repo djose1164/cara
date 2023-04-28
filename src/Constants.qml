@@ -4,7 +4,7 @@ import QtQuick
 QtObject {
     id: root
 
-    readonly property string base: "http://127.0.0.1:5000/api"
+    readonly property string base: "https://cara-rd.live/api"
 
     readonly property int appWidth: 360
     readonly property int appHeight: 640
