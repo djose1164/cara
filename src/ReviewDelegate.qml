@@ -11,8 +11,6 @@ Review {
 
     Component.onCompleted: setCommentText(review ? review : "");
 
-    width: root.width
-    height: root.height*.35
     reviewText: review
     reviewRating: rating
     customerName: name
