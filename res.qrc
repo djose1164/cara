@@ -31,5 +31,6 @@
         <file>icons/star.svg</file>
         <file>icons/more_vert.svg</file>
         <file>icons/send.svg</file>
+        <file>icons/send_black.svg</file>
     </qresource>
 </RCC>
