@@ -1,13 +1,16 @@
 import QtQuick
 import QtQuick.Layouts
 
-Repeater {
+Column {
     id: root
-
+    readonly property alias model: repeater.model
     property int productId
 
-    width: 200
-    height: 200
-    model: ListModel { id: reviewsModel }
-    delegate: ReviewDelegate { productId: root.productId }
+    width: parent.width
+
+    Repeater {
+        id: repeater
+        model: ListModel { id: reviewsModel }
+        delegate: ReviewDelegate { productId: root.productId }
+    }
 }
