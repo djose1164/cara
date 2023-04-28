@@ -8,6 +8,7 @@ RowLayout {
     property alias customerNameTxt: customerNameLbl.text
     property alias dateTxt: dateLbl.text
     property alias canModify: commentMenuButton.visible
+    property bool isEditing
 
     signal deleteClicked
     signal editClicked
@@ -32,6 +33,9 @@ RowLayout {
         id: commentMenuButton
         Layout.alignment: Qt.AlignRight
         onDeleteClicked: root.deleteClicked()
-        onEditClicked: root.editClicked()
+        onEditClicked: {
+            isEditing = true;
+            root.editClicked()
+        }
     }
 }
