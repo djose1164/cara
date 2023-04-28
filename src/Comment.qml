@@ -6,6 +6,7 @@ StackLayout {
     id: root
     property alias text: reviewLbl.text
     property alias textField: commentEntry.commentText
+    readonly property bool isEditing: currentIndex === 0
 
     signal sendClicked
     signal cancelClicked
@@ -15,7 +16,7 @@ StackLayout {
             commentEntry.commentText = root.text;
     }
 
-    width: 200
+    height: isEditing ? 100 : 40
 
     CommentEntry { id: commentEntry }
 
