@@ -10,8 +10,6 @@ CaraApi {
     signal reviewDeleted
     signal reviewPatched
 
-    onFailed: r => openDialogWithText(r.message);
-
     endpoint: "/rating"
 
     function postReview(review: var) {
