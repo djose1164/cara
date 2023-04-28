@@ -145,6 +145,7 @@ Page {
             "product_id": productId
         }
         Component.onCompleted: fetchAllReviews(productId)
+        onFailed: r => openDialogWithText(r.message);
         onAllReviewsFetched: r => {
             const ratings = r.map(item => item.rating);
             const model = reviews.model;
