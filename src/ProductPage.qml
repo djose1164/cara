@@ -122,7 +122,6 @@ Page {
 
                 Reviews {
                     id: reviews
-                    Layout.fillWidth: true
                     productId: root.productId
                 }
             }
