@@ -75,8 +75,17 @@ ColumnLayout {
     }
 
     width: parent.width
-    height: comment.isEditing ? 200
-                              : reviewText ? 140 : 80
+    height: {
+        if (comment.isEditing)
+            if (comment.focusInTextArea)
+                return 200;
+            else
+                return 150;
+        else if (reviewText)
+            return 140;
+        else
+            return 80;
+    }
     spacing: 10
 
     ReviewHeader {
