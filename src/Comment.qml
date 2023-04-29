@@ -22,7 +22,7 @@ StackLayout {
 
     Label {
         id: reviewLbl
-        font.pointSize: 11
+        font.pointSize: 12
         wrapMode: Label.Wrap
         textFormat: Label.MarkdownText
     }
