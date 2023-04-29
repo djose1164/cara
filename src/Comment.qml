@@ -32,6 +32,7 @@ StackLayout {
     }
 
     function gotoCommentEdit() {
+        commentEntry.setFocusInTextArea(true);
         root.currentIndex = 0;
     }
 }
