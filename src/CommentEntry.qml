@@ -16,7 +16,6 @@ Item {
         Layout.columnSpan: 2
         TextArea {
             id: textArea
-            focus: true
             placeholderText: "Escriba su opinion..."
         }
     }
@@ -25,6 +24,7 @@ Item {
         anchors.top: scrollView.bottom
         anchors.right: parent.right
         spacing: 20
+        visible: textArea.focus
 
         Button {
             onClicked: {
@@ -40,5 +40,9 @@ Item {
             text: "Enviar"
             onClicked: stackLayout.sendClicked()
         }
+    }
+
+    function setFocusInTextArea(focus: bool) {
+        textArea.focus = focus;
     }
 }
