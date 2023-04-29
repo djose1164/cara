@@ -6,6 +6,7 @@ Item {
     readonly property StackLayout stackLayout: StackLayout.layout
     property alias commentText: textArea.text
     property alias textArea: textArea
+    readonly property alias focusInTextArea: textArea.focus
 
     width: parent.width
     height: childrenRect.height
