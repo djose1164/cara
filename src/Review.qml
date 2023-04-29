@@ -152,7 +152,7 @@ ColumnLayout {
         onReviewFetched: rating => root.fillReview(rating)
         onReviewDeleted: {
             starRating.selectedStars = 0;
-            comment.currentIndex = 0;
+            comment.gotoCommentEdit(false);
             reviewId = 0;
             comment.textField = reviewText = agoDate = "";
         }
