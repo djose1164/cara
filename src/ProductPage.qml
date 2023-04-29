@@ -12,7 +12,7 @@ Page {
     readonly property bool userIsAdmin: TheCurrentUser.isAdmin
     readonly property int customerId: TheCurrentUser.customerId
     readonly property var editableProduct: {
-        "name": [nameField.text, api.patchName],
+        "name": [productRating.nameText, api.patchName],
         "sell_price": [parseInt(sellPriceField.text), api.patchSellPrice],
         "description": [descriptionField.text, api.patchDescription],
     }
@@ -39,11 +39,7 @@ Page {
         id: stackLayout
         anchors.fill: parent
 
-        Item {
-            BusyIndicator {
-                anchors.centerIn: parent
-            }
-        }
+        CenterBusyIndicator {}
 
         ScrollView {
             contentWidth: root.width
@@ -52,46 +48,30 @@ Page {
             ColumnLayout {
                 id: columnLayout
                 width: parent.width*.85
-                anchors.bottom: parent.bottom
-                anchors.bottomMargin: 20
-                anchors.horizontalCenter: parent.horizontalCenter
-                spacing: 10
-
-                ProductImage {
-                    id: img
-                    Layout.alignment: Qt.AlignHCenter
-                    source: image_url
-                    sourceSize: `${root.width*.9}x${root.height*.4}`
+                anchors {
+                    bottom: parent.bottom
+                    bottomMargin: 20
+                    horizontalCenter: parent.horizontalCenter
                 }
+                spacing: 20
 
-                StarRating {
+                ProductRating {
+                    id: productRating
                     Layout.fillWidth: true
+                    Layout.minimumHeight: childrenRect.height
                     Layout.fillHeight: true
-                    Layout.minimumHeight: root.height*.1
+                    Layout.topMargin: 40
+                    imgSrc: image_url
                     selectedStars: root.rating
-                    enabled: false
+                    nameText: name
+                    nameEnabled: userIsAdmin
                 }
 
-                TextEdit {
-                    id: nameField
-                    text: name
-                    font.pointSize: 14
-                    enabled: userIsAdmin
-                }
-
-                RowLayout {
-                    Label {
-                        text: inStock === 1 ? `¡Solo queda ${inStock}!`
-                                            : inStock ? `¡Solo quedan ${inStock}!`
-                                                      : `¡Agotado!`
-                        visible: inStock <= 6
-                        font.pointSize: 14
-                    }
-                    Button {
-                        text: "Actualizar"
-                        visible: userIsAdmin
-                        onClicked: updateInStock.open()
-                    }
+                ProductStocks {
+                    Layout.bottomMargin: 20
+                    onUpdateClicked: updateInStock.open()
+                    inStock: root.inStock
+                    canUpdate: userIsAdmin
                 }
 
                 RowLayout {
@@ -111,6 +91,7 @@ Page {
                     Layout.fillWidth: true
                     text: description
                     enabled: userIsAdmin
+                    visible: description
                 }
 
                 Button {
@@ -133,22 +114,15 @@ Page {
                     font.pointSize: 12
                 }
 
-                Review {
-                    id: review
-                    Layout.fillHeight: true
-                    productId: root.productId
+                Label {
+                    text: "Reseñas"
+                    font.bold: true
+                    font.pointSize: 16
                 }
 
-                ListView {
-                    id: listView
-                    Layout.fillWidth: true
-                    Layout.fillHeight: true
-                    Layout.minimumHeight: reviewsModel.count ? root.height*.4 : 0
-                    Layout.topMargin: 20
-                    model: reviewsModel
-                    delegate: ReviewDelegate {}
-                    clip: true
-                    spacing: 30
+                Reviews {
+                    id: reviews
+                    productId: root.productId
                 }
             }
         }
@@ -156,31 +130,36 @@ Page {
 
     StockPopup {
         id: updateInStock
-        onOkClicked: if (quantity.text) api.patchStock(quantityField.text)
+        onOkClicked: quantity => api.patchStock(quantity, () => {
+            updateInStock.stackLayout.currentIndex = 1;
+            root.inStock = inStock;
+        }, () => updateInStock.stackLayout.currentIndex = 2)
     }
 
     ProductApi { id: api }
 
-    ListModel { id: reviewsModel }
-
     ReviewApi {
         id: reviewApi
-        onAllReviewsFetched: r => {
-            const customerReview = r.find(r => r.customer_id === customerId);
-            const ratings = r.map(item => item.rating);
-            setProductRating(ratings);
-
-            if (customerReview)
-                review.fillReview(customerReview);
-            reviewsModel.append(
-                r.filter(item => item.customer_id !== customerId)
-            );
+        readonly property var emptyReview: {
+            "customer_id": customerId,
+            "product_id": productId
         }
         Component.onCompleted: fetchAllReviews(productId)
-    }
-
-    function setProductRating(ratings) {
-        const sum = ratings.reduce((total, num) => total + num, 0);
-        root.rating = Math.round(sum / ratings.length);
+        onFailed: r => openDialogWithText(r.message);
+        onAllReviewsFetched: r => {
+            const ratings = r.map(item => item.rating);
+            const model = reviews.model;
+            setProductRating(ratings);
+            model.append(r.filter(item => item.customer_id !== customerId));
+            const res = r.find(item => item.customer_id === customerId);
+            if (res)
+                model.insert(0, res);
+            else if (ratings?.length)
+                model.insert(0, emptyReview);
+        }
+        function setProductRating(ratings) {
+            const sum = ratings.reduce((total, num) => total + num, 0);
+            root.rating = (Math.round(sum / ratings.length));
+        }
     }
 }

@@ -16,45 +16,106 @@ ColumnLayout {
         "customer_id": TheCurrentUser.customerId,
         "product_id": productId
     }
-    readonly property int customerId: TheCurrentUser.customerId
-    readonly property string name: `${TheCurrentUser.forename} ${TheCurrentUser.surname}`
-    property int reviewId
-    property alias dateStr: dateLbl.text
-
-    spacing: 20
-
-    Label {
-        text: "Reseñas"
-        font.bold: true
-        font.pointSize: 16
+    readonly property var reviewToPatch: {
+        "review": comment.textField,
+        "rating": starRating.selectedStars
     }
 
-    RowLayout {
-        Label {
-            text: name
-            font.pointSize: 12
-            font.bold: true
+    readonly property int customerId: TheCurrentUser.customerId
+    readonly property string name: `${TheCurrentUser.forename} ${TheCurrentUser.surname}`
+    readonly property bool isReviewOwner: reviewCustomerId === customerId
+    property int reviewId
+    property bool isCommentable
+    property int selectedStarsBeforePatch
+    property string reviewText
+    property int reviewRating
+    property string customerName
+    property string reviewPostedDate
+    property int reviewCustomerId
+
+    property string agoDate: {
+        if (reviewPostedDate === "")
+            return "";
+        let formattedDate = reviewPostedDate.replace( /[-]/g, '/' );
+        // parse the proper date string from the formatted string.
+        formattedDate = Date.parse( formattedDate );
+
+        let jsDate = new Date(formattedDate);
+        let currentDate = new Date();
+        let msec = currentDate - jsDate;
+
+        if (Math.floor(msec/1000) <= 60)
+            return `Hace ${Math.floor(msec/1000)} segundos`;
+        else if (Math.floor(msec/1000/60) <= 60)
+            return `Hace ${Math.floor(msec/1000/60)} minutos`;
+        else if (Math.floor(msec/1000/60/60) <= 24) {
+            const hours = Math.floor(msec/1000/60/60);
+            const hourStr = hours === 1 ? 'hora' : 'horas';
+            return `Hace ${hours} ${hourStr}`;
         }
-        Label {
-            id: dateLbl
-            Layout.alignment: Qt.AlignRight
-            font.pointSize: 10
+        else if (Math.floor(msec/1000/60/60/24) <= 30) {
+            const days = Math.floor(msec/1000/60/60/24);
+            const dayStr = days === 1 ? "dia" : "dias";
+            return `Hace ${days} ${dayStr}`;
         }
+        else if (Math.floor(msec/1000/60/60/24/getDaysInCurrentMonth()) <= 12) {
+            const months = Math.floor(msec/1000/60/60/24/getDaysInCurrentMonth());
+            const monthStr = months === 1 ? "mes" : "meses";
+            return `Hace ${months} ${monthStr}`;
+        }
+        else {
+            const years = Math.floor(msec/1000/60/60/24/getDaysInCurrentMonth()/12);
+            const yearStr = years === 1 ? "año" : "años";
+            return `Hace ${years} ${yearStr}`;
+        }
+    }
+
+    onReviewTextChanged: {
+        comment.text = reviewText;
+    }
+
+    width: parent.width
+    height: {
+        if (comment.isEditing)
+            if (comment.focusInTextArea)
+                return 200;
+            else
+                return 150;
+        else if (reviewText)
+            return 140;
+        else
+            return 80;
+    }
+    spacing: 10
+
+    ReviewHeader {
+        id: reviewHeader
+        Layout.preferredWidth: isReviewOwner ? root.width : root.width/2
+        Layout.maximumWidth: Constants.appWidth*1.5
+        customerNameTxt: customerName
+        dateTxt: agoDate
+        canModify: isReviewOwner && reviewText
+        onEditClicked: {
+            comment.gotoCommentEdit(true);
+            selectedStarsBeforePatch = starRating.selectedStars;
+        }
+        onDeleteClicked: api.deleteReview(reviewId)
     }
 
     StarRating {
         id: starRating
-        Layout.fillWidth: true
-        Layout.fillHeight: true
-       // Layout.minimumHeight: root.height*.2
+        selectedStars: reviewRating
+        enabled: isReviewOwner && comment.isEditing
     }
 
     Comment {
         id: comment
         Layout.fillWidth: true
         Layout.fillHeight: true
-        onEditClicked: stackLayout.currentIndex = 0
-        onDeleteClicked: api.deleteReview()
+        onCancelClicked: {
+            starRating.selectedStars = selectedStarsBeforePatch;
+            reviewHeader.isEditing = false;
+        }
         onSendClicked: {
             if (!starRating.selectedStars) {
                 openDialogWithText("Debes seleccionar al menos 1 estrella.");
@@ -64,27 +125,45 @@ ColumnLayout {
                openDialogWithText("Debes estar registrado para dejar tu reseña.");
                return;
            }
-            api.postReview(review);
+            if (reviewHeader.isEditing) {
+                api.patchReview(reviewId, reviewToPatch);
+                reviewHeader.isEditing = false;
+            }
+            else
+                api.postReview(review);
         }
+        currentIndex: reviewText ? 1
+                                 : isReviewOwner ? 0 : 1
     }
 
-    MessageDialog { id: message }
+    MessageDialog {
+        id: message
+        buttons: MessageDialog.Ok
+        onAccepted: close()
+        onButtonClicked: close()
+    }
 
     ReviewApi {
         id: api
         onReviewPosted: r => {
-            comment.text = review.review;
+            reviewText = review.review;
             comment.currentIndex = 1;
             openDialogWithText("¡Reseña posteada con exito!");
             reviewId = r.rating_id;
-            dateStr = "Justo ahora";
+            agoDate = "Justo ahora";
+            customerName = name;
+        }
+        onReviewPatched: {
+            reviewHeader.isEditing = false;
+            comment.gotoCommentView();
+            reviewText = comment.textField;
         }
         onReviewFetched: rating => root.fillReview(rating)
         onReviewDeleted: {
             starRating.selectedStars = 0;
-            comment.currentIndex = 0;
+            comment.gotoCommentEdit(false);
             reviewId = 0;
-            dateStr = "";
+            comment.textField = reviewText = agoDate = "";
         }
     }
 
@@ -95,49 +174,22 @@ ColumnLayout {
 
     function fillReview(rating: var) {
         starRating.selectedStars = rating.rating;
-        comment.text = rating.review;
-        comment.currentIndex = 1;
         reviewId = rating.id;
-        setDate(rating.posted_date);
+        customerName = rating.name;
+        setCommentText(rating.review);
     }
 
-    function setDate(date: string) {
-        let formattedDate = date.replace( /[-]/g, '/' );
-        // parse the proper date string from the formatted string.
-        formattedDate = Date.parse( formattedDate );
-        const options = {weekday: ''};
-        let jsDate = new Date(formattedDate);
-
-        let currentDate = new Date();
-        let msec = currentDate - jsDate;
-        if (Math.floor(msec/1000) <= 60)
-            dateLbl.text = `Hace ${Math.floor(msec/1000)} segundos`;
-        else if (Math.floor(msec/1000/60) <= 60)
-            dateLbl.text = `Hace ${Math.floor(msec/1000/60)} minutos`;
-        else if (Math.floor(msec/1000/60/60) <= 60) {
-            const hours = Math.floor(msec/1000/60/60);
-            const hourStr = hours === 1 ? 'hora' : 'horas';
-            dateLbl.text = `Hace ${hours} ${hourStr}`;
-        }
-        else if (Math.floor(msec/1000/60/60/24) <= 60) {
-            const days = Math.floor(msec/1000/60/60/24);
-            const dayStr = days === 1 ? "dia" : "dias";
-            dateLbl.text = `Hace ${days} ${dayStr}`;
-        }
-        else if (Math.floor(msec/1000/60/60/24/getDaysInCurrentMonth()) <= 12) {
-            const months = Math.floor(msec/1000/60/60/24/getDaysInCurrentMonth());
-            const monthStr = months === 1 ? "mes" : "meses";
-            dateLbl.text = `Hace ${months} ${monthStr}`;
-        }
-        else {
-            const years = Math.floor(msec/1000/60/60/24/getDaysInCurrentMonth()/12);
-            const yearStr = years === 1 ? "año" : "años";
-            dateLbl.text = `Hace ${years} ${yearStr}`;
-        }
+    function setCommentText(text: string) {
+        comment.text = text;
     }
 
     function getDaysInCurrentMonth() {
       const date = new Date();
       return new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate();
+    }
+
+    function subtractHours(date: Date, hours: int) {
+        date.setHours(date.getHours() - hours);
+        return date;
     }
 }

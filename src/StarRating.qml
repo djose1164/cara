@@ -4,15 +4,14 @@ import QtQuick.Layouts
 
 Item {
     id: root
+
     property int selectedStars
 
+    width: 24*5
+    height: 24
+
     RowLayout {
-        id: starsRowLayout
-        anchors.top: parent.top
-        anchors.left: parent.left
-        width: root.width > 200 ? root.width*.4 : root.width
-        height: root.height*.7
-        spacing: 10
+        anchors.fill: parent
 
         Repeater {
             model: starModel
@@ -43,5 +42,4 @@ Item {
                 star.selected = false;
         }
     }
-
 }

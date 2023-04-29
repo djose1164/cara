@@ -2,7 +2,6 @@ import QtQuick
 
 Image {
     id: root
-    property string path: root.unfilled
     readonly property string unfilled: "qrc:/icons/star.svg"
     readonly property string filled: "qrc:/icons/star_fill.svg"
     required property bool selected

@@ -3,11 +3,12 @@ import QtQuick.Controls
 import QtQuick.Layouts
 import "qrc:/users"
 import "qrc:/errors"
+import "qrc:/utils"
 
 ApplicationWindow {
     id: app
-    width: 360
-    height: 640
+    width: Constants.appWidth
+    height: Constants.appHeight
     visible: true
     title: "Cara"
 

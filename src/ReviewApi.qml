@@ -1,5 +1,6 @@
 import QtQuick
 import "qrc:/utils"
+import "qrc:/users"
 
 CaraApi {
     id: api
@@ -7,6 +8,7 @@ CaraApi {
     signal reviewFetched(rating: var)
     signal allReviewsFetched(reviews: var)
     signal reviewDeleted
+    signal reviewPatched
 
     endpoint: "/rating"
 
@@ -42,7 +44,7 @@ CaraApi {
         api.get(`/${ratingId}`);
     }
 
-    function deleteReview() {
+    function deleteReview(reviewId: int) {
         const success = () => {
             reviewDeleted();
             api.succeeded.disconnect(success);
@@ -59,5 +61,15 @@ CaraApi {
         }
         api.succeeded.connect(success);
         api.get(`/?product_id=${productId}`);
+    }
+
+    function patchReview(id: int, review) {
+        const success = r => {
+            reviewPatched();
+            api.succeeded.disconnect(success);
+        }
+        api.succeeded.connect(success);
+
+        api.patch(`/${id}`, review);
     }
 }

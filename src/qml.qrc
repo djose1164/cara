@@ -61,6 +61,8 @@
         <file>CaraApi.qml</file>
         <file>Star.qml</file>
         <file>StarRating.qml</file>
+        <file>Constants.qml</file>
+        <file>CenterBusyIndicator.qml</file>
     </qresource>
     <qresource prefix="/payment">
         <file>Payment.qml</file>
@@ -72,25 +74,27 @@
         <file>ProductRequest.qml</file>
         <file>ProductEntry.qml</file>
         <file>ProductDelegate.qml</file>
-        <file>Product.qml</file>
+        <file>ProductPage.qml</file>
         <file>ProductImage.qml</file>
         <file>ProductApi.qml</file>
         <file>StockPopup.qml</file>
+        <file>ProductRating.qml</file>
+        <file>ProductStocks.qml</file>
     </qresource>
-    <qresource lang="qml" prefix="/qr">
+    <qresource prefix="/qr" lang="qml">
         <file>QR.qml</file>
     </qresource>
-    <qresource lang="qml" prefix="/login">
+    <qresource prefix="/login" lang="qml">
         <file>Auth.qml</file>
         <file>Login.qml</file>
         <file>SignUp.qml</file>
     </qresource>
-    <qresource lang="qml" prefix="/users">
+    <qresource prefix="/users" lang="qml">
         <file>TheCurrentUser.qml</file>
         <file>qmldir</file>
         <file>Refresh.qml</file>
     </qresource>
-    <qresource lang="qml" prefix="/errors">
+    <qresource prefix="/errors" lang="qml">
         <file>ErrorPage.qml</file>
     </qresource>
     <qresource prefix="/inventory">
@@ -99,11 +103,14 @@
     <qresource prefix="/entity">
         <file>OrderEntity.qml</file>
     </qresource>
-    <qresource lang="qml" prefix="/reviews">
+    <qresource prefix="/reviews" lang="qml">
         <file>Review.qml</file>
         <file>Comment.qml</file>
-        <file>CommentMenu.qml</file>
+        <file>CommentMenuButton.qml</file>
         <file>ReviewApi.qml</file>
+        <file>Reviews.qml</file>
+        <file>ReviewHeader.qml</file>
+        <file>CommentEntry.qml</file>
         <file>ReviewDelegate.qml</file>
     </qresource>
 </RCC>
