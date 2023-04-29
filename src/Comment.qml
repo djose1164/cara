@@ -31,8 +31,8 @@ StackLayout {
         root.currentIndex = 1;
     }
 
-    function gotoCommentEdit() {
-        commentEntry.setFocusInTextArea(true);
+    function gotoCommentEdit(withFocus = false) {
+        commentEntry.setFocusInTextArea(withFocus);
         root.currentIndex = 0;
     }
 }
