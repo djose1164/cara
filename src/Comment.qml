@@ -7,6 +7,7 @@ StackLayout {
     property alias text: reviewLbl.text
     property alias textField: commentEntry.commentText
     readonly property bool isEditing: currentIndex === 0
+    readonly property alias focusInTextArea: commentEntry.focusInTextArea
 
     signal sendClicked
     signal cancelClicked
