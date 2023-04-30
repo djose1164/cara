@@ -1,5 +1,5 @@
 import QtQuick
-import "qrc:/users"
+import "qrc:/singleton"
 import "qrc:/utils"
 
 // TODO: The API must be change to use fetch instead of find to get resources

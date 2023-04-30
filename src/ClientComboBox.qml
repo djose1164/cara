@@ -1,7 +1,7 @@
 import QtQuick
 import QtQuick.Controls
 import "qrc:/utils"
-import "qrc:/users"
+import "qrc:/singleton"
 import com.cara 1.0
 
 Item {

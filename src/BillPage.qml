@@ -2,7 +2,7 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 import "qrc:/customers" as Customers
-import "qrc:/users"
+import "qrc:/singleton"
 import "qrc:/utils"
 
 Page {

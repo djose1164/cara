@@ -3,10 +3,9 @@ import QtQuick.Controls
 import QtQuick.Layouts
 import QtQuick.Dialogs
 import QtQuick.Controls.Material
-import "qrc:/main"
 import "qrc:/customers"
 import "qrc:/product"
-import "qrc:/users"
+import "qrc:/singleton"
 import "qrc:/utils"
 
 // TODO: Update implementation to use the new types.

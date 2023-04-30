@@ -1,7 +1,7 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
-import "qrc:/users"
+import "qrc:/singleton"
 import "qrc:/product"
 import "qrc:/customers"
 import "qrc:/bills"

@@ -2,7 +2,7 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 import "qrc:/orders" as Orders
-import "qrc:/users"
+import "qrc:/singleton"
 
 Page {
     id: root
