@@ -1,7 +1,6 @@
 pragma Singleton
 import QtQuick
 import Qt.labs.settings
-import "qrc:/utils"
 import com.cara 1.0
 
 QtObject {
@@ -19,10 +18,8 @@ QtObject {
                                                : "qrc:/home/UserHome.qml"
     readonly property bool isUser: userTypeId === TheCurrentUser.Types.User
 
-    readonly property string orderPath: isGuest ? "qrc:/orders/OrderFormUser.qml"
-                                                : "qrc:/orders/OrderFormAdmin.qml"
     readonly property string orderFormPath: isAdmin ? "qrc:/orders/OrderFormAdmin.qml"
-                                                    : "qrc:/orders/OrderFormUser.qml"
+                                                    : "qrc:/cart/Cart.qml"
     // TODO: This should be deleted
     property alias refreshToken: settings.refreshToken
     readonly property alias accessToken: request.accessToken
