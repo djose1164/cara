@@ -1,7 +1,7 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
-import "qrc:/users"
+import "qrc:/singleton"
 import "qrc:/utils"
 import "qrc:/reviews"
 
@@ -20,6 +20,11 @@ Page {
         "name": name,
         "sell_price": sell_price,
         "description": description,
+    }
+    readonly property var productToBuy: {
+        "name": name,
+        "sell_price": sell_price,
+        "image_url": image_url
     }
 
     required property int productId
@@ -65,6 +70,7 @@ Page {
                     selectedStars: root.rating
                     nameText: name
                     nameEnabled: userIsAdmin
+                    onImageReady: stackLayout.currentIndex = 1
                 }
 
                 ProductStocks {
@@ -99,7 +105,7 @@ Page {
                     text: userIsAdmin ? "Actualizar" : "Comprar"
                     onClicked: {
                         if (!userIsAdmin) {
-                            bar.currentIndex = 1;
+                            TheCart.addtoCart(productToBuy);
                             return;
                         }
 
