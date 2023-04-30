@@ -13,9 +13,12 @@ ToolBar {
 
     signal acceptedText(text: string)
 
+    width: parent.width
+    height: 40
+
     RowLayout {
         anchors.fill: parent
-        spacing: 20
+        spacing: 10
 
         ToolButton {
             id: settingBtn
@@ -26,7 +29,6 @@ ToolBar {
             }
             onClicked: sideMenu.open()
             Layout.alignment: Qt.AlignLeft
-            Layout.topMargin: 5
             Layout.leftMargin: 5
         }
 
@@ -36,17 +38,28 @@ ToolBar {
             color: "black"
             font.pointSize: 18
             font.bold: true
-            Layout.alignment: Qt.AlignCenter
-            Layout.topMargin: 5
+            Layout.leftMargin: 10
+            Layout.fillWidth: true
         }
 
-        TabButton {
-            id: userBtn
-            background: IconImage {
-                source: "qrc:/icons/search.svg"
-                antialiasing: false
-                sourceSize: iconSize
+        RoundButton {
+            id: btn
+            readonly property string newNotifications: "qrc:/icons/new_notifications.svg"
+            readonly property string nonNotifications: "qrc:/icons/notifications_black_24dp.svg"
+            onClicked: iconImage.source = nonNotifications
+            Layout.alignment: Qt.AlignRight
+            flat: true
+
+            IconImage {
+                id: iconImage
+                anchors.centerIn: parent
+                source: btn.newNotifications
             }
+        }
+
+        RoundButton {
+            id: userBtn
+            flat: true
             onClicked: {
                 stackView.push("qrc:/search/SearchPage.qml")
                 const item = stackView.currentItem;
@@ -58,6 +71,12 @@ ToolBar {
             }
             Layout.alignment: Qt.AlignTrailing
             Layout.rightMargin: 10
+
+            IconImage {
+                anchors.centerIn: parent
+                source: "qrc:/icons/search.svg"
+                sourceSize: "24x24"
+            }
         }
     }
 }
