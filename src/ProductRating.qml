@@ -10,6 +10,8 @@ Rectangle {
     property alias nameText: nameField.text
     property alias nameEnabled: nameField.enabled
 
+    signal imageReady
+
     width: 400
     height: childrenRect.height
     border.width: 1
@@ -28,6 +30,7 @@ Rectangle {
                 id: img
                 anchors.centerIn: parent
                 sourceSize: "256x256"
+                onReady: imageReady()
             }
         }
 
