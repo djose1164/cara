@@ -4,6 +4,7 @@ import QtQuick.Layouts
 import "qrc:/utils"
 import "qrc:/search" as Search
 import "qrc:/customers"
+import "qrc:/singleton"
 
 ToolBar {
     id: root
@@ -24,7 +25,9 @@ ToolBar {
         RowLayout {
             Layout.alignment: Qt.AlignVCenter | Qt.AlignRight
             Layout.rightMargin: 10
+
             ToolButton {
+                visible: TheCurrentUser.isAdmin
                 background: Image {
                     antialiasing: false
                     source: "qrc:/icons/search.svg"
