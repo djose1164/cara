@@ -32,5 +32,7 @@
         <file>icons/more_vert.svg</file>
         <file>icons/send.svg</file>
         <file>icons/send_black.svg</file>
+        <file>icons/notifications_black_24dp.svg</file>
+        <file>icons/new_notifications.svg</file>
     </qresource>
 </RCC>
