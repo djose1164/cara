@@ -4,7 +4,6 @@
         <file>BusyPopup.qml</file>
         <file>CameraPage.qml</file>
         <file>main.qml</file>
-        <file>MessagePopup.qml</file>
         <file>PasswordInput.qml</file>
         <file>SidePane.qml</file>
         <file>MainPage.qml</file>
@@ -62,6 +61,7 @@
         <file>Star.qml</file>
         <file>StarRating.qml</file>
         <file>CenterBusyIndicator.qml</file>
+        <file>Message.qml</file>
     </qresource>
     <qresource prefix="/payment">
         <file>Payment.qml</file>
