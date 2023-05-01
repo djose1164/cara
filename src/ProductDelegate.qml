@@ -36,6 +36,7 @@ Item {
                 anchors.centerIn: parent
                 source: image_url
                 sourceSize: `${root.height-60}x${root.height-60}`
+                onReady: stackLayout.currentIndex = 1
             }
 
             Label {
