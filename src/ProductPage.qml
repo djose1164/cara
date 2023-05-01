@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
+import QtQuick.Dialogs
 import "qrc:/singleton"
 import "qrc:/utils"
 import "qrc:/reviews"
@@ -24,7 +25,9 @@ Page {
     readonly property var productToBuy: {
         "name": name,
         "sell_price": sell_price,
-        "image_url": image_url
+        "image_url": image_url,
+        "id": productId,
+        "quantity": 1
     }
 
     required property int productId
@@ -105,7 +108,12 @@ Page {
                     text: userIsAdmin ? "Actualizar" : "Comprar"
                     onClicked: {
                         if (!userIsAdmin) {
-                            TheCart.addtoCart(productToBuy);
+                            if (TheCart.isProductInCart(productToBuy))
+                                message.show("El producto ya se encuentra en el carrito!");
+                            else {
+                                TheCart.addtoCart(productToBuy);
+                                message.show("¡Producto agregado al carrito!");
+                            }
                             return;
                         }
 
@@ -133,6 +141,8 @@ Page {
             }
         }
     }
+
+    Message { id: message }
 
     StockPopup {
         id: updateInStock
