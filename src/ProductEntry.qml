@@ -2,7 +2,6 @@ import QtQuick
 import QtQuick.Layouts
 import QtQuick.Controls
 import "qrc:/orders"
-import "qrc:/product"
 
 ScrollView {
     id: root
