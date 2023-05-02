@@ -1,14 +1,16 @@
 QT += qml quick core network svg quickcontrols2 websockets
 
 SOURCES += \
-        src/main.cpp \
-        src/rest.cpp \
-        src/userentity.cpp
+    BusinessLayer/auth.cpp \
+    EntityLayer/userentity.cpp \
+    PresentationLayer/currentuser.cpp \
+    PresentationLayer/main.cpp \
+    DataLayer/rest.cpp \
 
 
 RESOURCES += \
-    src/qml.qrc \
-    res.qrc
+    PresentationLayer/qml.qrc \
+    assets/res.qrc
 
 CONFIG += c++20 qml console qml_debug qmltypes
 
@@ -27,10 +29,17 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
 HEADERS += \
-    src/rest.h \
-    src/userentity.h
+    BusinessLayer/auth.h \
+    EntityLayer/userentity.h \
+    PresentationLayer/currentuser.h \
+    DataLayer/rest.h
 
-INCLUDEPATH += src/
+INCLUDEPATH += \
+    PresentationLayer/ \
+    DataLayer/ \
+    BusinessLayer/ \
+    EntityLayer/
+
 
 DISTFILES += \
     android/AndroidManifest.xml \
