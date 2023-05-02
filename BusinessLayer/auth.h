@@ -12,18 +12,26 @@ class Auth : public QObject
     Q_OBJECT
     QML_ELEMENT
 
+    Q_PROPERTY(EntityLayer::UserEntity *userEntity READ userEntity WRITE setUserEntity NOTIFY userEntityChanged)
+
 public:
     explicit Auth(QObject *parent = nullptr);
 
+    void setUserEntity(EntityLayer::UserEntity *userEntity);
+    EntityLayer::UserEntity *userEntity() const;
+
 signals:
+    void userEntityChanged();
+
     void authenticated(const QVariantMap &resp);
     void invalid();
 
 public slots:
-    void authenticate(const EntityLayer::UserEntity *userEntity);
+    void authenticate();
 
 private:
     Rest caraApi_;
+    EntityLayer::UserEntity *userEntity_;
 };
 }
 

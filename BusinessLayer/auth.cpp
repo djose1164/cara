@@ -6,11 +6,28 @@ BusinessLayer::Auth::Auth(QObject *parent)
     caraApi_.base("http://127.0.0.1:5000/api/users/login");
 }
 
-void BusinessLayer::Auth::authenticate(const EntityLayer::UserEntity *userEntity)
+void BusinessLayer::Auth::setUserEntity(EntityLayer::UserEntity *userEntity)
 {
+    if (userEntity_ != userEntity)
+    {
+        userEntity_ = userEntity;
+        emit userEntityChanged();
+    }
+}
+
+EntityLayer::UserEntity *BusinessLayer::Auth::userEntity() const
+{
+    return userEntity_;
+}
+
+void BusinessLayer::Auth::authenticate()
+{
+    if (!userEntity_)
+        return;
+
     QVariantMap entity{
-        {"username", userEntity->username()},
-        {"password", userEntity->password()}
+        {"username", userEntity_->username()},
+        {"password", userEntity_->password()}
     };
     caraApi_.post("/", entity);
 
