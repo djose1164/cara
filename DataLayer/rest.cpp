@@ -64,7 +64,11 @@ QString Rest::refreshToken() const
 
 void Rest::refreshToken(const QString &token)
 {
-    refreshToken_ = token;
+    if (refreshToken_ != token)
+    {
+        refreshToken_ = token;
+        emit refreshTokenChanged();
+    }
 }
 
 const QVariantMap &Rest::headers() const
