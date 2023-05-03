@@ -38,7 +38,54 @@ void EntityLayer::UserEntity::setPassword(const QString &password)
     }
 }
 
+void EntityLayer::UserEntity::setForename(const QString &forename)
+{
+    if (forename_ != forename)
+    {
+        forename_ = forename;
+        emit forenameChanged();
+    }
+}
+
+void EntityLayer::UserEntity::setSurname(const QString &surname)
+{
+    if (surname_ != surname)
+    {
+        surname_ = surname;
+        emit surnameChanged();
+    }
+}
+
+void EntityLayer::UserEntity::setUserType(UserTypes userType)
+{
+    if (userType_ != userType)
+    {
+        userType_ = userType;
+        emit userTypeChanged();
+    }
+}
+
 QString EntityLayer::UserEntity::password() const
 {
     return password_;
+}
+
+QString EntityLayer::UserEntity::forename() const
+{
+    return forename_;
+}
+
+QString EntityLayer::UserEntity::surname() const
+{
+    return surname_;
+}
+
+QString EntityLayer::UserEntity::fullname() const
+{
+    return forename_ + " " + surname_;
+}
+
+EntityLayer::UserEntity::UserTypes EntityLayer::UserEntity::userType() const
+{
+    return userType_;
 }
