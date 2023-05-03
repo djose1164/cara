@@ -1,7 +1,8 @@
 #ifndef CURRENTUSER_H
 #define CURRENTUSER_H
 
-#include <../EntityLayer/userentity.h>
+#include "auth.h"
+#include "userentity.h"
 
 #include <QObject>
 #include <QtQml>
@@ -19,31 +20,48 @@ class CurrentUser : public QObject
     Q_PROPERTY(EntityLayer::UserEntity *userEntity READ userEntity WRITE setUserEntity NOTIFY userEntityChanged)
 
 public:
-    void setIsAdmin(bool isAdmin);
+    CurrentUser();
+
     bool isAdmin() const;
-
-    void setIsUser(bool isUser);
     bool isUser() const;
-
-    void setIsCustomer(bool isCustomer);
     bool isCustomer() const;
+    bool isGuest() const;
     
     void setUserEntity(EntityLayer::UserEntity *userEntity);
     const EntityLayer::UserEntity *userEntity() const;
     EntityLayer::UserEntity *userEntity();
 
+public slots:
+    void setIsAdmin(bool isAdmin);
+    void setIsUser(bool isUser);
+    void setIsCustomer(bool isCustomer);
+    void setIsGuest(bool isGuest);
+
+private:
+    void initRest(const QString &refreshToken);
+
 signals:
     void isAdminChanged();
     void isUserChanged();
     void isCustomerChanged();
+    void isGuestChanged();
     void userEntityChanged();
+
+    void refreshTokenNotAvailable();
+    void userEntityReady();
 
 private:
     bool isAdmin_;
     bool isUser_;
     bool isCustomer_;
+    bool isGuest_;
     
     EntityLayer::UserEntity *userEntity_;
+
+    Rest rest_;
+    BusinessLayer::Auth auth_;
+
+    QSettings settings_;
 };
 
 #endif // CURRENTUSER_H
