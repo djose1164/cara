@@ -92,6 +92,10 @@ Item {
 
     Auth {
         id: auth
+        userEntity: UserEntity {
+            username: usernameInput.text
+            password: passwordInput.text
+        }
        // request.onReceived:
         //request.onFailed: (response) => handlers[response.code]()
         onAuthenticated: r => {
@@ -114,7 +118,6 @@ Item {
     }
 
     UserEntity {
-        id: userEntity
         username: usernameInput.text
         password: passwordInput.text
     }
@@ -122,7 +125,7 @@ Item {
     function requestAuthentication() {
         busyIndicator.open();
         if (areInputsValid)
-            auth.authenticate(userEntity);
+            auth.authenticate();
         print("Validating login...");
     }
 
