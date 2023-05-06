@@ -60,6 +60,7 @@
         <file>StarRating.qml</file>
         <file>CenterBusyIndicator.qml</file>
         <file>Message.qml</file>
+        <file>BackPage.qml</file>
     </qresource>
     <qresource prefix="/payment">
         <file>Payment.qml</file>
@@ -111,6 +112,8 @@
     <qresource prefix="/cart">
         <file>Cart.qml</file>
         <file>CartContent.qml</file>
+        <file>Checkout.qml</file>
+        <file>EmptyCart.qml</file>
     </qresource>
     <qresource prefix="/singleton">
         <file>qmldir</file>
