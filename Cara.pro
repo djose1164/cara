@@ -36,7 +36,6 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 HEADERS += \
     BusinessLayer/auth.h \
     BusinessLayer/cartbusiness.h \
-    EntityLayer/entity.h \
     EntityLayer/orderdetailsentity.h \
     EntityLayer/orderentity.h \
     EntityLayer/paymententity.h \
