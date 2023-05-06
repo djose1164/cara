@@ -2,7 +2,7 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 import "qrc:/payment"
-import "qrc:/users"
+import "qrc:/singleton"
 import "qrc:/entity"
 
 Item {
