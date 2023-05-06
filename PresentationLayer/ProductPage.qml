@@ -2,6 +2,7 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 import QtQuick.Dialogs
+import com.cara 1.0
 import "qrc:/singleton"
 import "qrc:/utils"
 import "qrc:/reviews"
@@ -12,6 +13,7 @@ Page {
     readonly property TabBar bar: stackView ? stackView.bar : null
     readonly property bool userIsAdmin: TheCurrentUser.isAdmin
     readonly property int customerId: TheCurrentUser.customerId
+    readonly property bool hasStocks: inStock > 0
     readonly property var editableProduct: {
         "name": [productRating.nameText, api.patchName],
         "sell_price": [parseInt(sellPriceField.text), api.patchSellPrice],
@@ -22,12 +24,14 @@ Page {
         "sell_price": sell_price,
         "description": description,
     }
-    readonly property var productToBuy: {
-        "name": name,
-        "sell_price": sell_price,
-        "image_url": image_url,
-        "id": productId,
-        "quantity": 1
+
+    ProductEntity {
+        id: productEntity
+        name: root.name
+        price: root.sell_price
+        description: root.description
+        productId: root.productId
+        imageUrl: root.image_url
     }
 
     required property int productId
@@ -106,12 +110,14 @@ Page {
                 Button {
                     Layout.fillWidth: true
                     text: userIsAdmin ? "Actualizar" : "Comprar"
+                    enabled: userIsAdmin || hasStocks
                     onClicked: {
                         if (!userIsAdmin) {
-                            if (TheCart.isProductInCart(productToBuy))
+                            const entityMap = productEntity.toMap();
+                            if (TheCart.isProductInCart(entityMap))
                                 message.show("El producto ya se encuentra en el carrito!");
                             else {
-                                TheCart.addtoCart(productToBuy);
+                                TheCart.addtoCart(productEntity);
                                 message.show("¡Producto agregado al carrito!");
                             }
                             return;
