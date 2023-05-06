@@ -8,20 +8,24 @@ ToolBar {
     property alias label: lbl
 
     RowLayout {
+        id: row
         anchors.fill: parent
 
         ToolButton {
-            Layout.alignment: Qt.AlignLeading
-            icon.source: "qrc:/left_arrow"
+            id: leftArrowBtn
+            Layout.alignment: Qt.AlignLeft
             onClicked: stackView.pop()
+            icon.source: "qrc:/left_arrow"
+            visible: stackView
         }
 
         Label {
             id: lbl
             font.bold: true
             font.pointSize: 14
-            horizontalAlignment: Label.AlignHCenter
-           // Layout.alignment: Qt.AlignHCenter
+            horizontalAlignment:Label.AlignHCenter
+            Layout.alignment: Qt.AlignCenter
+            Layout.fillWidth: true
         }
     }
 }
