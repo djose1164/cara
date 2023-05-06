@@ -55,7 +55,6 @@ QtObject {
         onServiceUnavailable: root.serverUnavailable()
 
         function fetchUserInfo() {
-            print("fetchUserInfo");
             refreshAccessToken();
         }
     }
@@ -86,19 +85,7 @@ QtObject {
     onIsAdminChanged: root.adminChanged()
     onHomePathChanged: root.homeChanged()
     onIsVerificationDoneChanged: if (isVerificationDone) root.verificationDone()
-    onUserCredentialsSet: {
 
-        usrEntity.username = root.forename;
-        CurrentUser.userEntity = usrEntity;
-        print(`## ----CurrentUser.userEntity.username ${CurrentUser.userEntity.username}`)
-        print(`## ----usrEntity.username ${usrEntity.username}`)
-    }
-    readonly property Connections c: Connections {
-        target: CurrentUser
-        function onUserEntityChanged() {
-            print("userEntityChanged " + CurrentUser.userEntity.username)
-        }
-    }
     readonly property UserEntity usrEntity: UserEntity {}
 
     function init(response=null) {
