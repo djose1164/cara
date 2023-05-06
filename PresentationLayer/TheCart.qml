@@ -72,7 +72,7 @@ QtObject {
     }
 
     function addtoCart(product: ProductEntity) {
-        model.append(product.toMap());
+        model.append(product);
     }
 
     function removeFromCart(index: int) {
