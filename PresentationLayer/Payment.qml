@@ -1,6 +1,6 @@
 import QtQuick
 import "qrc:/utils"
-import "qrc:/users"
+import "qrc:/singleton"
 import com.cara 1.0
 
 QtObject {
