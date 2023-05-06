@@ -1,14 +1,13 @@
 #ifndef ORDERENTITY_H
 #define ORDERENTITY_H
 
-#include "entity.h"
 #include "paymententity.h"
 #include "productentity.h"
 #include <QObject>
 #include <QtQml>
 
 namespace EntityLayer {
-class OrderEntity : public QObject, public Entity
+class OrderEntity : public QObject
 {
     Q_OBJECT
     QML_ELEMENT
@@ -25,8 +24,6 @@ public:
 
     qsizetype count() const;
     ProductEntity *product(qsizetype index) const;
-
-    Q_INVOKABLE QVariantMap toMap() const override;
 
 public slots:
     void appendProduct(ProductEntity *product);

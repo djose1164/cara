@@ -36,11 +36,6 @@ ProductEntity *OrderEntity::product(qsizetype index) const
     return products_[index];
 }
 
-QVariantMap OrderEntity::toMap() const
-{
-    return {};
-}
-
 void OrderEntity::appendProduct(ProductEntity *product)
 {
     products_.append(product);

@@ -11,24 +11,4 @@ ProductEntity::ProductEntity(QObject *parent)
     , productId_{}
     , imageUrl_{}
 {
-     QObject::connect(this, &ProductEntity::nameChanged, this, [this]() {
-            toMap();
-    });
-}
-
-QVariantMap ProductEntity::toMap() const
-{
-    QVariantMap map{};
-    const auto metaInfo{metaObject()};
-
-    for (int i{}; i < metaInfo->propertyCount(); ++i)
-    {
-        const auto property{metaInfo->property(i)};
-        const auto name{property.name()};
-
-        if (name != QString{"objectName"})
-            map[name] = property.read(this);
-    }
-
-    return map;
 }

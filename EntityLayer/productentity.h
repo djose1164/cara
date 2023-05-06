@@ -1,12 +1,11 @@
 #ifndef PRODUCTENTITY_H
 #define PRODUCTENTITY_H
 
-#include "entity.h"
 #include <QObject>
 #include <QtQml>
 
 namespace EntityLayer {
-class ProductEntity : public QObject, public Entity
+class ProductEntity : public QObject
 {
     Q_OBJECT
     QML_ELEMENT
@@ -20,8 +19,6 @@ class ProductEntity : public QObject, public Entity
 
 public:
     explicit ProductEntity(QObject *parent = nullptr);
-
-    Q_INVOKABLE QVariantMap toMap() const override;
 
 signals:
     void nameChanged();
