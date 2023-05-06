@@ -2,6 +2,13 @@
 
 EntityLayer::UserEntity::UserEntity(QObject *parent)
     : QObject{parent}
+    , username_{}
+    , password_{}
+    , forename_{}
+    , surname_{}
+    , customerId_{}
+    , userId_{}
+    , userType_{}
 {
 }
 
