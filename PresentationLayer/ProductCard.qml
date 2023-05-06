@@ -11,6 +11,8 @@ GridLayout {
     property int productId
     property int productQuantity
 
+    readonly property alias spinBox: spinBox
+
     readonly property var product: {
         "id": productId,
         "quantity": productQuantity
