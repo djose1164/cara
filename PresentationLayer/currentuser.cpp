@@ -6,15 +6,15 @@ using UserTypes = EntityLayer::UserEntity::UserTypes;
 CurrentUser::CurrentUser()
     : userEntity_{new UserEntity} //TODO: Does Qt's engine free the memory later?
 {
-    const auto refreshToken = settings_.value("Credentials/refreshToken").toString();
+    const auto refreshToken{settings_.value("Credentials/refreshToken").toString()};
     if (!refreshToken.isEmpty())
         initRest(refreshToken);
 
-    QObject::connect(&rest_, &Rest::accessTokenChanged, this, [this](){
+    connect(&rest_, &Rest::accessTokenChanged, this, [this](){
         rest_.get("/");
     });
 
-    QObject::connect(&rest_, &Rest::succeeded, this, [this](const QVariantMap &resp) {
+    connect(&rest_, &Rest::succeeded, this, [this](const QVariantMap &resp) {
         QVariantMap user{resp["user"].toMap()};
         userEntity_->setUsername(user["username"].toString());
         userEntity_->setUserType(static_cast<UserTypes>(user["user_type_id"].toInt()));
@@ -26,7 +26,7 @@ CurrentUser::CurrentUser()
         emit userEntityReady();
     });
 
-    QObject::connect(this, &CurrentUser::userEntityChanged, this, [this](){
+    connect(this, &CurrentUser::userEntityChanged, this, [this](){
         const auto userType = userEntity_->userType();
         switch (userType) {
         case UserTypes::ADMIN:
