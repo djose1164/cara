@@ -5,6 +5,11 @@ using namespace EntityLayer;
 
 OrderEntity::OrderEntity(QObject *parent)
     : QObject{parent}
+    , customerId_{}
+    , userId_{}
+    , date_{}
+    , products_{}
+    , payment_{nullptr}
 {
 }
 
