@@ -113,8 +113,7 @@ Page {
                     enabled: userIsAdmin || hasStocks
                     onClicked: {
                         if (!userIsAdmin) {
-                            const entityMap = productEntity.toMap();
-                            if (TheCart.isProductInCart(entityMap))
+                            if (TheCart.isProductInCart(productEntity))
                                 message.show("El producto ya se encuentra en el carrito!");
                             else {
                                 TheCart.addtoCart(productEntity);
