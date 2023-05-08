@@ -10,15 +10,21 @@ class ProductEntity : public QObject
     Q_OBJECT
     QML_ELEMENT
 
-    Q_PROPERTY(QString name MEMBER name_ NOTIFY nameChanged)
+    Q_PROPERTY(QString name READ name WRITE setName NOTIFY nameChanged)
     Q_PROPERTY(QString description MEMBER description_ NOTIFY descriptionChanged)
-    Q_PROPERTY(int price MEMBER price_ NOTIFY priceChanged)
-    Q_PROPERTY(int productId MEMBER productId_ NOTIFY productIdChanged)
-    Q_PROPERTY(QString imageUrl MEMBER imageUrl_ NOTIFY imageUrlChanged)
-    Q_PROPERTY(int quantity MEMBER quantity_ NOTIFY quantityChanged)
+    Q_PROPERTY(int price READ price WRITE setPrice NOTIFY priceChanged)
+    Q_PROPERTY(int productId READ productId WRITE setProductId NOTIFY productIdChanged)
+    Q_PROPERTY(QString imageUrl READ imageUrl WRITE setImageUrl NOTIFY imageUrlChanged)
 
 public:
     explicit ProductEntity(QObject *parent = nullptr);
+
+    QString name() const;
+    QString description() const;
+    QString imageUrl() const;
+
+    int price() const;
+    int productId() const;
 
 signals:
     void nameChanged();
@@ -26,13 +32,19 @@ signals:
     void priceChanged();
     void productIdChanged();
     void imageUrlChanged();
-    void quantityChanged();
+
+public slots:
+    void setName(const QString &name);
+    void setDescription(const QString &description);
+    void setImageUrl(const QString &url);
+
+    void setPrice(int price);
+    void setProductId(int productId);
 
 private:
     QString name_;
     QString description_;
     int price_;
-    int quantity_;
     int productId_;
 
     QString imageUrl_;
