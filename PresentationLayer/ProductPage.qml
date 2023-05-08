@@ -25,13 +25,17 @@ Page {
         "description": description,
     }
 
-    ProductEntity {
-        id: productEntity
-        name: root.name
-        price: root.sell_price
-        description: root.description
-        productId: root.productId
-        imageUrl: root.image_url
+
+    DetailsEntity {
+        id: detailsEntity
+        quantity: 1
+        product: ProductEntity {
+            name: root.name
+            price: root.sell_price
+            description: root.description
+            productId: root.productId
+            imageUrl: root.image_url
+        }
     }
 
     required property int productId
@@ -113,10 +117,10 @@ Page {
                     enabled: userIsAdmin || hasStocks
                     onClicked: {
                         if (!userIsAdmin) {
-                            if (TheCart.isProductInCart(productEntity))
+                            if (TheCart.isProductInCart(detailsEntity.product))
                                 message.show("El producto ya se encuentra en el carrito!");
                             else {
-                                TheCart.addtoCart(productEntity);
+                                TheCart.addtoCart(detailsEntity);
                                 message.show("¡Producto agregado al carrito!");
                             }
                             return;
