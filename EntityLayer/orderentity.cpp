@@ -1,94 +1,68 @@
 #include "orderentity.h"
-#include "productentity.h"
 
-using namespace EntityLayer;
+using EntityLayer::DetailsEntity, EntityLayer::OrderEntity;
 
 OrderEntity::OrderEntity(QObject *parent)
     : QObject{parent}
     , customerId_{}
     , userId_{}
     , date_{}
-    , products_{}
-    , payment_{nullptr}
+    , details_{}
+    , payment_{new PaymentEntity(this)}
 {
 }
 
-QQmlListProperty<ProductEntity> OrderEntity::products()
+QList<DetailsEntity *> OrderEntity::details() const
 {
-    return {
-        this, this,
-        &OrderEntity::append,
-        &OrderEntity::count,
-        &OrderEntity::product,
-        &OrderEntity::clear,
-        &OrderEntity::replace,
-        &OrderEntity::popBack
-    };
+    return details_;
 }
 
-qsizetype OrderEntity::count() const
+DetailsEntity *OrderEntity::detail(qsizetype index) const
 {
-    return products_.count();
+    return details_[index];
 }
 
-ProductEntity *OrderEntity::product(qsizetype index) const
+void OrderEntity::appendDetail(DetailsEntity *detail)
 {
-    return products_[index];
-}
-
-void OrderEntity::appendProduct(ProductEntity *product)
-{
-    products_.append(product);
+    qDebug() << "C++: detail: " << detail;
+    details_.append(detail);
 }
 
 void OrderEntity::clear()
 {
-    products_.clear();
+    details_.clear();
 }
 
-void OrderEntity::replaceProduct(qsizetype index, ProductEntity *detail)
+void OrderEntity::replaceDetail(qsizetype index, DetailsEntity *detail)
 {
-    products_.replace(index, detail);
+    details_.replace(index, detail);
 }
 
 void OrderEntity::popBack()
 {
-    products_.pop_back();
+    details_.pop_back();
 }
 
-void OrderEntity::append(QQmlListProperty<ProductEntity> *list, ProductEntity *detail)
+int EntityLayer::OrderEntity::customerId() const
 {
-    const auto entity{qobject_cast<OrderEntity *>(list->object)};
-    entity->appendProduct(detail);
+    return customerId_;
 }
 
-qsizetype OrderEntity::count(QQmlListProperty<ProductEntity> *list)
+int EntityLayer::OrderEntity::userId() const
 {
-    const auto entity{qobject_cast<OrderEntity *>(list->object)};
-    return entity->count();
+    return userId_;
 }
 
-void OrderEntity::clear(QQmlListProperty<ProductEntity> *list)
+QDateTime EntityLayer::OrderEntity::date() const
 {
-    const auto entity{qobject_cast<OrderEntity *>(list->object)};
-    entity->clear();
+    return date_;
 }
 
-void OrderEntity::replace(QQmlListProperty<ProductEntity> *list, qsizetype index, ProductEntity *detail)
+void EntityLayer::OrderEntity::setDetails(const QList<DetailsEntity *> &details)
 {
-    const auto entity{qobject_cast<OrderEntity *>(list->object)};
-    entity->replaceProduct(index, detail);
+    if (details_ != details)
+    {
+        details_ = details;
+        emit detailsChanged();
+    }
 }
-
-void OrderEntity::popBack(QQmlListProperty<ProductEntity> *list)
-{
-    const auto entity{qobject_cast<OrderEntity *>(list->object)};
-    entity->popBack();
-}
-
-ProductEntity *OrderEntity::product(QQmlListProperty<ProductEntity> *list, qsizetype index)
-{
-    const auto entity{qobject_cast<OrderEntity *>(list->object)};
-    return entity->product(index);
-}
-

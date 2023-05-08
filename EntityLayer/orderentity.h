@@ -2,7 +2,7 @@
 #define ORDERENTITY_H
 
 #include "paymententity.h"
-#include "productentity.h"
+#include "detailsentity.h"
 #include <QObject>
 #include <QtQml>
 
@@ -15,21 +15,29 @@ class OrderEntity : public QObject
     Q_PROPERTY(int customerId MEMBER customerId_ NOTIFY customerIdChanged)
     Q_PROPERTY(int userId MEMBER userId_ NOTIFY userIdChanged)
     Q_PROPERTY(QDateTime date MEMBER date_ NOTIFY dateChanged)
-    Q_PROPERTY(QQmlListProperty<ProductEntity> products READ products NOTIFY detailsChanged)
+    Q_PROPERTY(QList<DetailsEntity *> details READ details WRITE setDetails NOTIFY detailsChanged)
     Q_PROPERTY(PaymentEntity *payment MEMBER payment_ NOTIFY paymentChanged)
 
 public:
     explicit OrderEntity(QObject *parent = nullptr);
-    QQmlListProperty<ProductEntity> products();
 
-    qsizetype count() const;
-    ProductEntity *product(qsizetype index) const;
+    int customerId() const;
+    int userId() const;
+
+    QDateTime date() const;
+
+    PaymentEntity *payment() const;
+    QList<DetailsEntity *> details() const;
+
+    DetailsEntity *detail(qsizetype index) const;
 
 public slots:
-    void appendProduct(ProductEntity *product);
+    void appendDetail(DetailsEntity *detail);
     void clear();
-    void replaceProduct(qsizetype index, ProductEntity *detail);
+    void replaceDetail(qsizetype index, DetailsEntity *detail);
     void popBack();
+
+    void setDetails(const QList<DetailsEntity *> &detail);
 
 signals:
     void customerIdChanged();
@@ -39,17 +47,10 @@ signals:
     void paymentChanged();
 
 private:
-    static void append(QQmlListProperty<ProductEntity> *list, ProductEntity *detail);
-    static qsizetype count(QQmlListProperty<ProductEntity> *list);
-    static void clear(QQmlListProperty<ProductEntity> *list);
-    static void replace(QQmlListProperty<ProductEntity> *list, qsizetype index, ProductEntity *detail);
-    static void popBack(QQmlListProperty<ProductEntity> *list);
-    static ProductEntity *product(QQmlListProperty<ProductEntity> *list, qsizetype index);
-
     int customerId_;
     int userId_;
     QDateTime date_;
-    QList<ProductEntity *> products_;
+    QList<DetailsEntity *> details_;
     PaymentEntity *payment_;
 };
 }
