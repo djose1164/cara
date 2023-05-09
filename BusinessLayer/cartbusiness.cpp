@@ -1,21 +1,129 @@
 #include "cartbusiness.h"
 
 using namespace BusinessLayer;
+using EntityLayer::UserEntity, ModelLayer::OrderModel, EntityLayer::OrderEntity;
 
 CartBusiness::CartBusiness(QObject *parent)
     : QObject{parent}
-    , rest_{}
+    , rest_{new Rest(this)}
+    , user_{new UserEntity(this)}
+    , order_{new OrderEntity(this)}
+    , model_{new OrderModel(this)}
 {
-    rest_.base("http://127.0.0.1:5000/api/orders");
-    rest_.refreshAccessToken();
+    rest_->base("http://127.0.0.1:5000/api/orders");
+
+    QSettings settings{};
+    const auto token{settings.value("Credentials/refreshToken").toString()};
+
+    rest_->refreshToken(token);
+    rest_->refreshAccessToken();
 }
 
-void CartBusiness::checkout(const QList<QVariantMap> &content)
+EntityLayer::UserEntity *CartBusiness::user() const
+{
+    return user_;
+}
+
+EntityLayer::OrderEntity *CartBusiness::order() const
+{
+    return order_;
+}
+
+ModelLayer::OrderModel *CartBusiness::model() const
+{
+    return model_;
+}
+
+bool CartBusiness::isProductInCart(EntityLayer::ProductEntity * const product)
+{
+    // TODO: This' being repetive. Consider to create a find method in model_.
+    const auto predicate = [&](EntityLayer::DetailsEntity *const d) -> bool {
+        return product == d->product();
+    };
+
+    return [&]() -> bool {
+        // TODO: Consider to add a custom `foreach` for traverse model.
+        for (int i{}; i < model_->count(); ++i)
+            if (predicate(model_->get(i)))
+                return true;
+        return false;
+    }();
+}
+
+void CartBusiness::setUser(EntityLayer::UserEntity *user)
+{
+    if (user_ != user)
+    {
+        user_ = user;
+        emit userChanged();
+    }
+}
+
+void CartBusiness::setOrder(EntityLayer::OrderEntity * const order)
+{
+    if (order_ != order)
+    {
+        order_ = order;
+        emit orderChanged();
+    }
+}
+
+void CartBusiness::setModel(ModelLayer::OrderModel * const model)
+{
+    if (model_ != model)
+    {
+        model_ = model;
+        emit modelChanged();
+    }
+}
+
+void CartBusiness::addtoCart(EntityLayer::DetailsEntity * const detail)
+{
+    model_->append(detail);
+}
+
+void CartBusiness::removeFromCart(EntityLayer::DetailsEntity * const detail)
+{
+    const auto predicate = [&](EntityLayer::DetailsEntity *const d) -> bool {
+        return detail->product() == d->product();
+    };
+
+    model_->remove([&]() -> int {
+        int idx{-1};
+        for (int i{}; i < model_->count(); ++i)
+            if (predicate(model_->get(i)))
+                idx = i;
+        return idx;
+    }());
+}
+
+void CartBusiness::checkout()
 {
     qDebug() << "Checking out...";
 
-    foreach (auto product, content)
-        qDebug() << product;
+    prepareOrder();
 
-    rest_.post("/", QVariantMap{});
+    const auto order{
+        QJsonDocument::fromJson(order_->toJson())
+            .toVariant()
+            .toMap()
+    };
+
+    connect(rest_, &Rest::succeeded, this, [&](const QVariantMap &resp){
+        qDebug() << "CartBusiness::checkout " << resp;
+    });
+
+    rest_->post("/", order);
+}
+
+void CartBusiness::prepareOrder()
+{
+    // TODO: For later, the payment process with credit/debit card must taken
+    // into account.
+    const auto user{order_->user()};
+    user->setUserId(user_->userId());
+    user->setCustomerId(user_->customerId());
+
+    for (int i{}; i < model_->count(); ++i)
+        order_->appendDetail(model_->get(i));
 }
