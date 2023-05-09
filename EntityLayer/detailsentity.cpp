@@ -55,7 +55,7 @@ int DetailsEntity::quantity() const
 
 int DetailsEntity::total() const
 {
-    return product_->price() * quantity_;
+    return product_ ? product_->price() * quantity_ : 0;
 }
 
 EntityLayer::ProductEntity *DetailsEntity::product() const
@@ -78,6 +78,7 @@ void DetailsEntity::setProduct(ProductEntity *product)
     {
         product_ = product;
         emit productChanged();
+        emit totalChanged();
     }
 }
 
@@ -87,5 +88,6 @@ void DetailsEntity::setQuantity(int quantity)
     {
         quantity_ = quantity;
         emit quantityChanged();
+        emit totalChanged();
     }
 }
