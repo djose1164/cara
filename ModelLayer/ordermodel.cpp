@@ -69,17 +69,16 @@ void OrderModel::insert(int index, DetailsEntity *entity)
         return;
 
     emit beginInsertRows(QModelIndex{}, index, index);
+    entity->setParent(this);
     data_.insert(index, entity);
     emit endInsertRows();
 
     emit countChanged(count());
 }
 
-void OrderModel::append(const EntityLayer::DetailsEntity *entity)
+void OrderModel::append(EntityLayer::DetailsEntity * const entity)
 {
-    qDebug() << "OrderModel::append " << entity;
-
-    insert(count(), new DetailsEntity(*entity, this));
+    insert(count(), entity);
 }
 
 void OrderModel::remove(int index)
