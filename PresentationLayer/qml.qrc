@@ -118,7 +118,6 @@
     <qresource prefix="/singleton">
         <file>qmldir</file>
         <file>TheCurrentUser.qml</file>
-        <file>TheCart.qml</file>
         <file>Constants.qml</file>
     </qresource>
 </RCC>
