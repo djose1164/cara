@@ -97,3 +97,28 @@ void OrderModel::clear()
 {
     data_.clear();
 }
+
+
+bool OrderModel::setData(const QModelIndex &index, const QVariant &value, int role)
+{
+    if (!index.isValid())
+        return false;
+
+    const int row{index.row()};
+    switch(static_cast<RoleNames>(role))
+    {
+    case RoleNames::QuantityRole:
+        data_[row]->setQuantity(value.toInt());
+        emit dataChanged(index, index, {role, int(RoleNames::TotalRole)});
+        return true;
+
+    case RoleNames::ProductRole:
+        break;
+
+    case RoleNames::TotalRole:
+        qWarning() << "Trying to set 'total' which is a readonly property";
+        break;
+    }
+
+    return false;
+}
