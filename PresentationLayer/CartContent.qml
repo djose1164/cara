@@ -1,27 +1,27 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
+import com.cara 1.0
 import "qrc:/product"
 import "qrc:/singleton"
 
 ListView {
-    id: listView
+    id: root
 
-    model: TheCart.model
+    model: CartBusiness.model
     delegate: ProductCard {
-        id: root
-        required imageUrl
-        required productId
-        required property string name
-        required property int price
+        required property var model
+        required property ProductEntity product
         required property int quantity
+        required total
         required property int index
 
-        onDeleted: TheCart.removeFromCart(index)
-        spinBox.onValueChanged: listView.model.set(index, {quantity: spinBox.value})
+        onDeleted: CartBusiness.removeFromCart(index)
+        spinBox.onValueChanged: model.quantity = spinBox.value
 
-        productName: name
-        productPrice: price
-
+        productName: product.name
+        productPrice: product.price
+        imageUrl: product.imageUrl
+        productId: product.productId
     }
 }
