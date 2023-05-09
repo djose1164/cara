@@ -117,10 +117,10 @@ Page {
                     enabled: userIsAdmin || hasStocks
                     onClicked: {
                         if (!userIsAdmin) {
-                            if (TheCart.isProductInCart(detailsEntity.product))
+                            if (CartBusiness.isProductInCart(detailsEntity.product))
                                 message.show("El producto ya se encuentra en el carrito!");
                             else {
-                                TheCart.addtoCart(detailsEntity);
+                                CartBusiness.addtoCart(detailsEntity);
                                 message.show("¡Producto agregado al carrito!");
                             }
                             return;
