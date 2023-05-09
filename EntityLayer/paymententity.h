@@ -1,11 +1,12 @@
 #ifndef PAYMENTENTITY_H
 #define PAYMENTENTITY_H
 
+#include "jsonexportable.h"
 #include <QObject>
 #include <QtQml>
 
 namespace EntityLayer {
-class PaymentEntity : public QObject
+class PaymentEntity : public QObject, public JsonExportable
 {
     Q_OBJECT
     QML_ELEMENT
@@ -15,6 +16,8 @@ class PaymentEntity : public QObject
 
 public:
     explicit PaymentEntity(QObject *parent = nullptr);
+
+    Q_INVOKABLE QByteArray toJson() const override;
 
 signals:
     void amountToPayChanged();

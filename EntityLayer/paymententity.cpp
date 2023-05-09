@@ -9,3 +9,12 @@ PaymentEntity::PaymentEntity(QObject *parent)
 {
 
 }
+
+QByteArray PaymentEntity::toJson() const
+{
+    QJsonObject object{};
+    object["paid_amount"] = paidAmount_;
+    QJsonDocument doc{object};
+
+    return doc.toJson(QJsonDocument::Compact);
+}
