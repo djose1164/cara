@@ -9,13 +9,11 @@ QtObject {
     property CaraApi request: CaraApi {
         id: request
         accessToken: TheCurrentUser.accessToken
+        endpoint: "/customers"
     }
 
     function create(client) {
         print("Posting new client", JSON.stringify(client));
-        request.accessTokenChanged.connect(function() {
-            request.post("/", client);
-        });
-        request.refreshAccessToken();
+        request.post("/", client);
     }
 }
