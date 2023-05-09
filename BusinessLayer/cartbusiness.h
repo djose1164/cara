@@ -19,6 +19,7 @@ class CartBusiness : public QObject
     Q_PROPERTY(EntityLayer::UserEntity *user READ user WRITE setUser NOTIFY userChanged)
     Q_PROPERTY(EntityLayer::OrderEntity *order READ order WRITE setOrder NOTIFY orderChanged)
     Q_PROPERTY(ModelLayer::OrderModel *model READ model WRITE setModel NOTIFY modelChanged)
+    Q_PROPERTY(int totalToPay READ totalToPay NOTIFY totalToPayChanged)
 
 public:
     explicit CartBusiness(QObject *parent = nullptr);
@@ -29,6 +30,7 @@ public:
     ModelLayer::OrderModel *model() const;
 
     Q_INVOKABLE bool isProductInCart(EntityLayer::ProductEntity *const product);
+    Q_INVOKABLE int totalToPay() const;
 
 public slots:
     void setUser(EntityLayer::UserEntity *user);
@@ -50,6 +52,7 @@ signals:
     void modelChanged();
     void orderChanged();
     void checkoutSucceeded();
+    void totalToPayChanged();
 
 private:
     void prepareOrder();
@@ -60,6 +63,8 @@ private:
     EntityLayer::OrderEntity *order_;
 
     ModelLayer::OrderModel *model_;
+
+    int totalToPay_;
 
 };
 }

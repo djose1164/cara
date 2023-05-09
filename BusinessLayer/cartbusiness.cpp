@@ -9,6 +9,7 @@ CartBusiness::CartBusiness(QObject *parent)
     , user_{new UserEntity(this)}
     , order_{new OrderEntity(this)}
     , model_{new OrderModel(this)}
+    , totalToPay_{}
 {
     rest_->base("http://127.0.0.1:5000/api/orders");
 
@@ -17,6 +18,12 @@ CartBusiness::CartBusiness(QObject *parent)
 
     rest_->refreshToken(token);
     rest_->refreshAccessToken();
+
+    // Keep totalToPay updated in the view
+    connect(model_, &OrderModel::dataChanged, this, [this](const QModelIndex &, const QModelIndex &, const QList<int> &roles) {
+        if (roles.indexOf(int(OrderModel::RoleNames::TotalRole)) != -1)
+            emit totalToPayChanged();
+    });
 }
 
 EntityLayer::UserEntity *CartBusiness::user() const
@@ -48,6 +55,15 @@ bool CartBusiness::isProductInCart(EntityLayer::ProductEntity * const product)
                 return true;
         return false;
     }();
+}
+
+int CartBusiness::totalToPay() const
+{
+    int sum{};
+    for (int i{}; i < model_->count(); ++i)
+        sum += model_->get(i)->total();
+
+    return sum;
 }
 
 void CartBusiness::setUser(EntityLayer::UserEntity *user)
