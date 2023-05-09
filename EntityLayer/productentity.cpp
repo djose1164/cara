@@ -12,6 +12,16 @@ ProductEntity::ProductEntity(QObject *parent)
 {
 }
 
+bool ProductEntity::operator==(ProductEntity * const rhs)
+{
+    return productId_ == rhs->productId();
+}
+
+bool ProductEntity::operator!=(ProductEntity * const rhs)
+{
+    return !(*this == rhs);
+}
+
 QString ProductEntity::name() const
 {
     return name_;

@@ -18,6 +18,8 @@ class ProductEntity : public QObject
 
 public:
     explicit ProductEntity(QObject *parent = nullptr);
+    bool operator==(ProductEntity *const rhs);
+    bool operator!=(ProductEntity *const rhs);
 
     QString name() const;
     QString description() const;
