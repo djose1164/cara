@@ -26,8 +26,7 @@ public:
 
     int rowCount(const QModelIndex &parent) const override;
     QVariant data(const QModelIndex &index, int role) const override;
-    //bool setData(const QModelIndex &index, const QVariant &value, int role) override;
-    //Qt::ItemFlags flags(const QModelIndex &index) const override;
+
     QHash<int, QByteArray> roleNames() const override;
 
     int count() const;
@@ -38,7 +37,7 @@ signals:
 
 public slots:
     void insert(int index, DetailsEntity *entityentity);
-    void append(const DetailsEntity *entity);
+    void append(DetailsEntity *const entity);
     void remove(int index);
     void clear();
 
