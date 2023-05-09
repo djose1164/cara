@@ -24,17 +24,17 @@ BackPage {
             }
 
             Checkout {
-                onPayClicked: TheCart.checkout()
+                onPayClicked: CartBusiness.checkout()
                 Layout.fillWidth: true
-                total: TheCart.totalToPay
+                total: CartBusiness.totalToPay
             }
         }
     }
 
     Connections {
-        target: _.api
+        target: CartBusiness
 
-        function onSucceeded(resp) {
+        function onCheckoutSucceeded(resp) {
             const title = "¡Gracias por su compra!";
             const content = "Puedes ver el estado de tu orden en Ordenes."
             message.text = title;
@@ -51,10 +51,5 @@ BackPage {
 
     Message {
         id: message
-    }
-
-    QtObject {
-        id: _
-        readonly property CaraApi api: TheCart.api
     }
 }
