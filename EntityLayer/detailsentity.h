@@ -2,11 +2,12 @@
 #define DETAILSENTITY_H
 
 #include "productentity.h"
+#include "jsonexportable.h"
 #include <QObject>
 #include <QtQml>
 
 namespace EntityLayer {
-class DetailsEntity : public QObject
+class DetailsEntity : public QObject, public JsonExportable
 {
     Q_OBJECT
     QML_ELEMENT
@@ -24,6 +25,8 @@ public:
     int total() const;
 
     ProductEntity *product() const;
+
+    Q_INVOKABLE QByteArray toJson() const override;
 
 signals:
     void quantityChanged();

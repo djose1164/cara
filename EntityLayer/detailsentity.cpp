@@ -63,6 +63,15 @@ EntityLayer::ProductEntity *DetailsEntity::product() const
     return product_;
 }
 
+QByteArray DetailsEntity::toJson() const
+{
+    QJsonObject object{};
+    object["quantity"] = quantity_;
+    object["product_id"] = product_->productId();
+
+    return QJsonDocument(object).toJson(QJsonDocument::Compact);
+}
+
 void DetailsEntity::setProduct(ProductEntity *product)
 {
     if (product_ != product)
