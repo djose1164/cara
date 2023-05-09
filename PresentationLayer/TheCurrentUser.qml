@@ -59,6 +59,11 @@ QtObject {
         }
     }
 
+    readonly property UserEntity user: UserEntity {
+        userId: root.userId
+        customerId: root.customerId
+    }
+
     signal userCredentialsSet
     signal failedToSetUserCredentials(respose: var)
     signal orderPosted
@@ -85,6 +90,7 @@ QtObject {
     onIsAdminChanged: root.adminChanged()
     onHomePathChanged: root.homeChanged()
     onIsVerificationDoneChanged: if (isVerificationDone) root.verificationDone()
+    onUserCredentialsSet: CartBusiness.user = root.user;
 
     readonly property UserEntity usrEntity: UserEntity {}
 
