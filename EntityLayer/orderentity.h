@@ -3,28 +3,24 @@
 
 #include "paymententity.h"
 #include "detailsentity.h"
+#include "userentity.h"
 #include <QObject>
 #include <QtQml>
 
 namespace EntityLayer {
-class OrderEntity : public QObject
+class OrderEntity : public QObject, public JsonExportable
 {
     Q_OBJECT
     QML_ELEMENT
 
-    Q_PROPERTY(int customerId MEMBER customerId_ NOTIFY customerIdChanged)
-    Q_PROPERTY(int userId MEMBER userId_ NOTIFY userIdChanged)
-    Q_PROPERTY(QDateTime date MEMBER date_ NOTIFY dateChanged)
+    Q_PROPERTY(UserEntity *user READ user WRITE setUser NOTIFY userChanged)
     Q_PROPERTY(QList<DetailsEntity *> details READ details WRITE setDetails NOTIFY detailsChanged)
     Q_PROPERTY(PaymentEntity *payment MEMBER payment_ NOTIFY paymentChanged)
 
 public:
     explicit OrderEntity(QObject *parent = nullptr);
 
-    int customerId() const;
-    int userId() const;
-
-    QDateTime date() const;
+    UserEntity *user() const;
 
     PaymentEntity *payment() const;
     QList<DetailsEntity *> details() const;
@@ -38,18 +34,17 @@ public slots:
     void popBack();
 
     void setDetails(const QList<DetailsEntity *> &detail);
+    void setUser(UserEntity *const user);
+
+    Q_INVOKABLE QByteArray toJson() const;
 
 signals:
-    void customerIdChanged();
-    void userIdChanged();
-    void dateChanged();
+    void userChanged();
     void detailsChanged();
     void paymentChanged();
 
 private:
-    int customerId_;
-    int userId_;
-    QDateTime date_;
+    UserEntity *user_;
     QList<DetailsEntity *> details_;
     PaymentEntity *payment_;
 };
