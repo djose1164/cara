@@ -72,6 +72,24 @@ void EntityLayer::UserEntity::setUserType(UserTypes userType)
     }
 }
 
+void EntityLayer::UserEntity::setCustomerId(int customerId)
+{
+    if (customerId_ != customerId)
+    {
+        customerId_ = customerId;
+        emit customerIdChanged();
+    }
+}
+
+void EntityLayer::UserEntity::setUserId(int userId)
+{
+    if (userId_ != userId)
+    {
+        userId_ = userId;
+        emit userIdChanged();
+    }
+}
+
 QString EntityLayer::UserEntity::password() const
 {
     return password_;
@@ -95,4 +113,14 @@ QString EntityLayer::UserEntity::fullname() const
 EntityLayer::UserEntity::UserTypes EntityLayer::UserEntity::userType() const
 {
     return userType_;
+}
+
+int EntityLayer::UserEntity::customerId() const
+{
+    return customerId_;
+}
+
+int EntityLayer::UserEntity::userId() const
+{
+    return userId_;
 }
