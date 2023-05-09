@@ -10,6 +10,7 @@ GridLayout {
     property int productPrice
     property int productId
     property int productQuantity
+    property int total
 
     readonly property alias spinBox: spinBox
 
@@ -40,7 +41,7 @@ GridLayout {
     }
 
     Label {
-        text: `RD$${productPrice*spinBox.value}`
+        text: `RD$${total}`
         Layout.column: 1
         Layout.row: 1
     }
