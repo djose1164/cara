@@ -26,7 +26,7 @@ Item {
         anchors.top:  parent.top
         anchors.topMargin: 20
         anchors.horizontalCenter: parent.horizontalCenter
-        source: "qrc:/assets/cara-logo-v1.png"
+        source: "qrc:/cara-logo-v1.png"
         sourceSize: "128x128"
     }
 
