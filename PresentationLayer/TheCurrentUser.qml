@@ -75,8 +75,7 @@ QtObject {
     signal verificationDone
 
     Component.onCompleted: {
-        print("isGuest: "+isGuest);
-        print("isAdmin: "+isAdmin);
+
         if (previousLogin) {
             print("previousLogin is " + previousLogin)
             TheCurrentUser.init();
