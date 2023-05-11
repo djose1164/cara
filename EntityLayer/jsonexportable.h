@@ -7,6 +7,7 @@ namespace EntityLayer {
 class JsonExportable
 {
 public:
+    virtual ~JsonExportable() = default;
     virtual QByteArray toJson() const = 0;
 };
 }
