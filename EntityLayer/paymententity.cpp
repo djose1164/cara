@@ -16,6 +16,7 @@ void PaymentEntity::setPaidAmount(int amount)
     {
         paidAmount_ = amount;
         emit paidAmoutChanged();
+        emit isPaidChanged();
     }
 }
 
@@ -30,12 +31,18 @@ void PaymentEntity::setAmountToPay(int amount)
     {
         amountToPay_ = amount;
         emit amountToPayChanged();
+        emit isPaidChanged();
     }
 }
 
 int PaymentEntity::amountToPay() const
 {
     return amountToPay_;
+}
+
+bool PaymentEntity::isPaid() const
+{
+    return amountToPay_ == paidAmount_;
 }
 
 QByteArray PaymentEntity::toJson() const
