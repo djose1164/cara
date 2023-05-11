@@ -1,6 +1,6 @@
 #include "paymententity.h"
 
-using namespace EntityLayer;
+using EntityLayer::PaymentEntity;
 
 PaymentEntity::PaymentEntity(QObject *parent)
     : QObject{parent}
@@ -8,6 +8,34 @@ PaymentEntity::PaymentEntity(QObject *parent)
     , amountToPay_{}
 {
 
+}
+
+void PaymentEntity::setPaidAmount(int amount)
+{
+    if (paidAmount_ != amount)
+    {
+        paidAmount_ = amount;
+        emit paidAmoutChanged();
+    }
+}
+
+int PaymentEntity::paidAmount() const
+{
+    return paidAmount_;
+}
+
+void PaymentEntity::setAmountToPay(int amount)
+{
+    if (amountToPay_ != amount)
+    {
+        amountToPay_ = amount;
+        emit amountToPayChanged();
+    }
+}
+
+int PaymentEntity::amountToPay() const
+{
+    return amountToPay_;
 }
 
 QByteArray PaymentEntity::toJson() const
