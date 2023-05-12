@@ -11,8 +11,8 @@ class PaymentEntity : public QObject, public JsonExportable
     Q_OBJECT
     QML_ELEMENT
 
-    Q_PROPERTY(int amountToPay READ amountToPay WRITE setPaidAmount NOTIFY amountToPayChanged)
-    Q_PROPERTY(int paidAmount READ paidAmount WRITE setAmountToPay NOTIFY paidAmoutChanged)
+    Q_PROPERTY(int amountToPay READ amountToPay WRITE setAmountToPay NOTIFY amountToPayChanged)
+    Q_PROPERTY(int paidAmount READ paidAmount WRITE setPaidAmount NOTIFY paidAmoutChanged)
     Q_PROPERTY(bool isPaid READ isPaid NOTIFY isPaidChanged)
 
 public:
