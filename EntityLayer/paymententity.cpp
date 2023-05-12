@@ -63,6 +63,7 @@ bool PaymentEntity::isPaid() const
 QByteArray PaymentEntity::toJson() const
 {
     QJsonObject object{};
+    object["id"] = paymentId_;
     object["paid_amount"] = paidAmount_;
     QJsonDocument doc{object};
 
