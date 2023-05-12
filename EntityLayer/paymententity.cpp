@@ -4,10 +4,25 @@ using EntityLayer::PaymentEntity;
 
 PaymentEntity::PaymentEntity(QObject *parent)
     : QObject{parent}
+    , paymentId_
     , paidAmount_{}
     , amountToPay_{}
 {
 
+}
+
+void PaymentEntity::setPaymentId(int id)
+{
+    if (paymentId_ != id)
+    {
+        paymentId_ = id;
+        emit paymentIdChanged();
+    }
+}
+
+int PaymentEntity::paymentId() const
+{
+    return paymentId_;
 }
 
 void PaymentEntity::setPaidAmount(int amount)
