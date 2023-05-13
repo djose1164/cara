@@ -42,6 +42,7 @@ Page {
             required property int id
             readonly property int orderId: id
             required property var order_details
+            required property var order_status
 
             width: listView.width
             height: listView.height*.6
@@ -52,6 +53,7 @@ Page {
                 date: item.date
                 orderId: item.orderId
                 orderDetails: item.order_details
+                orderStatus: item.order_status
             }
 
             OrderState {
