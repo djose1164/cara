@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
+import "qrc:/singleton"
 
 ToolBar {
     id: root
@@ -46,7 +47,10 @@ ToolBar {
             id: btn
             readonly property string newNotifications: "qrc:/icons/new_notifications.svg"
             readonly property string nonNotifications: "qrc:/icons/notifications_black_24dp.svg"
-            onClicked: iconImage.source = nonNotifications
+            onClicked: {
+                iconImage.source = nonNotifications;
+                menu.open();
+            }
             Layout.alignment: Qt.AlignRight
             flat: true
 
@@ -55,6 +59,8 @@ ToolBar {
                 anchors.centerIn: parent
                 source: btn.newNotifications
             }
+
+
         }
 
         RoundButton {
@@ -76,6 +82,26 @@ ToolBar {
                 anchors.centerIn: parent
                 source: "qrc:/icons/search.svg"
                 sourceSize: "24x24"
+            }
+        }
+    }
+
+    Drawer {
+        id: menu
+        edge: Qt.RightEdge
+        width: Constants.appWidth
+        height: Constants.appHeight
+        ListView {
+            anchors.fill: parent
+            anchors.topMargin: 20
+            model: ["En Cara trabajamos para ser confiables de tu sonrisa."]
+            delegate: Text {
+                width: ListView.view.width
+                text: modelData
+                font.bold: true
+                font.pointSize: 12
+                color: "black"
+                wrapMode: Text.Wrap
             }
         }
     }
