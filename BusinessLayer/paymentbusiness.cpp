@@ -45,9 +45,7 @@ void PaymentBusiness::patch()
     rest_->patch("/", map);
 
     connect(rest_, &Rest::succeeded, this, [this]() {
-        payment_->setPaidAmount(payment_->amountToPay());
         emit patchSucceeded();
-
     });
 
     connect(rest_, &Rest::failed, this, [this]() {
