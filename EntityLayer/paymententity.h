@@ -14,9 +14,17 @@ class PaymentEntity : public QObject, public JsonExportable
     Q_PROPERTY(int paymentId READ paymentId WRITE setPaymentId NOTIFY paymentIdChanged)
     Q_PROPERTY(int amountToPay READ amountToPay WRITE setAmountToPay NOTIFY amountToPayChanged)
     Q_PROPERTY(int paidAmount READ paidAmount WRITE setPaidAmount NOTIFY paidAmoutChanged)
-    Q_PROPERTY(bool isPaid READ isPaid NOTIFY isPaidChanged)
+    Q_PROPERTY(Status status READ status NOTIFY statusChanged)
 
 public:
+    enum class Status
+    {
+        Paid,
+        Unpaid,
+        Credited
+    };
+    Q_ENUM(Status)
+
     explicit PaymentEntity(QObject *parent = nullptr);
 
     void setPaymentId(int id);
@@ -28,7 +36,7 @@ public:
     void setAmountToPay(int amount);
     int amountToPay() const;
 
-    bool isPaid() const;
+    Status status() const;
 
     Q_INVOKABLE QByteArray toJson() const override;
 
@@ -36,7 +44,7 @@ signals:
     void paymentIdChanged();
     void amountToPayChanged();
     void paidAmoutChanged();
-    void isPaidChanged();
+    void statusChanged();
 
 private:
     int paymentId_;
