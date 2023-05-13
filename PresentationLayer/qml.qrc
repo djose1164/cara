@@ -63,7 +63,6 @@
         <file>BackPage.qml</file>
     </qresource>
     <qresource prefix="/payment">
-        <file>Payment.qml</file>
         <file>PaymentStatus.qml</file>
         <file>UpdatePayment.qml</file>
     </qresource>
