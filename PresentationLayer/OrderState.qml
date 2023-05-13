@@ -8,7 +8,7 @@ import "qrc:/entity"
 Item {
     id: root
     required property OrderEntity orderEntity
-    readonly property var payment: orderEntity.payment
+    property var payment: orderEntity.payment
     readonly property var product: orderEntity.orderDetails.product
 
     signal paymentApplied(newPayment: var)
