@@ -4,7 +4,7 @@ using EntityLayer::PaymentEntity;
 
 PaymentEntity::PaymentEntity(QObject *parent)
     : QObject{parent}
-    , paymentId_
+    , paymentId_{}
     , paidAmount_{}
     , amountToPay_{}
 {
@@ -31,7 +31,7 @@ void PaymentEntity::setPaidAmount(int amount)
     {
         paidAmount_ = amount;
         emit paidAmoutChanged();
-        emit isPaidChanged();
+        emit statusChanged();
     }
 }
 
@@ -46,7 +46,7 @@ void PaymentEntity::setAmountToPay(int amount)
     {
         amountToPay_ = amount;
         emit amountToPayChanged();
-        emit isPaidChanged();
+        emit statusChanged();
     }
 }
 
@@ -55,9 +55,14 @@ int PaymentEntity::amountToPay() const
     return amountToPay_;
 }
 
-bool PaymentEntity::isPaid() const
+PaymentEntity::Status PaymentEntity::status() const
 {
-    return amountToPay_ == paidAmount_;
+    if (amountToPay_ == paidAmount_)
+        return Status::Paid;
+    else if (paidAmount_ && paidAmount_ < amountToPay_)
+        return Status::Credited;
+    else
+        return Status::Unpaid;
 }
 
 QByteArray PaymentEntity::toJson() const
@@ -65,7 +70,9 @@ QByteArray PaymentEntity::toJson() const
     QJsonObject object{};
     object["id"] = paymentId_;
     object["paid_amount"] = paidAmount_;
-    QJsonDocument doc{object};
+    object["amount_to_pay"] = amountToPay_;
+    object["status"] = int(status());
+    const QJsonDocument doc{object};
 
     return doc.toJson(QJsonDocument::Compact);
 }
