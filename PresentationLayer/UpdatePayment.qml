@@ -2,16 +2,18 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 import QtQuick.Dialogs
+import com.cara 1.0
 
 // TODO: Make two views: one for just seeing & the another for editing.
 Popup {
     id: root
 
     // Any previous payment from the client
-     property var payment
+    property var payment
     readonly property int debt: amountToPay - paidAmount
     readonly property int amountToPay: payment.amount_to_pay
     readonly property int paidAmount: payment.paid_amount
+    readonly property int amountInput: parseInt(newPayment.text)
     readonly property int paid: payment.paid_amount
     property alias newPayment: newPayment.text
     // NOTE: A special case may happen here, when the client pays more than the debt;
@@ -62,8 +64,7 @@ Popup {
                     text: "Ok"
                     onClicked: parseInt(newPayment.text)
                                > debt ? (stackLayout.currentIndex
-                                         = 1) : paymentRequest.patchPayment(
-                                            parseInt(newPayment.text) + paid)
+                                         = 1) : paymentRequest.patch()
                     Layout.alignment: Qt.AlignRight
                 }
             }
@@ -115,17 +116,25 @@ Popup {
         }
     }
 
-    Payment {
+    PaymentBusiness {
         id: paymentRequest
-        payment: root.payment
+        payment: paymentEntity
         onRequested: stackLayout.currentIndex = 0
-        onPaymentPatched: p => {
-            root.payment = p;
-            root.paymentPatched(p);
+        onPatchSucceeded: {
+            root.payment = JSON.parse(payment.toJson());
+            print(` ${payment.toJson()}`)
             clean();
+            paymentPatched(root.payment);
             stackLayout.currentIndex = 2;
             print(`root.payment = p: ${JSON.stringify(root.payment, null, 2)}`);
         }
+    }
+
+    PaymentEntity {
+        id: paymentEntity
+        paymentId: payment.id
+        paidAmount: amountInput + paid
+        amountToPay: root.amountToPay
     }
 
     function clean() {
