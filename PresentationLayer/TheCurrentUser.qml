@@ -52,11 +52,15 @@ QtObject {
         onFailed: r => failedToSetUserCredentials(r)
         onSucceeded: r => initWithUser(r.user)
         onAccessTokenChanged: request.get("/")
-        onServiceUnavailable: root.serverUnavailable()
 
         function fetchUserInfo() {
             refreshAccessToken();
         }
+    }
+
+    readonly property Rest healthApi: Rest {
+        base: Constants.base + "/health"
+        onServiceUnavailable: serverUnavailable()
     }
 
     readonly property UserEntity user: UserEntity {
@@ -75,7 +79,7 @@ QtObject {
     signal verificationDone
 
     Component.onCompleted: {
-
+        healthApi.get("/");
         if (previousLogin) {
             print("previousLogin is " + previousLogin)
             TheCurrentUser.init();
