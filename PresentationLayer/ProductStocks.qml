@@ -9,7 +9,12 @@ Item {
 
     signal updateClicked
 
+    height: 50
+    width: 200
+
     Row {
+        spacing: 20
+
         Label {
             text: inStock === 1 ? `¡Solo queda ${inStock}!`
                                 : inStock ? `¡Solo quedan ${inStock}!`
@@ -20,7 +25,7 @@ Item {
 
         Button {
             id: updateBtn
-            text: "Actualizar"
+            text: "Actualizar stocks"
             onClicked: updateClicked()
         }
     }
