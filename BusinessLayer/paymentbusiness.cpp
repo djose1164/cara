@@ -55,8 +55,6 @@ void PaymentBusiness::patch()
 
 void PaymentBusiness::update()
 {
-    const int amount{payment_->paidAmount()};
-
     // TODO: Implement this.
 }
 
