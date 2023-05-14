@@ -1,5 +1,6 @@
 import QtQuick
 import QtQuick.Controls
+import "qrc:/singleton"
 
 Item {
     id: root
@@ -11,6 +12,7 @@ Item {
 
     height: 50
     width: 200
+    visible: inStock <= 6 || TheCurrentUser.isAdmin
 
     Row {
         spacing: 20
