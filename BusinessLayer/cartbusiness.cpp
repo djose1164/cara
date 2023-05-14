@@ -11,7 +11,7 @@ CartBusiness::CartBusiness(QObject *parent)
     , model_{new OrderModel(this)}
     , totalToPay_{}
 {
-    rest_->base("http://127.0.0.1:5000/api/orders");
+    rest_->base("https://cara-rd.live/api/orders");
 
     QSettings settings{};
     const auto token{settings.value("Credentials/refreshToken").toString()};

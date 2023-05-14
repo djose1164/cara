@@ -7,7 +7,7 @@ PaymentBusiness::PaymentBusiness(QObject *parent)
     , rest_{new Rest(this)}
     , payment_{nullptr}
 {
-    rest_->base("http://127.0.0.1:5000/api/payments");
+    rest_->base("https://cara-rd.live/api/payments");
 
     QSettings settings{};
     const QString token{settings.value("Credentials/refreshToken").toString()};

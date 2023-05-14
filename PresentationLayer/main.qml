@@ -22,11 +22,11 @@ ApplicationWindow {
 
     WebSocket {
         active: true
-        url: "ws://127.0.0.1:5000/echo"
+        url: "ws://cara-rd.live/echo"
         onBinaryMessageReceived: msg => print(`msg: ${msg}`)
         onTextMessageReceived: txt => print(`text: ${txt}`)
         onErrorStringChanged: print("webSocket's status: " + status + `: ${errorString}`)
-        onStatusChanged: if (status === WebSocket.Open)sendBinaryMessage('{"message": "holalala"}')
+        onStatusChanged: if (status === WebSocket.Open)sendBinaryMessage(`{"app_version": "${Qt.application.version}"}`)
     }
 
     Connections {

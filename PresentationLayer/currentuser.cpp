@@ -122,7 +122,7 @@ EntityLayer::UserEntity *CurrentUser::userEntity()
 
 void CurrentUser::initRest(const QString &refreshToken)
 {
-    const QString restBase{"http://127.0.0.1:5000/api/users"};
+    const QString restBase{"https://cara-rd.live/api/users"};
     rest_.base(restBase);
     rest_.refreshToken(refreshToken);
     qDebug() << "Refreshing token...";

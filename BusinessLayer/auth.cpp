@@ -3,7 +3,7 @@
 BusinessLayer::Auth::Auth(QObject *parent)
     : QObject{parent}
 {
-    caraApi_.base("http://127.0.0.1:5000/api/users/login");
+    caraApi_.base("https://cara-rd.live/api/users/login");
 }
 
 void BusinessLayer::Auth::setUserEntity(EntityLayer::UserEntity *userEntity)
