@@ -1,12 +1,10 @@
 import QtQuick
 import QtQuick.Controls
-import "qrc:/utils"
 
 Rectangle {
     id: root
 
     property alias imgSrc: img.source
-    property alias selectedStars: starRating.selectedStars
     property alias nameText: nameField.text
     property alias nameEnabled: nameField.enabled
 
@@ -20,7 +18,7 @@ Rectangle {
     Column {
         id: column
         spacing: 20
-        bottomPadding: 10
+        bottomPadding: 30
 
         Item {
             width: root.width
@@ -35,13 +33,6 @@ Rectangle {
         }
 
         ToolSeparator { width: root.width; orientation: Qt.Horizontal }
-
-        StarRating {
-            id: starRating
-            anchors.left: parent.left
-            anchors.leftMargin: 10
-            enabled: false
-        }
 
         TextEdit {
             id: nameField
