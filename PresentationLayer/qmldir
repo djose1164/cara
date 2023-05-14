@@ -1,0 +1,2 @@
+singleton TheCurrentUser 1.0 TheCurrentUser.qml
+singleton Constants 1.0 Constants.qml

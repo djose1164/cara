@@ -1,14 +1,23 @@
-QT += qml quick core network svg quickcontrols2
+QT += qml quick core network svg quickcontrols2 websockets
 
 SOURCES += \
-        src/main.cpp \
-        src/rest.cpp \
-        src/userentity.cpp
+    BusinessLayer/auth.cpp \
+    BusinessLayer/cartbusiness.cpp \
+    BusinessLayer/paymentbusiness.cpp \
+    EntityLayer/detailsentity.cpp \
+    EntityLayer/orderentity.cpp \
+    EntityLayer/paymententity.cpp \
+    EntityLayer/productentity.cpp \
+    EntityLayer/userentity.cpp \
+    ModelLayer/ordermodel.cpp \
+    PresentationLayer/currentuser.cpp \
+    PresentationLayer/main.cpp \
+    DataLayer/rest.cpp \
 
 
 RESOURCES += \
-    src/qml.qrc \
-    res.qrc
+    PresentationLayer/qml.qrc \
+    assets/res.qrc
 
 CONFIG += c++20 qml console qml_debug qmltypes
 
@@ -27,10 +36,26 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
 HEADERS += \
-    src/rest.h \
-    src/userentity.h
+    BusinessLayer/auth.h \
+    BusinessLayer/cartbusiness.h \
+    BusinessLayer/paymentbusiness.h \
+    EntityLayer/detailsentity.h \
+    EntityLayer/orderentity.h \
+    EntityLayer/paymententity.h \
+    EntityLayer/productentity.h \
+    EntityLayer/userentity.h \
+    EntityLayer/jsonexportable.h \
+    ModelLayer/ordermodel.h \
+    PresentationLayer/currentuser.h \
+    DataLayer/rest.h
 
-INCLUDEPATH += src/
+INCLUDEPATH += \
+    PresentationLayer/ \
+    DataLayer/ \
+    BusinessLayer/ \
+    EntityLayer/ \
+    ModelLayer/
+
 
 DISTFILES += \
     android/AndroidManifest.xml \
