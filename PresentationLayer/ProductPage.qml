@@ -51,11 +51,9 @@ Page {
         stackView: root.stackView
     }
 
-    StackLayout {
+    BusyStackLayout {
         id: stackLayout
         anchors.fill: parent
-
-        CenterBusyIndicator {}
 
         ScrollView {
             contentWidth: root.width
