@@ -61,6 +61,7 @@
         <file>CenterBusyIndicator.qml</file>
         <file>Message.qml</file>
         <file>BackPage.qml</file>
+        <file>BusyStackLayout.qml</file>
     </qresource>
     <qresource prefix="/payment">
         <file>PaymentStatus.qml</file>
