@@ -106,6 +106,7 @@ ColumnLayout {
         id: starRating
         selectedStars: reviewRating
         enabled: isReviewOwner && comment.isEditing
+        visible: !comment.isEditing
     }
 
     Comment {
