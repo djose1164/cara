@@ -52,6 +52,7 @@ signals:
     void modelChanged();
     void orderChanged();
     void checkoutSucceeded();
+    void checkoutFailed(const QVariantMap &resp);
     void totalToPayChanged();
 
 private:
