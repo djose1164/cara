@@ -42,7 +42,7 @@ BackPage {
             message.open();
         }
 
-        function onFailed(resp) {
+        function onCheckoutFailed(resp) {
             message.text = `Error: ${resp.code}`;
             message.detailedText = resp.message;
             message.open();
