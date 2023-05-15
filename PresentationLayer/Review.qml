@@ -78,9 +78,9 @@ ColumnLayout {
     height: {
         if (comment.isEditing)
             if (comment.focusInTextArea)
-                return 200;
-            else
                 return 150;
+            else
+                return 120;
         else if (reviewText)
             return 140;
         else
