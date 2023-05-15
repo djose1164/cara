@@ -29,7 +29,7 @@ Page {
 
         StackView {
             id: orderStackView
-            initialItem: TheCurrentUser.orderPath ?? busyIndicator
+            initialItem: TheCurrentUser.cartPath ?? busyIndicator
         }
 
         StackView { initialItem: "qrc:/bills/BillPage.qml" }
@@ -45,7 +45,6 @@ Page {
 
         function onUserCredentialsSet() {
             homeView.replace(TheCurrentUser.homePath);
-            orderStackView.replace(TheCurrentUser.cartPath);
         }
     }
 }
