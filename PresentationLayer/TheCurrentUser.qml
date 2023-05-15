@@ -18,7 +18,7 @@ QtObject {
                                                : "qrc:/home/UserHome.qml"
     readonly property bool isUser: userTypeId === TheCurrentUser.Types.User
 
-    readonly property string orderFormPath: isAdmin ? "qrc:/orders/OrderFormAdmin.qml"
+    readonly property string cartPath: isAdmin ? "qrc:/orders/OrderFormAdmin.qml"
                                                     : "qrc:/cart/Cart.qml"
     // TODO: This should be deleted
     property alias refreshToken: settings.refreshToken

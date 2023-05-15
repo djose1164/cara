@@ -45,7 +45,7 @@ Page {
 
         function onUserCredentialsSet() {
             homeView.replace(TheCurrentUser.homePath);
-            orderStackView.replace(TheCurrentUser.orderFormPath);
+            orderStackView.replace(TheCurrentUser.cartPath);
         }
     }
 }
