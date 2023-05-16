@@ -23,8 +23,7 @@ Page {
         StackView {
             id: homeView
             readonly property TabBar bar: bar
-            initialItem: TheCurrentUser.isGuest ? TheCurrentUser.homePath
-                                                : busyIndicator
+            initialItem: TheCurrentUser.homePath ?? busyIndicator
         }
 
         StackView {
