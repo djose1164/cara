@@ -4,6 +4,9 @@ import "qrc:/utils"
 
 Column {
     property alias reviewModel: reviews.model
+
+    spacing: 10
+
     Label {
         text: "Reseñas"
         font.bold: true

@@ -48,7 +48,7 @@ QtObject {
     property Rest request: Rest {
         id: request
         refreshToken: settings.refreshToken
-        base: Constants.base + "/users"
+        base: Constants.base+ "/users"
         onFailed: r => failedToSetUserCredentials(r)
         onSucceeded: r => initWithUser(r.user)
         onAccessTokenChanged: request.get("/")
@@ -59,7 +59,7 @@ QtObject {
     }
 
     readonly property Rest healthApi: Rest {
-        base: Constants.base + "/health"
+        base: Constants.base+ "/health"
         onServiceUnavailable: serverUnavailable()
     }
 
