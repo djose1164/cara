@@ -1,6 +1,7 @@
 #include "currentuser.h"
+#include "constants.h"
 
-using namespace EntityLayer;
+using EntityLayer::UserEntity;
 using UserTypes = EntityLayer::UserEntity::UserTypes;
 
 CurrentUser::CurrentUser()
@@ -122,7 +123,7 @@ EntityLayer::UserEntity *CurrentUser::userEntity()
 
 void CurrentUser::initRest(const QString &refreshToken)
 {
-    const QString restBase{"https://cara-rd.live/api/users"};
+    const QString restBase{BusinessLayer::Constants::instance()->base()};
     rest_.base(restBase);
     rest_.refreshToken(refreshToken);
     qDebug() << "Refreshing token...";

@@ -1,9 +1,11 @@
 #include "auth.h"
+#include "constants.h"
 
 BusinessLayer::Auth::Auth(QObject *parent)
     : QObject{parent}
 {
-    caraApi_.base("https://cara-rd.live/api/users/login");
+    const QString base{Constants::instance()->base()};
+    caraApi_.base(base + "/users/login");
 }
 
 void BusinessLayer::Auth::setUserEntity(EntityLayer::UserEntity *userEntity)
