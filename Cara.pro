@@ -3,6 +3,7 @@ QT += qml quick core network svg quickcontrols2 websockets
 SOURCES += \
     BusinessLayer/auth.cpp \
     BusinessLayer/cartbusiness.cpp \
+    BusinessLayer/constants.cpp \
     BusinessLayer/paymentbusiness.cpp \
     EntityLayer/detailsentity.cpp \
     EntityLayer/orderentity.cpp \
@@ -38,6 +39,7 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 HEADERS += \
     BusinessLayer/auth.h \
     BusinessLayer/cartbusiness.h \
+    BusinessLayer/constants.h \
     BusinessLayer/paymentbusiness.h \
     EntityLayer/detailsentity.h \
     EntityLayer/orderentity.h \
