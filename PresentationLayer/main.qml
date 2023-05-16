@@ -4,6 +4,7 @@ import QtQuick.Layouts
 import QtWebSockets
 import "qrc:/errors"
 import "qrc:/singleton"
+import com.cara
 
 ApplicationWindow {
     id: app

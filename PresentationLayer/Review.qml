@@ -5,6 +5,7 @@ import QtQuick.Layouts
 import "qrc:/utils"
 import "qrc:/singleton"
 import "qrc:/reviews"
+import com.cara
 
 ColumnLayout {
     id: root
