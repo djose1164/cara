@@ -12,7 +12,31 @@ Page {
     signal adminChanged
     footer: MainFooter {
         id: bar
-        onHomeClicked: homeView.pop(null)
+
+        property int clickedCount
+        property bool wasHomeLastView
+
+        onHomeClicked: {
+            ++clickedCount;
+
+            if (homeView.isCurrentView && !wasHomeLastView) {
+                print("## homeView is current view.")
+                homeView.pop(null);
+            }
+            else if (clickedCount == 2) {
+                homeView.pop(null);
+                clickedCount = 0;
+            }
+        }
+
+        onCurrentIndexChanged: {
+            if (homeView.isCurrentView)
+                wasHomeLastView = false;
+            else {
+                wasHomeLastView = true;
+                clickedCount = 0;
+            }
+        }
     }
 
     StackLayout {
@@ -23,6 +47,7 @@ Page {
         StackView {
             id: homeView
             readonly property TabBar bar: bar
+            readonly property bool isCurrentView: StackLayout.isCurrentItem
             initialItem: TheCurrentUser.homePath ?? busyIndicator
         }
 
