@@ -13,6 +13,9 @@
         <file>UserHome.qml</file>
         <file>HomeHeader.qml</file>
         <file>AdminHome.qml</file>
+        <file>Welcome.qml</file>
+        <file>Offers.qml</file>
+        <file>RecentOrders.qml</file>
     </qresource>
     <qresource prefix="/search">
         <file>SearchPage.qml</file>
@@ -79,17 +82,17 @@
         <file>ProductStocks.qml</file>
         <file>ProductCard.qml</file>
     </qresource>
-    <qresource lang="qml" prefix="/qr">
+    <qresource prefix="/qr" lang="qml">
         <file>QR.qml</file>
     </qresource>
-    <qresource lang="qml" prefix="/login">
+    <qresource prefix="/login" lang="qml">
         <file>Login.qml</file>
         <file>SignUp.qml</file>
     </qresource>
-    <qresource lang="qml" prefix="/users">
+    <qresource prefix="/users" lang="qml">
         <file>Refresh.qml</file>
     </qresource>
-    <qresource lang="qml" prefix="/errors">
+    <qresource prefix="/errors" lang="qml">
         <file>ErrorPage.qml</file>
     </qresource>
     <qresource prefix="/inventory">
@@ -98,7 +101,7 @@
     <qresource prefix="/entity">
         <file>OrderEntity.qml</file>
     </qresource>
-    <qresource lang="qml" prefix="/reviews">
+    <qresource prefix="/reviews" lang="qml">
         <file>Review.qml</file>
         <file>Comment.qml</file>
         <file>CommentMenuButton.qml</file>
