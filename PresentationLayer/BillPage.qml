@@ -51,34 +51,41 @@ Page {
 
         ListView {
             id: orderView
+
             readonly property StackView stackView: root.stackView
-            model:  baseModel.model
-            delegate: TheCurrentUser.isCostumer ? _.customerBill : _.billDelegate
-            onFlickStarted: {
-                if (-contentY > 50)
+            property bool shouldRefresh
+
+            onContentYChanged: {
+                if (contentY < -90) {
                     refreshIcon.visible = true;
-                print(`onFlickStarted: Content Y is: ${contentY}`)
+                    shouldRefresh = true;
+                }
+                //print(`onContentYChanged: Content Y is: ${contentY}`)
             }
             onFlickEnded: {
                 print(`onFlickEnded: Content Y is: ${contentY}`)
+                if (shouldRefresh) {
+                    baseModel.clearModel();
+                    stackLayout.currentIndex = 0;
+                    updateCustomerModel();
+                }
                 refreshIcon.visible = false;
-                baseModel.clearModel();
-                stackLayout.currentIndex = 0;
-                updateCustomerModel();
+                shouldRefresh = false;
             }
 
-            Item {
+            model:  baseModel.model
+            delegate: TheCurrentUser.isCostumer ? _.customerBill : _.billDelegate
+
+            Pane {
                 id: refreshIcon
                 width: parent.width
-                height: 25
+                height: 40
                 visible: false
-                Pane {
-                    anchors.fill: parent
-                    anchors.topMargin: 20
-                    Image {
-                        anchors.centerIn: parent
-                        source: "qrc:/icons/refresh_black_24dp.svg"
-                    }
+
+                Image {
+                    anchors.centerIn: parent
+                    source: "qrc:/icons/refresh_black_24dp.svg"
+
                 }
             }
         }
