@@ -19,7 +19,8 @@ QtObject {
     readonly property bool isUser: userTypeId === TheCurrentUser.Types.User
 
     readonly property string cartPath: isAdmin ? "qrc:/orders/OrderFormAdmin.qml"
-                                                    : "qrc:/cart/Cart.qml"
+                                               : "qrc:/cart/Cart.qml"
+
     // TODO: This should be deleted
     property alias refreshToken: settings.refreshToken
     readonly property alias accessToken: request.accessToken
@@ -70,7 +71,6 @@ QtObject {
 
     signal userCredentialsSet
     signal failedToSetUserCredentials(respose: var)
-    signal orderPosted
     signal serverUnavailable
     signal loggedOut
     signal adminChanged
