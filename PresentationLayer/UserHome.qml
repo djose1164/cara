@@ -139,9 +139,6 @@ Home {
     Connections {
         target: TheCurrentUser
         // TODO: Optimize this for later release.
-        function onOrderPosted() {
-            customerModel.findOrdersByCustomerId(TheCurrentUser.customerId);
-        }
 
         function onUserCredentialsSet() {
             print("function onUserCredentialsSet() isAdmin: " + TheCurrentUser.isAdmin);
