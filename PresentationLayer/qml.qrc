@@ -33,7 +33,6 @@
         <file>UpdateOrderPage.qml</file>
         <file>OrderState.qml</file>
         <file>AddOrderHeader.qml</file>
-        <file>OrderFormUser.qml</file>
         <file>OrderFormAdmin.qml</file>
         <file>CustomerOrders.qml</file>
     </qresource>
@@ -80,17 +79,17 @@
         <file>ProductStocks.qml</file>
         <file>ProductCard.qml</file>
     </qresource>
-    <qresource prefix="/qr" lang="qml">
+    <qresource lang="qml" prefix="/qr">
         <file>QR.qml</file>
     </qresource>
-    <qresource prefix="/login" lang="qml">
+    <qresource lang="qml" prefix="/login">
         <file>Login.qml</file>
         <file>SignUp.qml</file>
     </qresource>
-    <qresource prefix="/users" lang="qml">
+    <qresource lang="qml" prefix="/users">
         <file>Refresh.qml</file>
     </qresource>
-    <qresource prefix="/errors" lang="qml">
+    <qresource lang="qml" prefix="/errors">
         <file>ErrorPage.qml</file>
     </qresource>
     <qresource prefix="/inventory">
@@ -99,7 +98,7 @@
     <qresource prefix="/entity">
         <file>OrderEntity.qml</file>
     </qresource>
-    <qresource prefix="/reviews" lang="qml">
+    <qresource lang="qml" prefix="/reviews">
         <file>Review.qml</file>
         <file>Comment.qml</file>
         <file>CommentMenuButton.qml</file>
