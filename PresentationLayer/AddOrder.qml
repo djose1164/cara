@@ -43,8 +43,6 @@ Item {
             message.open();
             clearOrderForm();
 
-            TheCurrentUser.orderPosted();
-
             if (TheCurrentUser.isCostumer && TheCurrentUser.customerId === 0)
                 TheCurrentUser.customerId = r.customer_id;
             print(JSON.stringify(r, null, 2));
