@@ -53,7 +53,7 @@ Page {
 
         StackView {
             id: orderStackView
-            initialItem: busyIndicator
+            initialItem: TheCurrentUser.cartPath ?? busyIndicator
 
             Connections {
                 target: TheCurrentUser
