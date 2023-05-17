@@ -25,10 +25,6 @@ Page {
                   + "\ncustomerId " + TheCurrentUser.customerId)
             updateCustomerModel();
         }
-
-        function onOrderPosted() {
-            baseModel.findOrdersByCustomerId(TheCurrentUser.customerId);
-        }
     }
 
     StackLayout {
@@ -58,6 +54,33 @@ Page {
             readonly property StackView stackView: root.stackView
             model:  baseModel.model
             delegate: TheCurrentUser.isCostumer ? _.customerBill : _.billDelegate
+            onFlickStarted: {
+                if (-contentY > 50)
+                    refreshIcon.visible = true;
+                print(`onFlickStarted: Content Y is: ${contentY}`)
+            }
+            onFlickEnded: {
+                print(`onFlickEnded: Content Y is: ${contentY}`)
+                refreshIcon.visible = false;
+                baseModel.clearModel();
+                stackLayout.currentIndex = 0;
+                updateCustomerModel();
+            }
+
+            Item {
+                id: refreshIcon
+                width: parent.width
+                height: 25
+                visible: false
+                Pane {
+                    anchors.fill: parent
+                    anchors.topMargin: 20
+                    Image {
+                        anchors.centerIn: parent
+                        source: "qrc:/icons/refresh_black_24dp.svg"
+                    }
+                }
+            }
         }
     }
 
