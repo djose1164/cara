@@ -3,6 +3,7 @@ import QtQuick.Controls
 import QtQuick.Layouts
 import "qrc:/payment" as Payments
 import "qrc:/customers"
+import "qrc:/singleton"
 
 Page {
     id: root
@@ -79,13 +80,11 @@ Page {
     }
 
     function okHandler() {
-        const order_details = addOrder.entryFormData();
+        const details = addOrder.entryFormData();
 
         const fullOrder = {
             customer_id: clientField.currentValue,
-            date: dateField.text ? dateField.text : new Date().toLocaleDateString(
-                                         Qt.locale(), "dd/MM/yyyy"),
-            order_details,
+            details,
             payment: {
                 amount_to_pay: addOrder.totalToPay,
                 paid_amount: amount
@@ -93,5 +92,6 @@ Page {
         };
         print('fullOrder ', JSON.stringify(fullOrder, null, 2));
         addOrder.request.post("/", fullOrder);
+        TheCurrentUser.orderSent(fullOrder);
     }
 }
