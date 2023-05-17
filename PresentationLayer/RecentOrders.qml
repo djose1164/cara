@@ -27,7 +27,6 @@ Item {
             sourceSize: "18x18"
         }
 
-        // FIXME: Remove weak reference
         TapHandler { onTapped: bar.currentIndex = 2 }
     }
 
