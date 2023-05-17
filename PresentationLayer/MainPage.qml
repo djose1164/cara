@@ -53,7 +53,15 @@ Page {
 
         StackView {
             id: orderStackView
-            initialItem: TheCurrentUser.cartPath ?? busyIndicator
+            initialItem: busyIndicator
+
+            Connections {
+                target: TheCurrentUser
+
+                function onCartPathChanged() {
+                    orderStackView.replace(TheCurrentUser.cartPath);
+                }
+            }
         }
 
         StackView { initialItem: "qrc:/bills/BillPage.qml" }
