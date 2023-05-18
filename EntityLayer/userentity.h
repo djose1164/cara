@@ -13,8 +13,8 @@ class UserEntity : public QObject
     Q_PROPERTY(QString username READ username WRITE setUsername NOTIFY usernameChanged)
     Q_PROPERTY(QString password READ password WRITE setPassword NOTIFY passwordChanged)
 
-    Q_PROPERTY(QString forename READ surname WRITE setSurname NOTIFY surnameChanged)
-    Q_PROPERTY(QString surname READ forename WRITE setForename NOTIFY forenameChanged)
+    Q_PROPERTY(QString forename READ forename WRITE setForename NOTIFY forenameChanged)
+    Q_PROPERTY(QString surname READ surname WRITE setSurname NOTIFY surnameChanged)
     Q_PROPERTY(QString fullname READ fullname CONSTANT)
 
     Q_PROPERTY(UserTypes userType READ userType WRITE setUserType NOTIFY userTypeChanged)
