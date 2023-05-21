@@ -1,7 +1,7 @@
 #include "cartbusiness.h"
 
 using namespace BusinessLayer;
-using EntityLayer::UserEntity, ModelLayer::OrderModel, EntityLayer::OrderEntity;
+using EntityLayer::UserEntity, ModelLayer::OrderModel, EntityLayer::BillEntity, EntityLayer::OrderEntity;
 
 CartBusiness::CartBusiness(QObject *parent)
     : QObject{parent}
@@ -144,6 +144,5 @@ void CartBusiness::prepareOrder()
     user->setUserId(user_->userId());
     user->setCustomerId(user_->customerId());
 
-    for (int i{}; i < model_->count(); ++i)
-        order_->appendDetail(model_->get(i));
+    order_->setDetails(model_->toJson());
 }
