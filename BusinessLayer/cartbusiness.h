@@ -4,7 +4,6 @@
 #include "rest.h"
 #include "userentity.h"
 #include "orderentity.h"
-#include "billentity.h"
 #include "ordermodel.h"
 
 #include <QObject>
