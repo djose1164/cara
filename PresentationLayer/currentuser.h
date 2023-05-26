@@ -7,61 +7,48 @@
 #include <QObject>
 #include <QtQml>
 
-class CurrentUser : public QObject
+class CurrentUser : public EntityLayer::UserEntity
 {
     Q_OBJECT
 
     QML_ELEMENT
     QML_SINGLETON
 
-    Q_PROPERTY(bool isAdmin READ isAdmin WRITE setIsAdmin NOTIFY isAdminChanged)
-    Q_PROPERTY(bool isUser READ isUser WRITE setIsUser NOTIFY isUserChanged)
-    Q_PROPERTY(bool isCustomer READ isCustomer WRITE setIsCustomer NOTIFY isCustomerChanged)
-    Q_PROPERTY(EntityLayer::UserEntity *userEntity READ userEntity WRITE setUserEntity NOTIFY userEntityChanged)
-
 public:
-    CurrentUser();
-
-    bool isAdmin() const;
-    bool isUser() const;
-    bool isCustomer() const;
-    bool isGuest() const;
-    
-    void setUserEntity(EntityLayer::UserEntity *userEntity);
-    const EntityLayer::UserEntity *userEntity() const;
-    EntityLayer::UserEntity *userEntity();
+    static CurrentUser *create(QQmlEngine *qmlEngine, QJSEngine *jsEngine);
+    static CurrentUser *instance();
 
 public slots:
-    void setIsAdmin(bool isAdmin);
-    void setIsUser(bool isUser);
-    void setIsCustomer(bool isCustomer);
-    void setIsGuest(bool isGuest);
 
 private:
+    CurrentUser();
+
+    void setup();
     void initRest(const QString &refreshToken);
+    bool existPreviousLogin();
 
 signals:
-    void isAdminChanged();
-    void isUserChanged();
-    void isCustomerChanged();
-    void isGuestChanged();
     void userEntityChanged();
 
     void refreshTokenNotAvailable();
     void userEntityReady();
+    void completed();
+
+    void loggedIn();
+    void loggedOut();
+    void previousLoginFound();
+    void noPreviousLoginFound();
+    void restReady();
 
 private:
-    bool isAdmin_;
-    bool isUser_;
-    bool isCustomer_;
-    bool isGuest_;
-    
-    EntityLayer::UserEntity *userEntity_;
+    bool hasPreviousLogin_;
 
     Rest rest_;
     BusinessLayer::Auth auth_;
 
     QSettings settings_;
+
+    static CurrentUser *instance_;
 };
 
 #endif // CURRENTUSER_H
