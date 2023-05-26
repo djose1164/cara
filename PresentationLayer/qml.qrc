@@ -28,6 +28,9 @@
         <file>OptionPopup.qml</file>
         <file>BillSearch.qml</file>
         <file>CustomerBill.qml</file>
+        <file>Bills.qml</file>
+        <file>BillMessage.qml</file>
+        <file>BillView.qml</file>
     </qresource>
     <qresource prefix="/orders">
         <file>AddOrder.qml</file>
@@ -64,6 +67,7 @@
         <file>Message.qml</file>
         <file>BackPage.qml</file>
         <file>BusyStackLayout.qml</file>
+        <file>BackButton.qml</file>
     </qresource>
     <qresource prefix="/payment">
         <file>PaymentStatus.qml</file>
@@ -97,9 +101,6 @@
     </qresource>
     <qresource prefix="/inventory">
         <file>Inventory.qml</file>
-    </qresource>
-    <qresource prefix="/entity">
-        <file>OrderEntity.qml</file>
     </qresource>
     <qresource prefix="/reviews" lang="qml">
         <file>Review.qml</file>
