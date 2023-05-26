@@ -46,7 +46,21 @@ QByteArray EntityLayer::OrderEntity::toJson() const
     object["customer_id"] = user_->customerId();
 
     const auto detailsDoc{QJsonDocument::fromJson(details_)};
-    object["details"] = QJsonValue::fromVariant(detailsDoc);
+    QJsonArray arr{};
+    for (const auto &detail : detailsDoc.array())
+    {
+        const auto detailObj{detail.toObject()};
+        const auto productId{detailObj["product"].toObject()["product_id"].toInt()};
+
+        QJsonObject detailsObj{};
+        detailsObj["product_id"] = productId;
+
+        const auto quantity{detailObj["quantity"].toInt()};
+        detailsObj["quantity"] = quantity;
+
+        arr.append(detailsObj);
+    }
+    object["details"] = arr;
 
     const auto doc_{QJsonDocument::fromJson(payment_->toJson())};
     object["payment"] = QJsonValue::fromVariant(doc_);
