@@ -63,20 +63,34 @@ DetailsEntity *OrderModel::get(int index)
     return data_[index];
 }
 
-void OrderModel::insert(int index, DetailsEntity *entity)
+QByteArray OrderModel::toJson() const
+{
+    QJsonArray arr{};
+    for (const auto &detail : data_)
+    {
+        const auto detailJson{detail->toJson()};
+        const auto detailObj{QJsonDocument::fromJson(detailJson).object()};
+        arr.append(detailObj);
+    }
+
+    QJsonDocument doc{arr};
+    qDebug() << "OrderModel::toJson " << doc;
+    return doc.toJson(QJsonDocument::Compact);
+}
+
+void OrderModel::insert(int index, DetailsEntity *const entity)
 {
     if (index < 0 || index > count())
         return;
 
     emit beginInsertRows(QModelIndex{}, index, index);
-    entity->setParent(this);
     data_.insert(index, entity);
     emit endInsertRows();
 
     emit countChanged(count());
 }
 
-void OrderModel::append(EntityLayer::DetailsEntity * const entity)
+void OrderModel::append(DetailsEntity *entity)
 {
     insert(count(), entity);
 }
@@ -97,7 +111,6 @@ void OrderModel::clear()
 {
     data_.clear();
 }
-
 
 bool OrderModel::setData(const QModelIndex &index, const QVariant &value, int role)
 {
