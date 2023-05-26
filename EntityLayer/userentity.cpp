@@ -8,7 +8,7 @@ EntityLayer::UserEntity::UserEntity(QObject *parent)
     , surname_{}
     , customerId_{}
     , userId_{}
-    , userType_{}
+    , userType_{UserTypes::GUEST}
 {
 }
 
