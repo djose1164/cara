@@ -1,7 +1,9 @@
 #include "cartbusiness.h"
+#include "billentity.h"
 
 using namespace BusinessLayer;
-using EntityLayer::UserEntity, ModelLayer::OrderModel, EntityLayer::BillEntity, EntityLayer::OrderEntity;
+using EntityLayer::UserEntity, ModelLayer::OrderModel, EntityLayer::BillEntity,
+    EntityLayer::OrderEntity, EntityLayer::DetailsEntity;
 
 CartBusiness::CartBusiness(QObject *parent)
     : QObject{parent}
@@ -93,8 +95,11 @@ void CartBusiness::setModel(ModelLayer::OrderModel * const model)
     }
 }
 
-void CartBusiness::addtoCart(EntityLayer::DetailsEntity * const detail)
+void CartBusiness::addtoCart(ProductEntity *const product)
 {
+    auto detail{new DetailsEntity(model_)};
+    detail->setProduct(product);
+
     model_->append(detail);
 }
 
