@@ -36,7 +36,6 @@ Constants *Constants::create(QQmlEngine *qmlEngine, QJSEngine *jsEngine)
     Q_ASSERT(instance_ == nullptr);
 
     instance_ = new Constants;
-    qDebug() << "## Constants created";
     return instance_;
 }
 
