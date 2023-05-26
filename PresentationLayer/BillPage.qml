@@ -1,8 +1,7 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
-import "qrc:/customers" as Customers
-import "qrc:/singleton"
+import com.cara 1.0
 import "qrc:/utils"
 
 Page {
@@ -17,85 +16,14 @@ Page {
         customerModel: baseModel
     }
 
-    Connections {
-        target: TheCurrentUser
-
-        function onUserTypeIdChanged() {
-            print("TheCurrentUser.isCustomer: " + TheCurrentUser.isCostumer
-                  + "\ncustomerId " + TheCurrentUser.customerId)
-            updateCustomerModel();
-        }
+    Bills {
+        id: bills
+        readonly property StackView stackView: root.stackView
     }
 
-    StackLayout {
-        id: stackLayout
-        anchors.fill: parent
-        currentIndex: TheCurrentUser.isUser || TheCurrentUser.isGuest ? 1 : 0
-
-        BusyIndicator { id: myBusy }
-
-        Item {
-            Label {
-                width: parent.width * .8
-                anchors.horizontalCenter: parent.horizontalCenter
-                anchors.top: parent.top
-                anchors.topMargin: height/2
-                wrapMode: Label.WordWrap
-                text: TheCurrentUser.isUser && !TheCurrentUser.isCostumer
-                      ? "Aun no haz realizado ninguna orden."
-                        : "Necesitas registrarte para poder ver tus ordenes recientes."
-                font.pointSize: 15
-                horizontalAlignment: Label.AlignHCenter
-            }
-        }
-
-        ListView {
-            id: orderView
-
-            readonly property StackView stackView: root.stackView
-            property bool shouldRefresh
-
-            onContentYChanged: {
-                if (contentY < -90) {
-                    refreshIcon.visible = true;
-                    shouldRefresh = true;
-                }
-                //print(`onContentYChanged: Content Y is: ${contentY}`)
-            }
-            onFlickEnded: {
-                print(`onFlickEnded: Content Y is: ${contentY}`)
-                if (shouldRefresh) {
-                    baseModel.clearModel();
-                    stackLayout.currentIndex = 0;
-                    updateCustomerModel();
-                }
-                refreshIcon.visible = false;
-                shouldRefresh = false;
-            }
-
-            model:  baseModel.model
-            delegate: TheCurrentUser.isCostumer ? _.customerBill : _.billDelegate
-
-            Pane {
-                id: refreshIcon
-                width: parent.width
-                height: 40
-                visible: false
-
-                Image {
-                    anchors.centerIn: parent
-                    source: "qrc:/icons/refresh_black_24dp.svg"
-
-                }
-            }
-        }
-    }
-
-    Customers.CustomerModel {
-        id: baseModel
-        request.onSucceeded: stackLayout.currentIndex = 2
-        onFiltering: stackLayout.currentIndex = 0
-        request.onFailed: r => print("request.onFailed: " + r);
+    BillBusiness {
+        id: billBusiness
+        model: bills.model
     }
 
     Filter {
@@ -104,21 +32,22 @@ Page {
         onFiltered: data => orderView.model = data
     }
 
-    QtObject {
-        id: _
-        property Component billDelegate: BillDelegate {
-            Component.onCompleted: updateCustomer.connect(baseModel.updateCustomer)
-        }
+    Connections {
+        target: CurrentUser
 
-        property Component customerBill: CustomerBill {
-            Component.onCompleted: updateCustomer.connect(baseModel.updateCustomer)
+        function onUserEntityReady() {
+            if (CurrentUser.userType === CurrentUser.ADMIN)
+                billBusiness.fetchAllCustomers();
+            else
+                billBusiness.fetchCustomerById(CurrentUser.customerId);
+            bills.gotoBillView();
         }
     }
 
     function updateCustomerModel() {
         if (TheCurrentUser.isAdmin)
-            baseModel.findAll();
+            bills.findAll();
         else if (TheCurrentUser.isCostumer)
-            baseModel.findOrdersByCustomerId(TheCurrentUser.customerId);
+            bills.findOrdersByCustomerId(TheCurrentUser.customerId);
     }
 }
