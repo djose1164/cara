@@ -1,89 +1,105 @@
-#include "orderentity.h"
+#include "billentity.h"
 
-using EntityLayer::DetailsEntity, EntityLayer::OrderEntity;
+using EntityLayer::DetailsEntity, EntityLayer::BillEntity, ModelLayer::OrderModel;
 
-OrderEntity::OrderEntity(QObject *parent)
+BillEntity::BillEntity(QObject *parent)
     : QObject{parent}
+    , orderId_{}
     , user_{new UserEntity(this)}
-    , details_{}
+    , details_{new OrderModel(this)}
     , payment_{new PaymentEntity(this)}
+    , date_{}
 {
 }
 
-QList<DetailsEntity *> OrderEntity::details() const
-{
-    return details_;
-}
-
-DetailsEntity *OrderEntity::detail(qsizetype index) const
-{
-    return details_[index];
-}
-
-void OrderEntity::appendDetail(DetailsEntity *detail)
-{
-    qDebug() << "C++: detail: " << detail;
-    details_.append(detail);
-}
-
-void OrderEntity::clear()
-{
-    details_.clear();
-}
-
-void OrderEntity::replaceDetail(qsizetype index, DetailsEntity *detail)
-{
-    details_.replace(index, detail);
-}
-
-void OrderEntity::popBack()
-{
-    details_.pop_back();
-}
-
-EntityLayer::UserEntity *EntityLayer::OrderEntity::user() const
+EntityLayer::UserEntity *EntityLayer::BillEntity::user() const
 {
     return user_;
 }
 
-void EntityLayer::OrderEntity::setDetails(const QList<DetailsEntity *> &details)
+QDate EntityLayer::BillEntity::date() const
 {
-    if (details_ != details)
-    {
-        details_ = details;
-        emit detailsChanged();
-    }
+    return date_.value();
 }
 
-void EntityLayer::OrderEntity::setUser(UserEntity * const user)
+void EntityLayer::BillEntity::setDate(QDate date)
 {
-    if (user_ != user)
-    {
-        user_ = user;
-        emit userChanged();
-    }
+    date_ = date;
 }
 
-QByteArray EntityLayer::OrderEntity::toJson() const
+QBindable<QDate> EntityLayer::BillEntity::bindableDate()
+{
+    return &date_;
+}
+
+int EntityLayer::BillEntity::orderId() const
+{
+    return orderId_.value();
+}
+
+void EntityLayer::BillEntity::setOrderId(int orderId)
+{
+    orderId_ = orderId;
+}
+
+QBindable<int> EntityLayer::BillEntity::bindableOrderId()
+{
+    return &orderId_;
+}
+
+void EntityLayer::BillEntity::setDetailsModel(OrderModel * const model)
+{
+    details_ = model;
+}
+
+EntityLayer::PaymentEntity *EntityLayer::BillEntity::payment() const
+{
+    return payment_;
+}
+
+void EntityLayer::BillEntity::setPayment(PaymentEntity * const payment)
+{
+    payment_ = payment;
+}
+
+void EntityLayer::BillEntity::setUser(UserEntity * const user)
+{
+    user_ = user;
+}
+
+OrderModel *BillEntity::details() const
+{
+    return details_;
+}
+
+QByteArray EntityLayer::BillEntity::toJson() const
 {
     QJsonObject object{};
     object["user_id"] = user_->userId();
     object["customer_id"] = user_->customerId();
+    object["order_id"] = orderId();
+    object["date"] = date().toString();
 
     QJsonArray array{};
-    foreach (const auto detail, details_)
+    for (int i{}; i < details_->count(); ++i)
     {
+        const auto detail{details_->get(i)};
         const auto detailJson{detail->toJson()};
         const auto doc{QJsonDocument::fromJson(detailJson)};
-        array.append(QJsonValue::fromVariant(doc));
+        array.append(doc.object());
     }
     object["details"] = array;
 
-    const auto doc_{QJsonDocument::fromJson(payment_->toJson())};
-    object["payment"] = QJsonValue::fromVariant(doc_);
-
-    qDebug() << "OrderEntity::toJson " << object;
+    const auto paymentObj{QJsonDocument::fromJson(payment_->toJson()).object()};
+    object["payment"] = paymentObj;
 
     const auto doc{QJsonDocument(object)};
     return doc.toJson(QJsonDocument::Compact);
+}
+
+void EntityLayer::BillEntity::appendDetail(DetailsEntity * const detail)
+{
+    Q_ASSERT(detail);
+
+    details_->append(detail);
 }

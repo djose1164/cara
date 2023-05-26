@@ -1,53 +1,58 @@
-#ifndef ORDERENTITY_H
-#define ORDERENTITY_H
+#ifndef BILLENTITY_H
+#define BILLENTITY_H
 
+#include "ordermodel.h"
 #include "paymententity.h"
-#include "detailsentity.h"
 #include "userentity.h"
 #include <QObject>
 #include <QtQml>
 
 namespace EntityLayer {
-class OrderEntity : public QObject, public JsonExportable
+using ModelLayer::OrderModel;
+class BillEntity : public QObject, public JsonExportable
 {
     Q_OBJECT
     QML_ELEMENT
 
-    Q_PROPERTY(UserEntity *user READ user WRITE setUser NOTIFY userChanged)
-    Q_PROPERTY(QList<DetailsEntity *> details READ details WRITE setDetails NOTIFY detailsChanged)
-    Q_PROPERTY(PaymentEntity *payment MEMBER payment_ NOTIFY paymentChanged)
-
 public:
-    explicit OrderEntity(QObject *parent = nullptr);
+    explicit BillEntity(QObject *parent = nullptr);
+
+    int orderId() const;
+    void setOrderId(int orderId);
+    QBindable<int> bindableOrderId();
 
     UserEntity *user() const;
+    void setUser(UserEntity *const user);
+
+    OrderModel *details() const;
+    void setDetailsModel(OrderModel *const model);
 
     PaymentEntity *payment() const;
-    QList<DetailsEntity *> details() const;
+    void setPayment(PaymentEntity *const payment);
 
-    DetailsEntity *detail(qsizetype index) const;
-
-public slots:
-    void appendDetail(DetailsEntity *detail);
-    void clear();
-    void replaceDetail(qsizetype index, DetailsEntity *detail);
-    void popBack();
-
-    void setDetails(const QList<DetailsEntity *> &detail);
-    void setUser(UserEntity *const user);
+    QDate date() const;
+    void setDate(QDate date);
+    QBindable<QDate> bindableDate();
 
     Q_INVOKABLE QByteArray toJson() const;
 
-signals:
+public slots:
+    void appendDetail(DetailsEntity *const detail);
+
+/*signals:
     void userChanged();
     void detailsChanged();
     void paymentChanged();
+    void dateChanged();
+    void orderIdChanged();*/
 
 private:
-    UserEntity *user_;
-    QList<DetailsEntity *> details_;
-    PaymentEntity *payment_;
+    QProperty<int> orderId_;
+    UserEntity * user_;
+    OrderModel *details_;
+    PaymentEntity * payment_;
+    QProperty<QDate> date_;
 };
 }
 
-#endif // ORDERENTITY_H
+#endif // BILLENTITY_H
