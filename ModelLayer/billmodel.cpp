@@ -47,12 +47,15 @@ QVariant BillModel::data(const QModelIndex &index, int role) const
 
 int BillModel::count() const
 {
-    return count_.value();
+    return data_.count();
 }
 
-QBindable<int> BillModel::bindableCount()
+EntityLayer::BillEntity *BillModel::get(int index) const
 {
-    return &count_;
+    if (index < 0 || index >= count())
+        return nullptr;
+
+    return data_.at(index);
 }
 
 bool BillModel::setData(const QModelIndex &index, const QVariant &value, int role)
@@ -67,7 +70,7 @@ bool BillModel::setData(const QModelIndex &index, const QVariant &value, int rol
         emit dataChanged(index, index, {role});
         break;
     case RoleNames::DetailsRole:
-        data_[row]->setDetailsModel(value.value<QList<DetailsEntity *>>());
+        data_[row]->setDetailsModel(value.value<OrderModel *>());
         emit dataChanged(index, index, {role});
         break;
     default:
@@ -85,9 +88,15 @@ QHash<int, QByteArray> BillModel::roleNames() const
 
 void BillModel::insert(int index, BillEntity *const bill)
 {
-    if (!indexIsValid(index))
+    if (index < 0 || index > count())
         return;
+
+    emit beginInsertRows(QModelIndex(), index, index);
+    bill->setParent(this);
     data_.insert(index, bill);
+    emit endInsertRows();
+
+    emit countChanged();
 }
 
 void BillModel::append(BillEntity * const bill)
@@ -97,15 +106,15 @@ void BillModel::append(BillEntity * const bill)
 
 void BillModel::remove(int index)
 {
-    data_.remove(index);
+    if (index < 0 || index >= count())
+        return;
+
+    emit beginRemoveRows(QModelIndex(), index, index);
+    data_.removeAt(index);
+    emit endRemoveRows();
 }
 
 void BillModel::clear()
 {
     data_.clear();
-}
-
-bool BillModel::indexIsValid(int index) const
-{
-    return !(index < 0 || index > data_.count());
 }
