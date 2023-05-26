@@ -13,7 +13,7 @@ class BillModel : public QAbstractListModel
     Q_OBJECT
     QML_ELEMENT
 
-    Q_PROPERTY(int count READ count NOTIFY countChanged BINDABLE bindableCount)
+    Q_PROPERTY(int count READ count NOTIFY countChanged)
 
 public:
     enum class RoleNames
@@ -37,7 +37,8 @@ public:
     QHash<int, QByteArray> roleNames() const override;
 
     int count() const;
-    QBindable<int> bindableCount();
+
+    Q_INVOKABLE BillEntity *get(int index) const;
 
 signals:
     void countChanged();
@@ -49,10 +50,6 @@ public slots:
     void clear();
 
 private:
-    bool indexIsValid(int index) const;
-
-    Q_OBJECT_BINDABLE_PROPERTY(BillModel, int, count_, &BillModel::countChanged);
-
     QList<BillEntity *> data_;
     QHash<int, QByteArray> roleNames_;
 };
