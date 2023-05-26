@@ -26,7 +26,8 @@ public:
     enum class UserTypes {
         ADMIN = 1,
         USER,
-        GUEST
+        GUEST,
+        CUSTOMER
     };
     Q_ENUM(UserTypes)
 
