@@ -7,11 +7,14 @@ import "qrc:/customers"
 
 ItemDelegate {
     id: root
-    required property var person_info
-    required property int id
-    required property ListModel orders
+    property string name
+    property int customerId
+    property var orders
     property int orientation : ListView.Vertical
-    readonly property StackView stackView: ListView.view.stackView
+
+    readonly property int widthLV: ListView.view.width
+    readonly property int heightLV: ListView.view.height
+    readonly property bool isHorizontal: orientation === ListView.Horizontal
 
     signal updateCustomer(customerId: int)
 
@@ -21,8 +24,8 @@ ItemDelegate {
 
     onClicked: {
         stackView.push("qrc:/orders/UpdateOrderPage.qml", {
-                           name: person_info.name,
-                           customer_id: id,
+                           name,
+                           customerId,
                            orders
                        });
     }
@@ -34,12 +37,12 @@ ItemDelegate {
 
         Label {
             Layout.topMargin: 15
-            text: person_info.name
+            text: name
             font.pointSize: 16
         }
 
         Label {
-            text: `Cliente ID # ${id}`
+            text: `Cliente ID # ${customerId}`
             font.pointSize: 12
             Layout.leftMargin: 15
         }
