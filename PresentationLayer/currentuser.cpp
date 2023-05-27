@@ -7,7 +7,8 @@ using UserTypes = EntityLayer::UserEntity::UserTypes;
 CurrentUser *CurrentUser::instance_{nullptr};
 
 CurrentUser::CurrentUser()
-    : hasPreviousLogin_{} //TODO: Does Qt's engine free the memory later?
+    : UserEntity{}
+    , hasPreviousLogin_{} //TODO: Does Qt's engine free the memory later?
     , settings_{}
 {
     hasPreviousLogin_ = existPreviousLogin();
