@@ -2,7 +2,7 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 import QtQuick.Dialogs
-import com.cara 1.0
+import com.cara 1.0 as Cara
 import "qrc:/singleton"
 import "qrc:/utils"
 import "qrc:/reviews"
@@ -26,18 +26,15 @@ Page {
         "description": description,
     }
 
-
-    DetailsEntity {
+    Cara.ProductEntity {
         id: detailsEntity
-        quantity: 1
-        product: ProductEntity {
-            name: root.name
-            price: root.sell_price
-            description: root.description
-            productId: root.productId
-            imageUrl: root.image_url
-        }
+        name: root.name
+        price: root.sell_price
+        description: root.description
+        productId: root.productId
+        imageUrl: root.image_url
     }
+    readonly property var cart: Cara.CartBusiness
 
     required property int productId
     required property string name
@@ -94,10 +91,10 @@ Page {
                     enabled: userIsAdmin || hasStocks
                     onClicked: {
                         if (!userIsAdmin) {
-                            if (CartBusiness.isProductInCart(detailsEntity.product))
+                            if (cart.isProductInCart(detailsEntity))
                                 message.show("El producto ya se encuentra en el carrito!");
                             else {
-                                CartBusiness.addtoCart(detailsEntity);
+                                cart.addtoCart(detailsEntity);
                                 message.show("¡Producto agregado al carrito!");
                             }
                             return;
