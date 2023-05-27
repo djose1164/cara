@@ -21,27 +21,10 @@ Page {
         readonly property StackView stackView: root.stackView
     }
 
-    BillBusiness {
-        id: billBusiness
-        model: bills.model
-    }
-
     Filter {
         id: filter
         customerModel: baseModel
         onFiltered: data => orderView.model = data
-    }
-
-    Connections {
-        target: CurrentUser
-
-        function onUserEntityReady() {
-            if (CurrentUser.userType === CurrentUser.ADMIN)
-                billBusiness.fetchAllCustomers();
-            else
-                billBusiness.fetchCustomerById(CurrentUser.customerId);
-            bills.gotoBillView();
-        }
     }
 
     function updateCustomerModel() {
