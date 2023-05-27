@@ -1,12 +1,15 @@
 import QtQuick
 import QtQuick.Layouts
 import QtQuick.Controls
+import Qt.labs.qmlmodels
 import com.cara 1.0
 
 ListView {
     id: root
 
     property bool shouldRefresh
+
+    signal modelPopulated
 
     onContentYChanged: {
         if (contentY < -90) {
@@ -26,15 +29,11 @@ ListView {
         shouldRefresh = false;
     }
 
-    delegate: Loader {
-        required property var model
-
-        source: switch (CurrentUser.userType) {
-            case UserEntity.ADMIN:
-                return "qrc:/bills/BillDelegate.qml";
-            case UserEntity.USER:
-                return "qrc:/bills/CustomerBill.qml";
-        }
+    delegate: CustomerBill {
+//        required property string forename
+//        required property string surname
+        required orderId
+        required date
     }
 
     model: billModel
@@ -48,11 +47,20 @@ ListView {
         Image {
             anchors.centerIn: parent
             source: "qrc:/icons/refresh_black_24dp.svg"
-
         }
     }
 
     BillModel {
         id: billModel
+    }
+
+    BillBusiness {
+        id: billBusiness
+        onPopulated: modelPopulated()
+        model: billModel
+    }
+
+    function populateModel() {
+        billBusiness.populate();
     }
 }
