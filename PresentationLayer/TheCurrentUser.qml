@@ -81,10 +81,8 @@ QtObject {
     Component.onCompleted: {
         healthApi.get("/");
         if (previousLogin) {
-            print("previousLogin is " + previousLogin)
             TheCurrentUser.init();
         } else {
-            print("No previous login");
             root.notLoggedIn();
         }
         isVerificationDone = true;
@@ -121,7 +119,6 @@ QtObject {
         userTypeId = user.user_type_id;
         userId = user.id;
         userType = userTypeId;
-        print("user initialized: userTypeId: "+userTypeId+"\nuserType: "+userType)
         isVerificationDone = true;
         userCredentialsSet();
     }
