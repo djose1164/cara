@@ -17,6 +17,8 @@ class BillEntity : public QObject, public JsonExportable
 public:
     explicit BillEntity(QObject *parent = nullptr);
 
+    static BillEntity *fromMap(const QVariantMap &billMap);
+
     int orderId() const;
     void setOrderId(int orderId);
     QBindable<int> bindableOrderId();
@@ -38,13 +40,6 @@ public:
 
 public slots:
     void appendDetail(DetailsEntity *const detail);
-
-/*signals:
-    void userChanged();
-    void detailsChanged();
-    void paymentChanged();
-    void dateChanged();
-    void orderIdChanged();*/
 
 private:
     QProperty<int> orderId_;
