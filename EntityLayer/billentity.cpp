@@ -32,6 +32,38 @@ QBindable<QDate> EntityLayer::BillEntity::bindableDate()
     return &date_;
 }
 
+BillEntity *BillEntity::fromMap(const QVariantMap &billMap)
+{
+    auto bill{new BillEntity};
+
+    const auto strDate{billMap["date"].toString()};
+
+    bill->setDate(QDate::fromString(strDate, "dd/MM/yyyy"));
+    bill->setOrderId(billMap["id"].toInt());
+
+    const auto paymentMap{billMap["payment"].toMap()};
+    const auto payment{bill->payment()};
+    payment->setAmountToPay(paymentMap["amount_to_pay"].toInt());
+    payment->setPaidAmount(paymentMap["paid_amound"].toInt());
+
+    for (const auto &detail : billMap["order_details"].toList())
+    {
+        const auto map{detail.toMap()};
+        auto newDetail{new EntityLayer::DetailsEntity};
+        newDetail->setQuantity(map["quantity"].toInt());
+
+        const auto productMap{map["product"].toMap()};
+        const auto product{newDetail->product()};
+        product->setName(productMap["name"].toString());
+        product->setImageUrl(productMap["image_url"].toString());
+        product->setPrice(productMap["sell_price"].toInt());
+
+        bill->appendDetail(newDetail);
+    }
+
+    return bill;
+}
+
 int EntityLayer::BillEntity::orderId() const
 {
     return orderId_.value();
