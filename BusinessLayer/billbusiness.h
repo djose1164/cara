@@ -7,7 +7,8 @@
 #include <QtQml>
 
 namespace BusinessLayer {
-using ModelLayer::BillModel, EntityLayer::UserEntity;
+using EntityLayer::UserEntity, EntityLayer::BillEntity,
+    ModelLayer::BillModel;
 
 class BillBusiness : public QObject
 {
@@ -15,7 +16,6 @@ class BillBusiness : public QObject
     QML_ELEMENT
 
     Q_PROPERTY(BillModel *model READ model WRITE setModel NOTIFY modelChanged BINDABLE bindableModel)
-    Q_PROPERTY(UserEntity *user READ user WRITE setUser NOTIFY userChanged BINDABLE bindableUser)
 
 public:
     explicit BillBusiness(QObject *parent = nullptr);
@@ -24,22 +24,16 @@ public:
     void setModel(BillModel *const model);
     QBindable<BillModel *> bindableModel();
 
-    UserEntity *user() const;
-    void setUser(UserEntity *const user);
-    QBindable<UserEntity *> bindableUser();
-
 public slots:
-    void fetchAllCustomers();
-    void fetchCustomerById(int customerId);
-    void fetchCurrentCustomer();
+    void populate();
+    void fetchBillsByCustomerId(int customerId);
+    void fetchBillById(int orderId);
 
     void clearModel();
 
 signals:
     void modelChanged();
-    void userChanged();
-
-    void allCustomersFetched(const QVariantMap &resp);
+    void populated();
 
     void completed();
 
@@ -47,7 +41,6 @@ private:
     QProperty<Rest *> rest_;
 
     Q_OBJECT_BINDABLE_PROPERTY(BillBusiness, BillModel *, model_, &BillBusiness::modelChanged)
-    Q_OBJECT_BINDABLE_PROPERTY(BillBusiness, UserEntity *, user_, &BillBusiness::userChanged)
 };
 }
 
