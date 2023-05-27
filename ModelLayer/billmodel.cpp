@@ -4,6 +4,7 @@ using ModelLayer::BillModel;
 
 BillModel::BillModel(QObject *parent)
     : QAbstractListModel(parent)
+    , roleNames_{}
 {
     roleNames_[int(RoleNames::UserRole)] = "user";
     roleNames_[int(RoleNames::DetailsRole)] = "details";
