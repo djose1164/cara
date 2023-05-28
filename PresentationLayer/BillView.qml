@@ -29,11 +29,11 @@ ListView {
         shouldRefresh = false;
     }
 
-    delegate: CustomerBill {
-//        required property string forename
-//        required property string surname
+    delegate: BillDelegate {
         required orderId
         required date
+        required details
+        required payment
     }
 
     model: billModel
