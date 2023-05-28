@@ -28,13 +28,10 @@ BusyStackLayout {
         target: CurrentUser
 
         function onUserEntityReady() {
-            print("[BillPage] Setting bill view.. ");
             if (CurrentUser.userType === CurrentUser.ADMIN) {
                 customerView.populateModel();
-                print("[BillPage] Bill admin view.");
             } else {
                 orderView.populateModel();
-                print("[BillPage] Bill customer view.");
             }
         }
     }
