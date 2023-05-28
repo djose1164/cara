@@ -6,16 +6,23 @@ import com.cara 1.0
 import "qrc:/users"
 import "qrc:/customers"
 
-ItemDelegate {
+Item {
     id: root
-    property string name
+    property int orderId
     property int customerId
-    property BillModel orders
+    property string name
+    property date date
+    property BillModel bills
+    property OrderModel details
+    property var payment
+    property var status
+
     property int orientation : ListView.Vertical
 
     readonly property int widthLV: ListView.view.width
     readonly property int heightLV: ListView.view.height
     readonly property bool isHorizontal: orientation === ListView.Horizontal
+    readonly property bool isAdmin: CurrentUser.userType === CurrentUser.ADMIN
 
     signal updateCustomer(customerId: int)
 
@@ -23,29 +30,34 @@ ItemDelegate {
     height: orientation === ListView.Horizontal ? ListView.view.height
                                                 : ListView.view.height * .15
 
-    onClicked: {
-        stackView.push("qrc:/orders/UpdateOrderPage.qml", {
-                           name,
-                           customerId,
-                           orders
-                       });
-    }
-
-    ColumnLayout {
+    StackLayout {
         anchors.fill: parent
-        Layout.leftMargin: 15
-        Layout.alignment: Qt.AlignVCenter
+        currentIndex: isAdmin ? 0 : 1
 
-        Label {
-            Layout.topMargin: 15
-            text: name
-            font.pointSize: 16
+        AdminBillDelegate {
+            id: adminDelegate
+
+            onClicked: {
+                stackView.push("qrc:/bills/OrderPage.qml", {
+                    name, customerId, bills
+                });
+            }
+
+            name: root.name
+            customerId: root.customerId
         }
 
-        Label {
-            text: `Cliente ID # ${customerId}`
-            font.pointSize: 12
-            Layout.leftMargin: 15
+        CustomerBillDelegate {
+            id: customerDelegate
+
+            onClicked: {
+                stackView.push("qrc:/bills/OrderPage.qml", {
+                    details, date, payment, orderId
+                });
+            }
+
+            orderId: root.orderId
+            date: root.date
         }
     }
 }
