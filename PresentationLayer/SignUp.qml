@@ -112,7 +112,7 @@ Item {
         id: busyIndicator
     }
 
-    MessagePopup {
+    Message {
         id: popup
     }
 
