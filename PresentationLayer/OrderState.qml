@@ -3,13 +3,16 @@ import QtQuick.Controls
 import QtQuick.Layouts
 import "qrc:/payment"
 import "qrc:/singleton"
-import "qrc:/entity"
+import com.cara 1.0
+import "qrc:/product"
 
 Item {
     id: root
-    required property OrderEntity orderEntity
-    property var payment: orderEntity.payment
-    readonly property var product: orderEntity.orderDetails.product
+
+    property PaymentEntity payment
+    property date date
+    property int orderId
+    property OrderModel details
 
     signal paymentApplied(newPayment: var)
 
@@ -19,13 +22,13 @@ Item {
         anchors.fill: parent
 
         Label {
-            text: `Estado de Orden ID#${orderEntity.orderId}`
+            text: `Estado de Orden ID#${orderId}`
             font.pointSize: 12.5
             font.bold: true
         }
 
         Label {
-            text: orderEntity.orderStatus.status
+            text: "status"
         }
 
         RowLayout {
@@ -46,7 +49,7 @@ Item {
         }
 
         Label {
-            text: orderEntity.date
+            text: date
             font.pointSize: 12
         }
 
@@ -58,38 +61,21 @@ Item {
 
         ColumnLayout {
             id: grid
-            RowLayout {
-                Layout.fillWidth: true
-                spacing: 20
-                Label {
-                    Layout.alignment: Qt.AlignLeading
-                    text: "Producto"
-                    font.pointSize: 12
-                    font.bold: true
-                }
-                Label {
-                    Layout.alignment: Qt.AlignTrailing
-                    text: "Cantidad"
-                    font.pointSize: 12
-                    font.bold: true
-                }
-            }
+
             Repeater {
-            model: orderEntity.orderDetails
-            delegate: RowLayout {
-                Layout.fillWidth: true
-                spacing: 20
-                Label {
-                    Layout.alignment: Qt.AlignLeading
-                    text: product.name
-                    font.pointSize: 12
+                id: repeater
+                model: details
+                delegate: ProductCard {
+                    required property ProductEntity product
+                    required property int quantity
+                    required total
+
+                    enabled: false
+                    productName: product.name
+                    productPrice: product.price
+                    productQuantity: quantity
+                    imageUrl: product.imageUrl
                 }
-                Label {
-                    Layout.alignment: Qt.AlignTrailing
-                    text: quantity
-                    font.pointSize: 12
-                }
-            }
             }
         }
     }
