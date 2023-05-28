@@ -2,6 +2,7 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
+import com.cara 1.0
 import "qrc:/users"
 import "qrc:/customers"
 
@@ -9,7 +10,7 @@ ItemDelegate {
     id: root
     property string name
     property int customerId
-    property var orders
+    property BillModel orders
     property int orientation : ListView.Vertical
 
     readonly property int widthLV: ListView.view.width
