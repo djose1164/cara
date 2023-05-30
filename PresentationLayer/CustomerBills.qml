@@ -2,7 +2,7 @@ import QtQuick
 import "qrc:/orders"
 
 ListView {
-    id: listView
+    id: root
 
     spacing: 20
 
@@ -10,6 +10,7 @@ ListView {
         required details
         required orderId
         required date
+        required payment
 
         width: root.width
         height: root.height*.75
