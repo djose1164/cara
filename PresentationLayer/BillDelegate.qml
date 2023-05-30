@@ -19,6 +19,7 @@ Item {
 
     property int orientation : ListView.Vertical
 
+    readonly property StackView stackView: ListView.view.stackView
     readonly property int widthLV: ListView.view.width
     readonly property int heightLV: ListView.view.height
     readonly property bool isHorizontal: orientation === ListView.Horizontal
@@ -26,7 +27,8 @@ Item {
 
     signal updateCustomer(customerId: int)
 
-    width: ListView.view.width
+    width: orientation === ListView.Horizontal ? ListView.view.width*.65
+                                               : ListView.view.width
     height: orientation === ListView.Horizontal ? ListView.view.height
                                                 : ListView.view.height * .15
 
