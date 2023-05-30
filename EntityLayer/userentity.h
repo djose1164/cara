@@ -60,6 +60,8 @@ public slots:
     void setCustomerId(int customerId);
     void setUserId(int userId);
 
+    void clear();
+
 signals:
     void usernameChanged();
     void passwordChanged();

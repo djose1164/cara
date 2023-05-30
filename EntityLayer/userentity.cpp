@@ -90,6 +90,18 @@ void EntityLayer::UserEntity::setUserId(int userId)
     }
 }
 
+void EntityLayer::UserEntity::clear()
+{
+    username_.clear();
+    password_.clear();
+    forename_.clear();
+    surname_.clear();
+
+    customerId_ = userId_ = 0;
+
+    userType_ = UserTypes::GUEST;
+}
+
 QString EntityLayer::UserEntity::password() const
 {
     return password_;
