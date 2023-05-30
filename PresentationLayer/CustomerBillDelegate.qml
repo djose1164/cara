@@ -19,8 +19,10 @@ ItemDelegate {
         }
         Label {
             Layout.leftMargin: 15
+            Layout.fillWidth: true
             text: `**Fecha:** ${root.date.toLocaleDateString()}`
             textFormat: Label.MarkdownText
+            wrapMode: Label.Wrap
         }
     }
 }
