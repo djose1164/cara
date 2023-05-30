@@ -1,9 +1,12 @@
 import QtQuick
+import QtQuick.Controls
 import QtQuick.Layouts
 import com.cara 1.0
 
 ListView {
     id: root
+
+    property StackView stackView
 
     signal modelPopulated
 
