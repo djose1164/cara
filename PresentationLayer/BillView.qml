@@ -8,6 +8,7 @@ ListView {
     id: root
 
     property bool shouldRefresh
+    property StackView stackView
 
     signal modelPopulated
 
