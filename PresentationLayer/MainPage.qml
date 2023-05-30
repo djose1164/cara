@@ -20,7 +20,6 @@ Page {
             ++clickedCount;
 
             if (homeView.isCurrentView && !wasHomeLastView) {
-                print("## homeView is current view.")
                 homeView.pop(null);
             }
             else if (clickedCount == 2) {
