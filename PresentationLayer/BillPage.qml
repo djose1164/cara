@@ -18,7 +18,7 @@ Page {
 
     Bills {
         id: bills
-        readonly property StackView stackView: root.stackView
+        stackView: root.stackView
     }
 
     Filter {
