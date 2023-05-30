@@ -14,12 +14,19 @@ Item {
     property int orderId
     property OrderModel details
 
+    readonly property var statusString: {
+        0: "Pago",
+        1: "Credito",
+        2: "Abonado"
+    }
+
     signal paymentApplied(newPayment: var)
 
     onPaymentApplied: p => payment = p
 
     ColumnLayout {
         anchors.fill: parent
+        anchors.leftMargin: 10
 
         Label {
             text: `Estado de Orden ID#${orderId}`
@@ -33,7 +40,7 @@ Item {
 
         RowLayout {
             Layout.topMargin: 0
-            Label { text: statusToString(payment.status) }
+            Label { text: statusString[payment.status] }
 
             Button {
                 text: "Actualizar"
@@ -49,7 +56,7 @@ Item {
         }
 
         Label {
-            text: date
+            text: date.toLocaleDateString()
             font.pointSize: 12
         }
 
@@ -61,6 +68,7 @@ Item {
 
         ColumnLayout {
             id: grid
+            Layout.fillHeight: true
 
             Repeater {
                 id: repeater
@@ -70,10 +78,11 @@ Item {
                     required property int quantity
                     required total
 
+                    width: root.width-20
                     enabled: false
                     productName: product.name
                     productPrice: product.price
-                    productQuantity: quantity
+                    spinBox.value: quantity
                     imageUrl: product.imageUrl
                 }
             }
@@ -82,20 +91,12 @@ Item {
 
     UpdatePayment {
         id: updatePayment
-        payment: root.payment
-        Component.onCompleted: paymentPatched.connect(paymentApplied)
-    }
 
-    function statusToString(status) {
-        switch(status) {
-        case 0:
-            return "Pago";
-        case 1:
-            return "Credito";
-        case 2:
-            return "Abonado";
-        }
+        onPaymentPatched: newAmount => payment.paidAmount = newAmount
 
-        return "";
+        amountToPay: payment.amountToPay
+        paidAmount: payment.paidAmount
+        paymentStatus: payment.status
+        paymentId: payment.paymentId
     }
 }
