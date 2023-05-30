@@ -19,6 +19,7 @@ public:
     static CurrentUser *instance();
 
 public slots:
+    void logOut();
 
 private:
     CurrentUser();
@@ -35,7 +36,9 @@ signals:
     void completed();
 
     void loggedIn();
+    void loggingOut();
     void loggedOut();
+
     void previousLoginFound();
     void noPreviousLoginFound();
     void restReady();

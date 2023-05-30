@@ -37,6 +37,10 @@ CurrentUser::CurrentUser()
 
         emit userEntityReady();
     });
+
+    connect(this, &CurrentUser::loggedOut, this, [&]{
+        emit userEntityReady();
+    });
 }
 
 void CurrentUser::setup()
@@ -69,6 +73,15 @@ CurrentUser *CurrentUser::instance()
     Q_ASSERT(instance_);
 
     return instance_;
+}
+
+void CurrentUser::logOut()
+{
+    clear();
+    rest_.accessToken("");
+    hasPreviousLogin_ = false;
+
+    emit loggedOut();
 }
 
 void CurrentUser::initRest(const QString &refreshToken)
