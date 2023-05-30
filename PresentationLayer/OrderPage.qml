@@ -5,7 +5,7 @@ import com.cara 1.0
 import "qrc:/utils"
 import "qrc:/orders"
 
-Page {
+HeaderPage {
     id: root
 
     property int customerId
@@ -18,11 +18,7 @@ Page {
 
     readonly property bool isAdmin: CurrentUser.userType == CurrentUser.ADMIN
 
-    header: TitleHeader {
-        title: isAdmin ? "Cliente: "+name+" ID #"+customerId : "Estado de Orden"
-        label.font.pointSize: 12
-        //stackView: myStack
-    }
+    title: isAdmin ? "Cliente: "+name+" ID #"+customerId : "Estado de Orden"
 
     StackLayout {
         id: stackLayout
@@ -34,12 +30,8 @@ Page {
             orderId: root.orderId
             details: root.details
             date: root.date
-
-            //Component.onCompleted: paymentApplied.connect(root.paymentApplied)
         }
 
-        CustomerBills {
-            model: bills
-        }
+        CustomerBills { model: bills }
     }
 }
