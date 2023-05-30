@@ -9,29 +9,41 @@ BusyStackLayout {
     id: root
 
     property alias model: orderView.model
+    property StackView stackView
 
     anchors.fill: parent
+    currentIndex: CurrentUser.userType === CurrentUser.ADMIN? 2 : 1
 
     BillMessage {}
 
     BillView {
         id: orderView
         onModelPopulated: gotoBillsView();
+        stackView: root.stackView
     }
 
-    CustomerView {
+    Customers {
         id: customerView
         onModelPopulated: gotoCustomersView();
+        stackView: root.stackView
     }
 
     Connections {
         target: CurrentUser
 
         function onUserEntityReady() {
-            if (CurrentUser.userType === CurrentUser.ADMIN) {
+            switch (CurrentUser.userType) {
+            case CurrentUser.ADMIN:
                 customerView.populateModel();
-            } else {
+                break;
+            case CurrentUser.CUSTOMER:
+                // Fixme: Handle USER in its own branch
+            case CurrentUser.USER:
                 orderView.populateModel();
+                break;
+            case CurrentUser.GUEST:
+                gotoBillMessage();
+                break;
             }
         }
     }
