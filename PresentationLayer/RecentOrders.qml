@@ -1,8 +1,8 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
+import com.cara
 import "qrc:/bills"
-import "qrc:/customers"
 import "qrc:/singleton"
 
 Item {
@@ -10,6 +10,7 @@ Item {
 
     property StackView stackView
     property TabBar bar
+    readonly property bool isUser: CurrentUser.userType === CurrentUser.USER
 
     width: 400
     height: 400
@@ -37,15 +38,22 @@ Item {
         anchors.top: recentOrdersLbl.bottom
         anchors.topMargin: 20
         onCurrentIndexChanged: print("recentordersSL: "+currentIndex)
-        currentIndex: isUserAndCustomer ? 0 : 2
+        currentIndex: isUser ? 0 : 2
 
         BusyIndicator {}
 
         ListView {
             id: recentOrders
             readonly property StackView stackView: root.stackView
-            model: customerModel.model
-            delegate: CustomerBill { orientation: ListView.Horizontal }
+            model: billModel
+            delegate: BillDelegate {
+                required details
+                required payment
+                required date
+                required orderId
+
+                orientation: ListView.Horizontal
+            }
             orientation: ListView.Horizontal
         }
 
@@ -65,12 +73,14 @@ Item {
         }
     }
 
-    CustomerModel {
-        id: customerModel
-        request.onSucceeded: recentordersSL.currentIndex = 1
+    BillModel {
+        id: billModel
     }
 
-    function setCustomerOrders() {
-        customerModel.findOrdersByCustomerId(TheCurrentUser.customerId);
+    BillBusiness {
+        id: billBusiness
+        onCompleted: populate()
+        onPopulated: recentordersSL.currentIndex = 1
+        model: billModel
     }
 }
