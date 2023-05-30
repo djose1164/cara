@@ -44,7 +44,8 @@ BillEntity *BillEntity::fromMap(const QVariantMap &billMap)
     const auto paymentMap{billMap["payment"].toMap()};
     const auto payment{bill->payment()};
     payment->setAmountToPay(paymentMap["amount_to_pay"].toInt());
-    payment->setPaidAmount(paymentMap["paid_amound"].toInt());
+    payment->setPaidAmount(paymentMap["paid_amount"].toInt());
+    payment->setPaymentId(paymentMap["id"].toInt());
 
     for (const auto &detail : billMap["order_details"].toList())
     {
