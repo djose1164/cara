@@ -17,6 +17,10 @@ BillBusiness::BillBusiness(QObject *parent)
     const QString token{settings.value("Credentials/refreshToken").toString()};
     rest_->refreshToken(token);
     rest_->refreshAccessToken();
+
+    connect(rest_, &Rest::accessTokenChanged, this, [&] {
+        emit completed();
+    });
 }
 
 BillModel *BillBusiness::model() const
@@ -55,14 +59,14 @@ void BillBusiness::fetchBillsByCustomerId(int customerId)
         const auto customer{resp["customer"].toMap()};
         for (const auto &order : customer["orders"].toList())
             model_->append(BillEntity::fromMap(order.toMap()));
-
-        emit populated();
     });
 }
 
 void BillBusiness::fetchBillById(int orderId)
 {
+    Q_UNUSED(orderId)
 
+    // FIXME: Implement me
 }
 
 void BillBusiness::clearModel()
