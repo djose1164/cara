@@ -9,7 +9,7 @@ PaymentBusiness::PaymentBusiness(QObject *parent)
     , payment_{nullptr}
 {
     const QString base{BusinessLayer::Constants::instance()->base()};
-    rest_->base(base);
+    rest_->base(base + "/payments");
 
     QSettings settings{};
     const QString token{settings.value("Credentials/refreshToken").toString()};
@@ -39,6 +39,7 @@ PaymentEntity *PaymentBusiness::payment() const
 
 void PaymentBusiness::patch()
 {
+    Q_ASSERT(payment_);
     Q_ASSERT(payment_->paymentId());
 
     const auto doc{QJsonDocument::fromJson(payment_->toJson())};
