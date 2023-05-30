@@ -1,70 +1,77 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
+import com.cara
 
-GridLayout {
+Rectangle {
     id: root
 
     property string imageUrl
     property string productName
     property int productPrice
     property int productId
-    property int productQuantity
     property int total
 
     readonly property alias spinBox: spinBox
 
-    readonly property var product: {
-        "id": productId,
-        "quantity": productQuantity
-    }
-
     signal deleted
 
-    width: ListView.view.width
+    width: 400
     height: 100
-
-    rows: 2
-    columns: 3
+    radius: 10
+    border.width: 1
 
     ProductImage {
-        Layout.rowSpan: 2
+        id: productImage
+        anchors.left: root.left
+        anchors.leftMargin: 5
+        anchors.verticalCenter: root.verticalCenter
         source: imageUrl
         sourceSize: "100x100"
     }
 
-    Label {
-        text: productName
-        font.pointSize: 13
-        font.bold: true
+    GridLayout {
+        anchors.left: productImage.right
+        anchors.leftMargin: 10
+        anchors.right: root.right
+        height: root.height
+        rows: 2
+        columns: 2
 
-    }
+        Label {
+            text: productName
+            font.pointSize: 13
+            font.bold: true
 
-    Label {
-        text: `RD$${total}`
-        Layout.column: 1
-        Layout.row: 1
-    }
-
-    RoundButton {
-        onClicked: deleted();
-        Layout.column: 2
-        Layout.row: 0
-        Layout.alignment: Qt.AlignTrailing
-        IconImage {
-            anchors.centerIn: parent;
-            source: "qrc:/icons/trash-can-outline.svg"
         }
-        flat: true
-    }
 
-    SpinBox {
-        id: spinBox
-        Layout.preferredWidth: 128
-        Layout.column: 2
-        Layout.row: 1
-        from: 1
-        editable: true
-        Keys.onReturnPressed: Qt.inputMethod.hide()
+        Label {
+            text: `RD$${total}`
+            Layout.row: 1
+            Layout.column: 0
+        }
+
+        RoundButton {
+            onClicked: deleted();
+            Layout.column: 1
+            Layout.row: 0
+            Layout.alignment: Qt.AlignTrailing
+            IconImage {
+                anchors.centerIn: parent;
+                source: "qrc:/icons/trash-can-outline.svg"
+            }
+            flat: true
+        }
+
+        SpinBox {
+            id: spinBox
+            Layout.preferredWidth: 128
+            Layout.row: 1
+            Layout.column: 1
+            Layout.alignment: Qt.AlignRight
+            from: CurrentUser.userType === CurrentUser.ADMIN ? 0 : 1
+            editable: true
+            Keys.onReturnPressed: Qt.inputMethod.hide()
+        }
     }
 }
