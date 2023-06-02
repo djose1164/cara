@@ -11,6 +11,7 @@ BillModel::BillModel(QObject *parent)
     roleNames_[int(RoleNames::OrderIdRole)] = "orderId";
     roleNames_[int(RoleNames::PaymentRole)] = "payment";
     roleNames_[int(RoleNames::DateRole)] = "date";
+    roleNames_[int(RoleNames::StatusRole)] = "status";
 }
 
 int BillModel::rowCount(const QModelIndex &parent) const
@@ -39,6 +40,8 @@ QVariant BillModel::data(const QModelIndex &index, int role) const
         return QVariant::fromValue(item->payment());
     case RoleNames::UserRole:
         return QVariant::fromValue(item->user());
+    case RoleNames::StatusRole:
+        return QVariant::fromValue(item->orderStatus());
     default:
         break;
     }
