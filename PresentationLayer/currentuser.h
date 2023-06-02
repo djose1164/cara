@@ -18,8 +18,13 @@ public:
     static CurrentUser *create(QQmlEngine *qmlEngine, QJSEngine *jsEngine);
     static CurrentUser *instance();
 
+    QString accessToken() const;
+    void setAccessToken(const QString &token);
+    QBindable<QString> bindableAccessToken();
+
 public slots:
     void logOut();
+    void fillUserInfo(const QVariantMap &user);
 
 private:
     CurrentUser();
@@ -35,13 +40,14 @@ signals:
     void userEntityReady();
     void completed();
 
+    void loggingIn();
     void loggedIn();
     void loggingOut();
     void loggedOut();
 
     void previousLoginFound();
     void noPreviousLoginFound();
-    void restReady();
+    void restReady(const QString &accessToken);
 
 private:
     bool hasPreviousLogin_;
@@ -50,6 +56,7 @@ private:
     BusinessLayer::Auth auth_;
 
     QSettings settings_;
+    QProperty<QString> accessToken_;
 
     static CurrentUser *instance_;
 };
