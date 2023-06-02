@@ -13,7 +13,7 @@ Page {
     header: BillPageHeader {
         stackView: root.stackView
         onOpenFilter: filter.open()
-        customerModel: baseModel
+        //customerModel: baseModel
     }
 
     Bills {
@@ -23,7 +23,7 @@ Page {
 
     Filter {
         id: filter
-        customerModel: baseModel
+        //customerModel: baseModel
         onFiltered: data => orderView.model = data
     }
 
