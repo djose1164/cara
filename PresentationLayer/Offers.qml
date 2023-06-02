@@ -8,6 +8,8 @@ Item {
 
     property StackView stackView
 
+    Component.onCompleted: productRequest.addSuggetionsToModel()
+
     width: 400
     height: 100
 
@@ -44,9 +46,5 @@ Item {
     ProductRequest {
         id: productRequest
         onSucceeded: offerStackLayout.currentIndex = 1
-    }
-
-    function addSuggetionsToModel() {
-        productRequest.addSuggetionsToModel();
     }
 }
