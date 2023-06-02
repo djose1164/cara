@@ -6,6 +6,7 @@ ToolBar {
     property alias title: lbl.text
     property StackView stackView
     property alias label: lbl
+    property alias moreVertVisible: moreVert.visible
 
     RowLayout {
         id: row
@@ -26,6 +27,12 @@ ToolBar {
             horizontalAlignment:Label.AlignHCenter
             Layout.alignment: Qt.AlignCenter
             Layout.fillWidth: true
+        }
+
+        ToolButton {
+            id: moreVert
+            Layout.alignment: Qt.AlignRight
+            icon.source: "qrc:/icons/more_vert.svg"
         }
     }
 }
