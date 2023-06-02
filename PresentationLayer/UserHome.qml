@@ -2,9 +2,7 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 import "qrc:/singleton"
-
-// TODO: This component it's getting too big! A design by sections sould be make
-// to each section would correspond a custom Component.
+import com.cara
 
 Home {
     id: root
@@ -12,14 +10,6 @@ Home {
     readonly property string fullName: TheCurrentUser.isUser ?
                                            ` ${TheCurrentUser.forename} ${TheCurrentUser.surname}`
                                          : ""
-    readonly property bool isUserAndCustomer: TheCurrentUser.isUser
-                                              && TheCurrentUser.isCostumer
-
-    Component.onCompleted: {
-        if (isUserAndCustomer)
-            setCustomerOrders();
-        offers.addSuggetionsToModel();
-    }
 
     Column {
         id: column
@@ -45,21 +35,5 @@ Home {
             stackView: root.stackView
             bar: root.bar
         }
-    }
-
-    Connections {
-        target: TheCurrentUser
-        // TODO: Optimize this for later release.
-
-        function onUserCredentialsSet() {
-            print("function onUserCredentialsSet() isAdmin: " + TheCurrentUser.isAdmin);
-           // recentordersSL.currentIndex = 1;
-            if (TheCurrentUser.isCostumer)
-                setCustomerOrders();
-        }
-    }
-
-    function setCustomerOrders() {
-        recentOrders.setCustomerOrders();
     }
 }
