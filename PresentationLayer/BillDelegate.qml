@@ -54,7 +54,7 @@ Item {
 
             onClicked: {
                 stackView.push("qrc:/bills/OrderPage.qml", {
-                    details, date, payment, orderId
+                    details, date, payment, orderId, status
                 });
             }
 
