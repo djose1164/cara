@@ -13,6 +13,7 @@ HeaderPage {
     property string name
     property date date
     property PaymentEntity payment
+    property OrderStatus status
     property OrderModel details
     property BillModel bills
 
@@ -30,6 +31,7 @@ HeaderPage {
             orderId: root.orderId
             details: root.details
             date: root.date
+            status: root.status
         }
 
         CustomerBills { model: bills }
