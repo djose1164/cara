@@ -22,7 +22,8 @@ public:
         UserRole,
         DetailsRole,
         PaymentRole,
-        DateRole
+        DateRole,
+        StatusRole
     };
 
     explicit BillModel(QObject *parent = nullptr);
