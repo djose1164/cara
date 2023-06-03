@@ -2,6 +2,7 @@
 #define BILLENTITY_H
 
 #include "ordermodel.h"
+#include "orderstatus.h"
 #include "paymententity.h"
 #include "userentity.h"
 #include <QObject>
@@ -38,6 +39,9 @@ public:
 
     Q_INVOKABLE QByteArray toJson() const;
 
+    OrderStatus *orderStatus() const;
+    void setOrderStatus(OrderStatus *newOrderStatus);
+
 public slots:
     void appendDetail(DetailsEntity *const detail);
 
@@ -46,6 +50,7 @@ private:
     UserEntity * user_;
     OrderModel *details_;
     PaymentEntity * payment_;
+    OrderStatus *orderStatus_;
     QProperty<QDate> date_;
 };
 }
