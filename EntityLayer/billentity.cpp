@@ -56,11 +56,9 @@ BillEntity *BillEntity::fromMap(const QVariantMap &billMap)
         auto newDetail{new EntityLayer::DetailsEntity};
         newDetail->setQuantity(map["quantity"].toInt());
 
-        const auto productMap{map["product"].toMap()};
-        const auto product{newDetail->product()};
-        product->setName(productMap["name"].toString());
-        product->setImageUrl(productMap["image_url"].toString());
-        product->setPrice(productMap["sell_price"].toInt());
+        newDetail->setProduct(
+            ProductEntity::fromMap(map["product"].toMap())
+        );
 
         bill->appendDetail(newDetail);
     }
