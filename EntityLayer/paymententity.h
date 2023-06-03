@@ -27,6 +27,8 @@ public:
 
     explicit PaymentEntity(QObject *parent = nullptr);
 
+    static PaymentEntity *fromMap(const QVariantMap &map);
+
     void setPaymentId(int id);
     int paymentId() const;
 
