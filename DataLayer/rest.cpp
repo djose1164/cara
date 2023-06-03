@@ -88,7 +88,6 @@ void Rest::setHeaders(const QVariantMap &headers)
 void Rest::request(Rest::Verb verb, const QString &endpoint, const QVariant &obj)
 {
     auto fullpath = base_ + endpoint;
-    qInfo() << "Rest: url " << fullpath;
 
     QNetworkRequest req{QUrl{fullpath}};
     req.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
