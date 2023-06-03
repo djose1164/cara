@@ -10,6 +10,7 @@ Item {
     id: root
 
     property PaymentEntity payment
+    property OrderStatus status
     property date date
     property int orderId
     property OrderModel details
@@ -34,8 +35,17 @@ Item {
             font.bold: true
         }
 
-        Label {
-            text: "status"
+        OrderStatusCB {
+            onStatusUpdated: (newStatusId, newStatusString) => {
+                status.statusId = newStatusId;
+                status.statusString = newStatusString;
+            }
+
+            Component.onCompleted: print(`statusId ${statusId}`)
+
+            Layout.fillWidth: true
+            orderId: root.orderId
+            statusId: status.statusId
         }
 
         RowLayout {
@@ -66,9 +76,11 @@ Item {
             font.bold: true
         }
 
+        ScrollView {
+            Layout.preferredHeight: details.count >= 2 ? 250 : 100
+            Layout.fillWidth: true
         ColumnLayout {
             id: grid
-            Layout.fillHeight: true
 
             Repeater {
                 id: repeater
@@ -86,6 +98,7 @@ Item {
                     imageUrl: product.imageUrl
                 }
             }
+        }
         }
     }
 
