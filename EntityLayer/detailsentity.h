@@ -28,7 +28,7 @@ private:
     QProperty<int> quantity_;
     QProperty<int> total_;
 
-    ProductEntity *product_;
+    QProperty<ProductEntity *> product_;
 };
 }
 
