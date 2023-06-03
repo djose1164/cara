@@ -6,6 +6,7 @@ EntityLayer::UserEntity::UserEntity(QObject *parent)
     , password_{}
     , forename_{}
     , surname_{}
+    , email_{}
     , customerId_{}
     , userId_{}
     , userType_{UserTypes::GUEST}
@@ -96,6 +97,7 @@ void EntityLayer::UserEntity::clear()
     password_.clear();
     forename_.clear();
     surname_.clear();
+    email_.clear();
 
     customerId_ = userId_ = 0;
 
@@ -120,6 +122,20 @@ QString EntityLayer::UserEntity::surname() const
 QString EntityLayer::UserEntity::fullname() const
 {
     return forename_ + " " + surname_;
+}
+
+QString EntityLayer::UserEntity::email() const
+{
+    return email_;
+}
+
+void EntityLayer::UserEntity::setEmail(const QString &email)
+{
+    if (email_ != email)
+    {
+        email_ = email;
+        emit emailChanged();
+    }
 }
 
 EntityLayer::UserEntity::UserTypes EntityLayer::UserEntity::userType() const

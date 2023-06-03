@@ -17,6 +17,8 @@ class UserEntity : public QObject
     Q_PROPERTY(QString surname READ surname WRITE setSurname NOTIFY surnameChanged)
     Q_PROPERTY(QString fullname READ fullname CONSTANT)
 
+    Q_PROPERTY(QString email READ email WRITE setEmail NOTIFY emailChanged)
+
     Q_PROPERTY(UserTypes userType READ userType WRITE setUserType NOTIFY userTypeChanged)
 
     Q_PROPERTY(int customerId READ customerId WRITE setCustomerId NOTIFY customerIdChanged)
@@ -42,6 +44,9 @@ public:
     QString forename() const;
     QString surname() const;
     QString fullname() const;
+
+    QString email() const;
+    void setEmail(const QString &email);
 
     UserTypes userType() const;
 
@@ -69,6 +74,8 @@ signals:
     void forenameChanged();
     void surnameChanged();
 
+    void emailChanged();
+
     void userTypeChanged();
 
     void userIdChanged();
@@ -80,6 +87,8 @@ private:
 
     QString forename_;
     QString surname_;
+
+    QString email_;
 
     int customerId_;
     int userId_;
