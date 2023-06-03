@@ -73,14 +73,29 @@ Item {
         }
     }
 
-    BillModel {
-        id: billModel
-    }
+    BillModel { id: billModel }
 
     BillBusiness {
         id: billBusiness
         onCompleted: populate()
         onPopulated: recentordersSL.currentIndex = 1
         model: billModel
+    }
+
+    Connections {
+        target: CurrentUser
+
+        function onLoggingOut() {
+            recentordersSL.currentIndex = 2;
+            billModel.clear();
+        }
+
+        function onLoggingIn() {
+            recentOrders.currentIndex = 0;
+        }
+
+        function onLoggedIn() {
+            billBusiness.populate();
+        }
     }
 }
