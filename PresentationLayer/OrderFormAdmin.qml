@@ -92,6 +92,5 @@ Page {
         };
         print('fullOrder ', JSON.stringify(fullOrder, null, 2));
         addOrder.request.post("/", fullOrder);
-        TheCurrentUser.orderSent(fullOrder);
     }
 }
