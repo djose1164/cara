@@ -22,9 +22,9 @@ ListView {
     onFlickEnded: {
         print(`onFlickEnded: Content Y is: ${contentY}`)
         if (shouldRefresh) {
-            baseModel.clearModel();
-            stackLayout.currentIndex = 0;
-            updateCustomerModel();
+            clearModel();
+
+            populateModel();
         }
         refreshIcon.visible = false;
         shouldRefresh = false;
@@ -35,6 +35,7 @@ ListView {
         required date
         required details
         required payment
+        required status
     }
 
     model: billModel
@@ -63,5 +64,9 @@ ListView {
 
     function populateModel() {
         billBusiness.populate();
+    }
+
+    function clearModel() {
+        billBusiness.clearModel();
     }
 }
