@@ -30,4 +30,8 @@ ListView {
     function populateModel() {
         customerModel.populate();
     }
+
+    function clearModel() {
+        customerModel.clear();
+    }
 }
