@@ -41,8 +41,6 @@ Item {
                 status.statusString = newStatusString;
             }
 
-            Component.onCompleted: print(`statusId ${statusId}`)
-
             Layout.fillWidth: true
             orderId: root.orderId
             statusId: status.statusId
