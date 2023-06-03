@@ -8,6 +8,7 @@ BillEntity::BillEntity(QObject *parent)
     , user_{new UserEntity(this)}
     , details_{new OrderModel(this)}
     , payment_{new PaymentEntity(this)}
+    , orderStatus_{new OrderStatus(this)}
     , date_{}
 {
 }
@@ -46,6 +47,11 @@ BillEntity *BillEntity::fromMap(const QVariantMap &billMap)
     payment->setAmountToPay(paymentMap["amount_to_pay"].toInt());
     payment->setPaidAmount(paymentMap["paid_amount"].toInt());
     payment->setPaymentId(paymentMap["id"].toInt());
+
+    const auto statusMap{billMap["order_status"].toMap()};
+    const auto orderStatus{bill->orderStatus_};
+    orderStatus->setStatusId(statusMap["id"].toInt());
+    orderStatus->setStatusString(statusMap["status"].toString());
 
     for (const auto &detail : billMap["order_details"].toList())
     {
@@ -136,3 +142,14 @@ void EntityLayer::BillEntity::appendDetail(DetailsEntity * const detail)
 
     details_->append(detail);
 }
+
+OrderStatus *BillEntity::orderStatus() const
+{
+    return orderStatus_;
+}
+
+void BillEntity::setOrderStatus(OrderStatus *newOrderStatus)
+{
+    orderStatus_ = newOrderStatus;
+}
+
