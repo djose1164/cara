@@ -9,7 +9,6 @@ Drawer {
     id: root
     required property StackView stackView
     width: {
-        print("Drawer: parent.width: " + parent.width)
         if (parent.width >= 200 && parent.width <= 500)
             return parent.width * .65;
         if (parent.width > 500)
@@ -61,6 +60,7 @@ Drawer {
             onClicked: {
                 close();
                 TheCurrentUser.clear();
+                CurrentUser.logOut();
                 stackView.replace("qrc:/main/MainPage.qml");
             }
         }
