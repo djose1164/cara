@@ -19,7 +19,7 @@ BusyStackLayout {
 
     BillView {
         id: billView
-        //onModelPopulated: gotoBillsView();
+        onModelPopulated: gotoBillsView();
         onFlickEnded: root.currentIndex = 0;
         stackView: root.stackView
     }
@@ -46,21 +46,18 @@ BusyStackLayout {
         }
 
         function onLoggedIn() {
-            print("---Bills: onLoggedIn: userType: "+CurrentUser.userType)
-            if (isAdmin)
-                customerView.populateModel();
-        }
-
-        function onUserTypeChanged() {
-            print("---Bills: onUserTypeChanged "+CurrentUser.userType)
+            print("---Bills: onLoggedIn: userType: "+CurrentUser.userType);
             switch (CurrentUser.userType) {
             case CurrentUser.ADMIN:
-
+                customerView.populateModel();
                 break;
             case CurrentUser.CUSTOMER:
                 // Fixme: Handle USER in its own branch
             case CurrentUser.USER:
-                billView.populateModel();
+                if (CurrentUser.customerId > 0)
+                    billView.populateModel();
+                else
+                    gotoBillMessage();
                 break;
             case CurrentUser.GUEST:
                 gotoBillMessage();
