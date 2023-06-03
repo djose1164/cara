@@ -19,6 +19,9 @@ class ProductEntity : public QObject, public JsonExportable
 
 public:
     explicit ProductEntity(QObject *parent = nullptr);
+
+    static ProductEntity *fromMap(const QVariantMap &map);
+
     bool operator==(ProductEntity *const rhs);
     bool operator!=(ProductEntity *const rhs);
 

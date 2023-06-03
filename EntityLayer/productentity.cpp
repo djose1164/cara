@@ -12,6 +12,16 @@ ProductEntity::ProductEntity(QObject *parent)
 {
 }
 
+ProductEntity *ProductEntity::fromMap(const QVariantMap &map)
+{
+    const auto product{new ProductEntity};
+    product->setName(map["name"].toString());
+    product->setImageUrl(map["image_url"].toString());
+    product->setPrice(map["sell_price"].toInt());
+
+    return product;
+}
+
 bool ProductEntity::operator==(ProductEntity * const rhs)
 {
     return productId_ == rhs->productId();
