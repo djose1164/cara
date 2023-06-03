@@ -19,6 +19,7 @@ Page {
         anchors.fill: parent
         anchors.topMargin: 5
         delegate: Item{
+            id: item
             required property string name
             required property string image_url
             required property int id
@@ -26,17 +27,17 @@ Page {
             required property var stock
             width: root.width
             height: childrenRect.height
-            ProductCard {
+            ProductThumbnail {
                 anchors.left: parent.left
                 anchors.leftMargin: 5
                 anchors.right: parent.right
                 anchors.rightMargin: 5
-            productName: name
-            imageUrl: image_url
-            spinBox.value: stock.in_stock
-            productId: id
-            productPrice: sell_price
-            total: stock.in_stock * sell_price
+
+                width: parent.width
+                height: 75
+                detailed: `Disponible ${stock.in_stock}`
+                source: image_url
+                name: item.name
         }
         }
     }
