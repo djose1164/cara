@@ -8,17 +8,19 @@ import "qrc:/utils"
 BusyStackLayout {
     id: root
 
-    property alias model: orderView.model
+    property alias model: billView.model
     property StackView stackView
+    readonly property bool isAdmin: CurrentUser.userType === CurrentUser.ADMIN
 
     anchors.fill: parent
-    currentIndex: CurrentUser.userType === CurrentUser.ADMIN? 2 : 1
+    currentIndex: isAdmin ? 3 : 1
 
     BillMessage {}
 
     BillView {
-        id: orderView
-        onModelPopulated: gotoBillsView();
+        id: billView
+        //onModelPopulated: gotoBillsView();
+        onFlickEnded: root.currentIndex = 0;
         stackView: root.stackView
     }
 
@@ -31,15 +33,34 @@ BusyStackLayout {
     Connections {
         target: CurrentUser
 
-        function onUserEntityReady() {
+        function onLoggingOut() {
+            print("---Bills: loggingOut");
+            if (isAdmin)
+                customerView.clearModel();
+            else
+                billView.clearModel();
+        }
+
+        function onLoggedOut() {
+            gotoBillMessage();
+        }
+
+        function onLoggedIn() {
+            print("---Bills: onLoggedIn: userType: "+CurrentUser.userType)
+            if (isAdmin)
+                customerView.populateModel();
+        }
+
+        function onUserTypeChanged() {
+            print("---Bills: onUserTypeChanged "+CurrentUser.userType)
             switch (CurrentUser.userType) {
             case CurrentUser.ADMIN:
-                customerView.populateModel();
+
                 break;
             case CurrentUser.CUSTOMER:
                 // Fixme: Handle USER in its own branch
             case CurrentUser.USER:
-                orderView.populateModel();
+                billView.populateModel();
                 break;
             case CurrentUser.GUEST:
                 gotoBillMessage();
