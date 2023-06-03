@@ -18,10 +18,10 @@ CustomerModel::CustomerModel(QObject *parent)
     const QString base{Constants::instance()->base()};
     rest_->base(base + "/customers");
 
-    QSettings settings{};
-    const QString token{settings.value("Credentials/refreshToken").toString()};
-    rest_->refreshToken(token);
-    rest_->refreshAccessToken();
+    const auto user{CurrentUser::instance()};
+    connect(user, &CurrentUser::restReady, this, [&](const QString &token) {
+        rest_->accessToken(token);
+    });
 }
 
 int CustomerModel::rowCount(const QModelIndex &parent) const
@@ -99,10 +99,12 @@ int CustomerModel::count() const
 
 void CustomerModel::populate()
 {
-    qDebug() << "CustomerModel::populate: populating...";
     const auto userInstance{CurrentUser::instance()};
     const auto userType(userInstance->userType());
     using UserTypes = UserEntity::UserTypes;
+
+    Q_ASSERT(userType == UserTypes::ADMIN);
+
     switch (userType) {
     case UserTypes::ADMIN:
         fetchAllCustomers();
@@ -116,6 +118,7 @@ void CustomerModel::populate()
                       << " is not supported.";
         break;
     }
+
 
     connect(rest_, &Rest::succeeded, this, [&] { emit populated(); });
 }
@@ -145,7 +148,6 @@ void CustomerModel::fetchAllCustomers()
         }
 
         emit allCustomersFetched(resp);
-
     });
 }
 
