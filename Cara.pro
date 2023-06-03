@@ -1,18 +1,22 @@
 QT += qml quick core network svg quickcontrols2 websockets
 
 SOURCES += \
+    BusinessLayer/app.cpp \
     BusinessLayer/auth.cpp \
     BusinessLayer/billbusiness.cpp \
     BusinessLayer/cartbusiness.cpp \
     BusinessLayer/constants.cpp \
     BusinessLayer/paymentbusiness.cpp \
     EntityLayer/billentity.cpp \
+    EntityLayer/customerentity.cpp \
     EntityLayer/detailsentity.cpp \
+    EntityLayer/orderstatus.cpp \
     EntityLayer/paymententity.cpp \
     EntityLayer/productentity.cpp \
     EntityLayer/orderentity.cpp \
     EntityLayer/userentity.cpp \
     ModelLayer/billmodel.cpp \
+    ModelLayer/customermodel.cpp \
     ModelLayer/ordermodel.cpp \
     PresentationLayer/currentuser.cpp \
     PresentationLayer/main.cpp \
@@ -40,19 +44,23 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
 HEADERS += \
+    BusinessLayer/app.h \
     BusinessLayer/auth.h \
     BusinessLayer/billbusiness.h \
     BusinessLayer/cartbusiness.h \
     BusinessLayer/constants.h \
     BusinessLayer/paymentbusiness.h \
     EntityLayer/billentity.h \
+    EntityLayer/customerentity.h \
     EntityLayer/detailsentity.h \
+    EntityLayer/orderstatus.h \
     EntityLayer/paymententity.h \
     EntityLayer/productentity.h \
     EntityLayer/userentity.h \
     EntityLayer/orderentity.h \
     EntityLayer/jsonexportable.h \
     ModelLayer/billmodel.h \
+    ModelLayer/customermodel.h \
     ModelLayer/ordermodel.h \
     PresentationLayer/currentuser.h \
     DataLayer/rest.h
@@ -66,6 +74,7 @@ INCLUDEPATH += \
 
 
 DISTFILES += \
+    ModelLayer/hola.qmodel \
     android/AndroidManifest.xml \
     android/build.gradle \
     android/gradle.properties \
