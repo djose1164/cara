@@ -11,9 +11,10 @@ ListView {
         required orderId
         required date
         required payment
+        required status
 
         width: root.width
-        height: root.height*.75
+        height: root.height
 
         onPaymentApplied: payment => {
             root.paymentApplied({payment, customerId: customer_id});
