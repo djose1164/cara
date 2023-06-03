@@ -74,7 +74,6 @@ INCLUDEPATH += \
 
 
 DISTFILES += \
-    ModelLayer/hola.qmodel \
     android/AndroidManifest.xml \
     android/build.gradle \
     android/gradle.properties \
