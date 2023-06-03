@@ -1,5 +1,6 @@
 #include "cartbusiness.h"
 #include "billentity.h"
+#include "constants.h"
 
 using namespace BusinessLayer;
 using EntityLayer::UserEntity, ModelLayer::OrderModel, EntityLayer::BillEntity,
@@ -13,7 +14,8 @@ CartBusiness::CartBusiness(QObject *parent)
     , model_{new OrderModel(this)}
     , totalToPay_{}
 {
-    rest_->base("http://127.0.0.1:5000/api/orders");
+    const QString base{Constants::instance()->base()};
+    rest_->base(base + "/orders");
 
     QSettings settings{};
     const auto token{settings.value("Credentials/refreshToken").toString()};
