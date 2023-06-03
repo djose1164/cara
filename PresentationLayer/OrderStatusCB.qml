@@ -17,8 +17,6 @@ Item {
     ComboBox {
         id: statusComboBox
 
-        Component.onCompleted: print(`find: ${find(statusId)}\nstatusId: ${statusId}`)
-
         width: root.width*.7
         currentIndex: statusId - 1
         textRole: "text"
