@@ -9,8 +9,7 @@ ToolBar {
     readonly property string toFind: textField.text
     property bool suggetions: true
     property StackView stackView
-    // Set minimun number of characters that have to be present on the textfield
-    // to emit accepted signal.
+
     property int minCharactersToSearch: 3
 
     signal accepted(string text)
@@ -18,13 +17,9 @@ ToolBar {
     RowLayout {
         anchors.fill: parent
 
-        ToolButton {
-            background: IconImage {
-                source: "qrc:/left_arrow"
-                sourceSize: "18x18"
-            }
-            onClicked: stackView.pop()
+        BackButton {
             Layout.alignment: Qt.AlignLeading
+            stackView: root.stackView
         }
 
         TextField {
