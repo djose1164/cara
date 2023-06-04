@@ -47,6 +47,7 @@ BusyStackLayout {
 
         function onLoggedIn() {
             print("---Bills: onLoggedIn: userType: "+CurrentUser.userType);
+            root.currentIndex = 0;
             switch (CurrentUser.userType) {
             case CurrentUser.ADMIN:
                 customerView.populateModel();
