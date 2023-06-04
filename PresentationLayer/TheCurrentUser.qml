@@ -13,7 +13,7 @@ QtObject {
     // To be customer, the user must have at least one order made.
     readonly property bool isCostumer: customerId > 0
     readonly property bool isGuest: userType === TheCurrentUser.Types.Guest
-    readonly property bool previousLogin: settings.value("refreshToken")
+    readonly property bool previousLogin: settings.value("refreshToken", false)
     readonly property string homePath: isAdmin ? "qrc:/home/AdminHome.qml"
                                                : "qrc:/home/UserHome.qml"
     readonly property bool isUser: userTypeId === TheCurrentUser.Types.User
