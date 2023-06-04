@@ -2,6 +2,7 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 import com.cara
+import "qrc:/utils"
 
 Rectangle {
     id: root
@@ -21,18 +22,25 @@ Rectangle {
     radius: 10
     border.width: 1
 
-    ProductImage {
-        id: productImage
+    BusyStackLayout {
+        id: imageStackLayout
+        width: 100
+        height: 100
         anchors.left: root.left
         anchors.leftMargin: 5
         anchors.verticalCenter: root.verticalCenter
+
+    ProductImage {
+        onReady: imageStackLayout.currentIndex = 1
         source: imageUrl
         sourceSize: "100x100"
+        Component.onCompleted: print(imageUrl)
+    }
     }
 
     GridLayout {
-        anchors.left: productImage.right
-        anchors.leftMargin: 10
+        anchors.left: imageStackLayout.right
+        anchors.leftMargin: 5
         anchors.right: root.right
         height: root.height
         rows: 2
