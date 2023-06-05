@@ -7,7 +7,10 @@ import com.cara
 
 Drawer {
     id: root
+
     required property StackView stackView
+    readonly property bool isGuest: CurrentUser.userType === CurrentUser.GUEST
+
     width: {
         if (parent.width >= 200 && parent.width <= 500)
             return parent.width * .65;
@@ -29,7 +32,7 @@ Drawer {
             Layout.alignment: Qt.AlignHCenter
         }
 
-        Loader { sourceComponent: TheCurrentUser.isGuest ? guest : logged }
+        Loader { sourceComponent: isGuest ? guest : logged }
 
         Label {
             text: "Contactanos"
@@ -96,9 +99,9 @@ Drawer {
             }
 
             Label {
-                text: "Usario: " + TheCurrentUser.username
+                text: "Usario: " + CurrentUser.username
                 font.pointSize: 11
-                visible: TheCurrentUser.username
+                visible: CurrentUser.username
             }
 
             Label {
@@ -108,7 +111,7 @@ Drawer {
             }
 
             Label {
-                text: TheCurrentUser.forename + " " + TheCurrentUser.surname
+                text: CurrentUser.forename + " " + CurrentUser.surname
                 font.pointSize: 11
             }
 
@@ -121,7 +124,7 @@ Drawer {
 
             Label {
                 Layout.preferredWidth: menuLayout.width
-                text: TheCurrentUser.email
+                text: CurrentUser.email
                 wrapMode: Label.Wrap
             }
         }
