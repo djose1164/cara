@@ -39,9 +39,12 @@ CurrentUser::CurrentUser()
         setForename(personInfo["forename"].toString());
         setSurname(personInfo["surname"].toString());
         setCustomerId(personInfo["customer_id"].toInt());
-        const QString type{QVariant::fromValue(userType()).toString()};
 
         emit loggedIn();
+    });
+
+    connect(this, &CurrentUser::loggedIn, this, [&] {
+        settings_.setValue("Credentials/userTypeId", int(userType()));
     });
 }
 
@@ -136,6 +139,9 @@ void CurrentUser::fillUserInfo(const QVariantMap &user)
 
 bool CurrentUser::existPreviousLogin()
 {
+    const auto userTypeId{settings_.value("Credentials/userTypeId").toInt()};
+    setUserType(static_cast<UserTypes>(userTypeId));
+
     const auto refreshToken{settings_.value("Credentials/refreshToken").toString()};
     return !refreshToken.isEmpty();
 }
