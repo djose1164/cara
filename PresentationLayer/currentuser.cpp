@@ -44,7 +44,7 @@ CurrentUser::CurrentUser()
     });
 
     connect(this, &CurrentUser::loggedIn, this, [&] {
-        settings_.setValue("Credentials/userTypeId", int(userType()));
+        save();
     });
 }
 
@@ -137,10 +137,36 @@ void CurrentUser::fillUserInfo(const QVariantMap &user)
     emit loggedIn();
 }
 
+void CurrentUser::save()
+{
+    settings_.beginGroup("Contact");
+    settings_.setValue("forename", forename());
+    settings_.setValue("surname", surname());
+    settings_.setValue("email", email());
+    settings_.endGroup();
+
+    settings_.beginGroup("Credentials")    ;
+    settings_.setValue("username", username());
+    settings_.setValue("userTypeId", int(userType()));
+    settings_.endGroup();
+}
+
 bool CurrentUser::existPreviousLogin()
 {
     const auto userTypeId{settings_.value("Credentials/userTypeId").toInt()};
     setUserType(static_cast<UserTypes>(userTypeId));
+
+    const QString username{settings_.value("Credentials/username").toString()};
+    setForename(username);
+
+    const QString forename{settings_.value("Contact/forename").toString()};
+    setForename(forename);
+
+    const QString surname{settings_.value("Contact/surname").toString()};
+    setSurname(surname);
+
+    const QString email{settings_.value("Contact/email").toString()};
+    setEmail(email);
 
     const auto refreshToken{settings_.value("Credentials/refreshToken").toString()};
     return !refreshToken.isEmpty();
