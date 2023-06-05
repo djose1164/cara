@@ -25,6 +25,7 @@ public:
 public slots:
     void logOut();
     void fillUserInfo(const QVariantMap &user);
+    void save();
 
 private:
     CurrentUser();
