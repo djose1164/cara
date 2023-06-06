@@ -90,7 +90,7 @@ private:
 
     QString email_;
 
-    int customerId_;
+    Q_OBJECT_BINDABLE_PROPERTY(UserEntity, int, customerId_, &UserEntity::customerIdChanged)
     int userId_;
 
     UserTypes userType_;
