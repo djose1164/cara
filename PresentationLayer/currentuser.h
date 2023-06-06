@@ -36,6 +36,7 @@ private:
 
 signals:
     void userEntityChanged();
+    void isCustomerChanged();
 
     void refreshTokenNotAvailable();
     void userEntityReady();
@@ -60,6 +61,8 @@ private:
     QProperty<QString> accessToken_;
 
     static CurrentUser *instance_;
+
+    Q_OBJECT_BINDABLE_PROPERTY(CurrentUser, bool, isCustomer_, &CurrentUser::isCustomerChanged)
 };
 
 #endif // CURRENTUSER_H
