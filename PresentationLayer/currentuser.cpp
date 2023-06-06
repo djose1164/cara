@@ -20,6 +20,10 @@ CurrentUser::CurrentUser()
     hasPreviousLogin_ = existPreviousLogin();
     setup();
 
+    isCustomer_.setBinding([&]() -> bool {
+        return customerId();
+    });
+
     connect(this, &CurrentUser::previousLoginFound, this, [] {
         qDebug("onPreviousLoginFound make request");
     });
