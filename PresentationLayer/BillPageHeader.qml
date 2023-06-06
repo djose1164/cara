@@ -10,7 +10,7 @@ ToolBar {
     id: root
     signal openFilter
     required property StackView stackView
-    required property CustomerModel customerModel
+    property CustomerModel customerModel
 
     RowLayout {
         anchors.fill: parent

@@ -5,6 +5,7 @@ import QtQuick.Layouts
 import "qrc:/utils"
 import "qrc:/singleton"
 import "qrc:/reviews"
+import com.cara
 
 ColumnLayout {
     id: root
@@ -78,9 +79,9 @@ ColumnLayout {
     height: {
         if (comment.isEditing)
             if (comment.focusInTextArea)
-                return 200;
-            else
                 return 150;
+            else
+                return 120;
         else if (reviewText)
             return 140;
         else
@@ -106,6 +107,7 @@ ColumnLayout {
         id: starRating
         selectedStars: reviewRating
         enabled: isReviewOwner && comment.isEditing
+        visible: !comment.isEditing
     }
 
     Comment {

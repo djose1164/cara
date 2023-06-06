@@ -18,8 +18,8 @@ Item {
         "notFound": () => popup.text = "Cuenta no registrada.",
     }
 
-    width: parent.width > parent.height ? parent.width/2 : parent.width
-    height: parent.height > parent.width ? parent.height*.95 : parent.height*.6
+    //width: parent.width > parent.height ? parent.width/2 : parent.width
+    //height: parent.height > parent.width ? parent.height*.95 : parent.height*.6
 
     Image {
         id:loginLbl
@@ -96,10 +96,10 @@ Item {
             username: usernameInput.text
             password: passwordInput.text
         }
-       // request.onReceived:
-        //request.onFailed: (response) => handlers[response.code]()
+
         onAuthenticated: r => {
                              busyIndicator.close()
+                             CurrentUser.fillUserInfo(r);
                              TheCurrentUser.init(r);
                              TheCurrentUser.isLoggedIn = true;
                              successHandler();

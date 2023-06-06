@@ -38,13 +38,13 @@ BackPage {
             const title = "¡Gracias por su compra!";
             const content = "Puedes ver el estado de tu orden en Ordenes."
             message.text = title;
-            message.detailedText = content;
+            message.informativeText = content;
             message.open();
         }
 
-        function onFailed(resp) {
+        function onCheckoutFailed(resp) {
             message.text = `Error: ${resp.code}`;
-            message.detailedText = resp.message;
+            message.informativeText = resp.message;
             message.open();
         }
     }

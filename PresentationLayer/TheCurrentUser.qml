@@ -13,13 +13,14 @@ QtObject {
     // To be customer, the user must have at least one order made.
     readonly property bool isCostumer: customerId > 0
     readonly property bool isGuest: userType === TheCurrentUser.Types.Guest
-    readonly property bool previousLogin: settings.value("refreshToken")
+    readonly property bool previousLogin: settings.value("refreshToken", false)
     readonly property string homePath: isAdmin ? "qrc:/home/AdminHome.qml"
                                                : "qrc:/home/UserHome.qml"
     readonly property bool isUser: userTypeId === TheCurrentUser.Types.User
 
-    readonly property string orderFormPath: isAdmin ? "qrc:/orders/OrderFormAdmin.qml"
-                                                    : "qrc:/cart/Cart.qml"
+    readonly property string cartPath: isAdmin ? "qrc:/orders/OrderFormAdmin.qml"
+                                               : "qrc:/cart/Cart.qml"
+
     // TODO: This should be deleted
     property alias refreshToken: settings.refreshToken
     readonly property alias accessToken: request.accessToken
@@ -48,7 +49,7 @@ QtObject {
     property Rest request: Rest {
         id: request
         refreshToken: settings.refreshToken
-        base: Constants.base + "/users"
+        base: Constants.base+ "/users"
         onFailed: r => failedToSetUserCredentials(r)
         onSucceeded: r => initWithUser(r.user)
         onAccessTokenChanged: request.get("/")
@@ -59,7 +60,7 @@ QtObject {
     }
 
     readonly property Rest healthApi: Rest {
-        base: Constants.base + "/health"
+        base: Constants.base+ "/health"
         onServiceUnavailable: serverUnavailable()
     }
 
@@ -70,7 +71,6 @@ QtObject {
 
     signal userCredentialsSet
     signal failedToSetUserCredentials(respose: var)
-    signal orderPosted
     signal serverUnavailable
     signal loggedOut
     signal adminChanged
@@ -81,10 +81,8 @@ QtObject {
     Component.onCompleted: {
         healthApi.get("/");
         if (previousLogin) {
-            print("previousLogin is " + previousLogin)
             TheCurrentUser.init();
         } else {
-            print("No previous login");
             root.notLoggedIn();
         }
         isVerificationDone = true;
@@ -121,7 +119,6 @@ QtObject {
         userTypeId = user.user_type_id;
         userId = user.id;
         userType = userTypeId;
-        print("user initialized: userTypeId: "+userTypeId+"\nuserType: "+userType)
         isVerificationDone = true;
         userCredentialsSet();
     }

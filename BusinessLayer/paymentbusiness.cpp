@@ -1,4 +1,5 @@
 #include "paymentbusiness.h"
+#include "constants.h"
 
 using BusinessLayer::PaymentBusiness;
 
@@ -7,7 +8,8 @@ PaymentBusiness::PaymentBusiness(QObject *parent)
     , rest_{new Rest(this)}
     , payment_{nullptr}
 {
-    rest_->base("https://cara-rd.live/api/payments");
+    const QString base{BusinessLayer::Constants::instance()->base()};
+    rest_->base(base + "/payments");
 
     QSettings settings{};
     const QString token{settings.value("Credentials/refreshToken").toString()};
@@ -37,6 +39,7 @@ PaymentEntity *PaymentBusiness::payment() const
 
 void PaymentBusiness::patch()
 {
+    Q_ASSERT(payment_);
     Q_ASSERT(payment_->paymentId());
 
     const auto doc{QJsonDocument::fromJson(payment_->toJson())};

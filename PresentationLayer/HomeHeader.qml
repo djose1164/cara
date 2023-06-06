@@ -1,7 +1,7 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
-import "qrc:/singleton"
+import com.cara
 
 ToolBar {
     id: root

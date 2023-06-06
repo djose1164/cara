@@ -9,20 +9,22 @@ Popup {
     id: root
 
     // Any previous payment from the client
-    property var payment
-    readonly property int debt: amountToPay - paidAmount
-    readonly property int amountToPay: payment.amount_to_pay
-    readonly property int paidAmount: payment.paid_amount
+    property int amountToPay
+    property int paidAmount
+    property int paymentStatus
+    property int paymentId
+
     readonly property int amountInput: parseInt(newPayment.text)
-    readonly property int paid: payment.paid_amount
+    readonly property int debt: amountToPay - paidAmount
     property alias newPayment: newPayment.text
+    readonly property int wantsToPay: amountInput + root.paidAmount
     // NOTE: A special case may happen here, when the client pays more than the debt;
     // if this happens, the negative amount should be saver for future buys from this
     // client.
     // property int newState: debt - parseInt(newPayment.text) == 0 ? 0 : 2
     property int newState: newPayment.text.trim() === "" ? 2 : (debt - parseInt(newPayment.text) === 0 ? 0 : 2)
 
-    signal paymentPatched(newPayment: var)
+    signal paymentPatched(newPaidAmount: int)
 
     modal: true
     anchors.centerIn: Overlay.overlay
@@ -32,7 +34,7 @@ Popup {
     StackLayout {
         id: stackLayout
         anchors.fill: parent
-        currentIndex: payment.status ? 1 : 3
+        currentIndex: paymentStatus ? 1 : 3
 
         BusyIndicator {}
 
@@ -42,7 +44,7 @@ Popup {
 
             Label { text: "La deuda asciende a RD$" + debt }
 
-            Label { text: "El cliente ha abonado RD$" + paid }
+            Label { text: "El cliente ha abonado RD$" + paidAmount }
 
             TextField {
                 id: newPayment
@@ -121,19 +123,18 @@ Popup {
         payment: paymentEntity
         onRequested: stackLayout.currentIndex = 0
         onPatchSucceeded: {
-            root.payment = JSON.parse(payment.toJson());
-            print(` ${payment.toJson()}`)
+            paidAmount = wantsToPay;
             clean();
-            paymentPatched(root.payment);
+            paymentPatched(wantsToPay);
             stackLayout.currentIndex = 2;
-            print(`root.payment = p: ${JSON.stringify(root.payment, null, 2)}`);
+
         }
     }
 
     PaymentEntity {
         id: paymentEntity
-        paymentId: payment.id
-        paidAmount: amountInput + paid
+        paymentId: root.paymentId
+        paidAmount: amountInput + root.paidAmount
         amountToPay: root.amountToPay
     }
 

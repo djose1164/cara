@@ -14,7 +14,6 @@ class OrderEntity : public QObject, public JsonExportable
     QML_ELEMENT
 
     Q_PROPERTY(UserEntity *user READ user WRITE setUser NOTIFY userChanged)
-    Q_PROPERTY(QList<DetailsEntity *> details READ details WRITE setDetails NOTIFY detailsChanged)
     Q_PROPERTY(PaymentEntity *payment MEMBER payment_ NOTIFY paymentChanged)
 
 public:
@@ -23,17 +22,14 @@ public:
     UserEntity *user() const;
 
     PaymentEntity *payment() const;
-    QList<DetailsEntity *> details() const;
+
+    QByteArray details() const;
+    void setDetails(const QByteArray &detail);
+    QBindable<QByteArray> bindableDetails();
 
     DetailsEntity *detail(qsizetype index) const;
 
 public slots:
-    void appendDetail(DetailsEntity *detail);
-    void clear();
-    void replaceDetail(qsizetype index, DetailsEntity *detail);
-    void popBack();
-
-    void setDetails(const QList<DetailsEntity *> &detail);
     void setUser(UserEntity *const user);
 
     Q_INVOKABLE QByteArray toJson() const;
@@ -45,7 +41,7 @@ signals:
 
 private:
     UserEntity *user_;
-    QList<DetailsEntity *> details_;
+    QProperty<QByteArray> details_;
     PaymentEntity *payment_;
 };
 }

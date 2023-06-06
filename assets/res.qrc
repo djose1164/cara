@@ -34,5 +34,6 @@
         <file>icons/send_black.svg</file>
         <file>icons/notifications_black_24dp.svg</file>
         <file>icons/new_notifications.svg</file>
+        <file>icons/refresh_black_24dp.svg</file>
     </qresource>
 </RCC>

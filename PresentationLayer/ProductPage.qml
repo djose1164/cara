@@ -2,13 +2,14 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 import QtQuick.Dialogs
-import com.cara 1.0
+import com.cara 1.0 as Cara
 import "qrc:/singleton"
 import "qrc:/utils"
 import "qrc:/reviews"
 
 Page {
     id: root
+
     readonly property StackView stackView: StackView.view
     readonly property TabBar bar: stackView ? stackView.bar : null
     readonly property bool userIsAdmin: TheCurrentUser.isAdmin
@@ -16,8 +17,8 @@ Page {
     readonly property bool hasStocks: inStock > 0
     readonly property var editableProduct: {
         "name": [productRating.nameText, api.patchName],
-        "sell_price": [parseInt(sellPriceField.text), api.patchSellPrice],
-        "description": [descriptionField.text, api.patchDescription],
+        "sell_price": [parseInt(productRating.price), api.patchSellPrice],
+        "description": [productRating.description, api.patchDescription],
     }
     readonly property var product: {
         "name": name,
@@ -25,18 +26,15 @@ Page {
         "description": description,
     }
 
-
-    DetailsEntity {
+    Cara.ProductEntity {
         id: detailsEntity
-        quantity: 1
-        product: ProductEntity {
-            name: root.name
-            price: root.sell_price
-            description: root.description
-            productId: root.productId
-            imageUrl: root.image_url
-        }
+        name: root.name
+        price: root.sell_price
+        description: root.description
+        productId: root.productId
+        imageUrl: root.image_url
     }
+    readonly property var cart: Cara.CartBusiness
 
     required property int productId
     required property string name
@@ -69,44 +67,22 @@ Page {
                 }
                 spacing: 20
 
-                ProductRating {
+                Product {
                     id: productRating
+
+                    onImageReady: stackLayout.currentIndex = 1
+                    onUpdateStocksClicked: updateInStock.open()
+
                     Layout.fillWidth: true
                     Layout.minimumHeight: childrenRect.height
                     Layout.fillHeight: true
                     Layout.topMargin: 40
                     imgSrc: image_url
-                    selectedStars: root.rating
                     nameText: name
-                    nameEnabled: userIsAdmin
-                    onImageReady: stackLayout.currentIndex = 1
-                }
-
-                ProductStocks {
-                    Layout.bottomMargin: 20
-                    onUpdateClicked: updateInStock.open()
                     inStock: root.inStock
-                    canUpdate: userIsAdmin
-                }
-
-                RowLayout {
-                    Label {
-                        text: `Precio: RD$`
-                        font.pointSize: 12
-                    }
-                    TextEdit {
-                        id: sellPriceField
-                        text: sell_price
-                        enabled: userIsAdmin
-                    }
-                }
-
-                TextEdit {
-                    id: descriptionField
-                    Layout.fillWidth: true
-                    text: description
-                    enabled: userIsAdmin
-                    visible: description
+                    canModify: userIsAdmin
+                    price: sell_price
+                    description: root.description
                 }
 
                 Button {
@@ -115,10 +91,10 @@ Page {
                     enabled: userIsAdmin || hasStocks
                     onClicked: {
                         if (!userIsAdmin) {
-                            if (CartBusiness.isProductInCart(detailsEntity.product))
+                            if (cart.isProductInCart(detailsEntity))
                                 message.show("El producto ya se encuentra en el carrito!");
                             else {
-                                CartBusiness.addtoCart(detailsEntity);
+                                cart.addtoCart(detailsEntity);
                                 message.show("¡Producto agregado al carrito!");
                             }
                             return;
@@ -135,15 +111,9 @@ Page {
                     font.pointSize: 12
                 }
 
-                Label {
-                    text: "Reseñas"
-                    font.bold: true
-                    font.pointSize: 16
-                }
-
-                Reviews {
-                    id: reviews
-                    productId: root.productId
+                ReviewSection {
+                    id: reviewSection
+                    Layout.fillWidth: true
                 }
             }
         }
@@ -160,29 +130,4 @@ Page {
     }
 
     ProductApi { id: api }
-
-    ReviewApi {
-        id: reviewApi
-        readonly property var emptyReview: {
-            "customer_id": customerId,
-            "product_id": productId
-        }
-        Component.onCompleted: fetchAllReviews(productId)
-        onFailed: r => openDialogWithText(r.message);
-        onAllReviewsFetched: r => {
-            const ratings = r.map(item => item.rating);
-            const model = reviews.model;
-            setProductRating(ratings);
-            model.append(r.filter(item => item.customer_id !== customerId));
-            const res = r.find(item => item.customer_id === customerId);
-            if (res)
-                model.insert(0, res);
-            else if (ratings?.length)
-                model.insert(0, emptyReview);
-        }
-        function setProductRating(ratings) {
-            const sum = ratings.reduce((total, num) => total + num, 0);
-            root.rating = (Math.round(sum / ratings.length));
-        }
-    }
 }

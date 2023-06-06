@@ -13,6 +13,9 @@
         <file>UserHome.qml</file>
         <file>HomeHeader.qml</file>
         <file>AdminHome.qml</file>
+        <file>Welcome.qml</file>
+        <file>Offers.qml</file>
+        <file>RecentOrders.qml</file>
     </qresource>
     <qresource prefix="/search">
         <file>SearchPage.qml</file>
@@ -24,18 +27,23 @@
         <file>BillDelegate.qml</file>
         <file>OptionPopup.qml</file>
         <file>BillSearch.qml</file>
-        <file>CustomerBill.qml</file>
+        <file>Bills.qml</file>
+        <file>BillMessage.qml</file>
+        <file>BillView.qml</file>
+        <file>Customers.qml</file>
+        <file>OrderPage.qml</file>
+        <file>CustomerBills.qml</file>
+        <file>AdminBillDelegate.qml</file>
+        <file>CustomerBillDelegate.qml</file>
     </qresource>
     <qresource prefix="/orders">
         <file>AddOrder.qml</file>
         <file>Description.qml</file>
         <file>Entry.qml</file>
-        <file>UpdateOrderPage.qml</file>
         <file>OrderState.qml</file>
         <file>AddOrderHeader.qml</file>
-        <file>OrderFormUser.qml</file>
         <file>OrderFormAdmin.qml</file>
-        <file>CustomerOrders.qml</file>
+        <file>OrderStatusCB.qml</file>
     </qresource>
     <qresource prefix="/customers">
         <file>CustomerForm.qml</file>
@@ -62,6 +70,7 @@
         <file>Message.qml</file>
         <file>BackPage.qml</file>
         <file>BusyStackLayout.qml</file>
+        <file>BackButton.qml</file>
     </qresource>
     <qresource prefix="/payment">
         <file>PaymentStatus.qml</file>
@@ -76,9 +85,11 @@
         <file>ProductImage.qml</file>
         <file>ProductApi.qml</file>
         <file>StockPopup.qml</file>
-        <file>ProductRating.qml</file>
+        <file>Product.qml</file>
         <file>ProductStocks.qml</file>
         <file>ProductCard.qml</file>
+        <file>ProductView.qml</file>
+        <file>ProductThumbnail.qml</file>
     </qresource>
     <qresource lang="qml" prefix="/qr">
         <file>QR.qml</file>
@@ -96,9 +107,6 @@
     <qresource prefix="/inventory">
         <file>Inventory.qml</file>
     </qresource>
-    <qresource prefix="/entity">
-        <file>OrderEntity.qml</file>
-    </qresource>
     <qresource lang="qml" prefix="/reviews">
         <file>Review.qml</file>
         <file>Comment.qml</file>
@@ -108,6 +116,7 @@
         <file>ReviewHeader.qml</file>
         <file>CommentEntry.qml</file>
         <file>ReviewDelegate.qml</file>
+        <file>ReviewSection.qml</file>
     </qresource>
     <qresource prefix="/cart">
         <file>Cart.qml</file>
@@ -118,6 +127,5 @@
     <qresource prefix="/singleton">
         <file>qmldir</file>
         <file>TheCurrentUser.qml</file>
-        <file>Constants.qml</file>
     </qresource>
 </RCC>

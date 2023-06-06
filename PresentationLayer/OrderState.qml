@@ -3,13 +3,23 @@ import QtQuick.Controls
 import QtQuick.Layouts
 import "qrc:/payment"
 import "qrc:/singleton"
-import "qrc:/entity"
+import com.cara 1.0
+import "qrc:/product"
 
 Item {
     id: root
-    required property OrderEntity orderEntity
-    property var payment: orderEntity.payment
-    readonly property var product: orderEntity.orderDetails.product
+
+    property PaymentEntity payment
+    property OrderStatus status
+    property date date
+    property int orderId
+    property OrderModel details
+
+    readonly property var statusString: {
+        0: "Pago",
+        1: "Credito",
+        2: "Abonado"
+    }
 
     signal paymentApplied(newPayment: var)
 
@@ -17,20 +27,28 @@ Item {
 
     ColumnLayout {
         anchors.fill: parent
+        anchors.leftMargin: 10
 
         Label {
-            text: `Estado de Orden ID#${orderEntity.orderId}`
+            text: `Estado de Orden ID#${orderId}`
             font.pointSize: 12.5
             font.bold: true
         }
 
-        Label {
-            text: orderEntity.orderStatus.status
+        OrderStatusCB {
+            onStatusUpdated: (newStatusId, newStatusString) => {
+                status.statusId = newStatusId;
+                status.statusString = newStatusString;
+            }
+
+            Layout.fillWidth: true
+            orderId: root.orderId
+            statusId: status.statusId
         }
 
         RowLayout {
             Layout.topMargin: 0
-            Label { text: statusToString(payment.status) }
+            Label { text: statusString[payment.status] }
 
             Button {
                 text: "Actualizar"
@@ -46,7 +64,7 @@ Item {
         }
 
         Label {
-            text: orderEntity.date
+            text: date.toLocaleDateString()
             font.pointSize: 12
         }
 
@@ -56,60 +74,40 @@ Item {
             font.bold: true
         }
 
+        ScrollView {
+            Layout.preferredHeight: details.count >= 2 ? 250 : 100
+            Layout.fillWidth: true
         ColumnLayout {
             id: grid
-            RowLayout {
-                Layout.fillWidth: true
-                spacing: 20
-                Label {
-                    Layout.alignment: Qt.AlignLeading
-                    text: "Producto"
-                    font.pointSize: 12
-                    font.bold: true
-                }
-                Label {
-                    Layout.alignment: Qt.AlignTrailing
-                    text: "Cantidad"
-                    font.pointSize: 12
-                    font.bold: true
-                }
-            }
+
             Repeater {
-            model: orderEntity.orderDetails
-            delegate: RowLayout {
-                Layout.fillWidth: true
-                spacing: 20
-                Label {
-                    Layout.alignment: Qt.AlignLeading
-                    text: product.name
-                    font.pointSize: 12
-                }
-                Label {
-                    Layout.alignment: Qt.AlignTrailing
-                    text: quantity
-                    font.pointSize: 12
+                id: repeater
+                model: details
+                delegate: ProductCard {
+                    required property ProductEntity product
+                    required property int quantity
+                    required total
+
+                    width: root.width-20
+                    enabled: false
+                    productName: product.name
+                    productPrice: product.price
+                    spinBox.value: quantity
+                    imageUrl: product.imageUrl
                 }
             }
-            }
+        }
         }
     }
 
     UpdatePayment {
         id: updatePayment
-        payment: root.payment
-        Component.onCompleted: paymentPatched.connect(paymentApplied)
-    }
 
-    function statusToString(status) {
-        switch(status) {
-        case 0:
-            return "Pago";
-        case 1:
-            return "Credito";
-        case 2:
-            return "Abonado";
-        }
+        onPaymentPatched: newAmount => payment.paidAmount = newAmount
 
-        return "";
+        amountToPay: payment.amountToPay
+        paidAmount: payment.paidAmount
+        paymentStatus: payment.status
+        paymentId: payment.paymentId
     }
 }

@@ -9,38 +9,26 @@
 namespace EntityLayer {
 class DetailsEntity : public QObject, public JsonExportable
 {
-    Q_OBJECT
-    QML_ELEMENT
-
-    Q_PROPERTY(int quantity READ quantity WRITE setQuantity NOTIFY quantityChanged)
-    Q_PROPERTY(int total READ total NOTIFY totalChanged)
-    Q_PROPERTY(ProductEntity *product READ product WRITE setProduct NOTIFY productChanged)
 
 public:
     explicit DetailsEntity(QObject *parent = nullptr);
-    DetailsEntity(const DetailsEntity& other, QObject *parent = nullptr);
-    Q_INVOKABLE DetailsEntity &operator=(const DetailsEntity& other);
 
+    void setQuantity(int quantity);
     int quantity() const;
-    int total() const;
 
+    int total() const;
+    QBindable<int> bindableTotal() const;
+
+    void setProduct(ProductEntity *const product);
     ProductEntity *product() const;
 
-    Q_INVOKABLE QByteArray toJson() const override;
-
-signals:
-    void quantityChanged();
-    void totalChanged();
-    void productChanged();
-
-public slots:
-    void setProduct(ProductEntity *product);
-    void setQuantity(int quantity);
+    QByteArray toJson() const override;
 
 private:
-    int quantity_;
+    QProperty<int> quantity_;
+    QProperty<int> total_;
 
-    ProductEntity *product_;
+    QProperty<ProductEntity *> product_;
 };
 }
 

@@ -12,6 +12,16 @@ ProductEntity::ProductEntity(QObject *parent)
 {
 }
 
+ProductEntity *ProductEntity::fromMap(const QVariantMap &map)
+{
+    const auto product{new ProductEntity};
+    product->setName(map["name"].toString());
+    product->setImageUrl(map["image_url"].toString());
+    product->setPrice(map["sell_price"].toInt());
+
+    return product;
+}
+
 bool ProductEntity::operator==(ProductEntity * const rhs)
 {
     return productId_ == rhs->productId();
@@ -42,9 +52,27 @@ int ProductEntity::price() const
     return price_;
 }
 
+QBindable<int> ProductEntity::bindablePrice() const
+{
+    return &price_;
+}
+
 int ProductEntity::productId() const
 {
     return productId_;
+}
+
+QByteArray ProductEntity::toJson() const
+{
+    QJsonObject obj{};
+    obj["product_id"] = productId_;
+    obj["name"] = name_;
+    obj["description"] = description_;
+    obj["image_url"] = imageUrl_;
+    obj["price"] = price();
+
+    QJsonDocument doc{obj};
+    return doc.toJson(QJsonDocument::Compact);
 }
 
 void ProductEntity::setName(const QString &name)
@@ -76,11 +104,10 @@ void ProductEntity::setImageUrl(const QString &url)
 
 void ProductEntity::setPrice(int price)
 {
-    if (price_ != price)
-    {
-        price_ = price;
-        emit priceChanged();
-    }
+    price_ = price;
+
+    // FIXME: Move this to QObjectBindableProperty
+    //emit priceChanged();
 }
 
 void ProductEntity::setProductId(int productId)

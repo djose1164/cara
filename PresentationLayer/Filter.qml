@@ -7,7 +7,7 @@ import "qrc:/users"
 Drawer {
     id: root
 
-    required property CustomerModel customerModel
+    property CustomerModel customerModel
     enum Status { Paid, Unpaid, Credited, Any }
 
     signal filtered(model: ListModel)

@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
+import com.cara
 import "qrc:/orders" as Orders
 import "qrc:/singleton"
 
@@ -8,11 +9,37 @@ Page {
     id: root
     readonly property StackView stackView: StackView.view
     readonly property Component busyIndicator: BusyIndicator {}
+    readonly property bool isAdmin: CurrentUser.userType == CurrentUser.ADMIN
+    readonly property string homePath: isAdmin ? "qrc:/home/AdminHome.qml"
+                                               : "qrc:/home/UserHome.qml"
 
     signal adminChanged
     footer: MainFooter {
         id: bar
-        onHomeClicked: homeView.pop(null)
+
+        property int clickedCount
+        property bool wasHomeLastView
+
+        onHomeClicked: {
+            ++clickedCount;
+
+            if (homeView.isCurrentView && !wasHomeLastView) {
+                homeView.pop(null);
+            }
+            else if (clickedCount == 2) {
+                homeView.pop(null);
+                clickedCount = 0;
+            }
+        }
+
+        onCurrentIndexChanged: {
+            if (homeView.isCurrentView)
+                wasHomeLastView = false;
+            else {
+                wasHomeLastView = true;
+                clickedCount = 0;
+            }
+        }
     }
 
     StackLayout {
@@ -23,13 +50,21 @@ Page {
         StackView {
             id: homeView
             readonly property TabBar bar: bar
-            initialItem: TheCurrentUser.isGuest ? TheCurrentUser.homePath
-                                                : busyIndicator
+            readonly property bool isCurrentView: StackLayout.isCurrentItem
+            initialItem: homePath ?? busyIndicator
         }
 
         StackView {
             id: orderStackView
-            initialItem: TheCurrentUser.orderPath ?? busyIndicator
+            initialItem: TheCurrentUser.cartPath ?? busyIndicator
+
+            Connections {
+                target: TheCurrentUser
+
+                function onCartPathChanged() {
+                    orderStackView.replace(TheCurrentUser.cartPath);
+                }
+            }
         }
 
         StackView { initialItem: "qrc:/bills/BillPage.qml" }
@@ -38,14 +73,5 @@ Page {
     SidePane {
         id: sideMenu
         stackView: root.stackView
-    }
-
-    Connections {
-        target: TheCurrentUser
-
-        function onUserCredentialsSet() {
-            homeView.replace(TheCurrentUser.homePath);
-            orderStackView.replace(TheCurrentUser.orderFormPath);
-        }
     }
 }

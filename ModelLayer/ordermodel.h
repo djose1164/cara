@@ -6,8 +6,8 @@
 #include <QtQml>
 
 namespace ModelLayer {
-using EntityLayer::DetailsEntity;
-class OrderModel : public QAbstractListModel
+using EntityLayer::DetailsEntity, EntityLayer::JsonExportable;
+class OrderModel : public QAbstractListModel, public JsonExportable
 {
     Q_OBJECT
     QML_ELEMENT
@@ -32,6 +32,7 @@ public:
 
     int count() const;
     Q_INVOKABLE DetailsEntity *get(int index);
+    Q_INVOKABLE QByteArray toJson() const override;
 
 signals:
     void countChanged(int count);
@@ -43,7 +44,7 @@ public slots:
     void clear();
 
 private:
-    QList<EntityLayer::DetailsEntity *> data_;
+    QList<DetailsEntity *> data_;
     QHash<int, QByteArray> roleNames_;
 };
 }

@@ -1,7 +1,10 @@
 #include "cartbusiness.h"
+#include "billentity.h"
+#include "constants.h"
 
 using namespace BusinessLayer;
-using EntityLayer::UserEntity, ModelLayer::OrderModel, EntityLayer::OrderEntity;
+using EntityLayer::UserEntity, ModelLayer::OrderModel, EntityLayer::BillEntity,
+    EntityLayer::OrderEntity, EntityLayer::DetailsEntity;
 
 CartBusiness::CartBusiness(QObject *parent)
     : QObject{parent}
@@ -11,7 +14,8 @@ CartBusiness::CartBusiness(QObject *parent)
     , model_{new OrderModel(this)}
     , totalToPay_{}
 {
-    rest_->base("https://cara-rd.live/api/orders");
+    const QString base{Constants::instance()->base()};
+    rest_->base(base + "/orders");
 
     QSettings settings{};
     const auto token{settings.value("Credentials/refreshToken").toString()};
@@ -93,8 +97,11 @@ void CartBusiness::setModel(ModelLayer::OrderModel * const model)
     }
 }
 
-void CartBusiness::addtoCart(EntityLayer::DetailsEntity * const detail)
+void CartBusiness::addtoCart(ProductEntity *const product)
 {
+    auto detail{new DetailsEntity(model_)};
+    detail->setProduct(product);
+
     model_->append(detail);
 }
 
@@ -125,11 +132,15 @@ void CartBusiness::checkout()
             .toMap()
     };
 
-    connect(rest_, &Rest::succeeded, this, [&](const QVariantMap &resp){
-        qDebug() << "CartBusiness::checkout " << resp;
+    rest_->post("/", order);
+
+    connect(rest_, &Rest::succeeded, this, [&](){
+        emit checkoutSucceeded();
     });
 
-    rest_->post("/", order);
+    connect(rest_, &Rest::failed, this, [this](const QVariantMap &resp) {
+        emit checkoutFailed(resp);
+    });
 }
 
 void CartBusiness::prepareOrder()
@@ -140,6 +151,5 @@ void CartBusiness::prepareOrder()
     user->setUserId(user_->userId());
     user->setCustomerId(user_->customerId());
 
-    for (int i{}; i < model_->count(); ++i)
-        order_->appendDetail(model_->get(i));
+    order_->setDetails(model_->toJson());
 }

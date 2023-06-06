@@ -10,49 +10,24 @@ OrderEntity::OrderEntity(QObject *parent)
 {
 }
 
-QList<DetailsEntity *> OrderEntity::details() const
-{
-    return details_;
-}
-
-DetailsEntity *OrderEntity::detail(qsizetype index) const
-{
-    return details_[index];
-}
-
-void OrderEntity::appendDetail(DetailsEntity *detail)
-{
-    qDebug() << "C++: detail: " << detail;
-    details_.append(detail);
-}
-
-void OrderEntity::clear()
-{
-    details_.clear();
-}
-
-void OrderEntity::replaceDetail(qsizetype index, DetailsEntity *detail)
-{
-    details_.replace(index, detail);
-}
-
-void OrderEntity::popBack()
-{
-    details_.pop_back();
-}
-
 EntityLayer::UserEntity *EntityLayer::OrderEntity::user() const
 {
     return user_;
 }
 
-void EntityLayer::OrderEntity::setDetails(const QList<DetailsEntity *> &details)
+void EntityLayer::OrderEntity::setDetails(const QByteArray &details)
 {
-    if (details_ != details)
-    {
-        details_ = details;
-        emit detailsChanged();
-    }
+    details_ = details;
+}
+
+QBindable<QByteArray> EntityLayer::OrderEntity::bindableDetails()
+{
+    return &details_;
+}
+
+QByteArray EntityLayer::OrderEntity::details() const
+{
+    return details_.value();
 }
 
 void EntityLayer::OrderEntity::setUser(UserEntity * const user)
@@ -70,14 +45,22 @@ QByteArray EntityLayer::OrderEntity::toJson() const
     object["user_id"] = user_->userId();
     object["customer_id"] = user_->customerId();
 
-    QJsonArray array{};
-    foreach (const auto detail, details_)
+    const auto detailsDoc{QJsonDocument::fromJson(details_)};
+    QJsonArray arr{};
+    for (const auto &detail : detailsDoc.array())
     {
-        const auto detailJson{detail->toJson()};
-        const auto doc{QJsonDocument::fromJson(detailJson)};
-        array.append(QJsonValue::fromVariant(doc));
+        const auto detailObj{detail.toObject()};
+        const auto productId{detailObj["product"].toObject()["product_id"].toInt()};
+
+        QJsonObject detailsObj{};
+        detailsObj["product_id"] = productId;
+
+        const auto quantity{detailObj["quantity"].toInt()};
+        detailsObj["quantity"] = quantity;
+
+        arr.append(detailsObj);
     }
-    object["details"] = array;
+    object["details"] = arr;
 
     const auto doc_{QJsonDocument::fromJson(payment_->toJson())};
     object["payment"] = QJsonValue::fromVariant(doc_);

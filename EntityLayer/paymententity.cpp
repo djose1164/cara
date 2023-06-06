@@ -11,6 +11,16 @@ PaymentEntity::PaymentEntity(QObject *parent)
 
 }
 
+PaymentEntity *PaymentEntity::fromMap(const QVariantMap &map)
+{
+    const auto payment{new PaymentEntity};
+    payment->setAmountToPay(map["amount_to_pay"].toInt());
+    payment->setPaidAmount(map["paid_amount"].toInt());
+    payment->setPaymentId(map["id"].toInt());
+
+    return payment;
+}
+
 void PaymentEntity::setPaymentId(int id)
 {
     if (paymentId_ != id)

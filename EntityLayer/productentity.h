@@ -1,11 +1,12 @@
 #ifndef PRODUCTENTITY_H
 #define PRODUCTENTITY_H
 
+#include "jsonexportable.h"
 #include <QObject>
 #include <QtQml>
 
 namespace EntityLayer {
-class ProductEntity : public QObject
+class ProductEntity : public QObject, public JsonExportable
 {
     Q_OBJECT
     QML_ELEMENT
@@ -18,6 +19,9 @@ class ProductEntity : public QObject
 
 public:
     explicit ProductEntity(QObject *parent = nullptr);
+
+    static ProductEntity *fromMap(const QVariantMap &map);
+
     bool operator==(ProductEntity *const rhs);
     bool operator!=(ProductEntity *const rhs);
 
@@ -25,8 +29,13 @@ public:
     QString description() const;
     QString imageUrl() const;
 
+    void setPrice(int price);
     int price() const;
+    QBindable<int> bindablePrice() const;
+
     int productId() const;
+
+    Q_INVOKABLE QByteArray toJson() const override;
 
 signals:
     void nameChanged();
@@ -40,13 +49,12 @@ public slots:
     void setDescription(const QString &description);
     void setImageUrl(const QString &url);
 
-    void setPrice(int price);
     void setProductId(int productId);
 
 private:
     QString name_;
     QString description_;
-    int price_;
+    QProperty<int> price_;
     int productId_;
 
     QString imageUrl_;

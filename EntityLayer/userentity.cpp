@@ -6,9 +6,10 @@ EntityLayer::UserEntity::UserEntity(QObject *parent)
     , password_{}
     , forename_{}
     , surname_{}
+    , email_{}
     , customerId_{}
     , userId_{}
-    , userType_{}
+    , userType_{UserTypes::GUEST}
 {
 }
 
@@ -90,6 +91,19 @@ void EntityLayer::UserEntity::setUserId(int userId)
     }
 }
 
+void EntityLayer::UserEntity::clear()
+{
+    username_.clear();
+    password_.clear();
+    forename_.clear();
+    surname_.clear();
+    email_.clear();
+
+    customerId_ = userId_ = 0;
+
+    userType_ = UserTypes::GUEST;
+}
+
 QString EntityLayer::UserEntity::password() const
 {
     return password_;
@@ -108,6 +122,20 @@ QString EntityLayer::UserEntity::surname() const
 QString EntityLayer::UserEntity::fullname() const
 {
     return forename_ + " " + surname_;
+}
+
+QString EntityLayer::UserEntity::email() const
+{
+    return email_;
+}
+
+void EntityLayer::UserEntity::setEmail(const QString &email)
+{
+    if (email_ != email)
+    {
+        email_ = email;
+        emit emailChanged();
+    }
 }
 
 EntityLayer::UserEntity::UserTypes EntityLayer::UserEntity::userType() const
