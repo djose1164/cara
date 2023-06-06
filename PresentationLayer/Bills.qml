@@ -11,9 +11,16 @@ BusyStackLayout {
     property alias model: billView.model
     property StackView stackView
     readonly property bool isAdmin: CurrentUser.userType === CurrentUser.ADMIN
+    readonly property bool isGuest: CurrentUser.userType === CurrentUser.GUEST
 
     anchors.fill: parent
-    currentIndex: isAdmin ? 3 : 1
+    currentIndex: {
+        if (isAdmin) {
+            return 0;
+        } else {
+            return isGuest ? 1 : 0
+        }
+    }
 
     BillMessage {}
 
@@ -47,15 +54,12 @@ BusyStackLayout {
 
         function onLoggedIn() {
             print("---Bills: onLoggedIn: userType: "+CurrentUser.userType);
-            root.currentIndex = 0;
             switch (CurrentUser.userType) {
             case CurrentUser.ADMIN:
                 customerView.populateModel();
                 break;
-            case CurrentUser.CUSTOMER:
-                // Fixme: Handle USER in its own branch
             case CurrentUser.USER:
-                if (CurrentUser.customerId > 0)
+                if (CurrentUser.isCustomer)
                     billView.populateModel();
                 else
                     gotoBillMessage();

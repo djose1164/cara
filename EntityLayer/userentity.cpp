@@ -145,7 +145,7 @@ EntityLayer::UserEntity::UserTypes EntityLayer::UserEntity::userType() const
 
 int EntityLayer::UserEntity::customerId() const
 {
-    return customerId_;
+    return customerId_.value();
 }
 
 int EntityLayer::UserEntity::userId() const
