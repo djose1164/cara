@@ -6,6 +6,7 @@ import "qrc:/utils"
 Item {
     id: root
 
+    readonly property StackView stackView: StackView.view
     Component.onCompleted: {
         providerApi.fetchProviders();
     }
@@ -20,6 +21,12 @@ Item {
         }
 
         color: "floralwhite"
+
+        BackButton {
+            anchors.left: parent.left
+            anchors.verticalCenter: parent.verticalCenter
+            stackView: root.stackView
+        }
 
         Label {
             anchors.centerIn: parent
