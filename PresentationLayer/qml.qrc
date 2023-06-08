@@ -138,5 +138,6 @@
     <qresource prefix="/singleton">
         <file>qmldir</file>
         <file>TheCurrentUser.qml</file>
+        <file>ViewManager.qml</file>
     </qresource>
 </RCC>
