@@ -53,7 +53,7 @@ Drawer {
         Label {
             text: "Nueva Orden de Compra"
             Layout.topMargin: 5
-            font.pointSize: 14
+            font.pointSize: 16
             font.bold: true
         }
 
