@@ -4,6 +4,7 @@ import QtQuick.Layouts
 import QtQuick.Dialogs
 import "qrc:/utils"
 import "qrc:/orders"
+import "qrc:/singleton"
 
 HeaderPage {
     id: root
@@ -42,8 +43,8 @@ HeaderPage {
 
     BuyOrderForm {
         id: buyOrderForm
-        width: root.width
-        height: root.height
+        width: ViewManager.mainView.width
+        height: ViewManager.mainView.height
         onAccepted: api.createBuyOrder(buyOrder);
     }
 
