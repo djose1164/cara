@@ -14,6 +14,7 @@ Popup {
         anchors.fill: parent
 
         ScrollView {
+            ScrollBar.horizontal.interactive: false
             ColumnLayout {
                 id: fieldsColumn
                 readonly property var provider: {
