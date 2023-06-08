@@ -69,7 +69,7 @@ Home {
 
         ListElement {
             source: "qrc:/icons/complete_order.svg"
-            path: "qrc:/provider/ProviderForm.qml"
+            path: "qrc:/orders/BuyOrder.qml"
         }
 
         ListElement {
@@ -85,6 +85,11 @@ Home {
         ListElement {
             source: "qrc:/icons/inventory.svg"
             path: "qrc:/inventory/Inventory.qml"
+        }
+
+        ListElement {
+            source: "qrc:/icons/supplier.svg"
+            path: "qrc:/provider/Providers.qml"
         }
     }
 }
