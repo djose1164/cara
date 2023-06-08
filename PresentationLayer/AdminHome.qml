@@ -5,65 +5,75 @@ import "qrc:/orders" as Order
 import "qrc:/singleton"
 
 Home {
+    id: root
+
     readonly property StackView mainView: ViewManager.mainView
 
-    GridLayout {
+    GridView {
         id: gridLayout
-        width: parent.width*.9
-        height: parent.height*.7
-        columns: 2
-        anchors.centerIn: parent
-        columnSpacing: 15
-        rowSpacing: 15
-
-        Repeater {
-            model: model
-            delegate: iconOption
-        }
+        anchors.fill: parent
+        anchors.margins: 20
+        model: model
+        delegate: iconOption
+        cellWidth: width/2
+        cellHeight: 150
     }
 
     Component {
         id: iconOption
-        Rectangle {
-            id: rec
+        ColumnLayout {
+            id: column
             required property string source
             required property string path
-            color: "chocolate"
-            Layout.fillWidth: true
-            Layout.fillHeight: true
-            states: [
-                State {
-                    name: "hovered"
-                    when: control.hovered
-                    PropertyChanges {
-                        rec {
-                            scale: 1.15
-                            color: "crimson"
+            required property string name
+            width: 145
+            height: 120
+
+            Rectangle {
+                id: rec
+                Layout.fillWidth: true
+                Layout.fillHeight: true
+                color: "chocolate"
+                states: [
+                    State {
+                        name: "hovered"
+                        when: control.hovered
+                        PropertyChanges {
+                            rec {
+                                scale: 1.15
+                                color: "crimson"
+                            }
                         }
                     }
-                }
-            ]
-            transitions: [
-                Transition {
-                    PropertyAnimation {
-                        property: "scale"
-                        duration: 200
-                        easing.type: Easing.InOutQuad
+                ]
+                transitions: [
+                    Transition {
+                        PropertyAnimation {
+                            property: "scale"
+                            duration: 200
+                            easing.type: Easing.InOutQuad
+                        }
+
+                        ColorAnimation { duration: 200 }
                     }
+                ]
 
-                    ColorAnimation { duration: 200 }
+                Image {
+                    anchors.centerIn: parent
+                    source: column.source
+                    sourceSize: "48x48"
                 }
-            ]
 
-            Image {
-                anchors.centerIn: parent
-                source: rec.source
-                sourceSize: "48x48"
+                TapHandler { onTapped: mainView.push(path) }
+
+                HoverHandler { id: control }
             }
 
-            TapHandler { onTapped: mainView.push(path) }
-
-            HoverHandler { id: control }
+            Label {
+                Layout.fillWidth: true
+                text: name
+                wrapMode: Label.Wrap
+            }
         }
     }
 
@@ -73,26 +83,31 @@ Home {
         ListElement {
             source: "qrc:/icons/complete_order.svg"
             path: "qrc:/orders/BuyOrder.qml"
+            name: "Ordenes de Compra"
         }
 
         ListElement {
             source: "qrc:/icons/new_product.svg"
             path: "qrc:/product/ProductForm.qml"
+            name: "Agregar Producto"
         }
 
         ListElement {
             source: "qrc:/icons/person_add.svg"
             path: "qrc:/customers/CustomerForm.qml"
+            name: "Agregar Cliente"
         }
 
         ListElement {
             source: "qrc:/icons/inventory.svg"
             path: "qrc:/inventory/Inventory.qml"
+            name: "Inventario"
         }
 
         ListElement {
             source: "qrc:/icons/supplier.svg"
             path: "qrc:/provider/Providers.qml"
+            name: "Proveedores"
         }
     }
 }
