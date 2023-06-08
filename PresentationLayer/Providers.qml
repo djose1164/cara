@@ -43,7 +43,10 @@ Item {
             height: 40
             text: name
 
-            ListView.onRemove: SequentialAnimation {
+            ListView.onRemove: removingAnimation.start()
+
+            SequentialAnimation {
+                id: removingAnimation
                 PropertyAction {
                     target: swipeDelegate
                     property: "ListView.delayRemove"
