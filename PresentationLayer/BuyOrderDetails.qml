@@ -47,6 +47,7 @@ HeaderPage {
             PaymentStatus {
                 id: paymentStatus
                 anchors.fill: parent
+                partialPaid: false
             }
         }
 
