@@ -44,6 +44,12 @@
         <file>AddOrderHeader.qml</file>
         <file>OrderFormAdmin.qml</file>
         <file>OrderStatusCB.qml</file>
+        <file>BuyOrder.qml</file>
+        <file>BuyOrderForm.qml</file>
+        <file>BuyOrderAPI.qml</file>
+        <file>BuyOrderDetails.qml</file>
+        <file>BuyOrderView.qml</file>
+        <file>BuyOrderHeader.qml</file>
     </qresource>
     <qresource prefix="/customers">
         <file>CustomerForm.qml</file>
@@ -53,7 +59,10 @@
         <file>ClientRequest.qml</file>
     </qresource>
     <qresource prefix="/provider">
+        <file>Providers.qml</file>
+        <file>ProviderAPI.qml</file>
         <file>ProviderForm.qml</file>
+        <file>ProviderComboBox.qml</file>
     </qresource>
     <qresource prefix="/utils">
         <file>HeaderPage.qml</file>
@@ -71,6 +80,8 @@
         <file>BackPage.qml</file>
         <file>BusyStackLayout.qml</file>
         <file>BackButton.qml</file>
+        <file>AddressForm.qml</file>
+        <file>ContactForm.qml</file>
     </qresource>
     <qresource prefix="/payment">
         <file>PaymentStatus.qml</file>
@@ -127,5 +138,6 @@
     <qresource prefix="/singleton">
         <file>qmldir</file>
         <file>TheCurrentUser.qml</file>
+        <file>ViewManager.qml</file>
     </qresource>
 </RCC>
