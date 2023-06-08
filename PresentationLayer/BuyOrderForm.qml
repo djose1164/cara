@@ -1,10 +1,6 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
-import QtQuick.Dialogs
-import com.cara
-import "qrc:/utils"
-import "qrc:/orders"
 import "qrc:/provider"
 import "qrc:/payment"
 
@@ -17,15 +13,13 @@ Drawer {
         "provider_id": providerComboBox.currentValue,
         "payment": {
             "amount_to_pay": entry.total,
-            "paid_amount": paymentStatus.isCredit ? entry.total : 0
+            "paid_amount": !paymentStatus.isCredit ? entry.total : 0
         },
         "order_details": entry.productEntries.entryValues()
     }
 
     signal accepted
 
-    width: Constants.appWidth
-    height: Constants.appHeight
     interactive: false
 
     RoundButton {
