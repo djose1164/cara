@@ -2,8 +2,11 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 import "qrc:/orders" as Order
+import "qrc:/singleton"
 
 Home {
+    readonly property StackView mainView: ViewManager.mainView
+
     GridLayout {
         id: gridLayout
         width: parent.width*.9
@@ -58,7 +61,7 @@ Home {
                 sourceSize: "48x48"
             }
 
-            TapHandler { onTapped: stackView.push(path) }
+            TapHandler { onTapped: mainView.push(path) }
 
             HoverHandler { id: control }
         }
