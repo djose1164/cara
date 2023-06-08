@@ -15,6 +15,8 @@ ApplicationWindow {
 
     property string iconSize: "24x24"
 
+    Component.onCompleted: ViewManager.mainView = mainStackView
+
     StackView {
         id: mainStackView
         anchors.fill: parent

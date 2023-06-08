@@ -20,93 +20,47 @@ Page {
         stackView: stackView_
     }
 
-    GridLayout {
+    ColumnLayout {
         anchors.fill: parent
         anchors.leftMargin: 15
         anchors.rightMargin: 15
-        columns:  2
-        rowSpacing: 20
 
-        TextField {
-            id: forename
-            placeholderText: "Nombre"
-            Layout.fillWidth: true
+        RowLayout {
+            TextField {
+                id: forename
+                placeholderText: "Nombre"
+                Layout.fillWidth: true
+            }
+
+            TextField {
+                id: surname
+                placeholderText: "Apellido"
+                Layout.fillWidth: true
+            }
         }
 
-        TextField {
-            id: surname
-            placeholderText: "Apellido"
+        ContactForm {
+            id: contactForm
             Layout.fillWidth: true
-        }
-
-        TextField {
-            id: phoneNumber
-            placeholderText: "Numero telefonico"
-            Layout.fillWidth: true
-        }
-
-        TextField {
-            id: country
-            placeholderText: "Pais"
-            text: "Republica Dominicana"
             Layout.columnSpan: 2
-            Layout.fillWidth: true
-        }
-
-        TextField {
-            id: province
-            placeholderText: "Provincia"
-            text: "Monseñor Nouel"
-            Layout.columnSpan: 2
-            Layout.fillWidth: true
-        }
-
-        TextField {
-            id: municipality
-            placeholderText: "Municipio"
-            text: "Bonao"
-            Layout.columnSpan: 2
-            Layout.fillWidth: true
-        }
-
-        TextField {
-            id: street
-            placeholderText: "Calle"
-            Layout.columnSpan: 2
-            Layout.fillWidth: true
-        }
-
-        TextField {
-            id: house_num
-            placeholderText: "Numero de casa"
-            Layout.columnSpan: 2
-            Layout.fillWidth: true
         }
 
         Button {
             Layout.columnSpan: 2
             Layout.alignment: Qt.AlignCenter
-            text: "Ok"
+            text: "Agregar Cliente"
             onClicked: {
                 busyIndicator.open();
                 const client = {
                     "forename": forename.text,
                     "surname": surname.text,
-                    "telephone": phoneNumber.text ? phoneNumber.text : null,
-                    "address": {
-                        "country": country.text,
-                        "province": province.text,
-                        "municipality": municipality.text,
-                    }
+                    "contact": contactForm.contact,
                 };
-                if (street.length)
-                    client.address["street"] = street.text;
-                if (house_num.length)
-                    client.address["house_num"] = house_num.text;
+
                 clientRequest.create(client);
             }
         }
-    } // GridLayout
+    }
 
     CustomerModel { id: customerModel }
 
