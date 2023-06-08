@@ -1,7 +1,6 @@
 import QtQuick
 import "qrc:/utils"
 
-
 CaraApi {
     id: api
     endpoint: "/orders/buy"
