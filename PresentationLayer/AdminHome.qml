@@ -10,13 +10,13 @@ Home {
     readonly property StackView mainView: ViewManager.mainView
 
     GridView {
-        id: gridLayout
+        id: grid
         anchors.fill: parent
         anchors.margins: 20
         model: model
         delegate: iconOption
         cellWidth: width/2
-        cellHeight: 150
+        cellHeight: height*.35
     }
 
     Component {
@@ -26,8 +26,8 @@ Home {
             required property string source
             required property string path
             required property string name
-            width: 145
-            height: 120
+            width: grid.cellWidth - 15
+            height: grid.cellHeight - 10
 
             Rectangle {
                 id: rec
