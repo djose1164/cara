@@ -3,6 +3,7 @@ import QtQuick.Controls
 import QtQuick.Layouts
 import "qrc:/utils"
 import "qrc:/product"
+import "qrc:/payment"
 
 HeaderPage {
     id: root
@@ -16,68 +17,49 @@ HeaderPage {
     property string description
     property string date
 
+    onPaymentChanged: {
+        if (payment.amount_to_pay === payment.paid_amount)
+            paymentStatus.paid = true;
+        else
+            paymentStatus.credited = true;
+    }
+
     title: "Detalles de Orden"
 
-    GridLayout {
+    ColumnLayout {
         anchors.fill: parent
         anchors.margins: 5
-        columns: 2
+
+        BuyOrderHeader {
+            id: orderHeader
+            Layout.fillWidth: true
+            provider: root.provider
+            description: root.description
+            date: root.date
+        }
 
         GroupBox {
-            Layout.rowSpan: 2
-            Layout.alignment: Qt.AlignTop
-            Layout.fillHeight: true
-            title: "Proveedor"
+            id: control
+            Layout.fillWidth: true
+            Layout.preferredHeight: 80
+            title: "Condiicon de Pago"
 
-            ColumnLayout {
+            PaymentStatus {
+                id: paymentStatus
                 anchors.fill: parent
-
-                Label {
-                    text: `Nombre: ${provider.name}`
-                }
-
-                Label {
-                    text: `ID: ${provider.id}`
-                }
-
-                Label {
-                    text: `Email: ${contact.email}`
-                }
-
-                Label {
-                    text: `Telefono: ${contact.telephone}`
-                }
             }
         }
 
         GroupBox {
-            Layout.fillWidth: true
-            title: "Descripcion"
-            Label {
-                width: parent.width
-                text: `${description}`
-                wrapMode: Label.Wrap
-            }
-        }
-
-        GroupBox {
-            title: "Fecha"
-            Label {
-                text: `${date}`
-            }
-        }
-
-        GroupBox {
-            Layout.columnSpan: 2
             Layout.fillWidth: true
             Layout.fillHeight: true
-
             title: "Detalles"
 
             ListView {
                 id: listView
                 anchors.fill: parent
                 spacing: 20
+                clip: true
                 model: orderDetails
                 delegate: ProductCard {
                     required property var product
