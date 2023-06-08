@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
+import QtQuick.Dialogs
 import "qrc:/utils"
 import "qrc:/orders"
 
@@ -8,50 +9,57 @@ HeaderPage {
     id: root
     readonly property StackView myStack: StackView.view
 
-    title: "Orden de Compra"
+    Component.onCompleted: api.fetchBuyOrders();
 
-    ColumnLayout {
-        id: orderBuyForm
+    title: "Ordenes de Compra"
+
+    BuyOrderView {
+        id: listView
         anchors.fill: parent
+        model: listModel
+        stackView: root.stackView
+    }
 
-        ComboBox {
-            id: providerComboBox
-            model:  ["a", "b"]
+    RoundButton {
+        onClicked: {
+            buyOrderForm.open();
         }
 
-        TextField {
-            id: date
-            placeholderText: "dia/mes/año"
+        anchors {
+            bottom: parent.bottom
+            bottomMargin: 20
+            right: parent.right
+            rightMargin: 15
         }
 
-        Label { text: "Poductos" }
+        text: "+"
+        font.pointSize: 14
+        Material.background: Material.Blue
+        Material.foreground: "white"
+    }
 
-        Description {
-            id: description
-            Layout.fillWidth: true
-            Layout.fillHeight: true
-        }
+    ListModel { id: listModel }
 
-        TextField {
-            id: boughtQuantity
-            placeholderText: "Cantidad"
-            inputMethodHints: Qt.ImhDigitsOnly
-        }
+    BuyOrderForm {
+        id: buyOrderForm
+        width: root.width
+        height: root.height
+        onAccepted: api.createBuyOrder(buyOrder);
+    }
 
-        TextField {
-            id: unitPrice
-            placeholderText: "Costo de unidad"
+    BuyOrderAPI {
+        id: api
+        onBuyOrdersFetched: orders => listModel.append(orders)
+        onBuyOrderCreated: buyOrder => {
+            listModel.append(buyOrder);
+            buyOrderForm.close();
+            dialog.open();
         }
+    }
 
-        Label {
-            id: totalLabel
-            text: "Total: " + description.total
-        }
-
-        Button {
-            Layout.columnSpan: 2
-            Layout.alignment: Qt.AlignCenter
-            text: "Ok"
-        }
+    MessageDialog {
+        id: dialog
+        text: "Orden de compra creada con exito!"
+        onAccepted: close()
     }
 }
