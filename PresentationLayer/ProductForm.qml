@@ -70,11 +70,7 @@ Page {
 
     MessageDialog {
         id: messageDialog
-        text: productRequest.success ? "Producto guardado." : "No se ha podido guardar el producto."
-        informativeText: {
-            if (!productRequest.success)
-                productRequest.message;
-        }
+        onAccepted: close()
     }
 
     ProductRequest {
