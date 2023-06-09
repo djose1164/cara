@@ -55,8 +55,10 @@ Page {
                 }
 
                 Button {
-                    text: "Ok"
-                    Layout.alignment: Qt.AlignHCenter
+                    text: "Agregar"
+                    Layout.fillWidth: true
+                    Material.background: Material.Green
+                    Material.foreground: "white"
                     onClicked: {
                         stackLayout.currentIndex = 0;
                         productRequest.addProduct(productName.text, description.text, priceBuy.text, priceSell.text);
@@ -78,6 +80,14 @@ Page {
     ProductRequest {
         id: productRequest
         request.onSucceeded: {
+            messageDialog.text = "Producto guardado.";
+            messageDialog.informativeText = "Puedes chequear el producto desde Inventario.";
+            messageDialog.open();
+            stackLayout.currentIndex = 1;
+        }
+        request.onFailed: resp => {
+            messageDialog.text = "No se ha podido guardar el producto.";
+            messageDialog.informativeText = resp.message;
             messageDialog.open();
             stackLayout.currentIndex = 1;
         }
