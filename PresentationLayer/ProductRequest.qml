@@ -1,6 +1,7 @@
 import QtQuick
 import QtQml
 import "qrc:/utils"
+import "qrc:/singleton"
 
 Item {
     id: root
@@ -12,6 +13,7 @@ Item {
     CaraApi {
         id: request
         endpoint: "/products"
+        accessToken: TheCurrentUser.accessToken
         onSucceeded: resp => {
             model.append(resp.products);
             root.succeeded();
@@ -27,7 +29,7 @@ Item {
             "buy_price": buy,
             "sell_price": sell
         };
-        request.post("/", obj, null);
+        request.post("/", obj);
     }
 
     function findProductByIdentifier(text) {

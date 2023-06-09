@@ -2,56 +2,82 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 import "qrc:/utils"
-import "qrc:/orders"
 
-HeaderPage {
-    id: root
-    readonly property StackView myStack: StackView.view
+Popup {
+    id: newProviderForm
 
-    title: "Orden de Compra"
+    anchors.centerIn: Overlay.overlay
+    modal: true
 
-    ColumnLayout {
-        id: orderBuyForm
+    StackLayout {
+        id: stackLayout
         anchors.fill: parent
 
-        ComboBox {
-            id: providerComboBox
-            model:  ["a", "b"]
+        ScrollView {
+            ScrollBar.horizontal.interactive: false
+            ColumnLayout {
+                id: fieldsColumn
+                readonly property var provider: {
+                    "name": providerName.text,
+                    "contact": contactForm.contact,
+                }
+
+                width: newProviderForm.width
+                spacing: 20
+
+                Label {
+                    Layout.alignment: Qt.AlignHCenter | Qt.AlignTop
+                    text: "Nuevo Proveedor"
+                    font.bold: true
+                    font.pointSize: 14
+                    horizontalAlignment: Label.AlignHCenter
+                }
+
+                TextField {
+                    id: providerName
+                    Layout.fillWidth: true
+                    placeholderText: "Nombre de proveedor..."
+                }
+
+                ContactForm {
+                    id: contactForm
+                    Layout.fillWidth: true
+                }
+
+                Button {
+                    onClicked: {
+                        print(JSON.stringify(fieldsColumn.provider, null, 2));
+                        stackLayout.currentIndex = 1;
+                        api.createProvider(fieldsColumn.provider);
+                    }
+
+                    Layout.fillWidth: true
+                    Layout.alignment: Qt.AlignBottom
+                    text: "Agregar"
+                    Material.background: Material.Green
+                    Material.foreground: "white"
+                }
+            }
         }
 
-        TextField {
-            id: date
-            placeholderText: "dia/mes/año"
+        BusyIndicator {}
+
+        Item {
+            Label {
+                anchors.centerIn: parent
+                text: "Error al agregar nuevo proveedor"
+                font.pointSize: 14
+            }
         }
+    }
 
-        Label { text: "Poductos" }
+    ProviderAPI {
+        id: api
 
-        Description {
-            id: description
-            Layout.fillWidth: true
-            Layout.fillHeight: true
-        }
-
-        TextField {
-            id: boughtQuantity
-            placeholderText: "Cantidad"
-            inputMethodHints: Qt.ImhDigitsOnly
-        }
-
-        TextField {
-            id: unitPrice
-            placeholderText: "Costo de unidad"
-        }
-
-        Label {
-            id: totalLabel
-            text: "Total: " + description.total
-        }
-
-        Button {
-            Layout.columnSpan: 2
-            Layout.alignment: Qt.AlignCenter
-            text: "Ok"
+        onFailed: stackLayout.currentIndex = 2
+        onProviderCreated: {
+            listModel.append(fieldsColumn.provider);
+            newProviderForm.close();
         }
     }
 }
