@@ -25,7 +25,7 @@ Item {
     CaraApi {
         id: rest
         endpoint: "/customers/info"
-        accessToken: TheCurrentUser.accessToken
+        accessToken: CurrentUser.accessToken
         onSucceeded: resp => model.count ? model.set(
                                                0,
                                                resp.customers) : model.append(

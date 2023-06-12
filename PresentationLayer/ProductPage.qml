@@ -2,7 +2,7 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 import QtQuick.Dialogs
-import com.cara 1.0 as Cara
+import com.cara 1.0
 import "qrc:/singleton"
 import "qrc:/utils"
 import "qrc:/reviews"
@@ -12,7 +12,7 @@ Page {
 
     readonly property StackView stackView: StackView.view
     readonly property TabBar bar: stackView ? stackView.bar : null
-    readonly property bool userIsAdmin: TheCurrentUser.isAdmin
+    readonly property bool userIsAdmin: CurrentUser.userType === CurrentUser.ADMIN
     readonly property int customerId: TheCurrentUser.customerId
     readonly property bool hasStocks: inStock > 0
     readonly property var editableProduct: {
@@ -26,7 +26,7 @@ Page {
         "description": description,
     }
 
-    Cara.ProductEntity {
+    ProductEntity {
         id: detailsEntity
         name: root.name
         price: root.sell_price
@@ -34,7 +34,7 @@ Page {
         productId: root.productId
         imageUrl: root.image_url
     }
-    readonly property var cart: Cara.CartBusiness
+    readonly property var cart: CartBusiness
 
     required property int productId
     required property string name

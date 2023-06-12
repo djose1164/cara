@@ -51,6 +51,8 @@ Page {
             text: "Agregar Cliente"
             onClicked: {
                 busyIndicator.open();
+
+                contactForm.removeEmptyFields();
                 const client = {
                     "forename": forename.text,
                     "surname": surname.text,

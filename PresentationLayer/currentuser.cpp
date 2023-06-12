@@ -28,7 +28,8 @@ CurrentUser::CurrentUser()
         qDebug("onPreviousLoginFound make request");
     });
 
-    connect(this, &CurrentUser::restReady, this, [this] {
+    connect(this, &CurrentUser::restReady, this, [this](const QString &token) {
+        setAccessToken(token);
         rest_.get("/");
     });
 
@@ -91,6 +92,11 @@ QString CurrentUser::accessToken() const
 void CurrentUser::setAccessToken(const QString &token)
 {
     accessToken_ = token;
+}
+
+bool CurrentUser::isLoggedIn() const
+{
+    return userType() != UserTypes::GUEST;
 }
 
 void CurrentUser::logOut()
@@ -157,8 +163,13 @@ void CurrentUser::save()
 
 bool CurrentUser::existPreviousLogin()
 {
+    const auto refreshToken{settings_.value("Credentials/refreshToken").toString()};
+    if (refreshToken.isEmpty())
+        return false;
+
     const auto userTypeId{settings_.value("Credentials/userTypeId").toInt()};
     setUserType(static_cast<UserTypes>(userTypeId));
+    qDebug() << userType();
 
     const QString username{settings_.value("Credentials/username").toString()};
     setForename(username);
@@ -172,6 +183,5 @@ bool CurrentUser::existPreviousLogin()
     const QString email{settings_.value("Contact/email").toString()};
     setEmail(email);
 
-    const auto refreshToken{settings_.value("Credentials/refreshToken").toString()};
-    return !refreshToken.isEmpty();
+    return true;
 }
