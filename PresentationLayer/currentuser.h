@@ -24,6 +24,8 @@ public:
     void setAccessToken(const QString &token);
     QBindable<QString> bindableAccessToken();
 
+    Q_INVOKABLE bool isLoggedIn() const;
+
 public slots:
     void logOut();
     void fillUserInfo(const QVariantMap &user);
