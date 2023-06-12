@@ -32,4 +32,11 @@ ColumnLayout {
         id: addressForm
         Layout.fillWidth: true
     }
+
+    function removeEmptyFields() {
+        if (contact.email === "")
+            delete contactForm.contact.email;
+        if (contact.telephone === "")
+            delete contactForm.contact.telephone;
+    }
 }
