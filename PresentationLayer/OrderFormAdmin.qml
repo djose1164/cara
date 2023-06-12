@@ -90,6 +90,9 @@ Page {
                 paid_amount: amount
             }
         };
+
+        if (dateField.length)
+            fullOrder.date = dateField.text;
         print('fullOrder ', JSON.stringify(fullOrder, null, 2));
         addOrder.request.post("/", fullOrder);
     }
