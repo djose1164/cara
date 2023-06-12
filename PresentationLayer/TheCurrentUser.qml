@@ -114,8 +114,9 @@ QtObject {
             forename = person_info.forename;
             surname = person_info.surname;
             customerId = person_info.customer_id ? person_info.customer_id : 0;
+            email = person_info.contact.email;
         }
-        email = user.email;
+
         userTypeId = user.user_type_id;
         userId = user.id;
         userType = userTypeId;
