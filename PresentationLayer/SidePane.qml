@@ -59,7 +59,7 @@ Drawer {
             Layout.bottomMargin: 15
             text: "Cerrar sesion"
             flat: true
-            visible: !TheCurrentUser.isGuest
+            visible: CurrentUser.isLoggedIn()
             onClicked: {
                 close();
                 TheCurrentUser.clear();

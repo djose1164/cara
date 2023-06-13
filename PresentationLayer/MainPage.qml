@@ -12,6 +12,8 @@ Page {
     readonly property bool isAdmin: CurrentUser.userType == CurrentUser.ADMIN
     readonly property string homePath: isAdmin ? "qrc:/home/AdminHome.qml"
                                                : "qrc:/home/UserHome.qml"
+    readonly property string cartPath: isAdmin ? "qrc:/orders/OrderFormAdmin.qml"
+                                               : "qrc:/cart/Cart.qml"
 
     signal adminChanged
     footer: MainFooter {
@@ -56,13 +58,14 @@ Page {
 
         StackView {
             id: orderStackView
-            initialItem: TheCurrentUser.cartPath ?? busyIndicator
+            initialItem: busyIndicator
 
             Connections {
-                target: TheCurrentUser
+                target: CurrentUser
 
-                function onCartPathChanged() {
-                    orderStackView.replace(TheCurrentUser.cartPath);
+                function onRestReady(token: string) {
+                    CurrentUser.accessToken = token;
+                    orderStackView.replace(cartPath);
                 }
             }
         }

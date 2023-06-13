@@ -14,6 +14,8 @@ class CurrentUser : public EntityLayer::UserEntity
     QML_ELEMENT
     QML_SINGLETON
 
+    Q_PROPERTY(QString accessToken READ accessToken WRITE setAccessToken NOTIFY accessTokenChanged)
+
 public:
     static CurrentUser *create(QQmlEngine *qmlEngine, QJSEngine *jsEngine);
     static CurrentUser *instance();
@@ -21,6 +23,8 @@ public:
     QString accessToken() const;
     void setAccessToken(const QString &token);
     QBindable<QString> bindableAccessToken();
+
+    Q_INVOKABLE bool isLoggedIn() const;
 
 public slots:
     void logOut();
@@ -37,6 +41,7 @@ private:
 signals:
     void userEntityChanged();
     void isCustomerChanged();
+    void accessTokenChanged();
 
     void refreshTokenNotAvailable();
     void userEntityReady();
@@ -58,7 +63,7 @@ private:
     BusinessLayer::Auth auth_;
 
     QSettings settings_;
-    QProperty<QString> accessToken_;
+    Q_OBJECT_BINDABLE_PROPERTY(CurrentUser, QString, accessToken_, &CurrentUser::accessTokenChanged)
 
     static CurrentUser *instance_;
 
