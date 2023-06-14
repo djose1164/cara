@@ -36,5 +36,7 @@
         <file>icons/new_notifications.svg</file>
         <file>icons/refresh_black_24dp.svg</file>
         <file>icons/supplier.svg</file>
+        <file>icons/statistics.svg</file>
+        <file>icons/customers.svg</file>
     </qresource>
 </RCC>
