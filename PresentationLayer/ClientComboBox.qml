@@ -22,14 +22,15 @@ Item {
 
     ListModel { id: model }
 
-    CaraApi {
+    CustomerAPI {
         id: rest
-        endpoint: "/customers/info"
-        accessToken: CurrentUser.accessToken
-        onSucceeded: resp => model.count ? model.set(
-                                               0,
-                                               resp.customers) : model.append(
-                                               resp.customers)
+        onCustomersFetched: customers => (
+            model.count ? model.set(
+                0,
+                customers) : model.append(
+                customers
+            )
+        )
     }
 
     function updateClientField() {
