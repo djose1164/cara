@@ -59,6 +59,7 @@
         <file>ClientRequest.qml</file>
         <file>Customers.qml</file>
         <file>CustomerAPI.qml</file>
+        <file>CustomerEdit.qml</file>
     </qresource>
     <qresource prefix="/provider">
         <file>Providers.qml</file>
@@ -84,6 +85,7 @@
         <file>BackButton.qml</file>
         <file>AddressForm.qml</file>
         <file>ContactForm.qml</file>
+        <file>CloseButton.qml</file>
     </qresource>
     <qresource prefix="/payment">
         <file>PaymentStatus.qml</file>
