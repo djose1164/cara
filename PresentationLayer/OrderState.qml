@@ -6,7 +6,7 @@ import "qrc:/singleton"
 import com.cara 1.0
 import "qrc:/product"
 
-Item {
+ColumnLayout {
     id: root
 
     property PaymentEntity payment
@@ -25,78 +25,78 @@ Item {
 
     onPaymentApplied: p => payment = p
 
+    anchors {
+        left: parent.left
+        leftMargin: 10
+        right: parent.right
+        rightMargin: 5
+    }
+
+    Label {
+        text: `Estado de Orden ID#${orderId}`
+        font.pointSize: 12.5
+        font.bold: true
+    }
+
+    OrderStatusCB {
+        onStatusUpdated: (newStatusId, newStatusString) => {
+                             status.statusId = newStatusId;
+                             status.statusString = newStatusString;
+                         }
+
+        Layout.fillWidth: true
+        orderId: root.orderId
+        statusId: status.statusId
+    }
+
+    RowLayout {
+        Layout.topMargin: 0
+        Label { text: statusString[payment.status] }
+
+        Button {
+            text: "Actualizar"
+            visible: TheCurrentUser.isAdmin
+            onClicked: updatePayment.open()
+        }
+    }
+
+    Label {
+        text: "Fecha"
+        font.pointSize: 12
+        font.bold: true
+    }
+
+    Label {
+        text: date.toLocaleDateString()
+        font.pointSize: 12
+    }
+
+    Label {
+        text: "Detalles"
+        font.pointSize: 12
+        font.bold: true
+    }
+
     ColumnLayout {
-        anchors.fill: parent
-        anchors.leftMargin: 10
+        id: productsColumn
+        Layout.fillHeight: true
+        Layout.fillWidth: true
 
-        Label {
-            text: `Estado de Orden ID#${orderId}`
-            font.pointSize: 12.5
-            font.bold: true
-        }
+        Repeater {
+            id: repeater
+            model: details
+            delegate: ProductCard {
+                required property ProductEntity product
+                required property int quantity
+                required total
 
-        OrderStatusCB {
-            onStatusUpdated: (newStatusId, newStatusString) => {
-                status.statusId = newStatusId;
-                status.statusString = newStatusString;
+                width: root.width-20
+                enabled: false
+                productName: product.name
+                productPrice: product.price
+                spinBox.value: quantity
+                imageUrl: product.imageUrl
             }
-
-            Layout.fillWidth: true
-            orderId: root.orderId
-            statusId: status.statusId
-        }
-
-        RowLayout {
-            Layout.topMargin: 0
-            Label { text: statusString[payment.status] }
-
-            Button {
-                text: "Actualizar"
-                visible: TheCurrentUser.isAdmin
-                onClicked: updatePayment.open()
-            }
-        }
-
-        Label {
-            text: "Fecha"
-            font.pointSize: 12
-            font.bold: true
-        }
-
-        Label {
-            text: date.toLocaleDateString()
-            font.pointSize: 12
-        }
-
-        Label {
-            text: "Detalles"
-            font.pointSize: 12
-            font.bold: true
-        }
-
-        ScrollView {
-            Layout.preferredHeight: details.count >= 2 ? 250 : 100
-            Layout.fillWidth: true
-        ColumnLayout {
-            id: grid
-
-            Repeater {
-                id: repeater
-                model: details
-                delegate: ProductCard {
-                    required property ProductEntity product
-                    required property int quantity
-                    required total
-
-                    width: root.width-20
-                    enabled: false
-                    productName: product.name
-                    productPrice: product.price
-                    spinBox.value: quantity
-                    imageUrl: product.imageUrl
-                }
-            }
-        }
         }
     }
 
