@@ -87,12 +87,6 @@ Home {
         }
 
         ListElement {
-            source: "qrc:/icons/new_product.svg"
-            path: "qrc:/product/ProductForm.qml"
-            name: "Agregar Producto"
-        }
-
-        ListElement {
             source: "qrc:/icons/customers.svg"
             path: "qrc:/customers/Customers.qml"
             name: "Clientes"
