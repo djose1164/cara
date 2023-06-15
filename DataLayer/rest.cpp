@@ -118,9 +118,11 @@ void Rest::request(Rest::Verb verb, const QString &endpoint, const QVariant &obj
         reply_ = manager_.sendCustomRequest(req, "PATCH", doc);
         break;
     }
-    case Verb::PUT:
+    case Verb::PUT: {
+        auto doc{QJsonDocument::fromVariant(obj).toJson(QJsonDocument::Compact)};
+        reply_ = manager_.sendCustomRequest(req, "PUT", doc);
         break;
-
+    }
     case Verb::DELETE:
         reply_ = manager_.sendCustomRequest(req, "DELETE");
         break;
