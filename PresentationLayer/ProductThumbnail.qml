@@ -1,30 +1,38 @@
 import QtQuick
 import QtQuick.Controls
 import "qrc:/product"
+import "qrc:/utils"
 
 Rectangle {
     id: root
-    property alias name: name.text
+    property string name
     property alias detailed: detailed.text
     property alias source: productImage.source
 
     width: 200
-    height: 70
+    height: 100
 
-    ProductImage {
-        id: productImage
+    BusyStackLayout {
+        id: busyStackLayout
+        width: 100
+        height: 80
         anchors.left: root.left
         anchors.leftMargin: 5
         anchors.verticalCenter: root.verticalCenter
-        sourceSize: "100x100"
+
+        ProductImage {
+            id: productImage
+            onReady:  busyStackLayout.currentIndex = 1
+            sourceSize: "100x100"
+        }
     }
 
     Column {
-        anchors.left: productImage.right
+        anchors.left: busyStackLayout.right
         anchors.leftMargin: 10
 
         Label {
-            id: name
+            text: name
             font.bold: true
         }
 
