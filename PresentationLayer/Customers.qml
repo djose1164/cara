@@ -50,6 +50,10 @@ HeaderPage {
                 SwipeLabel {
                     text: "Editar"
                     backgroundColor: "blue"
+                    SwipeDelegate.onClicked: {
+                        customerEdit.customerId = control.customer_id;
+                        customerEdit.open();
+                    }
                 }
 
                 SwipeLabel {
@@ -92,4 +96,10 @@ HeaderPage {
     }
 
     ListModel { id: model }
+
+    CustomerEdit {
+        id: customerEdit
+        width: root.width
+        height: root.height
+    }
 }
