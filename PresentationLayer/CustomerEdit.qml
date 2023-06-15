@@ -1,10 +1,26 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
+import QtQuick.Dialogs
 import "qrc:/utils"
 
 Drawer {
     id: root
+
+    readonly property var customer: {
+        "forename": forename.text,
+        "surname": surname.text,
+        "contact": contactForm.contact,
+    };
+
+    property int customerId
+
+    onCustomerIdChanged: {
+        if (customerId < 0)
+            return;
+
+        customerApi.fetchCustomerById(customerId);
+    }
 
     Row {
         id: header
@@ -20,7 +36,7 @@ Drawer {
         Label {
             anchors.verticalCenter: parent.verticalCenter
             text: "Actualizar Datos"
-            font.pointSize: 12
+            font.pointSize: 14
             font.bold: true
         }
     }
@@ -65,22 +81,48 @@ Drawer {
             }
 
             Button {
-                Layout.columnSpan: 2
-                Layout.alignment: Qt.AlignCenter
+                Layout.fillWidth: true
+                Layout.topMargin: 15
+                Layout.bottomMargin: 15
                 text: "Actualizar"
                 onClicked: {
                     busyIndicator.open();
 
                     contactForm.removeEmptyFields();
-                    const client = {
-                        "forename": forename.text,
-                        "surname": surname.text,
-                        "contact": contactForm.contact,
-                    };
 
-                    clientRequest.create(client);
+                    customerApi.updateCustomer(customerId, customer);
                 }
             }
+        }
+    }
+
+    Popup {
+        id: busyIndicator
+        width: 200
+        height: 200
+        modal: true
+        anchors.centerIn: Overlay.overlay
+
+        BusyIndicator { anchors.centerIn: parent }
+    }
+
+    MessageDialog {
+        id: dialog
+        text: "Actualizado con exito!"
+    }
+
+    ClientRequest {
+        id: customerApi
+
+        onCustomerUpdated: {
+            busyIndicator.close();
+            dialog.open();
+        }
+        onCustomerFetched: function(customer) {
+            forename.text = customer.forename;
+            surname.text = customer.surname;
+            if (customer.contact)
+                contactForm.fillFields(customer.contact);
         }
     }
 }
