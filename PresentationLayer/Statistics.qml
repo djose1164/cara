@@ -6,48 +6,57 @@ import "qrc:/product"
 HeaderPage {
     id: root
 
-    Component.onCompleted: statisticsApi.fetchMostSellingProducts()
-
     title: "Estadisticas"
 
-    ListView {
-        id: listView
-        anchors.fill: parent
-        header: Label {
-            text: "Productos mas vendidos"
-            padding: 10
-            font.pointSize: 14
-            font.bold: true
+    GridView {
+        id: gridView
+        anchors {
+            fill: parent
+            margins: 10
         }
-
+        cellWidth: 190
+        cellHeight: 190
         model: model
-        delegate: ProductThumbnail {
-            required name
-            required property string image_url
-            required property int quantity
+        delegate: ItemDelegate {
+            width: 180
+            height: 180
 
-            width: listView.width
-            source: image_url
-            detailed: `Cantidad vendida: ${quantity}`
+            onClicked: stackView.push(path, {headerTitle: title})
+
+            Column {
+                anchors.fill: parent
+                padding: 24
+
+                Image {
+                    id: image
+                    source: imageSource
+                    sourceSize: "100x100"
+                }
+
+                Label {
+                    width: image.width
+                    topPadding: 12
+                    text: title
+                    font.pointSize: 12
+                    wrapMode: Label.WordWrap
+                }
+            }
         }
     }
 
+    ListModel {
+        id: model
 
-    ListModel { id: model }
+        ListElement {
+            imageSource: "qrc:/icons/product_statistics.svg"
+            title: "Estadisticas de Productos"
+            path: "qrc:/statistics/ProductStatistics.qml"
+        }
 
-    CaraApi {
-        id: statisticsApi
-        endpoint: "/statistics"
-
-        signal mostSellingProductsFetched(products: var)
-
-        onMostSellingProductsFetched: products => model.append(products)
-
-        function fetchMostSellingProducts() {
-            get("/");
-            succeeded.connect(function(resp) {
-                mostSellingProductsFetched(resp.statistics);
-            });
+        ListElement {
+            imageSource: "qrc:/icons/customer_statistics.svg"
+            title: "Estadisticas de Clientes"
+            path: "qrc:/statistics/CustomerStatistics.qml"
         }
     }
 }
