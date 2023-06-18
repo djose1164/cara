@@ -9,16 +9,48 @@ import "qrc:/singleton"
 import "qrc:/utils"
 
 // TODO: Update implementation to use the new types.
-Item {
+ColumnLayout {
     id: root
-    property alias totalToPay: orderForm.total
-    property alias orderForm: orderForm
+    property int totalToPay: total
     property alias request: request
     property alias messageDialog: message
 
-    Description {
-        id: orderForm
-        anchors.fill: parent
+    property int payment: 2
+    property var details
+    property int total: productEntry.total
+    readonly property alias entriesCount: productEntry.count
+    readonly property alias productEntries: productEntry
+
+    signal okClicked
+    signal updateTotal
+
+    Component.onCompleted: payment = 0
+    onOkClicked: productEntry.okClicked()
+
+    ProductEntry {
+        id: productEntry
+        Layout.fillWidth: true
+        Layout.maximumHeight: root.height*.8
+        Layout.alignment: Qt.AlignTop
+    }
+
+    RoundButton {
+        onClicked: productEntry.addEntry()
+        icon.source: "qrc:/icons/add_circle.svg"
+        icon.width: 36; icon.height: 36
+        flat: true
+        Layout.alignment: Qt.AlignTop | Qt.AlignHCenter
+    }
+
+    function findIn(model, criteria) {
+        for (let i = 0; i < model.count; ++i)
+            if (criteria(model.get(i)))
+                return model.get(i);
+        return null;
+    }
+
+    function clear() {
+        payment = 0;
     }
 
     MessageDialog {
@@ -27,37 +59,19 @@ Item {
         onButtonClicked: close()
     }
 
-    CaraApi {
+    OrderAPI {
         id: request
-        endpoint: "/orders"
-        accessToken: TheCurrentUser.accessToken
-        onFailed: r => {
-            message.text = "No se pudo realizar la accion";
-            message.informativeText = "Error: " + r.message;
-            message.open();
-        }
-        onSucceeded: r => {
-            message.text = "Orden realizada con exito";
-            message.informativeText = "¡Gracias por su compra!";
-            message.detailedText = "Puedes observar el estado de la orden en Ordenes Recientes.";
-            message.open();
-            clearOrderForm();
-
-            if (TheCurrentUser.isCostumer && TheCurrentUser.customerId === 0)
-                TheCurrentUser.customerId = r.customer_id;
-            print(JSON.stringify(r, null, 2));
-        }
     }
 
     /**
     * Clear & prepare the form to be used on another order.
     */
     function clearOrderForm() {
-        orderForm.productEntries.resetEntries();
-        orderForm.clear();
+        productEntries.resetEntries();
+        clear();
     }
 
     function entryFormData(): var {
-        return orderForm.productEntries.entryValues();
+        return productEntries.entryValues();
     }
 }
