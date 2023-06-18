@@ -38,5 +38,7 @@
         <file>icons/supplier.svg</file>
         <file>icons/statistics.svg</file>
         <file>icons/customers.svg</file>
+        <file>icons/product_statistics.svg</file>
+        <file>icons/customer_statistics.svg</file>
     </qresource>
 </RCC>

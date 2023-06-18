@@ -86,6 +86,7 @@
         <file>AddressForm.qml</file>
         <file>ContactForm.qml</file>
         <file>CloseButton.qml</file>
+        <file>Header.qml</file>
     </qresource>
     <qresource prefix="/payment">
         <file>PaymentStatus.qml</file>
@@ -146,5 +147,8 @@
     </qresource>
     <qresource lang="qml" prefix="/statistics">
         <file>Statistics.qml</file>
+        <file>ProductStatistics.qml</file>
+        <file>CustomerStatistics.qml</file>
+        <file>StatisticsAPI.qml</file>
     </qresource>
 </RCC>
