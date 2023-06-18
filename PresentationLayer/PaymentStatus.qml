@@ -10,6 +10,7 @@ RowLayout {
     property alias buttons: group.buttons
     property alias credited: creditBtn.checked
     property alias paid: paidBtn.checked
+    readonly property string buttonText: checkedButton ? checkedButton.text : ""
 
     height: 40
 
@@ -20,7 +21,6 @@ RowLayout {
 
     RadioButton {
         id: paidBtn
-        checked: true
         text: "Pago"
     }
 
