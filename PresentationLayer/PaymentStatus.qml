@@ -10,6 +10,7 @@ RowLayout {
     property alias buttons: group.buttons
     property alias credited: creditBtn.checked
     property alias paid: paidBtn.checked
+    property alias checkState: group.checkState
     readonly property string buttonText: checkedButton ? checkedButton.text : ""
 
     height: 40
