@@ -22,19 +22,22 @@ RowLayout {
     onEntryValueChanged: if (entryValue?.unit_price) updated(index, {entryValue})
 
     width: ListView.view.width
-    spacing: width*.05
+
     ComboBox {
         id: productField
         Layout.fillWidth: true
         model: root.productsModel
         textRole: "name"
         valueRole: "sell_price"
-        currentIndex: 0
+        currentIndex: -1
+        displayText: currentIndex === -1 ? "Seleccionar Producto" : currentText
     }
 
     SpinBox {
         id: quantityField
         Layout.preferredHeight: productField.height
+        Layout.maximumWidth: root.width*.3
+        Layout.minimumWidth: 100
         from: 1
         editable: true
         Layout.preferredWidth: root.width*.4
