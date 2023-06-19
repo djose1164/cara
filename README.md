@@ -8,16 +8,16 @@ De lo mejor para ti
 ![UserHome](screenshots/user_home.png)
 
 ### Admin Home
-![UserHome](screenshots/admin_home.png)
+![AdminHome](screenshots/admin_home.png)
 
 ### Statistics
-![UserHome](screenshots/statistics.png)
+![Statistics](screenshots/statistics.png)
 
 ### User Oder Form
-![OrderForm](screenshots/user_order_form.png)
+![UserOrderForm](screenshots/user_order_form.png)
 
 ### Admin Oder Form
-![OrderForm](screenshots/admin-order-form.png)
+![AdminOrderForm](screenshots/admin-order-form.png)
 
 ### Bills
 ![Bills](screenshots/user_bills.png)
