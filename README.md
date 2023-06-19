@@ -4,11 +4,20 @@ De lo mejor para ti
 ## Screenshots
 ![Login](screenshots/login.png)
 
-### Home
+### User Home
 ![UserHome](screenshots/user_home.png)
 
-### OderForm
+### Admin Home
+![UserHome](screenshots/admin_home.png)
+
+### Statistics
+![UserHome](screenshots/statistics.png)
+
+### User Oder Form
 ![OrderForm](screenshots/user_order_form.png)
+
+### Admin Oder Form
+![OrderForm](screenshots/admin-order-form.png)
 
 ### Bills
 ![Bills](screenshots/user_bills.png)
@@ -16,7 +25,3 @@ De lo mejor para ti
 ### BillDescription
 ![BillDescription](screenshots/bill_description.png)
 
-## Release
-- x.0.0: Undefined
-- 0.y.0: Monthly
-- 0.0.z: Weakly
