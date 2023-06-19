@@ -1,82 +1,94 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
+import QtQuick.Dialogs
 import "qrc:/payment" as Payments
 import "qrc:/customers"
 import "qrc:/singleton"
 
 Page {
     id: root
-    readonly property bool isACreditOrder: paymentStatus.checkedButton.text === "Credito"
-    readonly property bool isCredited: paymentStatus.checkedButton.text === "Abono"
-    readonly property bool isPaid: paymentStatus.checkedButton.text === "Pago"
+    readonly property bool isACreditOrder: paymentStatus.buttonText === "Credito"
+    readonly property bool isCredited: paymentStatus.buttonText === "Abono"
+    readonly property bool isPaid: paymentStatus.buttonText === "Pago"
     readonly property int amount: amountField.text ? amountField.text : 0
     readonly property int total: amountField.text ? addOrder.totalToPay - amount : addOrder.totalToPay
 
     header: AddOrderHeader {}
 
-    ColumnLayout {
+    ScrollView {
         anchors.fill: parent
-        anchors.leftMargin: 20
-        anchors.rightMargin: 20
-        spacing: 20
+        contentWidth: availableWidth
 
-        ClientComboBox {
-            id: clientField
-            Layout.fillWidth: true
-            Layout.minimumHeight: root.height*.1
-        }
+        ColumnLayout {
+            anchors.fill: parent
+            anchors.margins: 10
 
-        AddOrder {
-            id: addOrder
-            Layout.fillWidth: true
-            Layout.fillHeight: true
-        }
-
-        Payments.PaymentStatus {
-            id: paymentStatus
-            Layout.alignment: Qt.AlignCenter
-            Layout.topMargin: 40
-        }
-
-        RowLayout {
-            Layout.fillWidth: true
-            Layout.fillHeight: true
-            TextField {
-                id: amountField
-                placeholderText: isPaid || isACreditOrder ? `Monto a pagar: ${total}`
-                                                      : "Ingrese monto..."
-                enabled: isCredited
-                inputMethodHints: Qt.ImhDigitsOnly
-                Layout.alignment: Qt.AlignLeading
+            ClientComboBox {
+                id: clientField
                 Layout.fillWidth: true
+                z: 100
             }
 
-            Label {
-                id: amountLabel
-                visible: isCredited
-                text: `Debera: RD$${total}`
-                font.pointSize: 12
+            AddOrder {
+                id: addOrder
+                Layout.fillWidth: true
+                Layout.topMargin: 20
+                Layout.minimumHeight: 250
+            }
+
+            Payments.PaymentStatus {
+                id: paymentStatus
+                Layout.alignment: Qt.AlignCenter
+                Layout.topMargin: 40
+            }
+
+            RowLayout {
+                Layout.fillWidth: true
+                Layout.fillHeight: true
+                TextField {
+                    id: amountField
+                    placeholderText: isPaid || isACreditOrder ? `Monto a pagar: ${total}`
+                                                              : !paymentStatus.checkedButton ? "Seleccione un estado"
+                                                                                             : "Ingrese monto..."
+                    enabled: isCredited
+                    inputMethodHints: Qt.ImhDigitsOnly
+                    Layout.alignment: Qt.AlignLeading
+                    Layout.fillWidth: true
+                }
+
+                Label {
+                    id: amountLabel
+                    visible: isCredited
+                    text: `Debera: RD$${total}`
+                    font.pointSize: 12
+                }
+            }
+
+            TextField {
+                id: dateField
+                Layout.columnSpan: 2
+                Layout.fillWidth: true
+                placeholderText: "dia/mes/año"
+                validator: RegularExpressionValidator {
+                    regularExpression: /^([0-2][0-9]|(3)[0-1])(\/)(((0)[0-9])|((1)[0-2]))(\/)\d{4}$/
+                }
+                inputMethodHints: Qt.ImhNoPredictiveText
+            }
+
+            Button {
+                id: okBtn
+                text: "Aceptar"
+                onClicked: validateForm()
+                Layout.fillWidth: true
+                Layout.bottomMargin: 30
             }
         }
+    }
 
-        TextField {
-            id: dateField
-            Layout.columnSpan: 2
-            Layout.fillWidth: true
-            placeholderText: "dia/mes/año"
-            validator: RegularExpressionValidator {
-                regularExpression: /^([0-2][0-9]|(3)[0-1])(\/)(((0)[0-9])|((1)[0-2]))(\/)\d{4}$/
-            }
-            inputMethodHints: Qt.ImhNoPredictiveText
-        }
-
-        Button {
-            id: okBtn
-            text: "Ok"
-            onClicked: okHandler()
-            Layout.fillWidth: true
-        }
+    MessageDialog {
+        id: message
+        text: "Datos Invalidos!"
     }
 
     function okHandler() {
@@ -95,5 +107,26 @@ Page {
             fullOrder.date = dateField.text;
         print('fullOrder ', JSON.stringify(fullOrder, null, 2));
         addOrder.request.post("/", fullOrder);
+    }
+
+    function validateForm() {
+        if (clientField.currentIndex === -1) {
+            message.informativeText = "Debes seleccionar un cliente al cual adjuntarle"
+            + " la ordern."
+            message.open();
+            return false;
+        } else
+        if (paymentStatus.checkState === Qt.Unchecked) {
+            message.informativeText = "Debes seleccionar el estado de la orden.";
+            message.open();
+            return false;
+        } else
+        if (!addOrder.productEntries.selectedProductsAreValid()) {
+            message.informativeText = "Debes seleccionar un producto valido.";
+            message.open();
+            return false;
+        }
+
+        return true;
     }
 }
