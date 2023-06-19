@@ -38,7 +38,6 @@
     </qresource>
     <qresource prefix="/orders">
         <file>AddOrder.qml</file>
-        <file>Description.qml</file>
         <file>Entry.qml</file>
         <file>OrderState.qml</file>
         <file>AddOrderHeader.qml</file>
@@ -50,6 +49,7 @@
         <file>BuyOrderDetails.qml</file>
         <file>BuyOrderView.qml</file>
         <file>BuyOrderHeader.qml</file>
+        <file>OrderAPI.qml</file>
     </qresource>
     <qresource prefix="/customers">
         <file>CustomerForm.qml</file>
