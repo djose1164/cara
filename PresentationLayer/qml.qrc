@@ -37,7 +37,6 @@
         <file>CustomerBillDelegate.qml</file>
     </qresource>
     <qresource prefix="/orders">
-        <file>AddOrder.qml</file>
         <file>Entry.qml</file>
         <file>OrderState.qml</file>
         <file>AddOrderHeader.qml</file>
@@ -106,6 +105,7 @@
         <file>ProductCard.qml</file>
         <file>ProductView.qml</file>
         <file>ProductThumbnail.qml</file>
+        <file>AddProductView.qml</file>
     </qresource>
     <qresource lang="qml" prefix="/qr">
         <file>QR.qml</file>
