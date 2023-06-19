@@ -47,9 +47,9 @@ Constants *Constants::instance()
 }
 
 Constants::Constants()
-    : base_{"https://cara-rd.live/api"}
-    , appWidth_{360}
-    , appHeight_{640}
+    : base_{"http://127.0.0.1:5000/api"}
+    , appWidth_{400}
+    , appHeight_{680}
 {
 }
 
