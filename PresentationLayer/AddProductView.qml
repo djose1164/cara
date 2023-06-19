@@ -4,7 +4,7 @@ import QtQuick.Layouts
 import QtQuick.Dialogs
 import QtQuick.Controls.Material
 import "qrc:/customers"
-import "qrc:/product"
+import "qrc:/orders"
 import "qrc:/singleton"
 import "qrc:/utils"
 

@@ -5,6 +5,7 @@ import QtQuick.Dialogs
 import "qrc:/payment" as Payments
 import "qrc:/customers"
 import "qrc:/singleton"
+import "qrc:/product"
 
 Page {
     id: root
@@ -30,7 +31,7 @@ Page {
                 z: 100
             }
 
-            AddOrder {
+            AddProductView {
                 id: addOrder
                 Layout.fillWidth: true
                 Layout.topMargin: 20

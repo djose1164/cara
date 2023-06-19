@@ -4,6 +4,7 @@ import QtQuick.Layouts
 import "qrc:/provider"
 import "qrc:/payment"
 import "qrc:/utils"
+import "qrc:/product"
 
 Drawer {
     id: root
@@ -101,7 +102,7 @@ Drawer {
             font.bold: true
         }
 
-        Description {
+        AddProductView {
             id: entry
             Layout.fillWidth: true
             Layout.fillHeight: true
