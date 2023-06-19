@@ -3,6 +3,9 @@ import QtQuick.Layouts
 import QtQuick.Controls
 import "qrc:/orders"
 
+// TODO: Update the design of this component: Improve the way the product are
+// added and removed.
+
 ScrollView {
     id: root
     readonly property alias count: entries.count
@@ -14,6 +17,7 @@ ScrollView {
         }
         return partial_total;
     }
+
 
     ListView {
         readonly property ListModel productsModel: productModel.model
@@ -68,5 +72,18 @@ ScrollView {
     function resetEntries() {
         for (let i = count; i !== 0; --i)
             pop(i);
+    }
+
+    function selectedProductsAreValid() {
+        if (!count)
+            return false;
+
+        for (let i = 0; i < entries.count; ++i) {
+            const current = entryValueAt(i);
+            if (current?.product_id)
+                return false;
+        }
+
+        return true;
     }
 }
