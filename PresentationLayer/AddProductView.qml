@@ -9,7 +9,7 @@ import "qrc:/singleton"
 import "qrc:/utils"
 
 // TODO: Update implementation to use the new types.
-ColumnLayout {
+Column {
     id: root
     property int totalToPay: total
     property alias request: request
@@ -29,17 +29,23 @@ ColumnLayout {
 
     ProductEntry {
         id: productEntry
-        Layout.fillWidth: true
-        Layout.maximumHeight: root.height*.8
-        Layout.alignment: Qt.AlignTop
+        width: root.width
+        height: root.height - pane.height
     }
 
-    RoundButton {
-        onClicked: productEntry.addEntry()
-        icon.source: "qrc:/icons/add_circle.svg"
-        icon.width: 36; icon.height: 36
-        flat: true
-        Layout.alignment: Qt.AlignTop | Qt.AlignHCenter
+    Pane {
+        id: pane
+        width: root.width
+
+        RoundButton {
+            onClicked: productEntry.addEntry()
+
+            z: 100
+            icon.source: "qrc:/icons/add_circle.svg"
+            icon.width: 36; icon.height: 36
+            flat: true
+            anchors.horizontalCenter: parent.horizontalCenter
+        }
     }
 
     function findIn(model, criteria) {
