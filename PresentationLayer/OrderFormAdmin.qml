@@ -2,6 +2,7 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 import QtQuick.Dialogs
+import com.cara
 import "qrc:/payment" as Payments
 import "qrc:/customers"
 import "qrc:/singleton"
@@ -13,7 +14,7 @@ Page {
     readonly property bool isCredited: paymentStatus.buttonText === "Abono"
     readonly property bool isPaid: paymentStatus.buttonText === "Pago"
     readonly property int amount: amountField.text ? amountField.text : 0
-    readonly property int total: amountField.text ? addOrder.totalToPay - amount : addOrder.totalToPay
+    readonly property int total: amountField.text ? addProductView.totalToPay - amount : addProductView.totalToPay
 
     header: AddOrderHeader {}
 
@@ -32,8 +33,9 @@ Page {
             }
 
             AddProductView {
-                id: addOrder
+                id: addProductView
                 Layout.fillWidth: true
+                Layout.fillHeight: true
                 Layout.topMargin: 20
                 Layout.minimumHeight: 250
             }
@@ -41,6 +43,7 @@ Page {
             Payments.PaymentStatus {
                 id: paymentStatus
                 Layout.alignment: Qt.AlignCenter
+                Layout.fillWidth: true
                 Layout.topMargin: 40
             }
 
@@ -80,34 +83,64 @@ Page {
             Button {
                 id: okBtn
                 text: "Aceptar"
-                onClicked: validateForm()
+                onClicked: if (validateForm()) okHandler()
                 Layout.fillWidth: true
                 Layout.bottomMargin: 30
             }
         }
     }
 
+    OrderAPI {
+        id: request
+
+        onOrderCreated: function(r) {
+            message.text = "Orden realizada con exito";
+            message.informativeText = "¡Gracias por su compra!";
+            message.detailedText = "Puedes observar el estado de la orden en Ordenes Recientes.";
+            message.open();
+            addProductView.clearOrderForm();
+
+            if (TheCurrentUser.isCostumer && TheCurrentUser.customerId === 0) {
+                TheCurrentUser.customerId = r.customer_id;
+                CurrentUser.customerId = r.customer_id;
+            }
+        }
+
+        onFailed: function(r) {
+            message.text = "No se pudo realizar la accion";
+            message.informativeText = "Error: " + r.message;
+            message.open();
+        }
+    }
+
     MessageDialog {
         id: message
+
+        onButtonClicked: function(btn, role) {
+            switch (btn) {
+            case MessageDialog.Ok:
+                close();
+                break;
+            }
+        }
+
         text: "Datos Invalidos!"
     }
 
     function okHandler() {
-        const details = addOrder.entryFormData();
-
         const fullOrder = {
             customer_id: clientField.currentValue,
-            details,
+            details: addProductView.entryFormData(),
             payment: {
-                amount_to_pay: addOrder.totalToPay,
+                amount_to_pay: addProductView.totalToPay,
                 paid_amount: amount
             }
         };
-
+        print(addProductView.entryFormData())
         if (dateField.length)
             fullOrder.date = dateField.text;
-        print('fullOrder ', JSON.stringify(fullOrder, null, 2));
-        addOrder.request.post("/", fullOrder);
+
+        request.post("/", fullOrder);
     }
 
     function validateForm() {
@@ -116,14 +149,12 @@ Page {
             + " la ordern."
             message.open();
             return false;
-        } else
-        if (paymentStatus.checkState === Qt.Unchecked) {
-            message.informativeText = "Debes seleccionar el estado de la orden.";
+        } else if (!addProductView.productEntries.selectedProductsAreValid()) {
+            message.informativeText = "Debes seleccionar un producto valido.";
             message.open();
             return false;
-        } else
-        if (!addOrder.productEntries.selectedProductsAreValid()) {
-            message.informativeText = "Debes seleccionar un producto valido.";
+        } else if (paymentStatus.checkState === Qt.Unchecked) {
+            message.informativeText = "Debes seleccionar el estado de la orden.";
             message.open();
             return false;
         }
