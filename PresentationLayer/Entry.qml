@@ -19,7 +19,7 @@ RowLayout {
     signal updated(idx: int, entry: var)
     signal deleted(idx: int)
 
-    onEntryValueChanged: if (entryValue?.unit_price) updated(index, {entryValue})
+    onEntryValueChanged: if (entryValue?.unit_price) updated(index, entryValue)
 
     width: ListView.view.width
 
