@@ -21,7 +21,7 @@ CaraApi {
         get("/");
         succeeded.connect(function(resp) {
             mostSellingProductsFetched(resp.statistics.most_selling_products);
-            unpaidBillsFetched(resp.statistics.unpaid_bills);
+            unpaidBillsFetched(resp.statistics.customers);
         });
     }
 }
