@@ -31,6 +31,8 @@ signals:
 private:
     Constants();
 
+    const QString localBase_;
+    const QString remoteBase_;
     QString base_;
     int appWidth_;
     int appHeight_;
