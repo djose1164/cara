@@ -21,22 +21,47 @@ Item {
         anchors.top: header.bottom
         width: root.width
         height: root.height - header.height
-
         header: Label {
-            width: root.width
-            text: "Cuentas sin pagar"
-            padding: 10
+            width: listView.width
+            text: "Estados de Cuentas"
+            wrapMode: Label.WordWrap
+            padding: 12
             font.pointSize: 14
             font.bold: true
-            wrapMode: Label.Wrap
+
+        }
+
+        section {
+            property: "status"
+            criteria: ViewSection.FullString
+            delegate: Label {
+                required property string section
+
+                width: listView.width
+                background: Rectangle { color: "tomato" }
+                color: "white"
+                padding: 12
+                text: section
+                font.pointSize: 12
+                font.bold: true
+            }
         }
         model: unpaidBills
         delegate: Row {
             Label {
-                width: root.width
-                text: `${name}\nCantidad: ${bill_quantity}`
+                width: root.width/2
+                text: `${name}\nCantidad de cuentas: ${bill_quantity}\n`
                 padding: 12
                 wrapMode: Label.Wrap
+            }
+
+            Label {
+                readonly property int toPay: amount_to_pay - paid_amount
+
+                width: root.width/2
+                text: status === "Pago" ? `Total pagado: RD$${paid_amount}`
+                                        : status === "Credito" ? `Total a pagar: RD$${amount_to_pay}`
+                                                               : `Abonado: RD$${paid_amount}\nA pagar: RD$${toPay}`
             }
         }
 
