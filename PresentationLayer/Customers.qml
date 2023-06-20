@@ -1,20 +1,21 @@
 import QtQuick
 import QtQuick.Controls
 import "qrc:/utils"
+import "qrc:/singleton"
 
 HeaderPage {
     id: root
 
     readonly property int fontSize: 12
 
-    Component.onCompleted: customerApi.get("/")
+    Component.onCompleted: if (CustomerManager.modelIsEmpty()) customerApi.get("/")
 
     title: "Clientes"
 
     ListView {
         id: listView
         anchors.fill: parent
-        model: model
+        model: CustomerManager.model
         delegate: SwipeDelegate {
             id: control
 
@@ -92,10 +93,8 @@ HeaderPage {
 
     CustomerAPI {
         id: customerApi
-        onCustomersFetched: customers => model.append(customers);
+        onCustomersFetched: customers => listView.model.append(customers);
     }
-
-    ListModel { id: model }
 
     CustomerEdit {
         id: customerEdit
