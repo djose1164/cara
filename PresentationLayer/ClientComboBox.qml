@@ -16,8 +16,6 @@ ComboBox {
     displayText: currentIndex === -1 ? "Seleccionar Cliente" : currentText
     model: CustomerManager.model
 
-    ListModel { id: model }
-
     CustomerAPI {
         id: customerApi
         onCustomersFetched: customers => CustomerManager.model.append(customers)
