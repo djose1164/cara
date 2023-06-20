@@ -12,7 +12,6 @@ import "qrc:/utils"
 Column {
     id: root
     property int totalToPay: total
-    property alias request: request
     property alias messageDialog: message
 
     property int payment: 2
@@ -63,10 +62,6 @@ Column {
         id: message
         buttons: MessageDialog.Ok
         onButtonClicked: close()
-    }
-
-    OrderAPI {
-        id: request
     }
 
     /**
