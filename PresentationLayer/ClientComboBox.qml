@@ -7,30 +7,20 @@ import com.cara 1.0
 ComboBox {
     id: root
 
-    Component.onCompleted: updateClientField()
+    Component.onCompleted: if (CustomerManager.modelIsEmpty()) customerApi.get("/")
 
     popup.height: 300
     textRole: "name"
     valueRole: "customer_id"
     currentIndex: -1
     displayText: currentIndex === -1 ? "Seleccionar Cliente" : currentText
-    model: model
+    model: CustomerManager.model
 
     ListModel { id: model }
 
     CustomerAPI {
-        id: rest
-        onCustomersFetched: customers => (
-            model.count ? model.set(
-                0,
-                customers) : model.append(
-                customers
-            )
-        )
-    }
-
-    function updateClientField() {
-        rest.get("/")
+        id: customerApi
+        onCustomersFetched: customers => CustomerManager.model.append(customers)
     }
 }
 
