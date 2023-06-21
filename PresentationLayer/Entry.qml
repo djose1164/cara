@@ -65,7 +65,7 @@ RowLayout {
     function find(criteria) {
         for (let i = 0; i < model.count; ++i)
             if (criteria(model.get(i)))
-                return productsModel.get(i);
+                return model.get(i);
         return null;
     }
 
