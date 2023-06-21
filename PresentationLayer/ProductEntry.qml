@@ -19,7 +19,6 @@ ScrollView {
     Component.onCompleted: entries.append({quantity: 1, unit_price: 0, product_id: 0})
 
     ListView {
-        readonly property ListModel productsModel: productModel.model
         property alias entries: entries
         anchors.fill: parent
         spacing: 5
