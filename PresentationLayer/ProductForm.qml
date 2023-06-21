@@ -4,6 +4,7 @@ import QtQuick.Layouts
 import QtQuick.Dialogs
 import "qrc:/utils" as Utils
 import "qrc:/main"
+import "qrc:/singleton"
 
 Page {
     property var pageHeaderView
@@ -70,12 +71,14 @@ Page {
 
     MessageDialog {
         id: messageDialog
-        onAccepted: close()
+        onButtonClicked: close()
     }
 
     ProductRequest {
         id: productRequest
         request.onSucceeded: {
+            ProductManager.updateModel();
+
             messageDialog.text = "Producto guardado.";
             messageDialog.informativeText = "Puedes chequear el producto desde Inventario.";
             messageDialog.open();
