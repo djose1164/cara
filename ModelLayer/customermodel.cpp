@@ -191,7 +191,9 @@ void CustomerModel::insert(int index, CustomerEntity * const customer)
 
 void CustomerModel::clear()
 {
+    emit beginResetModel();
     data_.clear();
+    emit endResetModel();
 }
 
 QHash<int, QByteArray> CustomerModel::roleNames() const
