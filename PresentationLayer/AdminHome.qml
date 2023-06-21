@@ -61,7 +61,7 @@ Home {
                 Image {
                     anchors.centerIn: parent
                     source: column.source
-                    sourceSize: "48x48"
+                    sourceSize: "50x50"
                 }
 
                 TapHandler { onTapped: mainView.push(path) }
@@ -87,15 +87,9 @@ Home {
         }
 
         ListElement {
-            source: "qrc:/icons/new_product.svg"
-            path: "qrc:/product/ProductForm.qml"
-            name: "Agregar Producto"
-        }
-
-        ListElement {
-            source: "qrc:/icons/person_add.svg"
-            path: "qrc:/customers/CustomerForm.qml"
-            name: "Agregar Cliente"
+            source: "qrc:/icons/customers.svg"
+            path: "qrc:/customers/Customers.qml"
+            name: "Clientes"
         }
 
         ListElement {
@@ -108,6 +102,12 @@ Home {
             source: "qrc:/icons/supplier.svg"
             path: "qrc:/provider/Providers.qml"
             name: "Proveedores"
+        }
+
+        ListElement {
+            source: "qrc:/icons/statistics.svg"
+            path: "qrc:/statistics/Statistics.qml"
+            name: "Estadisticas"
         }
     }
 }

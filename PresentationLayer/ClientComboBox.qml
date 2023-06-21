@@ -4,35 +4,22 @@ import "qrc:/utils"
 import "qrc:/singleton"
 import com.cara 1.0
 
-Item {
-    property alias currentText: clientField.currentText
-    property alias currentValue: clientField.currentValue
+ComboBox {
+    id: root
 
-    Component.onCompleted: updateClientField()
+    Component.onCompleted: if (CustomerManager.modelIsEmpty()) customerApi.get("/")
 
-    ComboBox {
-        id: clientField
-        anchors.fill: parent
-        editable: true
-        currentIndex: 0
-        textRole: "name"
-        valueRole: "customer_id"
-        model: model
-    }
+    popup.height: 300
+    textRole: "name"
+    valueRole: "customer_id"
+    currentIndex: -1
+    displayText: currentIndex === -1 ? "Seleccionar Cliente" : currentText
+    model: CustomerManager.model
 
-    ListModel { id: model }
-
-    CaraApi {
-        id: rest
-        endpoint: "/customers/info"
-        accessToken: CurrentUser.accessToken
-        onSucceeded: resp => model.count ? model.set(
-                                               0,
-                                               resp.customers) : model.append(
-                                               resp.customers)
-    }
-
-    function updateClientField() {
-        rest.get("/")
+    CustomerAPI {
+        id: customerApi
+        onCustomersFetched: customers => CustomerManager.model.append(customers)
     }
 }
+
+

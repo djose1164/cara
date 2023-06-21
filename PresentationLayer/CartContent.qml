@@ -8,6 +8,7 @@ import "qrc:/singleton"
 ListView {
     id: root
 
+    spacing: 5
     model: CartBusiness.model
     delegate: ProductCard {
         required property var model

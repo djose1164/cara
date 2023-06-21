@@ -1,9 +1,11 @@
 import QtQuick
+import com.cara
 import "qrc:/utils"
 
 CaraApi {
     id: api
     endpoint: "/orders/buy"
+    accessToken: CurrentUser.accessToken
 
     signal buyOrderCreated(buyOrder: var)
     signal buyOrdersFetched(buyOrders: var)

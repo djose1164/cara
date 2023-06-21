@@ -6,21 +6,15 @@ import "qrc:/singleton"
 Item {
     id: root
     property alias request: request
-    property alias model: model
 
-    signal succeeded()
+    signal succeeded(products: var)
 
     CaraApi {
         id: request
         endpoint: "/products"
         accessToken: TheCurrentUser.accessToken
-        onSucceeded: resp => {
-            model.append(resp.products);
-            root.succeeded();
-        }
+        onSucceeded: resp => root.succeeded(resp.products);
     }
-
-    ListModel { id: model }
 
     function addProduct(name, desc, buy, sell) {
         const obj = {
@@ -34,8 +28,7 @@ Item {
 
     function findProductByIdentifier(text) {
         print("findProductByIdentifier " + text);
-        model.clear();
-        request.get("/" + text, null, r => model.append(r.products));
+        request.get("/" + text, null, r => root.succeeded(r.products));
     }
     
     function addSuggetionsToModel() {

@@ -5,22 +5,24 @@ import "qrc:/orders"
 
 ScrollView {
     id: root
+
     readonly property alias count: entries.count
     readonly property int total: {
         let partial_total = 0;
         for (let i = 0; i < entries.count; ++i) {
-            const current = entryValueAt(i);
+            const current = entries.get(i);
             partial_total += current.quantity * current.unit_price;
         }
         return partial_total;
     }
 
+    Component.onCompleted: entries.append({quantity: 1, unit_price: 0, product_id: 0})
+
     ListView {
-        readonly property ListModel productsModel: productModel.model
         property alias entries: entries
         anchors.fill: parent
         spacing: 5
-        model: numEntries
+        model: entries
         delegate: Entry {
             onUpdated: (idx, entryValue) => entries.set(idx, entryValue)
             onDeleted: idx => pop(idx)
@@ -29,24 +31,19 @@ ScrollView {
 
     ListModel { id: entries }
 
-    ListModel {
-        id: numEntries
-        ListElement { idx: 0 }
-    }
-
     ProductRequest {
         id: productModel
         Component.onCompleted: addSuggetionsToModel()
     }
 
     function addEntry(): void {
-        numEntries.append({idx: numEntries.count});
+        entries.append({idx: entries.count});
     }
 
     function pop(idx) {
-        if (numEntries.count === 1)
+        if (entries.count === 1)
             return;
-        numEntries.remove(idx);
+
         entries.remove(idx);
     }
 
@@ -54,19 +51,29 @@ ScrollView {
         return entries.get(idx);
     }
 
-    function entryValueAt(idx: int): var {
-        return entryAt(idx).entryValue;
-    }
-
     function entryValues(): var {
         const data = [];
         for (let i = 0; i < count; ++i)
-            data.push(entryValueAt(i));
+            data.push(newEntryValue(entryAt(i)));
         return data;
+    }
+
+    function newEntryValue(entry) {
+        return JSON.parse(
+            JSON.stringify(entry)
+        )
     }
 
     function resetEntries() {
         for (let i = count; i !== 0; --i)
-            pop(i);
+            entries.remove(idx);
+    }
+
+    function selectedProductsAreValid() {
+        for (let i = 0; i < entries.count; ++i)
+            if (!entryAt(i).product_id)
+                return false;
+
+        return true;
     }
 }

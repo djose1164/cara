@@ -63,7 +63,6 @@ void PaymentBusiness::update()
 
 void PaymentBusiness::setAsPaid()
 {
-    qDebug() << "PaymentBusiness: setting as paid.";
     payment_->setPaidAmount(payment_->amountToPay());
     patch();
 }

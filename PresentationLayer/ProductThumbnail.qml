@@ -1,35 +1,41 @@
 import QtQuick
 import QtQuick.Controls
+import QtQuick.Layouts
 import "qrc:/product"
+import "qrc:/utils"
 
-Rectangle {
+BusyStackLayout {
     id: root
-    property alias name: name.text
+    property string name
     property alias detailed: detailed.text
     property alias source: productImage.source
 
     width: 200
-    height: 70
+    height: 120
 
-    ProductImage {
-        id: productImage
-        anchors.left: root.left
-        anchors.leftMargin: 5
-        anchors.verticalCenter: root.verticalCenter
-        sourceSize: "100x100"
-    }
+    GridLayout {
+        id: row
+        columns: 2
 
-    Column {
-        anchors.left: productImage.right
-        anchors.leftMargin: 10
+        ProductImage {
+            id: productImage
+            onReady:  root.currentIndex = 1
+            Layout.rowSpan: 2
+            sourceSize: "100x100"
+        }
 
         Label {
-            id: name
+            Layout.fillWidth: true
+            text: name
             font.bold: true
+            wrapMode: Label.Wrap
         }
 
         Label {
             id: detailed
+            Layout.fillWidth: true
+            wrapMode: Label.Wrap
+            padding: 6
         }
     }
 }
