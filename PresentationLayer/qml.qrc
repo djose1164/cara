@@ -145,6 +145,7 @@
         <file>TheCurrentUser.qml</file>
         <file>ViewManager.qml</file>
         <file>CustomerManager.qml</file>
+        <file>ProductManager.qml</file>
     </qresource>
     <qresource lang="qml" prefix="/statistics">
         <file>Statistics.qml</file>
