@@ -12,4 +12,8 @@ CaraApi {
     endpoint: "/customers/info"
     accessToken: CurrentUser.accessToken
     onSucceeded: resp => customersFetched(resp.customers)
+
+    function fetchCustomers() {
+        get("/");
+    }
 }
