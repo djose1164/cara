@@ -101,4 +101,13 @@ HeaderPage {
         width: root.width
         height: root.height
     }
+
+    Connections {
+        target: CustomerManager
+
+        function onUpdateModel() {
+            CustomerManager.model.clear();
+            customerApi.fetchCustomers();
+        }
+    }
 }
