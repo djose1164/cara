@@ -3,6 +3,7 @@ import QtQuick.Layouts
 import QtQuick.Controls
 import Qt.labs.qmlmodels
 import com.cara 1.0
+import "qrc:/utils"
 
 ListView {
     id: root
@@ -40,16 +41,8 @@ ListView {
 
     model: billModel
 
-    Pane {
+    RefreshIndicator {
         id: refreshIcon
-        width: parent.width
-        height: 40
-        visible: false
-
-        Image {
-            anchors.centerIn: parent
-            source: "qrc:/icons/refresh_black_24dp.svg"
-        }
     }
 
     BillModel {

@@ -41,4 +41,19 @@ Page {
         }
         }
     }
+
+    RoundButton {
+        onClicked: stackView.push("qrc:/product/ProductForm.qml")
+        anchors {
+            bottom: parent.bottom
+            bottomMargin: 15
+            right: parent.right
+            rightMargin: 10
+        }
+        Material.background: Material.Blue
+        Material.foreground: "white"
+        icon.source: "qrc:/icons/new_product.svg"
+        icon.width: 24
+        icon.height: 24
+    }
 }

@@ -47,9 +47,11 @@ Constants *Constants::instance()
 }
 
 Constants::Constants()
-    : base_{"https://cara-rd.live/api"}
-    , appWidth_{360}
-    , appHeight_{640}
+    : localBase_{"http://127.0.0.1:5000"}
+    , remoteBase_{"https://cara-api-pr-17.onrender.com"}
+    , appWidth_{400}
+    , appHeight_{680}
 {
+    base_ = remoteBase_ + "/api";
 }
 

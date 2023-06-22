@@ -31,7 +31,7 @@ BusyStackLayout {
         stackView: root.stackView
     }
 
-    Customers {
+    CustomersView {
         id: customerView
         onModelPopulated: gotoCustomersView();
         stackView: root.stackView

@@ -37,7 +37,7 @@ Item {
             id: listView
             readonly property StackView stackView: root.stackView
 
-            model: productRequest.model
+            model: model
             delegate: ProductDelegate {}
             orientation: ListView.Horizontal
         }
@@ -45,6 +45,11 @@ Item {
 
     ProductRequest {
         id: productRequest
-        onSucceeded: offerStackLayout.currentIndex = 1
+        onSucceeded: function (products) {
+            model.append(products);
+            offerStackLayout.currentIndex = 1;
+        }
     }
+
+     ListModel { id: model }
 }

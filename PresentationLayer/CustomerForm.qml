@@ -4,8 +4,8 @@ import QtQuick.Layouts
 import QtQuick.Dialogs
 import "qrc:/utils"
 import "qrc:/customers"
+import "qrc:/singleton"
 import "qrc:/main"
-
 
 Page {
     id: root
@@ -83,7 +83,9 @@ Page {
     }
 
     function clientCreated(response) {
+        CustomerManager.updateModel();
         busyIndicator.close();
+
         if (response.code === "success") {
             messageDialog.text = "Cliente agregado con exito!";
         } else {
@@ -92,6 +94,7 @@ Page {
                     + "datos obligatorios.";
             imgURL = "qrc:/icons/error.svg"
         }
+
         messageDialog.open()
     }
 }

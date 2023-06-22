@@ -112,7 +112,8 @@ Popup {
                 text: "Ok"
                 onClicked: {
                     newPayment.text = "0";
-                    paymentRequest.patchPayment(0);
+                    paidAmount = 0;
+                    paymentRequest.setAsUnpaid();
                 }
             }
         }
@@ -125,7 +126,7 @@ Popup {
         onPatchSucceeded: {
             paidAmount = wantsToPay;
             clean();
-            paymentPatched(wantsToPay);
+            paymentPatched(paymentEntity.paidAmount);
             stackLayout.currentIndex = 2;
 
         }

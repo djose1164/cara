@@ -1,6 +1,8 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
+import "qrc:/singleton"
+import "qrc:/product"
 
 RowLayout {
     id: root
@@ -13,28 +15,32 @@ RowLayout {
     }
     readonly property int total: price * quantity
     required property int index
-    readonly property ListModel productsModel: ListView.view.productsModel
+    readonly property ListModel model: ProductManager.model
 
     signal created(entry: var)
     signal updated(idx: int, entry: var)
     signal deleted(idx: int)
 
-    onEntryValueChanged: if (entryValue?.unit_price) updated(index, {entryValue})
+    Component.onCompleted: if (ProductManager.modelIsEmpty()) productRequest.addSuggetionsToModel()
+    onEntryValueChanged: if (entryValue?.unit_price) updated(index, entryValue)
 
     width: ListView.view.width
-    spacing: width*.05
+
     ComboBox {
         id: productField
         Layout.fillWidth: true
-        model: root.productsModel
+        model: ProductManager.model
         textRole: "name"
         valueRole: "sell_price"
-        currentIndex: 0
+        currentIndex: -1
+        displayText: currentIndex === -1 ? "Seleccionar Producto" : currentText
     }
 
     SpinBox {
         id: quantityField
         Layout.preferredHeight: productField.height
+        Layout.maximumWidth: root.width*.3
+        Layout.minimumWidth: 100
         from: 1
         editable: true
         Layout.preferredWidth: root.width*.4
@@ -51,10 +57,15 @@ RowLayout {
         Layout.alignment: Qt.AlignTrailing
     }
 
+    ProductRequest {
+        id: productRequest
+        onSucceeded: products => ProductManager.modelAppend(products)
+    }
+
     function find(criteria) {
-        for (let i = 0; i < productsModel.count; ++i)
-            if (criteria(productsModel.get(i)))
-                return productsModel.get(i);
+        for (let i = 0; i < model.count; ++i)
+            if (criteria(model.get(i)))
+                return model.get(i);
         return null;
     }
 

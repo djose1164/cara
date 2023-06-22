@@ -1,37 +1,113 @@
 import QtQuick
 import QtQuick.Controls
-import QtQuick.Layouts
-import com.cara 1.0
+import "qrc:/utils"
+import "qrc:/singleton"
 
-ListView {
+HeaderPage {
     id: root
 
-    property StackView stackView
+    readonly property int fontSize: 12
 
-    signal modelPopulated
+    Component.onCompleted: if (CustomerManager.modelIsEmpty()) customerApi.get("/")
 
-    delegate: BillDelegate {
-        required property string forename
-        required property string surname
-        required bills
-        required customerId
+    title: "Clientes"
 
-        name: forename + surname
+    ListView {
+        id: listView
+        anchors.fill: parent
+        model: CustomerManager.model
+        delegate: SwipeDelegate {
+            id: control
+
+            required property int customer_id
+            required property string name
+
+            width: listView.width
+            text: `${name}\nClient ID: ${customer_id}`
+            contentItem: Label {
+                width: control.width
+                text: control.text
+                font.pointSize: fontSize
+            }
+
+            swipe.right: Row {
+                component SwipeLabel: Label {
+                    property alias backgroundColor: background.color
+
+                    height: parent.height
+                    font.pointSize: fontSize
+                    verticalAlignment: Label.AlignVCenter
+                    padding: 12
+                    color: "white"
+                    background: Rectangle {
+                        id: background
+                        color: "blue"
+                    }
+                }
+
+                height: parent.height
+                anchors.right: parent.right
+
+                SwipeLabel {
+                    text: "Editar"
+                    backgroundColor: "blue"
+                    SwipeDelegate.onClicked: {
+                        customerEdit.customerId = control.customer_id;
+                        customerEdit.open();
+                    }
+                }
+
+                SwipeLabel {
+                    text: "Eliminar"
+                    backgroundColor: 'tomato'
+                }
+            }
+        }
+
+        Label {
+            width: listView.width * .9
+            anchors.centerIn: parent
+            visible: listView.count === 0
+            text: "La lista de clientes esta vacia. Inteta agregar uno nuevo."
+            font.pointSize: 14
+            wrapMode: Label.Wrap
+        }
     }
 
-    model: customerModel
+    RoundButton {
+        onClicked: stackView.push("qrc:/customers/CustomerForm.qml")
 
-    CustomerModel {
-        id: customerModel
+        anchors {
+            right: parent.right
+            rightMargin: 10
+            bottom: parent.bottom
+            bottomMargin: 15
+        }
 
-        onPopulated: modelPopulated();
+        icon.source: "qrc:/icons/person_add.svg"
+        icon.width: 30
+        icon.height: 30
+        Material.background: Material.Blue
+        Material.foreground: "white"
     }
 
-    function populateModel() {
-        customerModel.populate();
+    CustomerAPI {
+        id: customerApi
+        onCustomersFetched: customers => listView.model.append(customers);
     }
 
-    function clearModel() {
-        customerModel.clear();
+    CustomerEdit {
+        id: customerEdit
+        width: root.width
+        height: root.height
+    }
+
+    Connections {
+        target: CustomerManager
+
+        function onUpdateModel() {
+            CustomerManager.model.clear();
+            customerApi.fetchCustomers();
+        }
     }
 }

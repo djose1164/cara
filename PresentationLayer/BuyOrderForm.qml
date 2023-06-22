@@ -3,6 +3,8 @@ import QtQuick.Controls
 import QtQuick.Layouts
 import "qrc:/provider"
 import "qrc:/payment"
+import "qrc:/utils"
+import "qrc:/product"
 
 Drawer {
     id: root
@@ -22,21 +24,13 @@ Drawer {
 
     interactive: false
 
-    RoundButton {
+    CloseButton {
         id: closeBtn
         onClicked: root.close()
+
         anchors {
             top: parent.top
             right: parent.right
-        }
-
-        flat: true
-        font.pointSize: 16
-
-        IconImage {
-            anchors.centerIn: parent
-            source: "qrc:/crossIcon"
-            sourceSize: "24x24"
         }
     }
 
@@ -108,7 +102,7 @@ Drawer {
             font.bold: true
         }
 
-        Description {
+        AddProductView {
             id: entry
             Layout.fillWidth: true
             Layout.fillHeight: true
