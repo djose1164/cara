@@ -86,6 +86,7 @@
         <file>ContactForm.qml</file>
         <file>CloseButton.qml</file>
         <file>Header.qml</file>
+        <file>RefreshIndicator.qml</file>
     </qresource>
     <qresource prefix="/payment">
         <file>PaymentStatus.qml</file>
