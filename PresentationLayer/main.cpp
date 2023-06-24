@@ -10,7 +10,7 @@ int main(int argc, char *argv[])
     app.setOrganizationDomain("cara.com");
     app.setOrganizationName("Cara");
     app.setApplicationName("Cara");
-    app.setApplicationVersion("0.7.0");
+    app.setApplicationVersion("0.11.0");
     qputenv("QT_NO_ANDROID_TEXT_HANDLES", "1");
 
     QQuickStyle::setStyle("Material");
