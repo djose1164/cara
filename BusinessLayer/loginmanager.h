@@ -1,7 +1,7 @@
 #ifndef LOGINMANAGER_H
 #define LOGINMANAGER_H
 
-#include "rest.h"
+#include "auth.h"
 #include <QObject>
 #include <QQmlEngine>
 #include <QObjectBindableProperty>
@@ -23,8 +23,10 @@ public:
     {
         LoggedIn,
         LoggedOut,
-        AuthFailed
+        InvalidCredentials,
+        NotRegistered
     };
+    Q_ENUM(Status)
 
     explicit LoginManager(QObject *parent = nullptr);
 
@@ -38,11 +40,17 @@ public slots:
 signals:
     void statusChanged();
     void loginRequested();
-    void responseReady();
+
+    void loggedIn(const QVariantMap &resp);
+    void loggedOut();
+    void invalidCredentials();
+    void notRegistered();
+    void authenticationDone();
 
 private:
-    Q_OBJECT_BINDABLE_PROPERTY(LoginManager, LoginManager::Status, status_, &LoginManager::statusChanged);
-    Rest *rest_;
+    Q_OBJECT_BINDABLE_PROPERTY(LoginManager, Status, status_, &LoginManager::statusChanged);
+
+    BusinessLayer::Auth *auth_;
 };
 
 #endif // LOGINMANAGER_H
