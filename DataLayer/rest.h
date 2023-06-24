@@ -52,6 +52,7 @@ signals:
     void headersChanged();
 
     void sent();
+    void finished();
     void received(const QVariantMap &data);
     void succeeded(const QVariantMap &data);
 
@@ -90,7 +91,6 @@ private:
     QNetworkAccessManager manager_;
     QNetworkReply *reply_;
 
-    std::unique_ptr<QVariantMap> buffer_;
     std::unique_ptr<QTimer> timer_;
 };
 
