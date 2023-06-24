@@ -11,7 +11,7 @@ BusinessLayer::Auth::Auth(QObject *parent)
     connect(caraApi_, &Rest::succeeded, this, &Auth::authenticated);
     connect(caraApi_, &Rest::unauthorized, this, &Auth::invalidCredentials);
     connect(caraApi_, &Rest::notFound, this, &Auth::notFound);
-    connect(caraApi_, &Rest::received, this, &Auth::authenticationDone);
+    connect(caraApi_, &Rest::finished, this, &Auth::authenticationDone);
 }
 
 void BusinessLayer::Auth::setUserEntity(EntityLayer::UserEntity *userEntity)
@@ -26,16 +26,6 @@ void BusinessLayer::Auth::setUserEntity(EntityLayer::UserEntity *userEntity)
 EntityLayer::UserEntity *BusinessLayer::Auth::userEntity() const
 {
     return userEntity_;
-}
-
-QVariantMap BusinessLayer::Auth::response() const
-{
-    return response_.value();
-}
-
-QBindable<QVariantMap> BusinessLayer::Auth::bindableResponse()
-{
-    return &response_;
 }
 
 void BusinessLayer::Auth::authenticate()
