@@ -59,12 +59,14 @@ signals:
     void failed(const QVariantMap &data); // Handle any error
     void unauthorized(); // 401
     void serviceUnavailable(); // 503
+    void notFound(); // 404
+    void errorOccurred(QNetworkReply::NetworkError error); // Forward error
 
     void timeout();
 
 private slots:
     void replyFinished();
-    void errorOccurred(QNetworkReply::NetworkError error);
+    void error(QNetworkReply::NetworkError error);
 
 public slots:
     void request(Rest::Verb verb, const QString &endpoint, const QVariant &obj=QVariant{});
