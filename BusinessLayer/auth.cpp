@@ -3,9 +3,15 @@
 
 BusinessLayer::Auth::Auth(QObject *parent)
     : QObject{parent}
+    , caraApi_{new Rest(this)}
 {
     const QString base{Constants::instance()->base()};
-    caraApi_.base(base + "/users/login");
+    caraApi_->base(base + "/users/login");
+
+    connect(caraApi_, &Rest::succeeded, this, &Auth::authenticated);
+    connect(caraApi_, &Rest::unauthorized, this, &Auth::invalidCredentials);
+    connect(caraApi_, &Rest::notFound, this, &Auth::notFound);
+    connect(caraApi_, &Rest::received, this, &Auth::authenticationDone);
 }
 
 void BusinessLayer::Auth::setUserEntity(EntityLayer::UserEntity *userEntity)
@@ -22,6 +28,16 @@ EntityLayer::UserEntity *BusinessLayer::Auth::userEntity() const
     return userEntity_;
 }
 
+QVariantMap BusinessLayer::Auth::response() const
+{
+    return response_.value();
+}
+
+QBindable<QVariantMap> BusinessLayer::Auth::bindableResponse()
+{
+    return &response_;
+}
+
 void BusinessLayer::Auth::authenticate()
 {
     if (!userEntity_)
@@ -31,7 +47,6 @@ void BusinessLayer::Auth::authenticate()
         {"username", userEntity_->username()},
         {"password", userEntity_->password()}
     };
-    caraApi_.post("/", entity);
 
-    QObject::connect(&caraApi_, &Rest::succeeded, this, &Auth::authenticated);
+    caraApi_->post("/", entity);
 }

@@ -4,15 +4,11 @@
 #include "rest.h"
 #include "userentity.h"
 #include <QObject>
-#include <QtQml>
 
 namespace BusinessLayer {
 class Auth : public QObject
 {
     Q_OBJECT
-    QML_ELEMENT
-
-    Q_PROPERTY(EntityLayer::UserEntity *userEntity READ userEntity WRITE setUserEntity NOTIFY userEntityChanged)
 
 public:
     explicit Auth(QObject *parent = nullptr);
@@ -24,13 +20,15 @@ signals:
     void userEntityChanged();
 
     void authenticated(const QVariantMap &resp);
-    void invalid();
+    void notFound();
+    void invalidCredentials();
+    void authenticationDone();
 
 public slots:
     void authenticate();
 
 private:
-    Rest caraApi_;
+    Rest *caraApi_;
     EntityLayer::UserEntity *userEntity_;
 };
 }
