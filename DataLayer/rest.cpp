@@ -130,7 +130,7 @@ void Rest::request(Rest::Verb verb, const QString &endpoint, const QVariant &obj
 
     connect(reply_, &QNetworkReply::requestSent, this, &Rest::sent);
     connect(reply_, &QNetworkReply::finished, this,  &Rest::replyFinished);
-    connect(reply_, &QNetworkReply::errorOccurred, this, &Rest::errorOccurred);
+    connect(reply_, &QNetworkReply::errorOccurred, this, &Rest::error);
 }
 
 void Rest::get(const QString &endpoint)
@@ -150,7 +150,6 @@ void Rest::put(const QString &endpoint, const QVariantMap &obj)
 
 void Rest::patch(const QString &endpoint, const QVariantMap &obj)
 {
-    qInfo() << "Rest::patch";
     request(Verb::PATCH, endpoint, obj);
 }
 
@@ -176,17 +175,19 @@ void Rest::replyFinished()
     reply_->deleteLater();
 }
 
-void Rest::errorOccurred(QNetworkReply::NetworkError error)
+void Rest::error(QNetworkReply::NetworkError error)
 {
-    qWarning() << "Rest: " << reply_->errorString();
+    emit errorOccurred(error);
 
     if (!reply_->isReadable())
     {
+        qWarning() << "Rest: " << reply_->errorString();
+
         buffer_ = std::make_unique<QVariantMap>();
         buffer_->insert("code", error);
         buffer_->insert("message", reply_->errorString());
     }
-    else
+    else if (reply_->isOpen())
     {
         auto reply{reply_->readAll()};
 
@@ -203,6 +204,8 @@ void Rest::errorOccurred(QNetworkReply::NetworkError error)
         emit serviceUnavailable();
     else if (error == QNetworkReply::OperationCanceledError)
         emit timeout();
+    else if (error == QNetworkReply::ContentNotFoundError)
+        emit notFound();
 }
 
 void Rest::refreshAccessToken()
@@ -220,7 +223,6 @@ void Rest::refreshAccessToken()
     const auto url{base + "/users/refresh/"};
 
     QNetworkRequest req{QUrl{url}};
-    qDebug() << "Rest: url " << url;
 
     req.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
     req.setRawHeader("Authorization", refreshToken_.toUtf8());
