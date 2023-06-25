@@ -15,7 +15,10 @@ ApplicationWindow {
 
     property string iconSize: "24x24"
 
-    Component.onCompleted: ViewManager.mainView = mainStackView
+    Component.onCompleted: {
+        loginSetup();
+        ViewManager.mainView = mainStackView;;
+    }
 
     StackView {
         id: mainStackView
@@ -45,5 +48,10 @@ ApplicationWindow {
     Shortcut {
         sequence: StandardKey.Quit
         onActivated: Qt.quit()
+    }
+
+    function loginSetup() {
+        if (LoginManager.hasPreviousLogin())
+            LoginManager.requestLoginFromSettings();
     }
 }
