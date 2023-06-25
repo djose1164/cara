@@ -26,6 +26,7 @@ signals:
 
 public slots:
     void authenticate();
+    void authenticate(const QString &token);
 
 private:
     Rest *caraApi_;
