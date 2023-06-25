@@ -5,9 +5,6 @@ BusinessLayer::Auth::Auth(QObject *parent)
     : QObject{parent}
     , caraApi_{new Rest(this)}
 {
-    const QString base{Constants::instance()->base()};
-    caraApi_->base(base + "/users/login");
-
     connect(caraApi_, &Rest::succeeded, this, &Auth::authenticated);
     connect(caraApi_, &Rest::unauthorized, this, &Auth::invalidCredentials);
     connect(caraApi_, &Rest::notFound, this, &Auth::notFound);
@@ -38,5 +35,15 @@ void BusinessLayer::Auth::authenticate()
         {"password", userEntity_->password()}
     };
 
+    const QString base{Constants::instance()->base()};
+    caraApi_->base(base + "/users/login");
     caraApi_->post("/", entity);
+}
+
+void BusinessLayer::Auth::authenticate(const QString &token)
+{
+    const QString base{Constants::instance()->base()};
+    caraApi_->base(base + "/users/refresh");
+    caraApi_->setHeaders({{"Authorization", token}});
+    caraApi_->get("/");
 }
