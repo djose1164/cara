@@ -18,7 +18,6 @@ Rest::Rest(QObject *parent)
     , message_{}
     , manager_{}
     , reply_{nullptr}
-    , buffer_{nullptr}
     , timer_{std::make_unique<QTimer>(this)}
 {
     timer_->start(840'000);
@@ -163,40 +162,25 @@ void Rest::replyFinished()
     if (!reply_->isOpen())
         return;
 
-    auto reply{reply_->readAll()};
-    const auto doc{QJsonDocument::fromJson(reply)};
-    buffer_ = std::make_unique<QVariantMap>(doc.toVariant().toMap());
+    const auto doc{QJsonDocument::fromJson(reply_->readAll())};
+    auto buffer{doc.toVariant().toMap()};
 
-    emit received(*buffer_);
+    emit received(buffer);
 
     if (reply_->error() == QNetworkReply::NoError)
-        emit succeeded(*buffer_);
+        emit succeeded(buffer);
+    else
+       emit failed(buffer);
 
+    emit finished();
     reply_->deleteLater();
 }
 
 void Rest::error(QNetworkReply::NetworkError error)
 {
+    qWarning() << "Rest: " << error;
+
     emit errorOccurred(error);
-
-    if (!reply_->isReadable())
-    {
-        qWarning() << "Rest: " << reply_->errorString();
-
-        buffer_ = std::make_unique<QVariantMap>();
-        buffer_->insert("code", error);
-        buffer_->insert("message", reply_->errorString());
-    }
-    else if (reply_->isOpen())
-    {
-        auto reply{reply_->readAll()};
-
-        const auto doc{QJsonDocument::fromJson(reply)};
-        buffer_ = std::make_unique<QVariantMap>(doc.toVariant().toMap());
-    }
-
-    reply_->deleteLater();
-    emit failed(*buffer_);
 
     if (error == QNetworkReply::AuthenticationRequiredError)
         emit unauthorized();
