@@ -2,12 +2,11 @@
 #define CURRENTUSER_H
 
 #include "auth.h"
-#include "userentity.h"
 
 #include <QObject>
 #include <QtQml>
 
-class CurrentUser : public EntityLayer::UserEntity
+class CurrentUser : public QObject
 {
     Q_OBJECT
 
@@ -24,12 +23,14 @@ public:
     void setAccessToken(const QString &token);
     QBindable<QString> bindableAccessToken();
 
-    Q_INVOKABLE bool isLoggedIn() const;
+    EntityLayer::UserEntity *user() const;
+    void setUser(EntityLayer::UserEntity *const user);
 
 public slots:
     void logOut();
     void fillUserInfo(const QVariantMap &user);
     void save();
+    void clear();
 
 private:
     CurrentUser();
@@ -67,7 +68,7 @@ private:
 
     static CurrentUser *instance_;
 
-    Q_OBJECT_BINDABLE_PROPERTY(CurrentUser, bool, isCustomer_, &CurrentUser::isCustomerChanged)
+    EntityLayer::UserEntity *user_;
 };
 
 #endif // CURRENTUSER_H
