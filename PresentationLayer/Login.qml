@@ -10,16 +10,6 @@ Item {
     id: root
     readonly property bool areInputsValid: usernameInput.text !== ""
                                            && passwordInput.text !== ""
-    readonly property var handlers : {
-        "success": successHandler,
-        "no_internet": noInternetHandler,
-        "credentialsNotValid": failedHandler,
-        "invalidInput": failedHandler,
-        "notFound": () => popup.text = "Cuenta no registrada.",
-    }
-
-    //width: parent.width > parent.height ? parent.width/2 : parent.width
-    //height: parent.height > parent.width ? parent.height*.95 : parent.height*.6
 
     Image {
         id:loginLbl
@@ -70,9 +60,16 @@ Item {
 
         Button {
             id: loginBtn
+
+            onClicked: {
+                if (areInputsValid) {
+                    requestAuthentication();
+                } else {
+                    usernameInput.focus = true;
+                }
+            }
             text: "Iniciar Sesion"
             font.pointSize: 12
-            onClicked: areInputsValid ? requestAuthentication() : usernameInput.focus = true
             Layout.alignment: Qt.AlignCenter
             font.capitalization: Font.MixedCase
             Material.background: Material.Blue
@@ -88,23 +85,35 @@ Item {
         }
     }
 
-    MessageDialog { id: popup }
+    MessageDialog {
+        id: popup
+        text: switch (LoginManager.status) {
+            case LoginManager.InvalidCredentials:
+                return "Contrasena incorrecta.";
+            case LoginManager.NotRegistered:
+                return "Cuenta no registrada.";
+            default:
+                return LoginManager.status;
+        }
+    }
 
-    Auth {
-        id: auth
-        userEntity: UserEntity {
-            username: usernameInput.text
-            password: passwordInput.text
+    Connections {
+        target: LoginManager
+
+        function onLoggedIn(resp) {
+            print("LoginManager: onLoggedIn: logeado");
+            popup.informativeText = "estas logeado"
+//            CurrentUser.fillUserInfo(resp);
+//            TheCurrentUser.init(resp);
+//            TheCurrentUser.isLoggedIn = true;
+//            successHandler();
         }
 
-        onAuthenticated: r => {
-                             busyIndicator.close()
-                             CurrentUser.fillUserInfo(r);
-                             TheCurrentUser.init(r);
-                             TheCurrentUser.isLoggedIn = true;
-                             successHandler();
-                         }
-        onInvalid: popup.open()
+        function onAuthenticationDone() {
+            busyIndicator.close();
+            if (LoginManager.status !== LoginManager.LoggedIn)
+                popup.open();
+        }
     }
 
     BusyPopup { id: busyIndicator }
@@ -118,6 +127,7 @@ Item {
     }
 
     UserEntity {
+        id: user
         username: usernameInput.text
         password: passwordInput.text
     }
@@ -125,20 +135,10 @@ Item {
     function requestAuthentication() {
         busyIndicator.open();
         if (areInputsValid)
-            auth.authenticate();
-        print("Validating login...");
-    }
-
-    function noInternetHandler() {
-        popup.text = "Necesitas conectarte a internet.";
-    }
-
-    function failedHandler() {
-        popup.text = "Usario o contrasena incorrecto."
+            LoginManager.requestLogin(user.username, user.password);
     }
 
     function successHandler() {
-        print("Valid credentials.");
         mainStackView.replace("qrc:/main/MainPage.qml")
     }
 }
