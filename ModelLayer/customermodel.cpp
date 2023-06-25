@@ -99,7 +99,7 @@ int CustomerModel::count() const
 
 void CustomerModel::populate()
 {
-    const auto userInstance{CurrentUser::instance()};
+    const auto userInstance{CurrentUser::instance()->user()};
     const auto userType(userInstance->userType());
     using UserTypes = UserEntity::UserTypes;
 
@@ -126,7 +126,7 @@ void CustomerModel::populate()
 void CustomerModel::fetchAllCustomers()
 {
     using UserTypes = UserEntity::UserTypes;
-    const auto userType(CurrentUser::instance()->userType());
+    const auto userType(CurrentUser::instance()->user()->userType());
     Q_ASSERT(userType == UserTypes::ADMIN);
 
     rest_->get("/");

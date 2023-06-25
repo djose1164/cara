@@ -40,8 +40,8 @@ QBindable<ModelLayer::BillModel *> BillBusiness::bindableModel()
 
 void BillBusiness::populate()
 {
-    const auto user{CurrentUser::instance()};
-    if (user->userType() != CurrentUser::UserTypes::USER)
+    const auto user{CurrentUser::instance()->user()};
+    if (user->userType() != UserEntity::UserTypes::USER)
         return;
 
     const int customerId{user->customerId()};
