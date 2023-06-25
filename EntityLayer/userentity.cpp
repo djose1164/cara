@@ -13,6 +13,21 @@ EntityLayer::UserEntity::UserEntity(QObject *parent)
 {
 }
 
+EntityLayer::UserEntity *EntityLayer::UserEntity::fromMap(const QVariantMap &map)
+{
+    const auto personInfo = map["person_info"].toMap();
+    const auto user{new UserEntity};
+
+    user->setForename(personInfo["forename"].toString());
+    user->setSurname(personInfo["surname"].toString());
+    user->setCustomerId(personInfo["customer_id"].toInt());
+    user->setEmail(map["email"].toString());
+    user->setUserType(static_cast<UserTypes>(map["user_type_id"].toInt()));
+    user->setUserId(map["id"].toInt());
+
+    return user;
+}
+
 bool EntityLayer::UserEntity::operator==(const UserEntity &other)
 {
     return username_ == other.username_;

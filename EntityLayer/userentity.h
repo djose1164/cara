@@ -35,6 +35,8 @@ public:
 
     explicit UserEntity(QObject *parent = nullptr);
 
+    static UserEntity *fromMap(const QVariantMap &map);
+
     bool operator==(const UserEntity &other);
     bool operator!=(const UserEntity &other);
 
