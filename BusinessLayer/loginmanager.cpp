@@ -1,6 +1,6 @@
 #include "loginmanager.h"
 
-using BusinessLayer::Auth;
+using BusinessLayer::Auth, EntityLayer::UserEntity;
 
 LoginManager::LoginManager(QObject *parent)
     : QObject{parent}
@@ -39,6 +39,30 @@ void LoginManager::requestLogin(const QString &username, const QString &password
 
     emit loginRequested();
 
+    makeConnections();
+}
+
+void LoginManager::requestLoginFromSettings()
+{
+    QSettings settings{};
+    const QString token{settings.value("Credentials/refreshToken").toString()};
+
+    auth_ = new Auth(this);
+    auth_->authenticate(token);
+
+    makeConnections();
+}
+
+bool LoginManager::hasPreviousLogin()
+{
+    QSettings settings{};
+    const QString token{settings.value("Credentials/refreshToken").toString()};
+
+    return !token.isEmpty();
+}
+
+void LoginManager::makeConnections()
+{
     connect(auth_, &Auth::authenticationDone, this, [&] {
         emit authenticationDone();
         auth_->deleteLater();

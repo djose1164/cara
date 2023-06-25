@@ -36,6 +36,11 @@ public:
 
 public slots:
     void requestLogin(const QString &username, const QString &password);
+    void requestLoginFromSettings();
+    bool hasPreviousLogin();
+
+private slots:
+    void makeConnections();
 
 signals:
     void statusChanged();
