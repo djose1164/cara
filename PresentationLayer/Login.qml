@@ -101,12 +101,10 @@ Item {
         target: LoginManager
 
         function onLoggedIn(resp) {
-            print("LoginManager: onLoggedIn: logeado");
-            popup.informativeText = "estas logeado"
-//            CurrentUser.fillUserInfo(resp);
-//            TheCurrentUser.init(resp);
-//            TheCurrentUser.isLoggedIn = true;
-//            successHandler();
+            CurrentUser.fillUserInfo(resp);
+            TheCurrentUser.init(resp);
+            TheCurrentUser.isLoggedIn = true;
+            successHandler();
         }
 
         function onAuthenticationDone() {
