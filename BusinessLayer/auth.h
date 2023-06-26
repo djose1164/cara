@@ -28,6 +28,8 @@ public slots:
     void authenticate();
     void authenticate(const QString &token);
 
+    void reset();
+
 private:
     Rest *caraApi_;
     EntityLayer::UserEntity *userEntity_;

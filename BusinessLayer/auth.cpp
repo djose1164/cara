@@ -47,3 +47,8 @@ void BusinessLayer::Auth::authenticate(const QString &token)
     caraApi_->setHeaders({{"Authorization", token}});
     caraApi_->get("/");
 }
+
+void BusinessLayer::Auth::reset()
+{
+    caraApi_->accessToken("");
+}
