@@ -77,16 +77,6 @@ void CurrentUser::setUser(EntityLayer::UserEntity * const user)
     user_->setParent(this);
 }
 
-void CurrentUser::logOut()
-{
-    emit loggingOut();
-
-    rest_.accessToken("");
-    hasPreviousLogin_ = false;
-
-    emit loggedOut();
-}
-
 void CurrentUser::initRest(const QString &refreshToken)
 {
     const QString restBase{BusinessLayer::Constants::instance()->base()};
@@ -137,4 +127,9 @@ bool CurrentUser::existPreviousLogin()
         return false;
 
     return true;
+}
+
+UserTypes CurrentUser::userType() const
+{
+    return user_->userType();
 }

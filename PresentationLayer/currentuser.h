@@ -26,8 +26,9 @@ public:
     EntityLayer::UserEntity *user() const;
     void setUser(EntityLayer::UserEntity *const user);
 
+    EntityLayer::UserEntity::UserTypes userType() const;
+
 public slots:
-    void logOut();
     void fillUserInfo(const QVariantMap &user);
     void save();
     void clear();
@@ -47,11 +48,6 @@ signals:
     void refreshTokenNotAvailable();
     void userEntityReady();
     void completed();
-
-    void loggingIn();
-    void loggedIn();
-    void loggingOut();
-    void loggedOut();
 
     void previousLoginFound();
     void noPreviousLoginFound();
