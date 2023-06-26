@@ -9,7 +9,7 @@ Page {
     id: root
     readonly property StackView stackView: StackView.view
     readonly property Component busyIndicator: BusyIndicator {}
-    readonly property bool isAdmin: CurrentUser.userType == CurrentUser.ADMIN
+    readonly property bool isAdmin: CurrentUser.userType() === CurrentUser.ADMIN
     readonly property string homePath: isAdmin ? "qrc:/home/AdminHome.qml"
                                                : "qrc:/home/UserHome.qml"
     readonly property string cartPath: isAdmin ? "qrc:/orders/OrderFormAdmin.qml"

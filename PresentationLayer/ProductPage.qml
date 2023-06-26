@@ -12,7 +12,7 @@ Page {
 
     readonly property StackView stackView: StackView.view
     readonly property TabBar bar: stackView ? stackView.bar : null
-    readonly property bool userIsAdmin: CurrentUser.userType === CurrentUser.ADMIN
+    readonly property bool userIsAdmin: CurrentUser.userType() === CurrentUser.ADMIN
     readonly property int customerId: TheCurrentUser.customerId
     readonly property bool hasStocks: inStock > 0
     readonly property var editableProduct: {

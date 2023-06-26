@@ -17,7 +17,7 @@ HeaderPage {
     property OrderModel details
     property BillModel bills
 
-    readonly property bool isAdmin: CurrentUser.userType == CurrentUser.ADMIN
+    readonly property bool isAdmin: CurrentUser.userType() == CurrentUser.ADMIN
 
     title: isAdmin ? "Cliente: "+name+" ID #"+customerId : "Estado de Orden"
 

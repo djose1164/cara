@@ -77,7 +77,7 @@ Rectangle {
             Layout.row: 1
             Layout.column: 1
             Layout.alignment: Qt.AlignRight
-            from: CurrentUser.userType === CurrentUser.ADMIN ? 0 : 1
+            from: CurrentUser.userType() === CurrentUser.ADMIN ? 0 : 1
             editable: true
             Keys.onReturnPressed: Qt.inputMethod.hide()
         }

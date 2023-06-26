@@ -9,7 +9,7 @@ Drawer {
     id: root
 
     required property StackView stackView
-    readonly property bool isGuest: CurrentUser.userType === CurrentUser.GUEST
+    readonly property bool isGuest: CurrentUser.userType() === CurrentUser.GUEST
 
     width: {
         if (parent.width >= 200 && parent.width <= 500)
@@ -59,11 +59,11 @@ Drawer {
             Layout.bottomMargin: 15
             text: "Cerrar sesion"
             flat: true
-            visible: CurrentUser.isLoggedIn()
+            visible: LoginManager.status == LoginManager.LoggedIn
             onClicked: {
                 close();
                 TheCurrentUser.clear();
-                CurrentUser.logOut();
+                LoginManager.logOut()
                 stackView.replace("qrc:/main/MainPage.qml");
             }
         }

@@ -10,7 +10,7 @@ Item {
 
     property StackView stackView
     property TabBar bar
-    readonly property bool isUser: CurrentUser.userType === CurrentUser.USER
+    readonly property bool isUser: CurrentUser.userType() === CurrentUser.USER
 
     width: 400
     height: 400

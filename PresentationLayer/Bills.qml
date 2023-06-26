@@ -10,8 +10,8 @@ BusyStackLayout {
 
     property alias model: billView.model
     property StackView stackView
-    readonly property bool isAdmin: CurrentUser.userType === CurrentUser.ADMIN
-    readonly property bool isGuest: CurrentUser.userType === CurrentUser.GUEST
+    readonly property bool isAdmin: CurrentUser.userType() === CurrentUser.ADMIN
+    readonly property bool isGuest: CurrentUser.userType() === CurrentUser.GUEST
 
     anchors.fill: parent
     currentIndex: {
@@ -38,7 +38,7 @@ BusyStackLayout {
     }
 
     Connections {
-        target: CurrentUser
+        target: LoginManager
 
         function onLoggingOut() {
             print("---Bills: loggingOut");
@@ -53,8 +53,8 @@ BusyStackLayout {
         }
 
         function onLoggedIn() {
-            print("---Bills: onLoggedIn: userType: "+CurrentUser.userType);
-            switch (CurrentUser.userType) {
+            print("---Bills: onLoggedIn: userType: "+CurrentUser.userType());
+            switch (CurrentUser.userType()) {
             case CurrentUser.ADMIN:
                 customerView.populateModel();
                 break;
