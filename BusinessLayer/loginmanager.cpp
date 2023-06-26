@@ -1,4 +1,5 @@
 #include "loginmanager.h"
+#include "currentuser.h"
 
 using BusinessLayer::Auth, EntityLayer::UserEntity;
 
@@ -29,6 +30,7 @@ void LoginManager::requestLogin(const QString &username, const QString &password
     if (username.isEmpty() || password.isEmpty())
         return;
 
+    emit loggingIn();
     auth_ = new Auth(this);
     auto user{new EntityLayer::UserEntity(auth_)};
     user->setUsername(username);
@@ -44,6 +46,7 @@ void LoginManager::requestLogin(const QString &username, const QString &password
 
 void LoginManager::requestLoginFromSettings()
 {
+    emit loggingIn();
     QSettings settings{};
     const QString token{settings.value("Credentials/refreshToken").toString()};
 
@@ -53,11 +56,23 @@ void LoginManager::requestLoginFromSettings()
     makeConnections();
 }
 
+void LoginManager::logOut()
+{
+    emit loggingOut();
+    setStatus(Status::LoggedOut);
+    CurrentUser::instance()->clear();
+
+    QSettings settings;
+    settings.remove("Credentials");
+    settings.remove("Contact");
+    emit loggedOut();
+}
+
 bool LoginManager::hasPreviousLogin()
 {
     QSettings settings{};
     const QString token{settings.value("Credentials/refreshToken").toString()};
-
+    auth_->reset();
     return !token.isEmpty();
 }
 

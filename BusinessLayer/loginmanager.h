@@ -37,6 +37,7 @@ public:
 public slots:
     void requestLogin(const QString &username, const QString &password);
     void requestLoginFromSettings();
+    void logOut();
     bool hasPreviousLogin();
 
 private slots:
@@ -51,6 +52,10 @@ signals:
     void invalidCredentials();
     void notRegistered();
     void authenticationDone();
+
+    void loggingIn();
+    void loggingOut();
+
 
 private:
     Q_OBJECT_BINDABLE_PROPERTY(LoginManager, Status, status_, &LoginManager::statusChanged);
