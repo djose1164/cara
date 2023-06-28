@@ -83,6 +83,14 @@ Item {
             Layout.alignment: Qt.AlignCenter
             font.pointSize: 12
         }
+
+        Label {
+            text: '[Continuar sin registrarte](qrc:/main/MainPage.qml)'
+            onLinkActivated: link => appStack.replace(link)
+            textFormat: Label.MarkdownText
+            Layout.alignment: Qt.AlignCenter
+            font.pointSize: 12
+        }
     }
 
     MessageDialog {
