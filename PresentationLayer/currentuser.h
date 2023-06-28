@@ -14,6 +14,7 @@ class CurrentUser : public QObject
     QML_SINGLETON
 
     Q_PROPERTY(QString accessToken READ accessToken WRITE setAccessToken NOTIFY accessTokenChanged)
+    Q_PROPERTY(EntityLayer::UserEntity *user MEMBER user_ NOTIFY userChanged)
 
 public:
     static CurrentUser *create(QQmlEngine *qmlEngine, QJSEngine *jsEngine);
@@ -26,10 +27,9 @@ public:
     EntityLayer::UserEntity *user() const;
     void setUser(EntityLayer::UserEntity *const user);
 
-    EntityLayer::UserEntity::UserTypes userType() const;
-
 public slots:
     void fillUserInfo(const QVariantMap &user);
+    void userFromSettings();
     void save();
     void clear();
 
@@ -41,7 +41,7 @@ private:
     bool existPreviousLogin();
 
 signals:
-    void userEntityChanged();
+    void userChanged();
     void isCustomerChanged();
     void accessTokenChanged();
 

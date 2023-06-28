@@ -16,7 +16,7 @@ CurrentUser::CurrentUser()
     : QObject{}
     , hasPreviousLogin_{} //TODO: Does Qt's engine free the memory later?
     , settings_{}
-    , user_{nullptr}
+    , user_{new UserEntity(this)}
 {
 }
 
@@ -96,9 +96,21 @@ void CurrentUser::fillUserInfo(const QVariantMap &user)
     const QString token{"Bearer " + user["access_token"].toString()};
     setAccessToken(token);
 
-    setUser(UserEntity::fromMap(user));
-
+    user_->fill(user["user"].toMap());
     save();
+}
+
+void CurrentUser::userFromSettings()
+{
+    QSettings settings;
+    user_->setForename(settings.value("Contact/forename").toString());
+    user_->setEmail(settings.value("Contact/email").toString());
+    user_->setSurname(settings.value("Contact/surname").toString());
+
+    settings.beginGroup("Credentials");
+    user_->setUserType(static_cast<UserTypes>(settings.value("userTypeId").toInt()));
+    user_->setUsername(settings.value("username").toString());
+    settings.endGroup();
 }
 
 void CurrentUser::save()
@@ -127,9 +139,4 @@ bool CurrentUser::existPreviousLogin()
         return false;
 
     return true;
-}
-
-UserTypes CurrentUser::userType() const
-{
-    return user_->userType();
 }
