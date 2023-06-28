@@ -37,6 +37,8 @@ public:
 
     static UserEntity *fromMap(const QVariantMap &map);
 
+    void fill(const QVariantMap &map);
+
     bool operator==(const UserEntity &other);
     bool operator!=(const UserEntity &other);
 

@@ -28,6 +28,20 @@ EntityLayer::UserEntity *EntityLayer::UserEntity::fromMap(const QVariantMap &map
     return user;
 }
 
+void EntityLayer::UserEntity::fill(const QVariantMap &map)
+{
+    const auto personInfo = map["person_info"].toMap();
+    const auto contact{personInfo["contact"].toMap()};
+
+    setForename(personInfo["forename"].toString());
+    setSurname(personInfo["surname"].toString());
+    setCustomerId(personInfo["customer_id"].toInt());
+    setEmail(contact["email"].toString());
+    setUserType(static_cast<UserTypes>(map["user_type_id"].toInt()));
+    setUserId(map["id"].toInt());
+    setUsername(map["username"].toString());
+}
+
 bool EntityLayer::UserEntity::operator==(const UserEntity &other)
 {
     return username_ == other.username_;
@@ -114,9 +128,10 @@ void EntityLayer::UserEntity::clear()
     surname_.clear();
     email_.clear();
 
-    customerId_ = userId_ = 0;
+    setCustomerId(0);
+    setUserId(0);
 
-    userType_ = UserTypes::GUEST;
+    setUserType(UserTypes::GUEST);
 }
 
 QString EntityLayer::UserEntity::password() const
