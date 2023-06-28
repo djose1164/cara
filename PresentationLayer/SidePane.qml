@@ -9,7 +9,8 @@ Drawer {
     id: root
 
     required property StackView stackView
-    readonly property bool isGuest: CurrentUser.userType() === CurrentUser.GUEST
+    readonly property UserEntity user: CurrentUser.user
+    readonly property bool isGuest: user.userType === UserEntity.GUEST
 
     width: {
         if (parent.width >= 200 && parent.width <= 500)
@@ -64,7 +65,7 @@ Drawer {
                 close();
                 TheCurrentUser.clear();
                 LoginManager.logOut()
-                stackView.replace("qrc:/main/MainPage.qml");
+                // stackView.replace("qrc:/main/MainPage.qml");
             }
         }
     }
@@ -99,9 +100,9 @@ Drawer {
             }
 
             Label {
-                text: "Usario: " + CurrentUser.username
+                text: "Usario: " + user.username
                 font.pointSize: 11
-                visible: CurrentUser.username
+                visible: CurrentUser
             }
 
             Label {
@@ -111,7 +112,7 @@ Drawer {
             }
 
             Label {
-                text: CurrentUser.forename + " " + CurrentUser.surname
+                text: user.forename + " " + user.surname
                 font.pointSize: 11
             }
 
@@ -124,7 +125,7 @@ Drawer {
 
             Label {
                 Layout.preferredWidth: menuLayout.width
-                text: CurrentUser.email
+                text: user.email
                 wrapMode: Label.Wrap
             }
         }
