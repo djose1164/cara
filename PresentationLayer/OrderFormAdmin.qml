@@ -11,9 +11,16 @@ import "qrc:/product"
 Page {
     id: root
     readonly property bool isACreditOrder: paymentStatus.buttonText === "Credito"
-    readonly property bool isCredited: paymentStatus.buttonText === "Abono"
+    readonly property bool isPartiallyPaid: paymentStatus.buttonText === "Abono"
     readonly property bool isPaid: paymentStatus.buttonText === "Pago"
-    readonly property int amount: amountField.text ? amountField.text : 0
+    readonly property int amount: {
+        if (isPartiallyPaid && amountField.text)
+            return parseInt(amountField.text);
+        else if (isPaid)
+            return addProductView.totalToPay;
+        else
+            return 0;
+    }
     readonly property int total: amountField.text ? addProductView.totalToPay - amount : addProductView.totalToPay
 
     header: AddOrderHeader {}
@@ -55,7 +62,7 @@ Page {
                     placeholderText: isPaid || isACreditOrder ? `Monto a pagar: ${total}`
                                                               : !paymentStatus.checkedButton ? "Seleccione un estado"
                                                                                              : "Ingrese monto..."
-                    enabled: isCredited
+                    enabled: isPartiallyPaid
                     inputMethodHints: Qt.ImhDigitsOnly
                     Layout.alignment: Qt.AlignLeading
                     Layout.fillWidth: true
@@ -63,7 +70,7 @@ Page {
 
                 Label {
                     id: amountLabel
-                    visible: isCredited
+                    visible: isPartiallyPaid
                     text: `Debera: RD$${total}`
                     font.pointSize: 12
                 }
