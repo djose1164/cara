@@ -20,9 +20,11 @@ signals:
     void userEntityChanged();
 
     void authenticated(const QVariantMap &resp);
+    void authenticatedWithToken();
     void notFound();
     void invalidCredentials();
     void authenticationDone();
+    void serviceUnavailable();
 
 public slots:
     void authenticate();
