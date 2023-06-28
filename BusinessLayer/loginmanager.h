@@ -48,6 +48,7 @@ signals:
     void loginRequested();
 
     void loggedIn(const QVariantMap &resp);
+    void loggedInWithToken();
     void loggedOut();
     void invalidCredentials();
     void notRegistered();
@@ -56,6 +57,7 @@ signals:
     void loggingIn();
     void loggingOut();
 
+    void serviceUnavailable();
 
 private:
     Q_OBJECT_BINDABLE_PROPERTY(LoginManager, Status, status_, &LoginManager::statusChanged);
