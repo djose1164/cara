@@ -83,7 +83,7 @@ Item {
     }
 
     Connections {
-        target: CurrentUser
+        target: LoginManager
 
         function onLoggingOut() {
             recentordersSL.currentIndex = 2;
