@@ -15,6 +15,8 @@ class CurrentUser : public QObject
 
     Q_PROPERTY(QString accessToken READ accessToken WRITE setAccessToken NOTIFY accessTokenChanged)
     Q_PROPERTY(EntityLayer::UserEntity *user MEMBER user_ NOTIFY userChanged)
+    Q_PROPERTY(bool isAdmin READ isAdmin NOTIFY isAdminChanged)
+    Q_PROPERTY(bool isCustomer READ isCustomer NOTIFY isCustomerChanged)
 
 public:
     static CurrentUser *create(QQmlEngine *qmlEngine, QJSEngine *jsEngine);
@@ -26,6 +28,12 @@ public:
 
     EntityLayer::UserEntity *user() const;
     void setUser(EntityLayer::UserEntity *const user);
+
+    bool isAdmin() const;
+    QBindable<bool> bindableIsAdmin();
+
+    bool isCustomer() const;
+    QBindable<bool> bindableIsCustomer();
 
 public slots:
     void fillUserInfo(const QVariantMap &user);
@@ -43,6 +51,7 @@ private:
 signals:
     void userChanged();
     void isCustomerChanged();
+    void isAdminChanged();
     void accessTokenChanged();
 
     void refreshTokenNotAvailable();
@@ -61,6 +70,8 @@ private:
 
     QSettings settings_;
     Q_OBJECT_BINDABLE_PROPERTY(CurrentUser, QString, accessToken_, &CurrentUser::accessTokenChanged)
+    Q_OBJECT_BINDABLE_PROPERTY(CurrentUser, bool, isAdmin_, &CurrentUser::isAdminChanged)
+    Q_OBJECT_BINDABLE_PROPERTY(CurrentUser, bool, isCustomer_, &CurrentUser::isCustomerChanged)
 
     static CurrentUser *instance_;
 

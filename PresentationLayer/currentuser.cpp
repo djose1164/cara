@@ -77,6 +77,21 @@ void CurrentUser::setUser(EntityLayer::UserEntity * const user)
     user_->setParent(this);
 }
 
+bool CurrentUser::isAdmin() const
+{
+    return user_->userType() == UserTypes::ADMIN;
+}
+
+QBindable<bool> CurrentUser::bindableIsAdmin()
+{
+    return &isAdmin_;
+}
+
+bool CurrentUser::isCustomer() const
+{
+    return user_->userType() == UserTypes::CUSTOMER;
+}
+
 void CurrentUser::initRest(const QString &refreshToken)
 {
     const QString restBase{BusinessLayer::Constants::instance()->base()};
