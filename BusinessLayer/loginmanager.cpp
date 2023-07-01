@@ -54,6 +54,11 @@ void LoginManager::requestLogin(const QString &username, const QString &password
     auth_->authenticate();
 
     emit loginRequested();
+
+    connect(auth_, &Auth::authenticated, this, [&](const QVariantMap &resp) {
+        setStatus(Status::LoggedIn);
+        emit loggedIn(resp);
+    });
 }
 
 void LoginManager::requestLoginFromSettings()
@@ -63,6 +68,12 @@ void LoginManager::requestLoginFromSettings()
     const QString token{settings.value("Credentials/refreshToken").toString()};
 
     auth_->authenticate(token);
+    emit loginRequested();
+
+    connect(auth_, &Auth::authenticatedWithToken, this, [&] {
+        setStatus(Status::LoggedIn);
+        emit loggedInWithToken();
+    });
 }
 
 void LoginManager::logOut()
