@@ -17,11 +17,6 @@ CustomerModel::CustomerModel(QObject *parent)
 
     const QString base{Constants::instance()->base()};
     rest_->base(base + "/customers");
-
-    const auto user{CurrentUser::instance()};
-    connect(user, &CurrentUser::restReady, this, [&](const QString &token) {
-        rest_->accessToken(token);
-    });
 }
 
 int CustomerModel::rowCount(const QModelIndex &parent) const
@@ -104,6 +99,7 @@ void CustomerModel::populate()
     using UserTypes = UserEntity::UserTypes;
 
     Q_ASSERT(userType == UserTypes::ADMIN);
+    Q_ASSERT(!CurrentUser::instance()->accessToken().isEmpty());
 
     switch (userType) {
     case UserTypes::ADMIN:
@@ -127,7 +123,11 @@ void CustomerModel::fetchAllCustomers()
 {
     using UserTypes = UserEntity::UserTypes;
     const auto userType(CurrentUser::instance()->user()->userType());
+
     Q_ASSERT(userType == UserTypes::ADMIN);
+    const QString token{CurrentUser::instance()->accessToken()};
+    Q_ASSERT(!token.isEmpty());
+    rest_->accessToken(token);
 
     rest_->get("/");
 
@@ -183,17 +183,19 @@ void CustomerModel::insert(int index, CustomerEntity * const customer)
     if (index < 0 || index > count())
         return;
 
-    emit beginInsertRows(QModelIndex(), index, index);
+    beginInsertRows(QModelIndex(), index, index);
     customer->setParent(this);
     data_.insert(index, customer);
-    emit endInsertRows();
+    endInsertRows();
+    emit countChanged();
 }
 
 void CustomerModel::clear()
 {
-    emit beginResetModel();
+    beginResetModel();
     data_.clear();
-    emit endResetModel();
+    endResetModel();
+    emit countChanged();
 }
 
 QHash<int, QByteArray> CustomerModel::roleNames() const
