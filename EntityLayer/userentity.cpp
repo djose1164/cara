@@ -40,6 +40,7 @@ void EntityLayer::UserEntity::fill(const QVariantMap &map)
     setUserType(static_cast<UserTypes>(map["user_type_id"].toInt()));
     setUserId(map["id"].toInt());
     setUsername(map["username"].toString());
+    setCustomerId(personInfo["customer_id"].toInt());
 }
 
 bool EntityLayer::UserEntity::operator==(const UserEntity &other)
@@ -95,11 +96,7 @@ void EntityLayer::UserEntity::setSurname(const QString &surname)
 
 void EntityLayer::UserEntity::setUserType(UserTypes userType)
 {
-    if (userType_ != userType)
-    {
-        userType_ = userType;
-        emit userTypeChanged();
-    }
+    userType_ = userType;
 }
 
 void EntityLayer::UserEntity::setCustomerId(int customerId)
