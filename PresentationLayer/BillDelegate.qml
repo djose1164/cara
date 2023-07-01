@@ -23,7 +23,6 @@ Item {
     readonly property int widthLV: ListView.view.width
     readonly property int heightLV: ListView.view.height
     readonly property bool isHorizontal: orientation === ListView.Horizontal
-    readonly property bool isAdmin: CurrentUser.userType() === CurrentUser.ADMIN
 
     signal updateCustomer(customerId: int)
 
@@ -34,7 +33,7 @@ Item {
 
     StackLayout {
         anchors.fill: parent
-        currentIndex: isAdmin ? 0 : 1
+        currentIndex: CurrentUser.isAdmin ? 0 : 1
 
         AdminBillDelegate {
             id: adminDelegate
