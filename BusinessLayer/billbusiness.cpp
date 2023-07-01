@@ -12,15 +12,6 @@ BillBusiness::BillBusiness(QObject *parent)
 {
     const QString base{Constants::instance()->base()};
     rest_->base(base + "/customers");
-
-    QSettings settings{};
-    const QString token{settings.value("Credentials/refreshToken").toString()};
-    rest_->refreshToken(token);
-    rest_->refreshAccessToken();
-
-    connect(rest_, &Rest::accessTokenChanged, this, [&] {
-        emit completed();
-    });
 }
 
 BillModel *BillBusiness::model() const
@@ -54,8 +45,12 @@ void BillBusiness::populate()
 
 void BillBusiness::fetchBillsByCustomerId(int customerId)
 {
+    Q_ASSERT(customerId);
+
     const QString base{Constants::instance()->base()};
     rest_->base(base + "/customers");
+    const auto user{CurrentUser::instance()};
+    rest_->accessToken(user->accessToken());
 
     rest_->get(QString("/%1").arg(customerId));
 
