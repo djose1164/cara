@@ -95,10 +95,10 @@ void BillModel::insert(int index, BillEntity *const bill)
     if (index < 0 || index > count())
         return;
 
-    emit beginInsertRows(QModelIndex(), index, index);
+    beginInsertRows(QModelIndex(), index, index);
     bill->setParent(this);
     data_.insert(index, bill);
-    emit endInsertRows();
+    endInsertRows();
 
     emit countChanged();
 }
@@ -113,12 +113,17 @@ void BillModel::remove(int index)
     if (index < 0 || index >= count())
         return;
 
-    emit beginRemoveRows(QModelIndex(), index, index);
+    beginRemoveRows(QModelIndex(), index, index);
     data_.removeAt(index);
-    emit endRemoveRows();
+    endRemoveRows();
+    emit countChanged();
 }
 
 void BillModel::clear()
 {
+    beginResetModel();
     data_.clear();
+    endResetModel();
+
+    emit countChanged();
 }
