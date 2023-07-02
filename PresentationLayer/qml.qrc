@@ -108,23 +108,23 @@
         <file>ProductThumbnail.qml</file>
         <file>AddProductView.qml</file>
     </qresource>
-    <qresource lang="qml" prefix="/qr">
+    <qresource prefix="/qr" lang="qml">
         <file>QR.qml</file>
     </qresource>
-    <qresource lang="qml" prefix="/login">
+    <qresource prefix="/login" lang="qml">
         <file>Login.qml</file>
         <file>SignUp.qml</file>
     </qresource>
-    <qresource lang="qml" prefix="/users">
+    <qresource prefix="/users" lang="qml">
         <file>Refresh.qml</file>
     </qresource>
-    <qresource lang="qml" prefix="/errors">
+    <qresource prefix="/errors" lang="qml">
         <file>ErrorPage.qml</file>
     </qresource>
     <qresource prefix="/inventory">
         <file>Inventory.qml</file>
     </qresource>
-    <qresource lang="qml" prefix="/reviews">
+    <qresource prefix="/reviews" lang="qml">
         <file>Review.qml</file>
         <file>Comment.qml</file>
         <file>CommentMenuButton.qml</file>
@@ -147,8 +147,9 @@
         <file>ViewManager.qml</file>
         <file>CustomerManager.qml</file>
         <file>ProductManager.qml</file>
+        <file>TokenManager.qml</file>
     </qresource>
-    <qresource lang="qml" prefix="/statistics">
+    <qresource prefix="/statistics" lang="qml">
         <file>Statistics.qml</file>
         <file>ProductStatistics.qml</file>
         <file>CustomerStatistics.qml</file>
