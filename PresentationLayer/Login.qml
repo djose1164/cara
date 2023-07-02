@@ -78,7 +78,7 @@ Item {
 
         Label {
             text: '¿Aun no tienes una cuenta? [Registrate](qrc:/login/SignUp.qml)'
-            onLinkActivated: link => mainStackView.replace(link)
+            onLinkActivated: link => appStack.replace(link)
             textFormat: Label.MarkdownText
             Layout.alignment: Qt.AlignCenter
             font.pointSize: 12
@@ -86,7 +86,7 @@ Item {
 
         Label {
             text: '[Continuar sin registrarte](qrc:/main/MainPage.qml)'
-            onLinkActivated: link => appStack.replace(link)
+            onLinkActivated: link => appStack.pop()
             textFormat: Label.MarkdownText
             Layout.alignment: Qt.AlignCenter
             font.pointSize: 12
@@ -112,7 +112,8 @@ Item {
             CurrentUser.fillUserInfo(resp);
             TheCurrentUser.init(resp);
             TheCurrentUser.isLoggedIn = true;
-            successHandler();
+
+            appStack.pop();
         }
 
         function onAuthenticationDone() {
@@ -142,9 +143,5 @@ Item {
         busyIndicator.open();
         if (areInputsValid)
             LoginManager.requestLogin(user.username, user.password);
-    }
-
-    function successHandler() {
-        mainStackView.replace("qrc:/main/MainPage.qml")
     }
 }
