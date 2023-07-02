@@ -18,6 +18,13 @@ CurrentUser::CurrentUser()
     , settings_{}
     , user_{new UserEntity(this)}
 {
+    isAdmin_.setBinding([&] {
+        return user_->userType() == UserTypes::ADMIN;
+    });
+
+    isCustomer_.setBinding([&] {
+        return user_->userType() == UserTypes::CUSTOMER;
+    });
 }
 
 void CurrentUser::setup()
@@ -79,7 +86,7 @@ void CurrentUser::setUser(EntityLayer::UserEntity * const user)
 
 bool CurrentUser::isAdmin() const
 {
-    return user_->userType() == UserTypes::ADMIN;
+    return isAdmin_;
 }
 
 QBindable<bool> CurrentUser::bindableIsAdmin()
@@ -89,7 +96,7 @@ QBindable<bool> CurrentUser::bindableIsAdmin()
 
 bool CurrentUser::isCustomer() const
 {
-    return user_->userType() == UserTypes::CUSTOMER;
+    return isCustomer_;
 }
 
 void CurrentUser::initRest(const QString &refreshToken)
@@ -112,6 +119,8 @@ void CurrentUser::fillUserInfo(const QVariantMap &user)
     setAccessToken(token);
 
     user_->fill(user["user"].toMap());
+    emit userChanged();
+
     save();
 }
 
@@ -125,7 +134,11 @@ void CurrentUser::userFromSettings()
     settings.beginGroup("Credentials");
     user_->setUserType(static_cast<UserTypes>(settings.value("userTypeId").toInt()));
     user_->setUsername(settings.value("username").toString());
+    user_->setCustomerId(settings.value("customerId").toInt());
+    setAccessToken(settings.value("accessToken").toString());
     settings.endGroup();
+    qDebug() << "CurrentUser::userFromSettings: customerId: " << user_->customerId();
+    emit userChanged();
 }
 
 void CurrentUser::save()
@@ -139,12 +152,14 @@ void CurrentUser::save()
     settings_.beginGroup("Credentials")    ;
     settings_.setValue("username", user_->username());
     settings_.setValue("userTypeId", int(user_->userType()));
+    settings_.setValue("customerId", user_->customerId());
     settings_.endGroup();
 }
 
 void CurrentUser::clear()
 {
     user_->clear();
+    emit userChanged();
 }
 
 bool CurrentUser::existPreviousLogin()
