@@ -64,8 +64,7 @@ Drawer {
             onClicked: {
                 close();
                 TheCurrentUser.clear();
-                LoginManager.logOut()
-                // stackView.replace("qrc:/main/MainPage.qml");
+                LoginManager.logOut();
             }
         }
     }
@@ -76,13 +75,19 @@ Drawer {
             Layout.fillWidth: true
 
             Button {
-                onClicked: stackView.replace("qrc:/login/Login.qml")
+                onClicked: {
+                    close();
+                    stackView.push("qrc:/login/Login.qml");
+                }
                 text: "Iniciar Sesion"
                 flat: true
             }
 
             Button {
-                onClicked: stackView.replace("qrc:/login/SignUp.qml")
+                onClicked: {
+                    close();
+                    stackView.push("qrc:/login/SignUp.qml");
+                }
                 text: "Registrarse"
                 flat: true
             }
@@ -112,7 +117,7 @@ Drawer {
             }
 
             Label {
-                text: user.forename + " " + user.surname
+                text: user.fullname
                 font.pointSize: 11
             }
 
