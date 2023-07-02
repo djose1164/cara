@@ -17,14 +17,12 @@ HeaderPage {
     property OrderModel details
     property BillModel bills
 
-    readonly property bool isAdmin: CurrentUser.userType() == CurrentUser.ADMIN
-
-    title: isAdmin ? "Cliente: "+name+" ID #"+customerId : "Estado de Orden"
+    title: CurrentUser.isAdmin ? "Cliente: "+name+" ID #"+customerId : "Estado de Orden"
 
     StackLayout {
         id: stackLayout
         anchors.fill: parent
-        currentIndex: isAdmin ? 1 : 0
+        currentIndex: CurrentUser.isAdmin ? 1 : 0
 
         OrderState {
             payment: root.payment
