@@ -50,14 +50,17 @@ ApplicationWindow {
 
         endpoint: "/health"
         onServiceUnavailable: {
+            print("Holalalala")
             const message = "Nuestros servidores se encuentran actualmente bajo "
                           + "mantenimiento. Puedes ver como va en [Twiterr](https://twitter.com/carardoficial).";
             mainStackView.replace("qrc:/errors/ErrorPage.qml", {message});
         }
         onSucceeded: {
             loginSetup();
+
             ViewManager.mainView = mainStackView;
             mainStackView.replace("qrc:/main/MainPage.qml");
+            print("Manager.status: " + LoginManager.status + " CurrentUser.isAdmin: " + CurrentUser.isAdmin)
         }
 
         function checkStatus() {
@@ -66,25 +69,38 @@ ApplicationWindow {
     }
 
     Connections {
+        property int counter
         target: LoginManager
 
         function onLoggedIn(resp) {
-            print(JSON.stringify(resp,null,2))
+            print("onLoggedIn: counter: ", ++counter)
             CurrentUser.fillUserInfo(resp);
+            TokenManager.accessToken = resp.access_token;
+            TokenManager.refreshToken = resp.refresh_token;
         }
 
         function onLoggedInWithToken() {
+            print("onLoggedInWithToken")
             CurrentUser.userFromSettings();
+            TokenManager.init();
         }
 
         function onLoggedOut() {
-            print("main.qml: logged out")
             CurrentUser.clear();
         }
     }
 
+    Connections {
+        target: TokenManager
+
+        function onAccessTokenRefreshed() {
+            CurrentUser.accessToken = TokenManager.accessToken;
+        }
+    }
+
     function loginSetup() {
-        if (LoginManager.hasPreviousLogin())
+        if (LoginManager.hasPreviousLogin()) {
             LoginManager.requestLoginFromSettings();
+        }
     }
 }
