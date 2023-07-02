@@ -5,24 +5,9 @@ using BusinessLayer::Auth, EntityLayer::UserEntity;
 LoginManager::LoginManager(QObject *parent)
     : QObject{parent}
     , status_{Status::LoggedOut}
-    , auth_{new Auth(this)}
+    , auth_{nullptr}
 {
-    connect(auth_, &BusinessLayer::Auth::authenticated, this, [&](const QVariantMap &resp) {
-        setStatus(Status::LoggedIn);
-        emit loggedIn(resp);
-    });
 
-    connect(auth_, &Auth::notFound, this, [&] {
-        setStatus(Status::NotRegistered);
-        emit notRegistered();
-    });
-
-    connect(auth_, &Auth::invalidCredentials, this, [&] {
-        setStatus(Status::InvalidCredentials);
-        emit invalidCredentials();
-    });
-
-    connect(auth_, &Auth::serviceUnavailable, this, &LoginManager::serviceUnavailable);
 }
 
 LoginManager::Status LoginManager::status() const
@@ -45,6 +30,9 @@ void LoginManager::requestLogin(const QString &username, const QString &password
     if (username.isEmpty() || password.isEmpty())
         return;
 
+    auth_ = new Auth(this);
+    static int counter{};
+    qmlInfo(this) << ++counter;
     emit loggingIn();
     auto user{new EntityLayer::UserEntity(auth_)};
     user->setUsername(username);
@@ -52,28 +40,33 @@ void LoginManager::requestLogin(const QString &username, const QString &password
 
     auth_->setUserEntity(user);
     auth_->authenticate();
-
-    emit loginRequested();
-
     connect(auth_, &Auth::authenticated, this, [&](const QVariantMap &resp) {
         setStatus(Status::LoggedIn);
         emit loggedIn(resp);
+        auth_->deleteLater();
     });
+    makeConnections();
+    emit loginRequested();
 }
 
 void LoginManager::requestLoginFromSettings()
 {
     emit loggingIn();
+    auth_ = new Auth(this);
     QSettings settings{};
     const QString token{settings.value("Credentials/refreshToken").toString()};
 
     auth_->authenticate(token);
-    emit loginRequested();
+
 
     connect(auth_, &Auth::authenticatedWithToken, this, [&] {
         setStatus(Status::LoggedIn);
         emit loggedInWithToken();
+        auth_->deleteLater();
     });
+
+    makeConnections();
+    emit loginRequested();
 }
 
 void LoginManager::logOut()
@@ -91,12 +84,21 @@ bool LoginManager::hasPreviousLogin()
 {
     QSettings settings{};
     const QString token{settings.value("Credentials/refreshToken").toString()};
-    auth_->reset();
 
     return !token.isEmpty();
 }
 
 void LoginManager::makeConnections()
 {
+    connect(auth_, &Auth::notFound, this, [&] {
+        setStatus(Status::NotRegistered);
+        emit notRegistered();
+    });
 
+    connect(auth_, &Auth::invalidCredentials, this, [&] {
+        setStatus(Status::InvalidCredentials);
+        emit invalidCredentials();
+    });
+
+    connect(auth_, &Auth::serviceUnavailable, this, &LoginManager::serviceUnavailable);
 }
