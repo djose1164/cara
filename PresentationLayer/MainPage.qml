@@ -9,7 +9,7 @@ Page {
     id: root
     readonly property StackView stackView: StackView.view
     readonly property Component busyIndicator: BusyIndicator {}
-    readonly property bool isAdmin: CurrentUser.user.userType === UserEntity.ADMIN
+    readonly property bool isAdmin: CurrentUser.isAdmin
     readonly property string homePath: isAdmin ? "qrc:/home/AdminHome.qml"
                                                : "qrc:/home/UserHome.qml"
     readonly property string cartPath: isAdmin ? "qrc:/orders/OrderFormAdmin.qml"
@@ -58,16 +58,7 @@ Page {
 
         StackView {
             id: orderStackView
-            initialItem: busyIndicator
-
-            Connections {
-                target: CurrentUser
-
-                function onRestReady(token: string) {
-                    CurrentUser.accessToken = token;
-                    orderStackView.replace(cartPath);
-                }
-            }
+            initialItem: cartPath ?? busyIndicator
         }
 
         StackView { initialItem: "qrc:/bills/BillPage.qml" }
@@ -76,5 +67,14 @@ Page {
     SidePane {
         id: sideMenu
         stackView: root.stackView
+    }
+
+    Connections {
+        target: CurrentUser
+
+        function onIsAdminChanged() {
+            homeView.replace(homePath ?? busyIndicator);
+            orderStackView.replace(cartPath ?? busyIndicator);
+        }
     }
 }
