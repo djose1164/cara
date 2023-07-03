@@ -8,9 +8,6 @@ ItemDelegate {
 
     property int customerId
     property alias name: nameLbl.text
-    property alias billBusiness: billBusiness
-
-    signal modelPopulated
 
     ColumnLayout {
         anchors.fill: parent
@@ -27,14 +24,5 @@ ItemDelegate {
             font.pointSize: 12
             Layout.leftMargin: 15
         }
-    }
-
-    BillModel { id: billModel }
-
-    BillBusiness {
-        id: billBusiness
-        onPopulated: modelPopulated()
-
-        model: billModel
     }
 }
