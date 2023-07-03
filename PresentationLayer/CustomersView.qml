@@ -31,12 +31,10 @@ ListView {
     }
 
     delegate: BillDelegate {
-        required property string forename
-        required property string surname
-        required bills
+        required property string fullname
         required customerId
 
-        name: forename + surname
+        name: fullname
     }
 
     model: customerModel
