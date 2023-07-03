@@ -15,6 +15,8 @@ ListView {
 
     signal modelPopulated
 
+    Component.onCompleted: billBusiness.fetchBillsByCustomerId(customerId)
+
     onContentYChanged: {
         if (contentY < -90) {
             refreshIcon.visible = true;
