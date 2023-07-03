@@ -11,7 +11,7 @@ BillBusiness::BillBusiness(QObject *parent)
     , model_{nullptr}
 {
     const QString base{Constants::instance()->base()};
-    rest_->base(base + "/customers");
+    rest_->base(base + "/orders");
 }
 
 BillModel *BillBusiness::model() const
@@ -37,27 +37,21 @@ void BillBusiness::populate()
 
     const int customerId{user->customerId()};
     fetchBillsByCustomerId(customerId);
-
-    connect(rest_, &Rest::succeeded, this, [&] {
-        emit populated();
-    });
 }
 
 void BillBusiness::fetchBillsByCustomerId(int customerId)
 {
     Q_ASSERT(customerId);
 
-    const QString base{Constants::instance()->base()};
-    rest_->base(base + "/customers");
     const auto user{CurrentUser::instance()};
     rest_->accessToken(user->accessToken());
 
-    rest_->get(QString("/%1").arg(customerId));
+    rest_->get(QString("/?customer_id=%1").arg(customerId));
 
     connect(rest_, &Rest::succeeded, this, [&](const QVariantMap &resp) {
-        const auto customer{resp["customer"].toMap()};
-        for (const auto &order : customer["orders"].toList())
+        for (const auto &order : resp["orders"].toList())
             model_->append(BillEntity::fromMap(order.toMap()));
+        emit populated();
     });
 }
 
