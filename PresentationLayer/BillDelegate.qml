@@ -39,8 +39,15 @@ Item {
             id: adminDelegate
 
             onClicked: {
+                popup.open();
+                print("AdminBillDelegate: customerId: " + customerId)
+                billBusiness.fetchBillsByCustomerId(customerId);
+            }
+
+            onModelPopulated: {
+                popup.close();
                 stackView.push("qrc:/bills/OrderPage.qml", {
-                    name, customerId, bills
+                    name, customerId
                 });
             }
 
@@ -60,5 +67,14 @@ Item {
             orderId: root.orderId
             date: root.date
         }
+    }
+
+    Popup {
+        id: popup
+        width: root.width*.8
+        height: root.height
+        anchors.centerIn: Overlay.overlay
+
+        BusyIndicator { anchors.centerIn: parent }
     }
 }
