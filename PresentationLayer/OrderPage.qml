@@ -15,7 +15,6 @@ HeaderPage {
     property PaymentEntity payment
     property OrderStatus status
     property OrderModel details
-    property BillModel bills
 
     title: CurrentUser.isAdmin ? "Cliente: "+name+" ID #"+customerId : "Estado de Orden"
 
@@ -32,6 +31,6 @@ HeaderPage {
             status: root.status
         }
 
-        CustomerBills { model: bills }
+        CustomerBills {}
     }
 }
