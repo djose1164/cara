@@ -12,6 +12,7 @@ CustomerModel::CustomerModel(QObject *parent)
     roleNames_[int(RoleNames::BillsRole)] = "bills";
     roleNames_[int(RoleNames::ForenameRole)] = "forename";
     roleNames_[int(RoleNames::SurnameRole)] = "surname";
+    roleNames_[int(RoleNames::FullnameRole)] = "fullname";
     roleNames_[int(RoleNames::CustomerIdRole)] = "customerId";
     roleNames_[int(RoleNames::TypeRole)] = "userType";
 
@@ -43,6 +44,8 @@ QVariant CustomerModel::data(const QModelIndex &index, int role) const
         return data_[row]->forename();
     case RoleNames::SurnameRole:
         return data_[row]->surname();
+    case RoleNames::FullnameRole:
+        return data_[row]->fullname();
     case RoleNames::CustomerIdRole:
         return data_[row]->customerId();
     case RoleNames::TypeRole:
@@ -122,14 +125,15 @@ void CustomerModel::populate()
 void CustomerModel::fetchAllCustomers()
 {
     using UserTypes = UserEntity::UserTypes;
-    const auto userType(CurrentUser::instance()->user()->userType());
+    const auto currentUser{CurrentUser::instance()};
+    const auto userType(currentUser->user()->userType());
 
     Q_ASSERT(userType == UserTypes::ADMIN);
-    const QString token{CurrentUser::instance()->accessToken()};
+    const QString token{currentUser->accessToken()};
     Q_ASSERT(!token.isEmpty());
     rest_->accessToken(token);
 
-    rest_->get("/");
+    rest_->get(QString("/%1").arg(currentUser->user()->userId()));
 
     connect(rest_, &Rest::succeeded, this, [this](const QVariantMap &resp) {
         // TODO: Add to necessary entites a static fromJson method that creates
@@ -139,10 +143,14 @@ void CustomerModel::fetchAllCustomers()
             const auto customerMap{customer.toMap()};
             const auto customerEntity{new CustomerEntity};
             customerEntity->setCustomerId(customerMap["id"].toInt());
-            customerEntity->setForename(customerMap["person_info"].toMap()["name"].toString());
+            customerEntity->setAdminId(customerMap["admin_id"].toInt());
 
-            for (const auto &order : customerMap["orders"].toList())
-                customerEntity->bills()->append(BillEntity::fromMap(order.toMap()));
+            const auto personInfo{customerMap["person_info"].toMap()};
+            customerEntity->setForename(personInfo["forename"].toString());
+            customerEntity->setSurname(personInfo["surname"].toString());
+
+           /*for (const auto &order : customerMap["orders"].toList())
+                customerEntity->bills()->append(BillEntity::fromMap(order.toMap()));*/
 
             append(customerEntity);
         }

@@ -21,6 +21,7 @@ public:
     {
         ForenameRole = Qt::UserRole,
         SurnameRole,
+        FullnameRole,
         BillsRole,
         CustomerIdRole,
         TypeRole,
