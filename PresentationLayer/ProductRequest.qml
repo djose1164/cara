@@ -27,7 +27,6 @@ Item {
     }
 
     function findProductByIdentifier(text) {
-        print("findProductByIdentifier " + text);
         request.get("/" + text, null, r => root.succeeded(r.products));
     }
     
