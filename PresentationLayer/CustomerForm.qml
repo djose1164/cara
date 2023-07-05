@@ -2,6 +2,7 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 import QtQuick.Dialogs
+import com.cara
 import "qrc:/utils"
 import "qrc:/customers"
 import "qrc:/singleton"
@@ -57,6 +58,7 @@ Page {
                     "forename": forename.text,
                     "surname": surname.text,
                     "contact": contactForm.contact,
+                    "admin_id": CurrentUser.user.userId
                 };
 
                 clientRequest.create(client);
