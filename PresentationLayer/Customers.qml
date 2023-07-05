@@ -8,7 +8,7 @@ HeaderPage {
 
     readonly property int fontSize: 12
 
-    Component.onCompleted: if (CustomerManager.modelIsEmpty()) customerApi.get("/")
+    Component.onCompleted: if (CustomerManager.modelIsEmpty()) customerApi.fetchCustomers()
 
     title: "Clientes"
 
@@ -19,11 +19,18 @@ HeaderPage {
         delegate: SwipeDelegate {
             id: control
 
-            required property int customer_id
-            required property string name
+            required property int id
+            required property var person_info
+            readonly property string forename: person_info.surname
+            readonly property string surname: person_info.forename
+
+            onClicked: {
+                customerEdit.customerId = id;
+                customerEdit.open();
+            }
 
             width: listView.width
-            text: `${name}\nClient ID: ${customer_id}`
+            text: `${forename} ${surname}\nClient ID: ${id}`
             contentItem: Label {
                 width: control.width
                 text: control.text
@@ -47,15 +54,6 @@ HeaderPage {
 
                 height: parent.height
                 anchors.right: parent.right
-
-                SwipeLabel {
-                    text: "Editar"
-                    backgroundColor: "blue"
-                    SwipeDelegate.onClicked: {
-                        customerEdit.customerId = control.customer_id;
-                        customerEdit.open();
-                    }
-                }
 
                 SwipeLabel {
                     text: "Eliminar"
