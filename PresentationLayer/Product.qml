@@ -38,12 +38,11 @@ Rectangle {
 
         ToolSeparator { width: root.width; orientation: Qt.Horizontal }
 
-        TextEdit {
+        Label {
             id: nameField
             anchors.left: parent.left
             anchors.leftMargin: 10
             font.pointSize: 14
-            enabled: canModify
         }
 
         ProductStocks {
@@ -54,7 +53,6 @@ Rectangle {
             width: root.width
             anchors.left: parent.left
             anchors.leftMargin: 10
-            canUpdate: canModify
         }
 
         Row {
@@ -65,18 +63,16 @@ Rectangle {
                 font.pointSize: 12
             }
 
-            TextEdit {
+            Label {
                 id: sellPriceField
                 enabled: canModify
             }
         }
 
-        TextEdit {
+        Label {
             id: descriptionField
             anchors.left: parent.left
             anchors.leftMargin: 10
-            enabled: userIsAdmin
-            visible: length
         }
     }
 }
