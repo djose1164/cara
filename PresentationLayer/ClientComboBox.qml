@@ -7,7 +7,7 @@ import com.cara 1.0
 ComboBox {
     id: root
 
-    Component.onCompleted: if (CustomerManager.modelIsEmpty()) customerApi.get("/")
+    Component.onCompleted: if (CustomerManager.modelIsEmpty()) customerApi.fetchCustomers()
 
     popup.height: 300
     textRole: "name"
