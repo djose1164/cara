@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
+import com.cara
 import "qrc:/provider"
 import "qrc:/payment"
 import "qrc:/utils"
@@ -11,6 +12,7 @@ Drawer {
 
     readonly property var buyOrder: {
         "date": dateField.text,
+        "admin_id": CurrentUser.user.userId,
         "description": descriptionArea.text,
         "provider_id": providerComboBox.currentValue,
         "payment": {
@@ -35,11 +37,9 @@ Drawer {
     }
 
     ColumnLayout {
-        height: parent.height
         anchors {
-            left: parent.left
+            fill: parent
             leftMargin: 20
-            right: parent.right
             rightMargin: 20
         }
         spacing: 20
@@ -90,7 +90,7 @@ Drawer {
 
         PaymentStatus {
             id: paymentStatus
-            readonly property bool isCredit: checkedButton.text === "Credito"
+            readonly property bool isCredit: paymentStatus.buttonText === "Credito"
 
             Layout.fillWidth: true
             partialPaid: false
@@ -106,11 +106,13 @@ Drawer {
             id: entry
             Layout.fillWidth: true
             Layout.fillHeight: true
+            onEntryUpdated: totalLabel.total = entry.calculateTotal()
         }
 
         Label {
             id: totalLabel
-            text: "Total: RD$" + entry.total
+            property int total
+            text: "Total: RD$" + total
             font.pointSize: 14
         }
 
