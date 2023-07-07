@@ -35,6 +35,10 @@ public:
 
     explicit UserEntity(QObject *parent = nullptr);
 
+    static UserEntity *fromMap(const QVariantMap &map);
+
+    void fill(const QVariantMap &map);
+
     bool operator==(const UserEntity &other);
     bool operator!=(const UserEntity &other);
 
@@ -93,7 +97,7 @@ private:
     Q_OBJECT_BINDABLE_PROPERTY(UserEntity, int, customerId_, &UserEntity::customerIdChanged)
     int userId_;
 
-    UserTypes userType_;
+    Q_OBJECT_BINDABLE_PROPERTY(UserEntity, UserTypes, userType_, &UserEntity::userTypeChanged)
 };
 }
 

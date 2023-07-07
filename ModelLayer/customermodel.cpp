@@ -1,3 +1,4 @@
+
 #include "customermodel.h"
 #include "currentuser.h"
 #include "constants.h"
@@ -12,16 +13,12 @@ CustomerModel::CustomerModel(QObject *parent)
     roleNames_[int(RoleNames::BillsRole)] = "bills";
     roleNames_[int(RoleNames::ForenameRole)] = "forename";
     roleNames_[int(RoleNames::SurnameRole)] = "surname";
+    roleNames_[int(RoleNames::FullnameRole)] = "fullname";
     roleNames_[int(RoleNames::CustomerIdRole)] = "customerId";
     roleNames_[int(RoleNames::TypeRole)] = "userType";
 
     const QString base{Constants::instance()->base()};
     rest_->base(base + "/customers");
-
-    const auto user{CurrentUser::instance()};
-    connect(user, &CurrentUser::restReady, this, [&](const QString &token) {
-        rest_->accessToken(token);
-    });
 }
 
 int CustomerModel::rowCount(const QModelIndex &parent) const
@@ -48,6 +45,8 @@ QVariant CustomerModel::data(const QModelIndex &index, int role) const
         return data_[row]->forename();
     case RoleNames::SurnameRole:
         return data_[row]->surname();
+    case RoleNames::FullnameRole:
+        return data_[row]->fullname();
     case RoleNames::CustomerIdRole:
         return data_[row]->customerId();
     case RoleNames::TypeRole:
@@ -99,11 +98,12 @@ int CustomerModel::count() const
 
 void CustomerModel::populate()
 {
-    const auto userInstance{CurrentUser::instance()};
+    const auto userInstance{CurrentUser::instance()->user()};
     const auto userType(userInstance->userType());
     using UserTypes = UserEntity::UserTypes;
 
     Q_ASSERT(userType == UserTypes::ADMIN);
+    Q_ASSERT(!CurrentUser::instance()->accessToken().isEmpty());
 
     switch (userType) {
     case UserTypes::ADMIN:
@@ -126,23 +126,30 @@ void CustomerModel::populate()
 void CustomerModel::fetchAllCustomers()
 {
     using UserTypes = UserEntity::UserTypes;
-    const auto userType(CurrentUser::instance()->userType());
-    Q_ASSERT(userType == UserTypes::ADMIN);
+    const auto currentUser{CurrentUser::instance()};
+    const auto userType(currentUser->user()->userType());
 
-    rest_->get("/");
+    Q_ASSERT(userType == UserTypes::ADMIN);
+    const QString token{currentUser->accessToken()};
+    Q_ASSERT(!token.isEmpty());
+    rest_->accessToken(token);
+
+    rest_->get(QString("/?admin_id=%1").arg(currentUser->user()->userId()));
 
     connect(rest_, &Rest::succeeded, this, [this](const QVariantMap &resp) {
-        // TODO: Add to necessary entites a static fromJson method that creates
-        // a new entity.
         for (const auto &customer : resp["customers"].toList())
         {
             const auto customerMap{customer.toMap()};
             const auto customerEntity{new CustomerEntity};
             customerEntity->setCustomerId(customerMap["id"].toInt());
-            customerEntity->setForename(customerMap["person_info"].toMap()["name"].toString());
+            customerEntity->setAdminId(customerMap["admin_id"].toInt());
 
-            for (const auto &order : customerMap["orders"].toList())
-                customerEntity->bills()->append(BillEntity::fromMap(order.toMap()));
+            const auto personInfo{customerMap["person_info"].toMap()};
+            customerEntity->setForename(personInfo["forename"].toString());
+            customerEntity->setSurname(personInfo["surname"].toString());
+
+           /*for (const auto &order : customerMap["orders"].toList())
+                customerEntity->bills()->append(BillEntity::fromMap(order.toMap()));*/
 
             append(customerEntity);
         }
@@ -155,9 +162,7 @@ void CustomerModel::fetchCustomerById(int customerId)
 {
     Q_ASSERT(customerId);
 
-    qDebug() << "BillBusiness::fetchCustomerById " << customerId;
-
-    rest_->get(QString("/%1").arg(customerId));
+    rest_->get(QString("/?admin_id=%1").arg(customerId));
 
     connect(rest_, &Rest::succeeded, this, [this, customerId](const QVariantMap &resp) {
         const auto customer{resp["customer"].toMap()};
@@ -183,17 +188,19 @@ void CustomerModel::insert(int index, CustomerEntity * const customer)
     if (index < 0 || index > count())
         return;
 
-    emit beginInsertRows(QModelIndex(), index, index);
+    beginInsertRows(QModelIndex(), index, index);
     customer->setParent(this);
     data_.insert(index, customer);
-    emit endInsertRows();
+    endInsertRows();
+    emit countChanged();
 }
 
 void CustomerModel::clear()
 {
-    emit beginResetModel();
+    beginResetModel();
     data_.clear();
-    emit endResetModel();
+    endResetModel();
+    emit countChanged();
 }
 
 QHash<int, QByteArray> CustomerModel::roleNames() const

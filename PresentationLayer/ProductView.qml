@@ -2,6 +2,7 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 import "qrc:/singleton"
+import "qrc:/inventory"
 
 Item {
     id: root
@@ -10,34 +11,32 @@ Item {
     property alias spacing: listView.spacing
     property alias listView: listView
 
-    Component.onCompleted: if (ProductManager.modelIsEmpty()) productRequest.addSuggetionsToModel()
+    Component.onCompleted: inventoryApi.fetchAll()
+
+    signal entriesAdded(total: int)
 
     ListView {
         id: listView
-
-        readonly property StackView stackView: root.stackView
+        readonly property bool isEmpty: count === 0
 
         anchors.fill: parent
         spacing: 20
-        model: ProductManager.model
+        model: model
 
         BusyIndicator {
+            id: busyIndicator
             anchors.centerIn: parent
-            visible: listView.count === 0
+            visible: listView.isEmpty
         }
     }
 
-    ProductRequest {
-        id: productRequest
-        onSucceeded: products => ProductManager.modelAppend(products);
-    }
+    ListModel { id: model }
 
-    Connections {
-        target: ProductManager
-
-        function onUpdateModel() {
-            ProductManager.modelClear();
-            productRequest.addSuggetionsToModel();
+    InventoryAPI {
+        id: inventoryApi
+        onFetchedAll: function(resp) {
+            model.append(resp.inventory);
+            entriesAdded(model.count);
         }
     }
 }

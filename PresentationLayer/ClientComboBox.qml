@@ -7,8 +7,6 @@ import com.cara 1.0
 ComboBox {
     id: root
 
-    Component.onCompleted: if (CustomerManager.modelIsEmpty()) customerApi.get("/")
-
     popup.height: 300
     textRole: "name"
     valueRole: "customer_id"
@@ -18,7 +16,16 @@ ComboBox {
 
     CustomerAPI {
         id: customerApi
-        onCustomersFetched: customers => CustomerManager.model.append(customers)
+        onCustomersFetched: customers => CustomerManager.addCustomer(customers)
+    }
+
+    Connections {
+        target: TokenManager
+
+        function onAccessTokenAvailable() {
+            if (CustomerManager.modelIsEmpty())
+                customerApi.fetchCustomers()
+        }
     }
 }
 

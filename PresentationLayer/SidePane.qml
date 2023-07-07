@@ -9,7 +9,8 @@ Drawer {
     id: root
 
     required property StackView stackView
-    readonly property bool isGuest: CurrentUser.userType === CurrentUser.GUEST
+    readonly property UserEntity user: CurrentUser.user
+    readonly property bool isGuest: user.userType === UserEntity.GUEST
 
     width: {
         if (parent.width >= 200 && parent.width <= 500)
@@ -59,12 +60,11 @@ Drawer {
             Layout.bottomMargin: 15
             text: "Cerrar sesion"
             flat: true
-            visible: CurrentUser.isLoggedIn()
+            visible: LoginManager.status == LoginManager.LoggedIn
             onClicked: {
                 close();
                 TheCurrentUser.clear();
-                CurrentUser.logOut();
-                stackView.replace("qrc:/main/MainPage.qml");
+                LoginManager.logOut();
             }
         }
     }
@@ -75,13 +75,19 @@ Drawer {
             Layout.fillWidth: true
 
             Button {
-                onClicked: stackView.replace("qrc:/login/Login.qml")
+                onClicked: {
+                    close();
+                    stackView.push("qrc:/login/Login.qml");
+                }
                 text: "Iniciar Sesion"
                 flat: true
             }
 
             Button {
-                onClicked: stackView.replace("qrc:/login/SignUp.qml")
+                onClicked: {
+                    close();
+                    stackView.push("qrc:/login/SignUp.qml");
+                }
                 text: "Registrarse"
                 flat: true
             }
@@ -99,9 +105,9 @@ Drawer {
             }
 
             Label {
-                text: "Usario: " + CurrentUser.username
+                text: "Usario: " + user.username
                 font.pointSize: 11
-                visible: CurrentUser.username
+                visible: CurrentUser
             }
 
             Label {
@@ -111,7 +117,7 @@ Drawer {
             }
 
             Label {
-                text: CurrentUser.forename + " " + CurrentUser.surname
+                text: user.fullname
                 font.pointSize: 11
             }
 
@@ -124,7 +130,7 @@ Drawer {
 
             Label {
                 Layout.preferredWidth: menuLayout.width
-                text: CurrentUser.email
+                text: user.email
                 wrapMode: Label.Wrap
             }
         }

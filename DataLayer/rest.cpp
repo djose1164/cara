@@ -18,7 +18,6 @@ Rest::Rest(QObject *parent)
     , message_{}
     , manager_{}
     , reply_{nullptr}
-    , buffer_{nullptr}
     , timer_{std::make_unique<QTimer>(this)}
 {
     timer_->start(840'000);
@@ -130,7 +129,7 @@ void Rest::request(Rest::Verb verb, const QString &endpoint, const QVariant &obj
 
     connect(reply_, &QNetworkReply::requestSent, this, &Rest::sent);
     connect(reply_, &QNetworkReply::finished, this,  &Rest::replyFinished);
-    connect(reply_, &QNetworkReply::errorOccurred, this, &Rest::errorOccurred);
+    connect(reply_, &QNetworkReply::errorOccurred, this, &Rest::error);
 }
 
 void Rest::get(const QString &endpoint)
@@ -150,7 +149,6 @@ void Rest::put(const QString &endpoint, const QVariantMap &obj)
 
 void Rest::patch(const QString &endpoint, const QVariantMap &obj)
 {
-    qInfo() << "Rest::patch";
     request(Verb::PATCH, endpoint, obj);
 }
 
@@ -164,38 +162,25 @@ void Rest::replyFinished()
     if (!reply_->isOpen())
         return;
 
-    auto reply{reply_->readAll()};
-    const auto doc{QJsonDocument::fromJson(reply)};
-    buffer_ = std::make_unique<QVariantMap>(doc.toVariant().toMap());
+    const auto doc{QJsonDocument::fromJson(reply_->readAll())};
+    auto buffer{doc.toVariant().toMap()};
 
-    emit received(*buffer_);
+    emit received(buffer);
 
     if (reply_->error() == QNetworkReply::NoError)
-        emit succeeded(*buffer_);
+        emit succeeded(buffer);
+    else
+       emit failed(buffer);
 
+    emit finished();
     reply_->deleteLater();
 }
 
-void Rest::errorOccurred(QNetworkReply::NetworkError error)
+void Rest::error(QNetworkReply::NetworkError error)
 {
-    qWarning() << "Rest: " << reply_->errorString();
+    qWarning() << "Rest: " << error;
 
-    if (!reply_->isReadable())
-    {
-        buffer_ = std::make_unique<QVariantMap>();
-        buffer_->insert("code", error);
-        buffer_->insert("message", reply_->errorString());
-    }
-    else
-    {
-        auto reply{reply_->readAll()};
-
-        const auto doc{QJsonDocument::fromJson(reply)};
-        buffer_ = std::make_unique<QVariantMap>(doc.toVariant().toMap());
-    }
-
-    reply_->deleteLater();
-    emit failed(*buffer_);
+    emit errorOccurred(error);
 
     if (error == QNetworkReply::AuthenticationRequiredError)
         emit unauthorized();
@@ -203,6 +188,8 @@ void Rest::errorOccurred(QNetworkReply::NetworkError error)
         emit serviceUnavailable();
     else if (error == QNetworkReply::OperationCanceledError)
         emit timeout();
+    else if (error == QNetworkReply::ContentNotFoundError)
+        emit notFound();
 }
 
 void Rest::refreshAccessToken()
@@ -220,7 +207,6 @@ void Rest::refreshAccessToken()
     const auto url{base + "/users/refresh/"};
 
     QNetworkRequest req{QUrl{url}};
-    qDebug() << "Rest: url " << url;
 
     req.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
     req.setRawHeader("Authorization", refreshToken_.toUtf8());

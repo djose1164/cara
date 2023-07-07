@@ -6,6 +6,7 @@ SOURCES += \
     BusinessLayer/billbusiness.cpp \
     BusinessLayer/cartbusiness.cpp \
     BusinessLayer/constants.cpp \
+    BusinessLayer/loginmanager.cpp \
     BusinessLayer/paymentbusiness.cpp \
     EntityLayer/billentity.cpp \
     EntityLayer/customerentity.cpp \
@@ -49,6 +50,7 @@ HEADERS += \
     BusinessLayer/billbusiness.h \
     BusinessLayer/cartbusiness.h \
     BusinessLayer/constants.h \
+    BusinessLayer/loginmanager.h \
     BusinessLayer/paymentbusiness.h \
     EntityLayer/billentity.h \
     EntityLayer/customerentity.h \

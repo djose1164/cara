@@ -119,7 +119,7 @@ Item {
     CaraApi {
         id: request
         endpoint:  "/users"
-        onSucceeded: stackView.replace("qrc:/main/MainPage.qml");
+        onSucceeded: stackView.pop();
     }
 
     Connections {

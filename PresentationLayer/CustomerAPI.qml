@@ -4,16 +4,23 @@ import "qrc:/utils"
 import "qrc:/singleton"
 import com.cara 1.0
 
-CaraApi {
-    id: rest
+QtObject {
+    id: root
 
     signal customersFetched(customers: var)
 
-    endpoint: "/customers/info"
-    accessToken: CurrentUser.accessToken
-    onSucceeded: resp => customersFetched(resp.customers)
+    default property var data
+
+    property CaraApi rest: CaraApi{
+        readonly property int adminId: CurrentUser.user.userId
+
+        endpoint: "/customers"
+        accessToken: TokenManager.accessToken
+
+    }
 
     function fetchCustomers() {
-        get("/");
+        rest.get(`/info/?admin_id=${CurrentUser.user.userId}`);
+        rest.succeeded.connect(resp => customersFetched(resp.customers));
     }
 }

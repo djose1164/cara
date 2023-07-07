@@ -107,6 +107,7 @@
         <file>ProductView.qml</file>
         <file>ProductThumbnail.qml</file>
         <file>AddProductView.qml</file>
+        <file>ProductComboBox.qml</file>
     </qresource>
     <qresource lang="qml" prefix="/qr">
         <file>QR.qml</file>
@@ -123,6 +124,7 @@
     </qresource>
     <qresource prefix="/inventory">
         <file>Inventory.qml</file>
+        <file>InventoryAPI.qml</file>
     </qresource>
     <qresource lang="qml" prefix="/reviews">
         <file>Review.qml</file>
@@ -147,6 +149,7 @@
         <file>ViewManager.qml</file>
         <file>CustomerManager.qml</file>
         <file>ProductManager.qml</file>
+        <file>TokenManager.qml</file>
     </qresource>
     <qresource lang="qml" prefix="/statistics">
         <file>Statistics.qml</file>

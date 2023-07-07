@@ -3,11 +3,12 @@ import "qrc:/utils"
 
 CaraApi {
     endpoint: "/users/refresh"
-    accessToken: null
 
     signal accessTokenReceived(token: string)
 
     onSucceeded: r => accessTokenReceived(r.access_token)
+
+    headers: {"Authorization": refreshToken}
 
     function refresh() {
         get("/");

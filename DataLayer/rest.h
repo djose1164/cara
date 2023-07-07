@@ -52,6 +52,7 @@ signals:
     void headersChanged();
 
     void sent();
+    void finished();
     void received(const QVariantMap &data);
     void succeeded(const QVariantMap &data);
 
@@ -59,12 +60,14 @@ signals:
     void failed(const QVariantMap &data); // Handle any error
     void unauthorized(); // 401
     void serviceUnavailable(); // 503
+    void notFound(); // 404
+    void errorOccurred(QNetworkReply::NetworkError error); // Forward error
 
     void timeout();
 
 private slots:
     void replyFinished();
-    void errorOccurred(QNetworkReply::NetworkError error);
+    void error(QNetworkReply::NetworkError error);
 
 public slots:
     void request(Rest::Verb verb, const QString &endpoint, const QVariant &obj=QVariant{});
@@ -88,7 +91,6 @@ private:
     QNetworkAccessManager manager_;
     QNetworkReply *reply_;
 
-    std::unique_ptr<QVariantMap> buffer_;
     std::unique_ptr<QTimer> timer_;
 };
 

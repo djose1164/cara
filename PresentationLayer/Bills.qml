@@ -5,81 +5,55 @@ import com.cara 1.0
 import "qrc:/singleton"
 import "qrc:/utils"
 
-BusyStackLayout {
+StackLayout {
     id: root
 
     property alias model: billView.model
     property StackView stackView
-    readonly property bool isAdmin: CurrentUser.userType === CurrentUser.ADMIN
-    readonly property bool isGuest: CurrentUser.userType === CurrentUser.GUEST
+    readonly property UserEntity user: CurrentUser.user
 
     anchors.fill: parent
-    currentIndex: {
-        if (isAdmin) {
-            return 0;
-        } else {
-            return isGuest ? 1 : 0
-        }
+
+    onCurrentIndexChanged: {
+        if (currentIndex === 1)
+            billView.populateModel();
     }
 
     BillMessage {}
 
     BillView {
         id: billView
-        onModelPopulated: gotoBillsView();
-        onFlickEnded: root.currentIndex = 0;
         stackView: root.stackView
     }
 
     CustomersView {
         id: customerView
-        onModelPopulated: gotoCustomersView();
         stackView: root.stackView
     }
 
     Connections {
-        target: CurrentUser
+        target: LoginManager
 
         function onLoggingOut() {
             print("---Bills: loggingOut");
-            if (isAdmin)
+            if (CurrentUser.isAdmin)
                 customerView.clearModel();
             else
                 billView.clearModel();
         }
 
-        function onLoggedOut() {
-            gotoBillMessage();
-        }
-
-        function onLoggedIn() {
-            print("---Bills: onLoggedIn: userType: "+CurrentUser.userType);
-            switch (CurrentUser.userType) {
-            case CurrentUser.ADMIN:
-                customerView.populateModel();
-                break;
-            case CurrentUser.USER:
-                if (CurrentUser.isCustomer)
-                    billView.populateModel();
-                else
-                    gotoBillMessage();
-                break;
-            case CurrentUser.GUEST:
-                gotoBillMessage();
-                break;
-            }
-        }
     }
 
     function gotoBillMessage() {
-        currentIndex = 1;
+        currentIndex = 0;
     }
 
     function gotoBillsView() {
-        currentIndex = 2;
+        currentIndex = 1;
     }
 
     function gotoCustomersView() {
-        currentIndex = 3;
+
+        currentIndex = 2;
     }
 }

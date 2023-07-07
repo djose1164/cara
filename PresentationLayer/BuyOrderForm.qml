@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
+import com.cara
 import "qrc:/provider"
 import "qrc:/payment"
 import "qrc:/utils"
@@ -11,13 +12,13 @@ Drawer {
 
     readonly property var buyOrder: {
         "date": dateField.text,
+        "admin_id": CurrentUser.user.userId,
         "description": descriptionArea.text,
         "provider_id": providerComboBox.currentValue,
         "payment": {
-            "amount_to_pay": entry.total,
-            "paid_amount": !paymentStatus.isCredit ? entry.total : 0
+            "amount_to_pay": entry.totalToPay,
+            "paid_amount": !paymentStatus.isCredit ? entry.totalToPay : 0
         },
-        "order_details": entry.productEntries.entryValues()
     }
 
     signal accepted
@@ -35,11 +36,9 @@ Drawer {
     }
 
     ColumnLayout {
-        height: parent.height
         anchors {
-            left: parent.left
+            fill: parent
             leftMargin: 20
-            right: parent.right
             rightMargin: 20
         }
         spacing: 20
@@ -90,7 +89,7 @@ Drawer {
 
         PaymentStatus {
             id: paymentStatus
-            readonly property bool isCredit: checkedButton.text === "Credito"
+            readonly property bool isCredit: paymentStatus.buttonText === "Credito"
 
             Layout.fillWidth: true
             partialPaid: false
@@ -106,11 +105,16 @@ Drawer {
             id: entry
             Layout.fillWidth: true
             Layout.fillHeight: true
+            onEntryUpdated: { // TODO: Check why property binding doesn't work
+                totalLabel.total = entry.calculateTotal();
+                buyOrder.order_details = productEntries.entryValues();
+            }
         }
 
         Label {
             id: totalLabel
-            text: "Total: RD$" + entry.total
+            property int total
+            text: "Total: RD$" + total
             font.pointSize: 14
         }
 

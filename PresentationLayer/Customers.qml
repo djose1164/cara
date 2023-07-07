@@ -8,7 +8,7 @@ HeaderPage {
 
     readonly property int fontSize: 12
 
-    Component.onCompleted: if (CustomerManager.modelIsEmpty()) customerApi.get("/")
+    Component.onCompleted: if (CustomerManager.modelIsEmpty()) customerApi.fetchCustomers()
 
     title: "Clientes"
 
@@ -20,7 +20,13 @@ HeaderPage {
             id: control
 
             required property int customer_id
+
             required property string name
+
+            onClicked: {
+                customerEdit.customerId = id;
+                customerEdit.open();
+            }
 
             width: listView.width
             text: `${name}\nClient ID: ${customer_id}`
@@ -47,15 +53,6 @@ HeaderPage {
 
                 height: parent.height
                 anchors.right: parent.right
-
-                SwipeLabel {
-                    text: "Editar"
-                    backgroundColor: "blue"
-                    SwipeDelegate.onClicked: {
-                        customerEdit.customerId = control.customer_id;
-                        customerEdit.open();
-                    }
-                }
 
                 SwipeLabel {
                     text: "Eliminar"
@@ -100,14 +97,5 @@ HeaderPage {
         id: customerEdit
         width: root.width
         height: root.height
-    }
-
-    Connections {
-        target: CustomerManager
-
-        function onUpdateModel() {
-            CustomerManager.model.clear();
-            customerApi.fetchCustomers();
-        }
     }
 }

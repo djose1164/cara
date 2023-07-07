@@ -13,6 +13,36 @@ EntityLayer::UserEntity::UserEntity(QObject *parent)
 {
 }
 
+EntityLayer::UserEntity *EntityLayer::UserEntity::fromMap(const QVariantMap &map)
+{
+    const auto personInfo = map["person_info"].toMap();
+    const auto user{new UserEntity};
+
+    user->setForename(personInfo["forename"].toString());
+    user->setSurname(personInfo["surname"].toString());
+    user->setCustomerId(personInfo["customer_id"].toInt());
+    user->setEmail(map["email"].toString());
+    user->setUserType(static_cast<UserTypes>(map["user_type_id"].toInt()));
+    user->setUserId(map["id"].toInt());
+
+    return user;
+}
+
+void EntityLayer::UserEntity::fill(const QVariantMap &map)
+{
+    const auto personInfo = map["person_info"].toMap();
+    const auto contact{personInfo["contact"].toMap()};
+
+    setForename(personInfo["forename"].toString());
+    setSurname(personInfo["surname"].toString());
+    setCustomerId(personInfo["customer_id"].toInt());
+    setEmail(contact["email"].toString());
+    setUserType(static_cast<UserTypes>(map["user_type_id"].toInt()));
+    setUserId(map["id"].toInt());
+    setUsername(map["username"].toString());
+    setCustomerId(personInfo["customer_id"].toInt());
+}
+
 bool EntityLayer::UserEntity::operator==(const UserEntity &other)
 {
     return username_ == other.username_;
@@ -66,11 +96,7 @@ void EntityLayer::UserEntity::setSurname(const QString &surname)
 
 void EntityLayer::UserEntity::setUserType(UserTypes userType)
 {
-    if (userType_ != userType)
-    {
-        userType_ = userType;
-        emit userTypeChanged();
-    }
+    userType_ = userType;
 }
 
 void EntityLayer::UserEntity::setCustomerId(int customerId)
@@ -99,9 +125,10 @@ void EntityLayer::UserEntity::clear()
     surname_.clear();
     email_.clear();
 
-    customerId_ = userId_ = 0;
+    setCustomerId(0);
+    setUserId(0);
 
-    userType_ = UserTypes::GUEST;
+    setUserType(UserTypes::GUEST);
 }
 
 QString EntityLayer::UserEntity::password() const

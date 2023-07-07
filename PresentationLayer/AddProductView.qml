@@ -11,23 +11,25 @@ import "qrc:/utils"
 // TODO: Update implementation to use the new types.
 Column {
     id: root
-    property int totalToPay: total
+
     property alias messageDialog: message
 
     property int payment: 2
     property var details
-    property int total: productEntry.total
     readonly property alias entriesCount: productEntry.count
     readonly property alias productEntries: productEntry
+    readonly property int totalToPay: calculateTotal()
 
     signal okClicked
     signal updateTotal
+    signal entryUpdated
 
     Component.onCompleted: payment = 0
     onOkClicked: productEntry.okClicked()
 
     ProductEntry {
         id: productEntry
+        Component.onCompleted: entryUpdated.connect(root.entryUpdated)
         width: root.width
         height: root.height - pane.height
     }
@@ -74,5 +76,14 @@ Column {
 
     function entryFormData(): var {
         return productEntries.entryValues();
+    }
+
+    function calculateTotal() {
+        let partial_total = 0;
+        for (let i = 0; i < productEntries.model.count; ++i) {
+            const current = productEntries.model.get(i);
+            partial_total += current.quantity * current.unit_price;
+        }
+        return partial_total;
     }
 }

@@ -21,6 +21,6 @@ CaraApi {
         succeeded.connect(function(resp) {
             buyOrdersFetched(resp.orders);
         });
-        get("/");
+        get("/"+CurrentUser.user.userId);
     }
 }

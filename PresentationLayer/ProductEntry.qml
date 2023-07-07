@@ -7,15 +7,9 @@ ScrollView {
     id: root
 
     readonly property alias count: entries.count
-    readonly property int total: {
-        let partial_total = 0;
-        for (let i = 0; i < entries.count; ++i) {
-            const current = entries.get(i);
-            partial_total += current.quantity * current.unit_price;
-        }
-        return partial_total;
-    }
+    readonly property alias model: entries
 
+    signal entryUpdated
     Component.onCompleted: entries.append({quantity: 1, unit_price: 0, product_id: 0})
 
     ListView {
@@ -24,8 +18,16 @@ ScrollView {
         spacing: 5
         model: entries
         delegate: Entry {
-            onUpdated: (idx, entryValue) => entries.set(idx, entryValue)
-            onDeleted: idx => pop(idx)
+            onUpdated: (idx, entryValue) => {
+                if (!entryValue.product_id && !entryValue?.unit_price)
+                    return;
+                entries.set(idx, entryValue);
+                entryUpdated();
+            }
+            onDeleted: idx => {
+                pop(idx);
+                entryUpdated();
+            }
         }
     }
 
