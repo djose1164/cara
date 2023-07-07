@@ -17,8 +17,6 @@ StackLayout {
     onCurrentIndexChanged: {
         if (currentIndex === 1)
             billView.populateModel();
-        else if (currentIndex === 2)
-            customerView.populateModel();
     }
 
     BillMessage {}
