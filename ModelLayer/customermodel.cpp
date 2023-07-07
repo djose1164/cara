@@ -1,3 +1,4 @@
+
 #include "customermodel.h"
 #include "currentuser.h"
 #include "constants.h"
@@ -133,11 +134,9 @@ void CustomerModel::fetchAllCustomers()
     Q_ASSERT(!token.isEmpty());
     rest_->accessToken(token);
 
-    rest_->get(QString("/%1").arg(currentUser->user()->userId()));
+    rest_->get(QString("/?admin_id=%1").arg(currentUser->user()->userId()));
 
     connect(rest_, &Rest::succeeded, this, [this](const QVariantMap &resp) {
-        // TODO: Add to necessary entites a static fromJson method that creates
-        // a new entity.
         for (const auto &customer : resp["customers"].toList())
         {
             const auto customerMap{customer.toMap()};
@@ -163,9 +162,7 @@ void CustomerModel::fetchCustomerById(int customerId)
 {
     Q_ASSERT(customerId);
 
-    qDebug() << "BillBusiness::fetchCustomerById " << customerId;
-
-    rest_->get(QString("/%1").arg(customerId));
+    rest_->get(QString("/?admin_id=%1").arg(customerId));
 
     connect(rest_, &Rest::succeeded, this, [this, customerId](const QVariantMap &resp) {
         const auto customer{resp["customer"].toMap()};
