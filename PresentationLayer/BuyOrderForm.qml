@@ -16,10 +16,9 @@ Drawer {
         "description": descriptionArea.text,
         "provider_id": providerComboBox.currentValue,
         "payment": {
-            "amount_to_pay": entry.total,
-            "paid_amount": !paymentStatus.isCredit ? entry.total : 0
+            "amount_to_pay": entry.totalToPay,
+            "paid_amount": !paymentStatus.isCredit ? entry.totalToPay : 0
         },
-        "order_details": entry.productEntries.entryValues()
     }
 
     signal accepted
@@ -106,7 +105,10 @@ Drawer {
             id: entry
             Layout.fillWidth: true
             Layout.fillHeight: true
-            onEntryUpdated: totalLabel.total = entry.calculateTotal()
+            onEntryUpdated: { // TODO: Check why property binding doesn't work
+                totalLabel.total = entry.calculateTotal();
+                buyOrder.order_details = productEntries.entryValues();
+            }
         }
 
         Label {
