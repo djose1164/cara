@@ -15,12 +15,12 @@ QtObject {
         readonly property int adminId: CurrentUser.user.userId
 
         endpoint: "/customers"
-        accessToken: CurrentUser.accessToken
-        onSucceeded: resp => customersFetched(resp.customers)
+        accessToken: TokenManager.accessToken
 
     }
 
     function fetchCustomers() {
-        rest.get(`/?admin_id=${1}`);
+        rest.get(`/info/?admin_id=${CurrentUser.user.userId}`);
+        rest.succeeded.connect(resp => customersFetched(resp.customers));
     }
 }
