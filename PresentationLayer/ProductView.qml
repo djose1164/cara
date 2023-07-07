@@ -35,7 +35,6 @@ Item {
     InventoryAPI {
         id: inventoryApi
         onFetchedAll: function(resp) {
-            print(JSON.stringify(resp,null,2))
             model.append(resp.inventory);
             entriesAdded(model.count);
         }
