@@ -13,7 +13,6 @@ QtObject {
     }
 
     function fetchAll() {
-        print("holalalla*-*-*-*-*-*-*-*-*-*-")
         api.get(`/?admin_id=${CurrentUser.user.userId}`);
         api.succeeded.connect(fetchedAll);
     }
