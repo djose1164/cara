@@ -19,10 +19,9 @@ HeaderPage {
         delegate: SwipeDelegate {
             id: control
 
-            required property int id
-            required property var person_info
-            readonly property string forename: person_info.surname
-            readonly property string surname: person_info.forename
+            required property int customer_id
+
+            required property string name
 
             onClicked: {
                 customerEdit.customerId = id;
@@ -30,7 +29,7 @@ HeaderPage {
             }
 
             width: listView.width
-            text: `${forename} ${surname}\nClient ID: ${id}`
+            text: `${name}\nClient ID: ${customer_id}`
             contentItem: Label {
                 width: control.width
                 text: control.text
@@ -98,14 +97,5 @@ HeaderPage {
         id: customerEdit
         width: root.width
         height: root.height
-    }
-
-    Connections {
-        target: CustomerManager
-
-        function onUpdateModel() {
-            CustomerManager.model.clear();
-            customerApi.fetchCustomers();
-        }
     }
 }
