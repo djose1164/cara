@@ -33,7 +33,6 @@ Page {
                 required property var stocks
 
                 onClicked: stackView.push("qrc:/product/ProductForm.qml", {inventoryId: id, product, stocks, mode: "edit"})
-                Component.onCompleted: print("name: ", product.name)
 
                 width: root.width
                 height: childrenRect.height
