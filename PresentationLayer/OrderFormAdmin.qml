@@ -137,6 +137,7 @@ Page {
     function okHandler() {
         const fullOrder = {
             customer_id: clientField.currentValue,
+            admin_id: CurrentUser.user.userId,
             details: addProductView.entryFormData(),
             payment: {
                 amount_to_pay: addProductView.totalToPay,
