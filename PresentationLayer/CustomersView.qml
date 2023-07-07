@@ -1,64 +1,42 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
-import com.cara 1.0
+import "qrc:/singleton"
 import "qrc:/utils"
 
 ListView {
     id: root
 
     property StackView stackView
-    property bool shouldRefresh
-
-    signal modelPopulated
-
-    onContentYChanged: {
-        if (contentY < -90) {
-            refreshIcon.visible = true;
-            shouldRefresh = true;
-        }
-        //print(`onContentYChanged: Content Y is: ${contentY}`)
-    }
-    onFlickEnded: {
-        print(`onFlickEnded: Content Y is: ${contentY}`)
-        if (shouldRefresh) {
-            customerModel.clear();
-
-            populateModel();
-        }
-        refreshIcon.visible = false;
-        shouldRefresh = false;
-    }
 
     delegate: BillDelegate {
-        required property string fullname
-        required customerId
+        required name
+        required property int customer_id
 
-        name: fullname
+        customerId: customer_id
     }
 
-    model: customerModel
-
-    CustomerModel {
-        id: customerModel
-
-        onPopulated: modelPopulated();
-    }
-
-    RefreshIndicator {
-        id: refreshIcon
-    }
+    model: CustomerManager.model
 
     BusyIndicator {
         anchors.centerIn: parent
         visible: root.count === 0
     }
 
-    function populateModel() {
-        customerModel.populate();
+    Label {
+        id: label
+        anchors.centerIn: parent
+        visible: false
+        width: root.width*.9
+        text: "No hay ningun cliente registrado. Agrega uno nuevo."
+        font.pointSize: 16
+        horizontalAlignment: Label.AlignHCenter
+        wrapMode: Label.WordWrap
     }
 
-    function clearModel() {
-        customerModel.clear();
+    Timer {
+        interval: 2000
+        onTriggered: if (count === 0) label.visible = true
+        running: true
     }
 }
