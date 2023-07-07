@@ -9,4 +9,8 @@ QtObject {
     function modelIsEmpty() {
         return model.count === 0;
     }
+
+    function addCustomer(customer) {
+        model.append(customer);
+    }
 }
