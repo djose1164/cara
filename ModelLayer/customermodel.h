@@ -14,11 +14,14 @@ class CustomerModel : public QAbstractListModel
     Q_OBJECT
     QML_ELEMENT
 
+    Q_PROPERTY(int count READ count NOTIFY countChanged)
+
 public:
     enum class RoleNames
     {
         ForenameRole = Qt::UserRole,
         SurnameRole,
+        FullnameRole,
         BillsRole,
         CustomerIdRole,
         TypeRole,
@@ -48,6 +51,7 @@ public slots:
 signals:
     void allCustomersFetched(const QVariantMap &resp);
     void populated();
+    void countChanged();
 
 private:
     QList<CustomerEntity *> data_;

@@ -1,7 +1,6 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
-import "qrc:/singleton"
 import "qrc:/product"
 
 RowLayout {
@@ -15,25 +14,19 @@ RowLayout {
     }
     readonly property int total: price * quantity
     required property int index
-    readonly property ListModel model: ProductManager.model
+    readonly property ListModel model: productField.model
 
     signal created(entry: var)
     signal updated(idx: int, entry: var)
     signal deleted(idx: int)
 
-    Component.onCompleted: if (ProductManager.modelIsEmpty()) productRequest.addSuggetionsToModel()
-    onEntryValueChanged: if (entryValue?.unit_price) updated(index, entryValue)
+    onEntryValueChanged: updated(index, entryValue)
 
     width: ListView.view.width
 
-    ComboBox {
+    ProductComboBox {
         id: productField
         Layout.fillWidth: true
-        model: ProductManager.model
-        textRole: "name"
-        valueRole: "sell_price"
-        currentIndex: -1
-        displayText: currentIndex === -1 ? "Seleccionar Producto" : currentText
     }
 
     SpinBox {
@@ -55,11 +48,6 @@ RowLayout {
         }
         flat: true
         Layout.alignment: Qt.AlignTrailing
-    }
-
-    ProductRequest {
-        id: productRequest
-        onSucceeded: products => ProductManager.modelAppend(products)
     }
 
     function find(criteria) {

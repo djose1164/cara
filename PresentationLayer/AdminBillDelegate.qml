@@ -1,13 +1,13 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
+import com.cara
 
 ItemDelegate {
     id: root
 
     property int customerId
     property alias name: nameLbl.text
-    readonly property string delegateUrl: "qrc:/bills/CustomerBills.qml"
 
     ColumnLayout {
         anchors.fill: parent

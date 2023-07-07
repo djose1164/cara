@@ -17,8 +17,13 @@ public:
     void setBills(BillModel *const bills);
     BillModel *bills() const;
 
+    int adminId() const;
+    void setAdminId(int adminId);
+    QBindable<int> bindableAdminId();
+
 private:
     BillModel *bills_;
+    QProperty<int> adminId_;
 };
 }
 

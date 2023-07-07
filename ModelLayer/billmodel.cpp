@@ -18,7 +18,7 @@ int BillModel::rowCount(const QModelIndex &parent) const
 {
     Q_UNUSED(parent)
 
-    return data_.count();
+    return count();
 }
 
 QVariant BillModel::data(const QModelIndex &index, int role) const
@@ -72,11 +72,11 @@ bool BillModel::setData(const QModelIndex &index, const QVariant &value, int rol
     case RoleNames::DateRole:
         data_[row]->setDate(value.toDate());
         emit dataChanged(index, index, {role});
-        break;
+        return true;
     case RoleNames::DetailsRole:
         data_[row]->setDetailsModel(value.value<OrderModel *>());
         emit dataChanged(index, index, {role});
-        break;
+        return true;
     default:
         qWarning() << "Trying to use a non-existent role name";
         break;
@@ -95,10 +95,10 @@ void BillModel::insert(int index, BillEntity *const bill)
     if (index < 0 || index > count())
         return;
 
-    emit beginInsertRows(QModelIndex(), index, index);
+    beginInsertRows(QModelIndex(), index, index);
     bill->setParent(this);
     data_.insert(index, bill);
-    emit endInsertRows();
+    endInsertRows();
 
     emit countChanged();
 }
@@ -113,12 +113,20 @@ void BillModel::remove(int index)
     if (index < 0 || index >= count())
         return;
 
-    emit beginRemoveRows(QModelIndex(), index, index);
+    beginRemoveRows(QModelIndex(), index, index);
     data_.removeAt(index);
-    emit endRemoveRows();
+    endRemoveRows();
+    emit countChanged();
 }
 
 void BillModel::clear()
 {
+    if (data_.isEmpty())
+        return;
+
+    beginResetModel();
     data_.clear();
+    endResetModel();
+
+    emit countChanged();
 }

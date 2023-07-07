@@ -7,8 +7,14 @@ import "qrc:/main"
 import "qrc:/singleton"
 
 Page {
+    id: root
+
     property var pageHeaderView
     readonly property StackView myStack: StackView.view
+    property var product
+    property var stocks
+    property int inventoryId
+    property string mode: "add"
 
     header: Utils.TitleHeader {
         stackView: myStack
@@ -25,44 +31,77 @@ Page {
         Item {
             ColumnLayout {
                 anchors.centerIn: parent
-                width: parent.width * .7
-                height: width * 1.1
+                width: root.width*.8
                 spacing: 10
 
-                Component.onCompleted: print("width: " + width + "\theight: " + height)
+                Label { text: "Nombre" }
 
                 TextField {
                     id: productName
+                    text: product.name
                     placeholderText: "Nombre del producto"
                     Layout.fillWidth: true
                 }
 
+                Label {
+                    text: "Descripcion"
+                    visible: descriptionField.text
+                }
+
                 TextField {
-                    id: description
+                    id: descriptionField
+                    text: product.description
                     placeholderText: "Descripcion del producto"
                     Layout.fillWidth: true
                 }
 
+                Label { text: priceBuy.placeholderText }
+
                 TextField {
                     id: priceBuy
+                    text: product.buy_price
                     placeholderText: "Precio de compra"
                     Layout.fillWidth: true
+                    inputMethodHints: Qt.ImhDigitsOnly
                 }
+
+                Label { text: priceSell.placeholderText }
 
                 TextField {
                     id: priceSell
+                    text: product.sell_price
                     placeholderText: "Precio de venta"
                     Layout.fillWidth: true
+                    inputMethodHints: Qt.ImhDigitsOnly
+                }
+
+                Label { text: stockField.placeholderText }
+
+                TextField {
+                    id: stockField
+                    Layout.fillWidth: true
+                    text: stocks.in_stock
+                    placeholderText: "Cantidad"
+                    inputMethodHints: Qt.ImhDigitsOnly
                 }
 
                 Button {
-                    text: "Agregar"
+                    text: mode === "add" ? "Agregar" : "Guardar"
                     Layout.fillWidth: true
                     Material.background: Material.Green
                     Material.foreground: "white"
                     onClicked: {
+                        updateInventory();
+                        const body = {
+                            inventoryId,
+                            product,
+                            stocks,
+                        };
                         stackLayout.currentIndex = 0;
+                        if (mode === "add")
                         productRequest.addProduct(productName.text, description.text, priceBuy.text, priceSell.text);
+                        else if(mode === "edit")
+                            productRequest.editProduct(body);
                     }
                 }
             }
@@ -71,6 +110,8 @@ Page {
 
     MessageDialog {
         id: messageDialog
+        text: mode === "add" ? "Producto guardado." : "Producto editado."
+        informativeText: "Puedes chequear el producto desde Inventario.";
         onButtonClicked: close()
     }
 
@@ -78,17 +119,26 @@ Page {
         id: productRequest
         request.onSucceeded: {
             ProductManager.updateModel();
-
-            messageDialog.text = "Producto guardado.";
-            messageDialog.informativeText = "Puedes chequear el producto desde Inventario.";
-            messageDialog.open();
             stackLayout.currentIndex = 1;
+            messageDialog.open();
         }
+
         request.onFailed: resp => {
             messageDialog.text = "No se ha podido guardar el producto.";
             messageDialog.informativeText = resp.message;
             messageDialog.open();
             stackLayout.currentIndex = 1;
         }
+    }
+
+    function updateInventory() {
+        product.name = productName.text;
+        product.description = descriptionField.text;
+        product.buy_price = priceBuy.text;
+        product.sell_price = priceSell.text;
+        delete product.id;
+
+        stocks.in_stock = stockField.text;
+        delete stocks.id;
     }
 }
