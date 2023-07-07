@@ -85,7 +85,7 @@ Page {
     }
 
     function clientCreated(response) {
-        CustomerManager.updateModel();
+        CustomerManager.addCustomer(response.customer);
         busyIndicator.close();
 
         if (response.code === "success") {
