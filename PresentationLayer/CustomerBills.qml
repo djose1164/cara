@@ -55,8 +55,20 @@ ListView {
     }
 
     BusyIndicator {
+        id: busyIndicator
         anchors.centerIn: parent
         visible: count === 0
+    }
+
+    Label {
+        id: label
+        visible: false
+        anchors.centerIn: parent
+        width: root.width*.9
+        text: "Este cliente no cuenta con ninguna orden."
+        font.pointSize: 14
+        wrapMode: Label.WordWrap
+        horizontalAlignment: Label.AlignHCenter
     }
 
     BillModel {
@@ -65,7 +77,14 @@ ListView {
 
     BillBusiness {
         id: billBusiness
-        onPopulated: modelPopulated()
+        onPopulated: {
+            if (billModel.count === 0) {
+                busyIndicator.visible = false;
+                label.visible = true;
+            }
+
+            modelPopulated();
+        }
         model: billModel
     }
 }
