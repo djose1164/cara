@@ -60,6 +60,14 @@ Page {
         onFiltered: data => orderView.model = data
     }
 
+    Connections {
+        target: LoginManager
+
+        function onLoggedOut() {
+            CustomerManager.clearModel();
+        }
+    }
+
     function updateCustomerModel() {
         if (TheCurrentUser.isAdmin)
             bills.findAll();
