@@ -79,24 +79,22 @@ Page {
         Image { source: imgURL }
     }
 
-    ClientRequest {
+    CustomerAPI {
         id: clientRequest
-        request.onSucceeded: r => clientCreated(r)
+        onCustomerCreatedd: customer => clientCreated(customer)
+        rest.onFailed: function(resp) {
+            busyIndicator.close();
+            messageDialog.text = "Error al crear cliente";
+            messageDialog.informativeText = resp.message;
+            messageDialog.open();
+        }
     }
 
     function clientCreated(response) {
         CustomerManager.addCustomer(response.customer);
         busyIndicator.close();
 
-        if (response.code === "success") {
-            messageDialog.text = "Cliente agregado con exito!";
-        } else {
-            messageDialog.text = "No se ha podido completar la accion."
-            messageDialog.informativeText = "Comprueba coneccion a internet y/o "
-                    + "datos obligatorios.";
-            imgURL = "qrc:/icons/error.svg"
-        }
-
-        messageDialog.open()
+        messageDialog.text = "Cliente agregado con exito!";
+        messageDialog.open();
     }
 }

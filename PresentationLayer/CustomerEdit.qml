@@ -111,7 +111,7 @@ Drawer {
         text: "Actualizado con exito!"
     }
 
-    ClientRequest {
+    CustomerAPI {
         id: customerApi
 
         onCustomerUpdated: {
