@@ -75,8 +75,7 @@ ApplicationWindow {
         function onLoggedIn(resp) {
             print("onLoggedIn: counter: ", ++counter)
             CurrentUser.fillUserInfo(resp);
-            TokenManager.accessToken = resp.access_token;
-            TokenManager.accessTokenAvailable();
+            TokenManager.setAccessToken(resp.access_token);
             TokenManager.refreshToken = resp.refresh_token;
         }
 
@@ -88,6 +87,7 @@ ApplicationWindow {
 
         function onLoggedOut() {
             CurrentUser.clear();
+            TokenManager.clear();
         }
     }
 
