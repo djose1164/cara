@@ -7,6 +7,9 @@ import com.cara 1.0
 QtObject {
     id: root
 
+    signal customerCreated(customer: var)
+    signal customerUpdated
+    signal customerFetched(customer: var)
     signal customersFetched(customers: var)
 
     default property var data
@@ -20,7 +23,34 @@ QtObject {
     }
 
     function fetchCustomers() {
+        print("fetchCustomers: aceesToken: ", rest.accessToken);
         rest.get(`/info/?admin_id=${CurrentUser.user.userId}`);
         rest.succeeded.connect(resp => customersFetched(resp.customers));
+    }
+
+    function create(client) {
+        print("Posting new client", JSON.stringify(client));
+        rest.post("/", client);
+        rest.succeeded.connect(resp => customerCreated(resp.customer));
+    }
+
+    function updateForename(forename: string) {
+        rest.patch("/", {forename});
+    }
+
+    function updateSurname(surname: string) {
+        rest.patch("/", {surname});
+    }
+
+    function updateCustomer(customerId: int, customer: var) {
+        rest.succeeded.connect(customerUpdated);
+        rest.put(`/${customerId}`, customer);
+    }
+
+    function fetchCustomerById(customerId: int) {
+        rest.succeeded.connect(function(resp) {
+            customerFetched(resp.customer);
+        });
+        rest.get(`/info/${customerId}`);
     }
 }
