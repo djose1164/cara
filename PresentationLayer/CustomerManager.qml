@@ -13,4 +13,8 @@ QtObject {
     function addCustomer(customer) {
         model.append(customer);
     }
+
+    function clearModel() {
+        model.clear();
+    }
 }
