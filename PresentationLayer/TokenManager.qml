@@ -15,15 +15,23 @@ QtObject {
     readonly property Settings settings: Settings {}
     readonly property Refresh refresher: Refresh {
         onAccessTokenReceived: token => {
-            root.accessToken = "Bearer " + token;
+            setAccessToken(token);
             accessTokenRefreshed();
-            accessTokenAvailable();
         }
         refreshToken: root.refreshToken
     }
 
     function init() {
-        refreshToken = settings.value("Credentials/refreshToken", "")
-        refresher.refresh()
+        refreshToken = settings.value("Credentials/refreshToken", "");
+        refresher.refresh();
+    }
+
+    function setAccessToken(token: string) {
+        root.accessToken = "Bearer " + token;
+        accessTokenAvailable();
+    }
+
+    function clear() {
+        accessToken = refreshToken = "";
     }
 }
