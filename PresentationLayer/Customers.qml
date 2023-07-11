@@ -24,7 +24,7 @@ HeaderPage {
             required property string name
 
             onClicked: {
-                customerEdit.customerId = id;
+                customerEdit.customerId = customer_id;
                 customerEdit.open();
             }
 
