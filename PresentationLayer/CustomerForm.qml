@@ -81,7 +81,7 @@ Page {
 
     CustomerAPI {
         id: clientRequest
-        onCustomerCreatedd: customer => clientCreated(customer)
+        onCustomerCreated: customer => clientCreated(customer)
         rest.onFailed: function(resp) {
             busyIndicator.close();
             messageDialog.text = "Error al crear cliente";
