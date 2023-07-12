@@ -1,4 +1,4 @@
-QT += qml quick core network svg quickcontrols2 websockets
+QT += qml quick core network svg quickcontrols2
 
 SOURCES += \
     BusinessLayer/app.cpp \

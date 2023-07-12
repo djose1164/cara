@@ -1,7 +1,6 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
-import QtWebSockets
 import "qrc:/errors"
 import "qrc:/singleton"
 import "qrc:/utils"
