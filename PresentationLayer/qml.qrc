@@ -35,6 +35,7 @@
         <file>CustomerBills.qml</file>
         <file>AdminBillDelegate.qml</file>
         <file>CustomerBillDelegate.qml</file>
+        <file>BillPageButtons.qml</file>
     </qresource>
     <qresource prefix="/orders">
         <file>Entry.qml</file>
