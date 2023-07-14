@@ -10,12 +10,29 @@ Page {
 
     readonly property StackView stackView: StackView.view
     readonly property UserEntity user: CurrentUser.user
+    readonly property string adminViewPath: "qrc:/bills/CustomersView.qml"
+    readonly property string messagePath: "qrc:/bills/BillMessage.qml"
 
     title: "Facturas"
-    header: BillPageHeader {
+    header: pageHeader
+
+    BillPageHeader {
+        id: pageHeader
         stackView: root.stackView
-        onOpenFilter: filter.open()
+        buttonLoader.source: "qrc:/bills/BillPageButtons.qml"
         //customerModel: baseModel
+
+        Connections {
+            target: pageHeader.buttonLoader.item
+
+            function onOpenFilter() {
+                filter.open();
+            }
+
+            function onDoSearch() {
+                billStack.push("qrc:/bills/BillSearch.qml", {model: loader.model});
+            }
+        }
     }
 
     states: [
@@ -23,40 +40,49 @@ Page {
             name: "userNotLoggedIn"
             when: user.userType === UserEntity.GUEST
             PropertyChanges {
-                target: bills
-                currentIndex: 0
+                target: loader
+                source: messagePath
             }
         },
         State {
             name: "userLoggedIn"
             when: user.userType === UserEntity.USER && CurrentUser.accessToken
             PropertyChanges {
-                target: bills
-                currentIndex: user.customerId ? 1 : 0
+                target: loader
+                source: user.customerId ? adminViewPath : messagePath
             }
         },
         State {
             name: "adminLoggedIn"
             when: CurrentUser.isAdmin && CurrentUser.accessToken !== ""
             PropertyChanges {
-                target: bills
-                currentIndex: 2
-            }
-            StateChangeScript {
-                name: "populate"
-                script: bills.gotoCustomersView();
+                target: loader
+                source: adminViewPath
             }
         }
     ]
 
-    Bills {
-        id: bills
-        stackView: root.stackView
+    Loader {
+        id: loader
+        property ListModel stackView: root.stackView
+        readonly property ListModel model: item.model
+        anchors.fill: parent
     }
+
+    Connections {
+        target: LoginManager
+
+        function onLoggingOut() {
+            const loadedItem = loader.item;
+            print("---Bills: loggingOut");
+            item.clearModel();
+        }
+    }
+
 
     Filter {
         id: filter
-        //customerModel: baseModel
+        customerModel: loader.item.model
         onFiltered: data => orderView.model = data
     }
 
