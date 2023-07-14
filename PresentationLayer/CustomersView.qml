@@ -8,8 +8,6 @@ import "qrc:/customers"
 ListView {
     id: root
 
-    property StackView stackView
-
     delegate: BillDelegate {
         required name
         required property int customer_id
