@@ -8,7 +8,9 @@ import "qrc:/singleton"
 
 ToolBar {
     id: root
-    signal openFilter
+
+    property alias buttonLoader: loader
+
     required property StackView stackView
     property CustomerModel customerModel
 
@@ -22,30 +24,6 @@ ToolBar {
             Layout.alignment: Qt.AlignCenter
         }
 
-        RowLayout {
-            Layout.alignment: Qt.AlignVCenter | Qt.AlignRight
-            Layout.rightMargin: 10
-
-            ToolButton {
-                visible: TheCurrentUser.isAdmin
-                background: Image {
-                    antialiasing: false
-                    source: "qrc:/icons/search.svg"
-                    sourceSize: iconSize
-                }
-                Layout.rightMargin: 19
-                onClicked: stackView.push("qrc:/bills/BillSearch.qml", {
-                                              "customerModel": customerModel
-                                          })
-            }
-
-            ToolButton {
-                background: Image {
-                    source: "qrc:/icons/settings.svg"
-                    sourceSize: iconSize
-                }
-                onClicked: openFilter()
-            }
-        }
+        Loader { id: loader }
     }
 }
