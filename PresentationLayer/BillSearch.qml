@@ -7,7 +7,7 @@ Page {
     id: root
 
     readonly property StackView stackView: StackView.view
-    required property CustomerModel customerModel
+    required property ListModel model
 
     header: SearchBar {
         id: searchBar
@@ -25,17 +25,40 @@ Page {
             left: parent.left
             leftMargin: 20
         }
-        model: model
-        delegate: BillDelegate {}
+        model: resultModel
+        delegate: BillDelegate {
+            required name
+            required property int customer_id
+
+            customerId: customer_id
+
+            Component.onCompleted: print(name+" "+customerId)
+        }
     }
 
-    ListModel { id: model }
+    ListModel { id: resultModel }
 
     function findMatch(text) {
-        model.clear();
-        const fetched = customerModel.likeName(text);
+        resultModel.clear();
+        const fetched = likeName(text);
         if (fetched)
-            model.append(fetched);
+            resultModel.append(fetched);
         print("findMatch(text)" +fetched);
+    }
+
+    function likeName(text) {
+        let matches = [];
+        const predicate = c => {
+            const name = c.name;
+            return name.toLowerCase().includes(text.toLowerCase()) ? c : null;
+        };
+        for (let i = 0; i < model.count; ++i) {
+            const fetched = predicate(model.get(i));
+            if (fetched) {
+                matches.push(fetched);
+                print(JSON.stringify(fetched, null, 2))
+            }
+        }
+        return matches;
     }
 }
