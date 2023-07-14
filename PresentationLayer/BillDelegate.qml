@@ -19,7 +19,6 @@ Item {
 
     property int orientation : ListView.Vertical
 
-    readonly property StackView stackView: ListView.view.stackView
     readonly property int widthLV: ListView.view.width
     readonly property int heightLV: ListView.view.height
     readonly property bool isHorizontal: orientation === ListView.Horizontal
@@ -39,7 +38,7 @@ Item {
             id: adminDelegate
 
             onClicked: {
-                stackView.push("qrc:/bills/OrderPage.qml", {
+                billStack.push("qrc:/bills/OrderPage.qml", {
                     name, customerId
                 });
             }
@@ -52,7 +51,7 @@ Item {
             id: customerDelegate
 
             onClicked: {
-                stackView.push("qrc:/bills/OrderPage.qml", {
+                billStack.push("qrc:/bills/OrderPage.qml", {
                     details, date, payment, orderId, status
                 });
             }
