@@ -7,6 +7,9 @@ import "qrc:/singleton"
 
 Page {
     id: root
+
+    readonly property alias billStack: billStack
+
     readonly property StackView stackView: StackView.view
     readonly property Component busyIndicator: BusyIndicator {}
     readonly property bool isAdmin: CurrentUser.isAdmin
@@ -61,7 +64,10 @@ Page {
             initialItem: cartPath ?? busyIndicator
         }
 
-        StackView { initialItem: "qrc:/bills/BillPage.qml" }
+        StackView {
+            id: billStack
+            initialItem: "qrc:/bills/BillPage.qml"
+        }
     }
 
     SidePane {
