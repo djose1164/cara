@@ -52,7 +52,7 @@ Page {
                 source: user.customerId ? adminViewPath : messagePath
             }
         },
-        State {
+        State { // FIXME: This does not makes sense. userLoggedIn is checking this
             name: "adminLoggedIn"
             when: CurrentUser.isAdmin && CurrentUser.accessToken !== ""
             PropertyChanges {
@@ -64,7 +64,7 @@ Page {
 
     Loader {
         id: loader
-        property ListModel stackView: root.stackView
+        property StackView stackView: root.stackView
         readonly property ListModel model: item.model
         anchors.fill: parent
     }
@@ -83,7 +83,8 @@ Page {
     Filter {
         id: filter
         customerModel: loader.item.model
-        onFiltered: data => orderView.model = data
+        //onFiltered: data => orderView.model = data
+        onFilterValueChanged: loader.item.paymentStatusFilter = filterValue
     }
 
     Connections {
