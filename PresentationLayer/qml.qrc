@@ -67,7 +67,6 @@
         <file>ProviderComboBox.qml</file>
     </qresource>
     <qresource prefix="/utils">
-        <file>HeaderPage.qml</file>
         <file>RequestModel.qml</file>
         <file>Request.qml</file>
         <file>Filter.qml</file>
@@ -156,5 +155,9 @@
         <file>ProductStatistics.qml</file>
         <file>CustomerStatistics.qml</file>
         <file>StatisticsAPI.qml</file>
+    </qresource>
+    <qresource prefix="/filters" lang="qml">
+        <file>PaymentStatusFilter.qml</file>
+        <file>FilterButton.qml</file>
     </qresource>
 </RCC>

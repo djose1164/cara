@@ -17,6 +17,7 @@ SOURCES += \
     EntityLayer/orderentity.cpp \
     EntityLayer/userentity.cpp \
     ModelLayer/billmodel.cpp \
+    ModelLayer/billproxymodel.cpp \
     ModelLayer/customermodel.cpp \
     ModelLayer/ordermodel.cpp \
     PresentationLayer/currentuser.cpp \
@@ -62,6 +63,7 @@ HEADERS += \
     EntityLayer/orderentity.h \
     EntityLayer/jsonexportable.h \
     ModelLayer/billmodel.h \
+    ModelLayer/billproxymodel.h \
     ModelLayer/customermodel.h \
     ModelLayer/ordermodel.h \
     PresentationLayer/currentuser.h \
