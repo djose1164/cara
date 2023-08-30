@@ -19,7 +19,7 @@ ToolBar {
 
         BackButton {
             Layout.alignment: Qt.AlignLeading
-            stackView: root.stackView
+            onClicked: stackView.pop()
         }
 
         TextField {
