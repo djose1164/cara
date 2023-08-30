@@ -4,10 +4,12 @@ import QtQuick.Layouts
 import com.cara 1.0
 import "qrc:/utils"
 import "qrc:/orders"
+import "qrc:/filters"
 
-HeaderPage {
+Page {
     id: root
 
+    property StackView stackView: StackView.view
     property int customerId
     property int orderId
     property string name
@@ -17,6 +19,16 @@ HeaderPage {
     property OrderModel details
 
     title: CurrentUser.isAdmin ? "Cliente: "+name+" ID #"+customerId : "Estado de Orden"
+    header: titleHeader
+
+    TitleHeader {
+        id: titleHeader
+        btnLoader.sourceComponent: FilterButton {
+            onClicked: paymentStatusFilter.open()
+        }
+        title: root.title
+        onBackClicked: root.stackView.pop()
+    }
 
     StackLayout {
         id: stackLayout
@@ -31,6 +43,17 @@ HeaderPage {
             status: root.status
         }
 
-        CustomerBills {}
+        CustomerBills {
+            id: customerBills
+        }
+    }
+
+    PaymentStatusFilter {
+        id: paymentStatusFilter
+        width: root.width * .8
+        height: root.height/2
+        modal: true
+        anchors.centerIn: Overlay.overlay
+        onApplyFilter: filterValue => customerBills.statusFilter = filterValue
     }
 }
