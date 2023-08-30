@@ -12,29 +12,11 @@ ListView {
     property bool shouldRefresh
     property StackView stackView
     property alias billBusiness: billBusiness
+    property alias statusFilter: billProxyModel.statusFilter
 
     signal modelPopulated
 
     Component.onCompleted: billBusiness.fetchBillsByCustomerId(customerId)
-
-    onContentYChanged: {
-        if (contentY < -90) {
-            refreshIcon.visible = true;
-            shouldRefresh = true;
-        }
-        //print(`onContentYChanged: Content Y is: ${contentY}`)
-    }
-
-    onFlickEnded: {
-        print(`onFlickEnded: Content Y is: ${contentY}`)
-        if (shouldRefresh) {
-            clearModel();
-
-            populateModel();
-        }
-        refreshIcon.visible = false;
-        shouldRefresh = false;
-    }
 
     delegate: OrderState {
         required details
@@ -43,12 +25,10 @@ ListView {
         required payment
         required status
 
-        Component.onCompleted: print("orderId: " + orderId)
-
         width: root.width
     }
 
-    model: billModel
+    model: billProxyModel
 
     RefreshIndicator {
         id: refreshIcon
@@ -86,5 +66,10 @@ ListView {
             modelPopulated();
         }
         model: billModel
+    }
+
+    BillProxyModel {
+        id: billProxyModel
+        sourceModel: billModel
     }
 }
