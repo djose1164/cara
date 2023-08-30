@@ -21,7 +21,8 @@ public:
     {
         Paid,
         Unpaid,
-        Credited
+        Credited,
+        Any
     };
     Q_ENUM(Status)
 
