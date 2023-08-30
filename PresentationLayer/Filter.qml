@@ -8,18 +8,12 @@ Drawer {
     id: root
 
     property CustomerModel customerModel
-    enum Status { Paid, Unpaid, Credited, Any }
 
-    signal filtered(model: ListModel)
+    signal filterChanged
 
     width: parent.width
     height: parent.height
     interactive: false
-
-    QtObject {
-        id: _
-        property int previousFilter: -1
-    }
 
     GridLayout {
         width: parent.width*.85
@@ -49,23 +43,6 @@ Drawer {
             flat: true
         }
 
-        Label { text: "Estado" }
-
-        ComboBox {
-            id: comboBox
-            textRole: "text"
-            valueRole: "value"
-            model: [
-                {text: "Cuentas pagadas", value: Filter.Status.Paid},
-                {text: "Cuentas por pagar", value: Filter.Status.Unpaid},
-                {text: "Cuentas abonadas", value: Filter.Status.Credited},
-                {text: "Todas", value: Filter.Status.Any}
-            ]
-            Layout.fillWidth: true
-            flat: true
-            currentIndex: comboBox.count - 1
-        }
-
         Button {
             text: "Cancelar"
             onClicked: close()
@@ -76,19 +53,17 @@ Drawer {
             text: "Aplicar"
             onPressed: {
                 close();
-                const opt = comboBox.currentValue;
-                // Asking for the same filter, do nothing & return.
-                if (opt === _.previousFilter)
-                    return;
-
-                if (opt === Filter.Status.Any)
-                    filtered(customerModel.model);
-                else
-                    filterOnStatus(opt);
-                // Previous filter's option to know if it's asking ror the same
-                _.previousFilter = opt;
             }
             Layout.alignment: Qt.AlignRight
+        }
+    }
+
+    CustomerAPI {
+        id: customerApi
+
+        function filterCustomersByOrderStatus(status: int) {
+            rest.get(`/?filter_by=order_status&status=${status}`);
+            rest.succeeded.connect(resp => filtered(resp.customers));
         }
     }
 
