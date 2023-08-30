@@ -15,7 +15,6 @@ bool BillProxyModel::filterAcceptsRow(int source_row, const QModelIndex &source_
 
     const auto payment{qvariant_cast<PaymentEntity *>(statusIdx.data(int(ModelLayer::BillModel::RoleNames::PaymentRole)))};
     const auto paymentStatus{payment->status()};
-    qmlInfo(this) << "paymentStatus: " << paymentStatus;
 
     return paymentStatus == statusFilter_ || statusFilter_ == PaymentEntity::Status::Any;
 }
