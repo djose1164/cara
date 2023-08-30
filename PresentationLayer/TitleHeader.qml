@@ -4,20 +4,20 @@ import QtQuick.Layouts
 
 ToolBar {
     property alias title: lbl.text
-    property StackView stackView
     property alias label: lbl
-    property alias moreVertVisible: moreVert.visible
+    property alias btnLoader: btnLoader
+    property alias backBtn: leftArrowBtn
+
+    signal backClicked
 
     RowLayout {
         id: row
         anchors.fill: parent
 
-        ToolButton {
+        BackButton {
             id: leftArrowBtn
             Layout.alignment: Qt.AlignLeft
-            onClicked: stackView.pop()
-            icon.source: "qrc:/left_arrow"
-            visible: stackView
+            onClicked: backClicked()
         }
 
         Label {
@@ -29,10 +29,8 @@ ToolBar {
             Layout.fillWidth: true
         }
 
-        ToolButton {
-            id: moreVert
-            Layout.alignment: Qt.AlignRight
-            icon.source: "qrc:/icons/more_vert.svg"
+        Loader {
+            id: btnLoader
         }
     }
 }
