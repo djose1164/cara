@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
+import com.cara
 
 RowLayout {
     id: root
@@ -12,7 +13,7 @@ RowLayout {
     Layout.rightMargin: 10
 
     ToolButton {
-        visible: TheCurrentUser.isAdmin
+        visible: CurrentUser.isAdmin
         background: Image {
             antialiasing: false
             source: "qrc:/icons/search.svg"
