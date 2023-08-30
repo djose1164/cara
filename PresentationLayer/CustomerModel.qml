@@ -8,7 +8,6 @@ import "qrc:/utils"
 QtObject {
     id: root
 
-    property alias model: model
     property alias request: request
 
     signal filtering
@@ -20,7 +19,7 @@ QtObject {
         accessToken: TheCurrentUser.accessToken
     }
 
-    property ListModel listModel: ListModel { id: model }
+    property ListModel model
 
     // For model
     function setById(customerId) {
@@ -124,7 +123,7 @@ QtObject {
     function likeName(text) {
         let matches = [];
         const predicate = c => {
-            const name = c.person_info.name;
+            const name = c.name;
             return name.toLowerCase().includes(text.toLowerCase()) ? c : null;
         };
         for (let i = 0; i < model.count; ++i) {
