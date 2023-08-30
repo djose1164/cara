@@ -16,7 +16,7 @@ Rectangle {
     BackButton {
         anchors.left: parent.left
         anchors.verticalCenter: parent.verticalCenter
-        stackView: root.stackView
+        onClicked: stackView.pop()
     }
 
     Label {
