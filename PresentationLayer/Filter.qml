@@ -38,7 +38,9 @@ Drawer {
             textRole: "text"
             valueRole: "value"
             model: [
-                {text: "Fecha", value: "date"}
+                {text: "ID", value: "id"},
+                {text: "Nombre", value: "name"},
+                // {text: "Fecha", value: "date"}, For latest purchase
             ]
             flat: true
         }
