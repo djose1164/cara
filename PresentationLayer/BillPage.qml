@@ -20,19 +20,8 @@ Page {
         id: pageHeader
         stackView: root.stackView
         buttonLoader.source: "qrc:/bills/BillPageButtons.qml"
-        //customerModel: baseModel
+        onDoSearch: billStack.push("qrc:/bills/BillSearch.qml", {model: loader.model});
 
-        Connections {
-            target: pageHeader.buttonLoader.item
-
-            function onOpenFilter() {
-                filter.open();
-            }
-
-            function onDoSearch() {
-                billStack.push("qrc:/bills/BillSearch.qml", {model: loader.model});
-            }
-        }
     }
 
     states: [
@@ -84,7 +73,6 @@ Page {
         id: filter
         customerModel: loader.item.model
         //onFiltered: data => orderView.model = data
-        onFilterValueChanged: loader.item.paymentStatusFilter = filterValue
     }
 
     Connections {
