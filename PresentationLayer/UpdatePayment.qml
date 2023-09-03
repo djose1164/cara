@@ -63,7 +63,7 @@ Popup {
                 }
 
                 Button {
-                    text: "Ok"
+                    text: "Abonar"
                     onClicked: parseInt(newPayment.text)
                                > debt ? (stackLayout.currentIndex
                                          = 1) : paymentRequest.patch()
