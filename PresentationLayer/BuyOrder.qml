@@ -6,13 +6,17 @@ import "qrc:/utils"
 import "qrc:/orders"
 import "qrc:/singleton"
 
-HeaderPage {
+Page {
     id: root
     readonly property StackView myStack: StackView.view
 
     Component.onCompleted: api.fetchBuyOrders();
 
     title: "Ordenes de Compra"
+    header: TitleHeader {
+        title: root.title
+        onBackClicked: myStack.pop()
+    }
 
     BuyOrderView {
         id: listView
