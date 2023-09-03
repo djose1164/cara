@@ -25,7 +25,9 @@ Drawer {
     ColumnLayout {
         id: menuLayout
         anchors.fill: parent
-        anchors.leftMargin: 15
+        anchors.leftMargin: 10
+        anchors.rightMargin: 10
+
         Label {
             text: "Menu"
             font.pointSize: 14
@@ -34,6 +36,11 @@ Drawer {
         }
 
         Loader { sourceComponent: isGuest ? guest : logged }
+
+        ToolSeparator {
+            orientation: Qt.Horizontal
+            Layout.fillWidth: true
+        }
 
         Label {
             text: "Contactanos"
@@ -53,6 +60,11 @@ Drawer {
             font.pointSize: 11
             textFormat: Label.MarkdownText
             onLinkActivated: url => Qt.openUrlExternally(url)
+        }
+
+        ToolSeparator {
+            orientation: Qt.Horizontal
+            Layout.fillWidth: true
         }
 
         Button {
@@ -98,21 +110,11 @@ Drawer {
         id: logged
         ColumnLayout {
             Layout.fillWidth: true
+            spacing: 20
+
             Label {
                 text: "Informacion Personal"
                 font.pointSize: 12
-                font.bold: true
-            }
-
-            Label {
-                text: "Usario: " + user.username
-                font.pointSize: 11
-                visible: CurrentUser
-            }
-
-            Label {
-                text: "Nombre"
-                font.pointSize: 11
                 font.bold: true
             }
 
@@ -121,17 +123,13 @@ Drawer {
                 font.pointSize: 11
             }
 
-            Label {
-                Layout.fillWidth: true
-                text: "**Correo electronico**"
-                textFormat: Label.MarkdownText
-                font.pointSize: 11
-            }
-
-            Label {
-                Layout.preferredWidth: menuLayout.width
-                text: user.email
-                wrapMode: Label.Wrap
+            Button {
+                text: "Ver perfil"
+                flat: true
+                onClicked: {
+                    close();
+                    appStack.push("qrc:/users/PerfilPage.qml");
+                }
             }
         }
     }
