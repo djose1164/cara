@@ -117,6 +117,7 @@
     </qresource>
     <qresource prefix="/users" lang="qml">
         <file>Refresh.qml</file>
+        <file>PerfilPage.qml</file>
     </qresource>
     <qresource prefix="/errors" lang="qml">
         <file>ErrorPage.qml</file>

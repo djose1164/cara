@@ -102,3 +102,4 @@ contains(ANDROID_TARGET_ARCH,x86_64) {
     ANDROID_PACKAGE_SOURCE_DIR = \
         $$PWD/android
 }
+android: include(C:/Users/djose/AppData/Local/Android/Sdk/android_openssl/openssl.pri)
