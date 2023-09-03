@@ -68,13 +68,6 @@ Page {
         }
     }
 
-
-    Filter {
-        id: filter
-        customerModel: loader.item.model
-        //onFiltered: data => orderView.model = data
-    }
-
     Connections {
         target: LoginManager
 
