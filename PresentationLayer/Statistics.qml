@@ -3,10 +3,16 @@ import QtQuick.Controls
 import "qrc:/utils"
 import "qrc:/product"
 
-HeaderPage {
+Page {
     id: root
 
+    readonly property StackView stackView: StackView.view
+
     title: "Estadisticas"
+    header: TitleHeader {
+        title: root.title
+        onBackClicked: stackView.pop()
+    }
 
     GridView {
         id: gridView
