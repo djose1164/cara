@@ -5,7 +5,7 @@ import "qrc:/utils"
 import "qrc:/product"
 import "qrc:/payment"
 
-HeaderPage {
+Page {
     id: root
 
     readonly property StackView stackView: StackView.view
@@ -25,6 +25,10 @@ HeaderPage {
     }
 
     title: "Detalles de Orden"
+    header: TitleHeader {
+        title: root.title
+        onBackClicked: stackView.pop()
+    }
 
     ColumnLayout {
         anchors.fill: parent
