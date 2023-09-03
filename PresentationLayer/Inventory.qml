@@ -12,7 +12,7 @@ Page {
     title: "Inventario"
     header: TitleHeader {
         title: root.title
-        stackView: root.stackView
+        onBackClicked: stackView.pop()
     }
 
     StackLayout {
