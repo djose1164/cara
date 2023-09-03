@@ -18,7 +18,7 @@ Page {
 
     header: TitleHeader {
         title: "Nuevo cliente"
-        stackView: stackView_
+        onBackClicked: stackView_.pop()
     }
 
     ColumnLayout {
@@ -81,7 +81,7 @@ Page {
 
     CustomerAPI {
         id: clientRequest
-        onCustomerCreated: customer => clientCreated(customer)
+        onCustomerCreated: customer => customerCreated(customer)
         rest.onFailed: function(resp) {
             busyIndicator.close();
             messageDialog.text = "Error al crear cliente";
@@ -90,8 +90,8 @@ Page {
         }
     }
 
-    function clientCreated(response) {
-        CustomerManager.addCustomer(response.customer);
+    function customerCreated(customer) {
+        CustomerManager.addCustomer(customer);
         busyIndicator.close();
 
         messageDialog.text = "Cliente agregado con exito!";
