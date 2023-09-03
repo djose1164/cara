@@ -52,6 +52,10 @@ Constants::Constants()
     , appWidth_{400}
     , appHeight_{680}
 {
+#ifdef QT_DEBUG
+    base_ = localBase_ + "/api";
+#else
     base_ = remoteBase_ + "/api";
+#endif
 }
 
