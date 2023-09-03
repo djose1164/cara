@@ -97,7 +97,7 @@ Item {
         id: popup
         text: switch (LoginManager.status) {
             case LoginManager.InvalidCredentials:
-                return "Contrasena incorrecta.";
+                return "Contraseña incorrecta.";
             case LoginManager.NotRegistered:
                 return "Cuenta no registrada.";
             default:

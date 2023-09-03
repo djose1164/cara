@@ -130,7 +130,7 @@ Item {
         }
 
         function onFailed(type) {
-            let text = type === "singUp" ? "Usario o contrasena incorrecto." : "Datos invalidos."
+            let text = type === "singUp" ? "Usario o contraseña incorrecto." : "Datos invalidos."
             popup.text = text;
         }
 
