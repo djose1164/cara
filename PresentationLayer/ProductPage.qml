@@ -118,6 +118,7 @@ Page {
                     id: availableStockLocation
                     text: "Disponible en: "
                     wrapMode: Label.Wrap
+                    font.pointSize: 12
                     Layout.fillWidth: true
                 }
 
