@@ -19,7 +19,6 @@ QtObject {
 
         endpoint: "/customers"
         accessToken: TokenManager.accessToken
-
     }
 
     function fetchCustomers() {
@@ -29,7 +28,6 @@ QtObject {
     }
 
     function create(client) {
-        print("Posting new client", JSON.stringify(client));
         rest.post("/", client);
         rest.succeeded.connect(resp => customerCreated(resp.customer));
     }
