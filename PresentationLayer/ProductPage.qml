@@ -6,13 +6,14 @@ import com.cara 1.0
 import "qrc:/singleton"
 import "qrc:/utils"
 import "qrc:/reviews"
+import "qrc:/inventory"
 
 Page {
     id: root
 
     readonly property StackView stackView: StackView.view
     readonly property TabBar bar: stackView ? stackView.bar : null
-    readonly property bool userIsAdmin: CurrentUser.userType() === CurrentUser.ADMIN
+    readonly property bool userIsAdmin: CurrentUser.isAdmin
     readonly property int customerId: TheCurrentUser.customerId
     readonly property bool hasStocks: inStock > 0
     readonly property var editableProduct: {
@@ -41,13 +42,15 @@ Page {
     required property int sell_price
     required property string description
     required property string image_url
-    required property int inStock
+    property int inStock
     property int rating
 
     header: TitleHeader {
         title: "Producto"
-        stackView: root.stackView
+        onBackClicked: root.stackView.pop()
     }
+
+    Component.onCompleted: inventoryApi.fetchByProductId(productId)
 
     BusyStackLayout {
         id: stackLayout
@@ -111,6 +114,13 @@ Page {
                     font.pointSize: 12
                 }
 
+                Label {
+                    id: availableStockLocation
+                    text: "Disponible en: "
+                    wrapMode: Label.Wrap
+                    Layout.fillWidth: true
+                }
+
                 ReviewSection {
                     id: reviewSection
                     Layout.fillWidth: true
@@ -130,4 +140,25 @@ Page {
     }
 
     ProductApi { id: api }
+
+    InventoryAPI {
+        id: inventoryApi
+        onFetchedInventoriesByProductId: function(inventories) {
+            let totalStock = 0;
+            let locations = "";
+
+            for (let inventory of inventories) {
+                const qty = inventory.quantity_available;
+                totalStock += qty;
+
+                if (qty > 0)
+                    locations += `${inventory.warehouse.name}, `
+            }
+
+            locations = locations ? locations.slice(0, locations.length - 2) : "-";
+            availableStockLocation.text += locations;
+
+            inStock = totalStock;
+        }
+    }
 }
