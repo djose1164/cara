@@ -31,8 +31,7 @@ void LoginManager::requestLogin(const QString &username, const QString &password
         return;
 
     auth_ = new Auth(this);
-    static int counter{};
-    qmlInfo(this) << ++counter;
+
     emit loggingIn();
     auto user{new EntityLayer::UserEntity(auth_)};
     user->setUsername(username);
