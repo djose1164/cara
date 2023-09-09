@@ -19,7 +19,6 @@ Page {
     BillPageHeader {
         id: pageHeader
         stackView: root.stackView
-        buttonLoader.source: "qrc:/bills/BillPageButtons.qml"
         onDoSearch: billStack.push("qrc:/bills/BillSearch.qml", {model: loader.model});
 
     }
