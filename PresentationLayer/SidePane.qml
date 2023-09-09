@@ -64,6 +64,7 @@ Drawer {
 
         ToolSeparator {
             orientation: Qt.Horizontal
+            visible: LoginManager.status == LoginManager.LoggedIn
             Layout.fillWidth: true
         }
 
