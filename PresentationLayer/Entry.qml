@@ -2,6 +2,7 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 import "qrc:/product"
+import com.cara
 
 RowLayout {
     id: root
@@ -10,7 +11,8 @@ RowLayout {
     readonly property var entryValue: {
         "product_id": findProductId(productField.currentText),
         "quantity": quantity,
-        "unit_price": price
+        "unit_price": price,
+        "warehouse_id": CurrentUser.user.warehouseId
     }
     readonly property int total: price * quantity
     required property int index
