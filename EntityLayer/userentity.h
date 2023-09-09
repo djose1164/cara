@@ -23,6 +23,7 @@ class UserEntity : public QObject
 
     Q_PROPERTY(int customerId READ customerId WRITE setCustomerId NOTIFY customerIdChanged)
     Q_PROPERTY(int userId READ userId WRITE setUserId NOTIFY userIdChanged)
+    Q_PROPERTY(int warehouseId READ warehouseId WRITE setWarehouseId NOTIFY warehouseIdChanged)
 
 public:
     enum class UserTypes {
@@ -57,6 +58,9 @@ public:
     int customerId() const;
     int userId() const;
 
+    int warehouseId() const;
+    void setWarehouseId(int newWarehouseId);
+
 public slots:
     void setUsername(const QString &username);
     void setPassword(const QString &password);
@@ -85,6 +89,8 @@ signals:
     void userIdChanged();
     void customerIdChanged();
 
+    void warehouseIdChanged();
+
 private:
     QString username_;
     QString password_;
@@ -96,6 +102,7 @@ private:
 
     Q_OBJECT_BINDABLE_PROPERTY(UserEntity, int, customerId_, &UserEntity::customerIdChanged)
     int userId_;
+    int warehouseId_;
 
     Q_OBJECT_BINDABLE_PROPERTY(UserEntity, UserTypes, userType_, &UserEntity::userTypeChanged)
 };

@@ -9,6 +9,7 @@ EntityLayer::UserEntity::UserEntity(QObject *parent)
     , email_{}
     , customerId_{}
     , userId_{}
+    , warehouseId_{}
     , userType_{UserTypes::GUEST}
 {
 }
@@ -41,6 +42,7 @@ void EntityLayer::UserEntity::fill(const QVariantMap &map)
     setUserId(map["id"].toInt());
     setUsername(map["username"].toString());
     setCustomerId(personInfo["customer_id"].toInt());
+    setWarehouseId(map["warehouse_id"].toInt());
 }
 
 bool EntityLayer::UserEntity::operator==(const UserEntity &other)
@@ -127,6 +129,7 @@ void EntityLayer::UserEntity::clear()
 
     setCustomerId(0);
     setUserId(0);
+    setWarehouseId(0);
 
     setUserType(UserTypes::GUEST);
 }
@@ -178,4 +181,20 @@ int EntityLayer::UserEntity::customerId() const
 int EntityLayer::UserEntity::userId() const
 {
     return userId_;
+}
+
+
+namespace EntityLayer {
+int UserEntity::warehouseId() const
+{
+    return warehouseId_;
+}
+
+void UserEntity::setWarehouseId(int newWarehouseId)
+{
+    if (warehouseId_ == newWarehouseId)
+        return;
+    warehouseId_ = newWarehouseId;
+    emit warehouseIdChanged();
+}
 }
