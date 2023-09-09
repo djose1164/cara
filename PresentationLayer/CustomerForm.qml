@@ -91,7 +91,6 @@ Page {
     }
 
     function customerCreated(customer) {
-        print("customerCreated");
         CustomerManager.addCustomer(customer);
         busyIndicator.close();
 
