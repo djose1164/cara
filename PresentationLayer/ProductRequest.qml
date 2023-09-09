@@ -27,7 +27,8 @@ Item {
     }
 
     function findProductByIdentifier(text) {
-        request.get("/" + text, null, r => root.succeeded(r.products));
+        request.get("/" + text);
+        request.succeeded.connect(r => root.succeeded(r.products));
     }
     
     function addSuggetionsToModel() {
