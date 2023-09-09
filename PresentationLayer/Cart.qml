@@ -5,10 +5,14 @@ import com.cara 1.0
 import "qrc:/singleton"
 import "qrc:/utils"
 
-BackPage {
+Page {
     id: root
 
     title: "Mi Carrito"
+    header: TitleHeader {
+        title: root.title
+        backBtn.visible: false
+    }
 
     StackLayout {
         anchors.fill: parent

@@ -17,8 +17,8 @@ Page {
     property string mode: "add"
 
     header: Utils.TitleHeader {
-        stackView: myStack
         title: "Agregar nuevo producto"
+        onBackClicked: myStack.pop()
     }
 
     StackLayout {
