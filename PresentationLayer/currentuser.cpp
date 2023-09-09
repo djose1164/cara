@@ -136,6 +136,7 @@ void CurrentUser::userFromSettings()
     user_->setUsername(settings.value("username").toString());
     user_->setCustomerId(settings.value("customerId").toInt());
     user_->setUserId(settings.value("userId").toInt());
+    user_->setWarehouseId(settings.value("warehouseId").toInt());
     setAccessToken(settings.value("accessToken").toString());
     settings.endGroup();
     qDebug() << "CurrentUser::userFromSettings: customerId: " << user_->customerId();
@@ -155,6 +156,7 @@ void CurrentUser::save()
     settings_.setValue("userTypeId", int(user_->userType()));
     settings_.setValue("customerId", user_->customerId());
     settings_.setValue("userId", user_->userId());
+    settings_.setValue("warehouseId", user_->warehouseId());
     settings_.endGroup();
 }
 
