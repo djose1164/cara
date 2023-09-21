@@ -1,14 +1,14 @@
 import QtQuick
 import QtQuick.Controls
 
-Item {
+Rectangle {
     id: root
 
     property string fullName
 
     width: parent.width
     height: 50
-
+    color: "white"
     Label {
         id: label
         width: parent.width
