@@ -28,17 +28,17 @@ Page {
         onHomeClicked: {
             ++clickedCount;
 
-            if (homeView.isCurrentView && !wasHomeLastView) {
-                homeView.pop(null);
+            if (homeStack.isCurrentView && !wasHomeLastView) {
+                homeStack.pop(null);
             }
             else if (clickedCount == 2) {
-                homeView.pop(null);
+                homeStack.pop(null);
                 clickedCount = 0;
             }
         }
 
         onCurrentIndexChanged: {
-            if (homeView.isCurrentView)
+            if (homeStack.isCurrentView)
                 wasHomeLastView = false;
             else {
                 wasHomeLastView = true;
@@ -53,7 +53,7 @@ Page {
         currentIndex: bar.currentIndex
 
         StackView {
-            id: homeView
+            id: homeStack
             readonly property TabBar bar: bar
             readonly property bool isCurrentView: StackLayout.isCurrentItem
             initialItem: homePath ?? busyIndicator
@@ -79,7 +79,7 @@ Page {
         target: CurrentUser
 
         function onIsAdminChanged() {
-            homeView.replace(homePath ?? busyIndicator);
+            homeStack.replace(homePath ?? busyIndicator);
             orderStackView.replace(cartPath ?? busyIndicator);
         }
     }
