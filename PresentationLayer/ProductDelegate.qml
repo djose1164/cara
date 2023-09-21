@@ -12,12 +12,16 @@ Item {
     required property int sell_price
     readonly property StackView stackView: ListView.view.stackView
 
-    width: ListView.view.width * .55
-    height: ListView.view.height
+    width: ListView.view.width
+    height: 200
 
     StackLayout {
         id: stackLayout
         anchors.fill: parent
+        anchors {
+            leftMargin: 20
+            rightMargin: 20
+        }
 
         Item {
             BusyIndicator {
@@ -29,19 +33,25 @@ Item {
             onClicked: stackView.push("qrc:/product/ProductPage.qml",
                                       {sell_price, name, image_url, description,
                                         productId})
+            Column {
             ProductImage {
                 id: img
-                anchors.centerIn: parent
+
                 source: image_url
-                sourceSize: `${root.height-60}x${root.height-60}`
+                sourceSize: "128x128"//`${root.height-60}x${root.height-60}`
                 onReady: stackLayout.currentIndex = 1
             }
 
             Label {
-                anchors.bottom: parent.bottom
-                anchors.horizontalCenter: parent.horizontalCenter
                 text: name
-                font.pointSize: 16
+                font.pointSize: 14
+                font.bold: true
+            }
+
+            Label {
+                text: `RD$${sell_price}`
+                font.pointSize: 12
+            }
             }
         }
     }
