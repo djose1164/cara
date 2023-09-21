@@ -1,7 +1,6 @@
 #include "orderentity.h"
 
-using EntityLayer::DetailsEntity, EntityLayer::OrderEntity;
-
+namespace EntityLayer {
 OrderEntity::OrderEntity(QObject *parent)
     : QObject{parent}
     , user_{new UserEntity(this)}
@@ -10,27 +9,27 @@ OrderEntity::OrderEntity(QObject *parent)
 {
 }
 
-EntityLayer::UserEntity *EntityLayer::OrderEntity::user() const
+UserEntity *OrderEntity::user() const
 {
     return user_;
 }
 
-void EntityLayer::OrderEntity::setDetails(const QByteArray &details)
+void OrderEntity::setDetails(const QByteArray &details)
 {
     details_ = details;
 }
 
-QBindable<QByteArray> EntityLayer::OrderEntity::bindableDetails()
+QBindable<QByteArray> OrderEntity::bindableDetails()
 {
     return &details_;
 }
 
-QByteArray EntityLayer::OrderEntity::details() const
+QByteArray OrderEntity::details() const
 {
     return details_.value();
 }
 
-void EntityLayer::OrderEntity::setUser(UserEntity * const user)
+void OrderEntity::setUser(UserEntity * const user)
 {
     if (user_ != user)
     {
@@ -39,7 +38,7 @@ void EntityLayer::OrderEntity::setUser(UserEntity * const user)
     }
 }
 
-QByteArray EntityLayer::OrderEntity::toJson() const
+QByteArray OrderEntity::toJson() const
 {
     QJsonObject object{};
     object["user_id"] = user_->userId();
@@ -74,4 +73,5 @@ QByteArray EntityLayer::OrderEntity::toJson() const
 
     const auto doc{QJsonDocument(object)};
     return doc.toJson(QJsonDocument::Compact);
+}
 }
