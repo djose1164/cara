@@ -45,7 +45,8 @@ ListView {
         visible: false
         anchors.centerIn: parent
         width: root.width*.9
-        text: "Este cliente no cuenta con ninguna orden."
+        text: CurrentUser.isCustomer ? "No cuentas con ninguna compra."
+                                     : "Este cliente no cuenta con ninguna orden."
         font.pointSize: 14
         wrapMode: Label.WordWrap
         horizontalAlignment: Label.AlignHCenter
