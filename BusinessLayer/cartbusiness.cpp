@@ -2,10 +2,9 @@
 #include "billentity.h"
 #include "constants.h"
 
-using namespace BusinessLayer;
-using EntityLayer::UserEntity, ModelLayer::OrderModel, EntityLayer::BillEntity,
-    EntityLayer::OrderEntity, EntityLayer::DetailsEntity;
+using namespace EntityLayer;
 
+namespace BusinessLayer {
 CartBusiness::CartBusiness(QObject *parent)
     : QObject{parent}
     , rest_{new Rest(this)}
@@ -152,4 +151,5 @@ void CartBusiness::prepareOrder()
     user->setCustomerId(user_->customerId());
 
     order_->setDetails(model_->toJson());
+}
 }
