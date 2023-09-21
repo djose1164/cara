@@ -10,26 +10,10 @@ Item {
 
     Component.onCompleted: productRequest.addSuggetionsToModel()
 
-    width: 400
-    height: 100
-
-    Label {
-        id: label
-        anchors {
-            top: parent.top
-            topMargin: 10
-            left: parent.left
-            leftMargin: 5
-        }
-        text: "¡Aprovecha las ofertas!"
-        font.pointSize: 13
-    }
-
     StackLayout {
         id: offerStackLayout
-        width: parent.width
-        height: root.height - label.height
-        anchors.top: label.bottom
+        width: root.width
+        height: root.height
 
         BusyIndicator {}
 
@@ -37,9 +21,29 @@ Item {
             id: listView
             readonly property StackView stackView: root.stackView
 
+            spacing: 10
             model: model
+            clip: true
             delegate: ProductDelegate {}
-            orientation: ListView.Horizontal
+            section.property: "category_name"
+            section.delegate: sectionDelegate
+        }
+    }
+
+    Component {
+        id: sectionDelegate
+        Rectangle {
+            required property var section
+            width: root.width
+            height: 40
+
+            Label {
+                anchors.verticalCenter: parent.verticalCenter
+                text: section
+                font.pointSize: 14
+                font.bold: true
+                padding: 20
+            }
         }
     }
 
@@ -51,5 +55,5 @@ Item {
         }
     }
 
-     ListModel { id: model }
+    ListModel { id: model }
 }
