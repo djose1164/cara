@@ -32,6 +32,9 @@ ToolBar {
             onClicked: doSearch()
         }
 
-        Loader { id: loader }
+        Loader {
+            id: loader
+            Layout.alignment: Qt.AlignRight
+        }
     }
 }
