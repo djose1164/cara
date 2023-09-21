@@ -109,5 +109,11 @@ Home {
             path: "qrc:/statistics/Statistics.qml"
             name: "Estadisticas"
         }
+
+        ListElement {
+            source: "qrc:/icons/hand-bill.svg"
+            path: "qrc:/bills/BillHomePage.qml"
+            name: "Cuentas"
+        }
     }
 }
