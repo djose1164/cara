@@ -29,9 +29,6 @@ public:
 
     DetailsEntity *detail(qsizetype index) const;
 
-    int inventoryId() const;
-    void setInventoryId(int newInventoryId);
-
 public slots:
     void setUser(UserEntity *const user);
 
@@ -41,8 +38,6 @@ signals:
     void userChanged();
     void detailsChanged();
     void paymentChanged();
-
-    void inventoryIdChanged();
 
 private:
     UserEntity *user_;
