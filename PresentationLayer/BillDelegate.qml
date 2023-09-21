@@ -2,7 +2,7 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
-import com.cara 1.0
+import com.cara
 import "qrc:/users"
 import "qrc:/customers"
 
@@ -51,7 +51,7 @@ Item {
             id: customerDelegate
 
             onClicked: {
-                billStack.push("qrc:/bills/OrderPage.qml", {
+                billStack.push("qrc:/bills/BillDetailsPage.qml", {
                     details, date, payment, orderId, status
                 });
             }
