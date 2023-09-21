@@ -2,7 +2,7 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 import QtQuick.Dialogs
-import com.cara 1.0
+import com.cara
 import "qrc:/singleton"
 import "qrc:/utils"
 import "qrc:/reviews"
