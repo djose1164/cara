@@ -47,10 +47,12 @@ QByteArray EntityLayer::OrderEntity::toJson() const
 
     const auto detailsDoc{QJsonDocument::fromJson(details_)};
     QJsonArray arr{};
+    unsigned amountToPay{};
     for (const auto &detail : detailsDoc.array())
     {
         const auto detailObj{detail.toObject()};
         const auto productId{detailObj["product"].toObject()["product_id"].toInt()};
+        const auto price{detailObj["product"].toObject()["price"].toInt()};
 
         QJsonObject detailsObj{};
         detailsObj["product_id"] = productId;
@@ -58,10 +60,13 @@ QByteArray EntityLayer::OrderEntity::toJson() const
         const auto quantity{detailObj["quantity"].toInt()};
         detailsObj["quantity"] = quantity;
 
+        amountToPay += quantity*price;
+
         arr.append(detailsObj);
     }
     object["details"] = arr;
 
+    payment_->setAmountToPay(amountToPay);
     const auto doc_{QJsonDocument::fromJson(payment_->toJson())};
     object["payment"] = QJsonValue::fromVariant(doc_);
 
