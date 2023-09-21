@@ -1,7 +1,10 @@
 import QtQuick
 import QtQuick.Controls
-import Qt.labs.platform
+import QtQuick.Dialogs
 import "qrc:/utils"
+import "qrc:/singleton"
+
+// TODO: This component need to be reviewed
 
 Item {
     id: root
@@ -77,6 +80,7 @@ Item {
         }
 
         endpoint: "/statuses"
+        accessToken: TokenManager.accessToken
 
         function update(newOrderStatus: int) {
             patch(`/${orderId}`, {"status_id": newOrderStatus});
