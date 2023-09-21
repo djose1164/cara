@@ -11,6 +11,7 @@ Page {
     readonly property StackView stackView: StackView.view
     readonly property UserEntity user: CurrentUser.user
     readonly property string adminViewPath: "qrc:/bills/CustomersView.qml"
+    readonly property string customerViewPath: "qrc:/bills/BillView.qml"
     readonly property string messagePath: "qrc:/bills/BillMessage.qml"
 
     title: "Facturas"
@@ -19,41 +20,42 @@ Page {
     BillPageHeader {
         id: pageHeader
         stackView: root.stackView
-        onDoSearch: billStack.push("qrc:/bills/BillSearch.qml", {model: loader.model});
-
+        buttonLoader.sourceComponent: moreVertBtn
+        onDoSearch: billStack.push("qrc:/bills/BillSearch.qml", {model: loader.item.model});
     }
 
-    states: [
-        State {
-            name: "userNotLoggedIn"
-            when: user.userType === UserEntity.GUEST
-            PropertyChanges {
-                target: loader
-                source: messagePath
-            }
-        },
-        State {
-            name: "userLoggedIn"
-            when: user.userType === UserEntity.USER && CurrentUser.accessToken
-            PropertyChanges {
-                target: loader
-                source: user.customerId ? adminViewPath : messagePath
-            }
-        },
-        State { // FIXME: This does not makes sense. userLoggedIn is checking this
-            name: "adminLoggedIn"
-            when: CurrentUser.isAdmin && CurrentUser.accessToken !== ""
-            PropertyChanges {
-                target: loader
-                source: adminViewPath
+    Component {
+        id: moreVertBtn
+
+        MoreVertButton {
+            onClicked: menu.open()
+
+            Menu {
+                id: menu
+
+                MenuItem {
+                    text: "Filtros"
+                }
+
+                MenuItem {
+                    text: "Cambiar vista"
+                    onTriggered: billViewChooser.open()
+                }
             }
         }
-    ]
+    }
+
+    BillViewChooser {
+        id: billViewChooser
+        width: root.width*.8
+        height: root.height/2
+        onViewChanged: newView => print("Requested view: " + newView)
+    }
 
     Loader {
         id: loader
         property StackView stackView: root.stackView
-        readonly property ListModel model: item.model
+        readonly property int customerId: user.customerId
         anchors.fill: parent
     }
 
@@ -75,10 +77,30 @@ Page {
         }
     }
 
-    function updateCustomerModel() {
-        if (TheCurrentUser.isAdmin)
-            bills.findAll();
-        else if (TheCurrentUser.isCostumer)
-            bills.findOrdersByCustomerId(TheCurrentUser.customerId);
-    }
+    states: [
+        State {
+            name: "userNotLoggedIn"
+            when: user.userType === UserEntity.GUEST
+            PropertyChanges {
+                target: loader
+                source: messagePath
+            }
+        },
+        State {
+            name: "userLoggedIn"
+            when: user.userType === UserEntity.USER && CurrentUser.accessToken
+            PropertyChanges {
+                target: loader
+                source: user.customerId ? customerViewPath : messagePath
+            }
+        },
+        State { // FIXME: This does not makes sense. userLoggedIn is checking this
+            name: "adminLoggedIn"
+            when: CurrentUser.isAdmin && CurrentUser.accessToken !== ""
+            PropertyChanges {
+                target: loader
+                source: adminViewPath
+            }
+        }
+    ]
 }
