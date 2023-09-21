@@ -2,9 +2,10 @@
 #include "constants.h"
 #include "currentuser.h"
 
-using BusinessLayer::BillBusiness, EntityLayer::UserEntity,
-    ModelLayer::BillModel;
+using namespace EntityLayer;
+using namespace ModelLayer;
 
+namespace BusinessLayer {
 BillBusiness::BillBusiness(QObject *parent)
     : QObject{parent}
     , rest_{new Rest(this)}
@@ -43,10 +44,7 @@ void BillBusiness::fetchBillsByCustomerId(int customerId)
 {
     Q_ASSERT(customerId);
 
-    const auto user{CurrentUser::instance()};
-    rest_->accessToken(user->accessToken());
-
-    rest_->get(QString("/?customer_id=%1").arg(customerId));
+    fetch(QString("/?customer_id=%1").arg(customerId));
 
     connect(rest_, &Rest::succeeded, this, [&](const QVariantMap &resp) {
         for (const auto &order : resp["orders"].toList())
@@ -62,7 +60,27 @@ void BillBusiness::fetchBillById(int orderId)
     // FIXME: Implement me
 }
 
+void BillBusiness::fetchBillsByAdminId(int customerId)
+{   
+    fetch(QString("/?admin_id=%1").arg(customerId));
+
+    connect(rest_, &Rest::succeeded, this, [&](const QVariantMap &resp) {
+        for (const auto &order : resp["orders"].toList())
+            model_->append(BillEntity::fromMap(order.toMap()));
+        emit populated();
+    });
+}
+
 void BillBusiness::clearModel()
 {
     model_->clear();
+}
+
+void BillBusiness::fetch(QStringView arg)
+{
+    const auto user{CurrentUser::instance()};
+    rest_->accessToken(user->accessToken());
+
+    rest_->get(arg.toString());
+}
 }

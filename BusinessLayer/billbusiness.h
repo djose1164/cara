@@ -28,6 +28,7 @@ public slots:
     void populate();
     void fetchBillsByCustomerId(int customerId);
     void fetchBillById(int orderId);
+    void fetchBillsByAdminId(int customerId);
 
     void clearModel();
 
@@ -38,6 +39,8 @@ signals:
     void completed();
 
 private:
+    void fetch(QStringView arg);
+
     QProperty<Rest *> rest_;
 
     Q_OBJECT_BINDABLE_PROPERTY(BillBusiness, BillModel *, model_, &BillBusiness::modelChanged)
