@@ -13,8 +13,7 @@ Home {
 
     Column {
         id: column
-
-        spacing: 20
+        bottomPadding: 50
 
         Welcome {
             id: welcome
@@ -25,15 +24,8 @@ Home {
         Offers {
             id: offers
             width: root.width
-            height: root.height*.4
+            height: root.height - welcome.height - 40
             stackView: root.stackView
-        }
-
-        RecentOrders {
-            id: recentOrders
-            width: root.width
-            stackView: root.stackView
-            bar: root.bar
         }
     }
 }
