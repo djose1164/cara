@@ -11,6 +11,7 @@ SOURCES += \
     EntityLayer/billentity.cpp \
     EntityLayer/customerentity.cpp \
     EntityLayer/detailsentity.cpp \
+    EntityLayer/inventory.cpp \
     EntityLayer/orderstatus.cpp \
     EntityLayer/paymententity.cpp \
     EntityLayer/productentity.cpp \
@@ -20,6 +21,7 @@ SOURCES += \
     ModelLayer/billproxymodel.cpp \
     ModelLayer/customermodel.cpp \
     ModelLayer/ordermodel.cpp \
+    ModelLayer/orderstatusproxymodel.cpp \
     PresentationLayer/currentuser.cpp \
     PresentationLayer/main.cpp \
     DataLayer/rest.cpp \
@@ -56,6 +58,7 @@ HEADERS += \
     EntityLayer/billentity.h \
     EntityLayer/customerentity.h \
     EntityLayer/detailsentity.h \
+    EntityLayer/inventory.h \
     EntityLayer/orderstatus.h \
     EntityLayer/paymententity.h \
     EntityLayer/productentity.h \
@@ -66,6 +69,7 @@ HEADERS += \
     ModelLayer/billproxymodel.h \
     ModelLayer/customermodel.h \
     ModelLayer/ordermodel.h \
+    ModelLayer/orderstatusproxymodel.h \
     PresentationLayer/currentuser.h \
     DataLayer/rest.h
 

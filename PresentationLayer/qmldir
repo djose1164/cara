@@ -3,3 +3,4 @@ singleton ViewManager 1.0 ViewManager.qml
 singleton CustomerManager 1.0 CustomerManager.qml
 singleton ProductManager 1.0 ProductManager.qml
 singleton TokenManager 1.0 TokenManager.qml
+singleton BillManager 1.0 BillManager.qml

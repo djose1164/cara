@@ -27,14 +27,16 @@
         <file>BillDelegate.qml</file>
         <file>OptionPopup.qml</file>
         <file>BillSearch.qml</file>
-        <file>Bills.qml</file>
         <file>BillMessage.qml</file>
-        <file>BillView.qml</file>
         <file>CustomersView.qml</file>
         <file>OrderPage.qml</file>
         <file>CustomerBills.qml</file>
         <file>AdminBillDelegate.qml</file>
         <file>CustomerBillDelegate.qml</file>
+        <file>BillViewChooser.qml</file>
+        <file>BillView.qml</file>
+        <file>BillDetailsPage.qml</file>
+        <file>BillHomePage.qml</file>
     </qresource>
     <qresource prefix="/orders">
         <file>Entry.qml</file>
@@ -86,6 +88,7 @@
         <file>Header.qml</file>
         <file>RefreshIndicator.qml</file>
         <file>SearchButton.qml</file>
+        <file>MoreVertButton.qml</file>
     </qresource>
     <qresource prefix="/payment">
         <file>PaymentStatus.qml</file>
@@ -150,6 +153,7 @@
         <file>CustomerManager.qml</file>
         <file>ProductManager.qml</file>
         <file>TokenManager.qml</file>
+        <file>BillManager.qml</file>
     </qresource>
     <qresource prefix="/statistics" lang="qml">
         <file>Statistics.qml</file>
@@ -160,5 +164,6 @@
     <qresource prefix="/filters" lang="qml">
         <file>PaymentStatusFilter.qml</file>
         <file>FilterButton.qml</file>
+        <file>OrderStatusFilter.qml</file>
     </qresource>
 </RCC>
