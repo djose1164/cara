@@ -30,9 +30,9 @@ Page {
                 id: item
                 required property int id
                 required property var product
-                required property var stocks
+                required property int quantity_available
 
-                onClicked: stackView.push("qrc:/product/ProductForm.qml", {inventoryId: id, product, stocks, mode: "edit"})
+                onClicked: stackView.push("qrc:/product/ProductForm.qml", {inventoryId: id, product, stocks: quantity_available, mode: "edit"})
 
                 width: root.width
                 height: childrenRect.height
@@ -45,7 +45,7 @@ Page {
 
                     width: parent.width
                     height: 75
-                    detailed: `Disponible ${stocks.in_stock}`
+                    detailed: `Disponible ${quantity_available}`
                     source: item.product.image_url
                     name: item.product.name
                 }
