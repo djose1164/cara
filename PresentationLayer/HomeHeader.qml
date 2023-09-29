@@ -14,9 +14,6 @@ ToolBar {
 
     signal acceptedText(text: string)
 
-    width: parent.width
-    height: 40
-
     RowLayout {
         anchors.fill: parent
         spacing: 10
@@ -59,8 +56,6 @@ ToolBar {
                 anchors.centerIn: parent
                 source: btn.newNotifications
             }
-
-
         }
 
         RoundButton {
