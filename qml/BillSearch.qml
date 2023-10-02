@@ -11,9 +11,11 @@ Page {
 
     header: SearchBar {
         id: searchBar
-        stackView: root.stackView
-        placeholderText: "Buscar en facturas..."
-        onAccepted: t => findMatch(t)
+        loader.sourceComponent: SearchField {
+            placeholderText: "Buscar en facturas..."
+            onAccepted: t => findMatch(t)
+        }
+        onBackClicked: stackView.pop()
     }
 
     ListView {
