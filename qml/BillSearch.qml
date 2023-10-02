@@ -45,7 +45,6 @@ Page {
         const fetched = likeName(text);
         if (fetched)
             resultModel.append(fetched);
-        print("findMatch(text)" +fetched);
     }
 
     function likeName(text) {
