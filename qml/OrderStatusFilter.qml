@@ -2,6 +2,7 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 import core
+import entities
 import "qrc:/utils"
 
 Popup {
