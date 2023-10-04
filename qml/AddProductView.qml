@@ -24,6 +24,7 @@ Column {
     signal updateTotal
     signal entryUpdated
 
+    spacing: 20
     Component.onCompleted: payment = 0
     onOkClicked: productEntry.okClicked()
 
@@ -31,22 +32,18 @@ Column {
         id: productEntry
         Component.onCompleted: entryUpdated.connect(root.entryUpdated)
         width: root.width
-        height: root.height - pane.height
+        height: root.height - newEntryBtn.height
     }
 
-    Pane {
-        id: pane
-        width: root.width
+    RoundButton {
+        id: newEntryBtn
+        anchors.topMargin: 20
+        anchors.horizontalCenter: parent.horizontalCenter
 
-        RoundButton {
-            onClicked: productEntry.addEntry()
-
-            z: 100
-            icon.source: "qrc:/icons/add_circle.svg"
-            icon.width: 36; icon.height: 36
-            flat: true
-            anchors.horizontalCenter: parent.horizontalCenter
-        }
+        icon.source: "qrc:/icons/add_circle.svg"
+        icon.width: 36; icon.height: 36
+        flat: true
+        onClicked: productEntry.addEntry()
     }
 
     function findIn(model, criteria) {
