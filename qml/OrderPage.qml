@@ -18,6 +18,12 @@ Page {
     property var status
     property var details
 
+    anchors {
+        left: parent.left
+        leftMargin: 10
+        right: parent.right
+        rightMargin: 5
+    }
     title: CurrentUser.isAdmin ? "Cliente: "+name+" ID #"+customerId : "Estado de Orden"
     header: titleHeader
 
