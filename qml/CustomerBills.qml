@@ -19,6 +19,7 @@ ListView {
 
     Component.onCompleted: billBusiness.fetchBillsByCustomerId(customerId)
 
+    spacing: 20
     delegate: OrderState {
         required details
         required orderId
