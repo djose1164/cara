@@ -6,22 +6,28 @@ import "qrc:/utils"
 
 BusyStackLayout {
     id: root
+
     property string name
     property alias detailed: detailed.text
     property alias source: productImage.source
 
-    width: 200
-    height: 120
-
     GridLayout {
         id: row
         columns: 2
+        rows: 2
 
-        ProductImage {
-            id: productImage
-            onReady:  root.currentIndex = 1
+        Item {
+            Layout.fillHeight: true
             Layout.rowSpan: 2
-            sourceSize: "100x100"
+            Layout.preferredWidth: 100
+            Layout.preferredHeight: 100
+
+            ProductImage {
+                id: productImage
+                sourceSize: "100x100"
+
+                onReady: root.currentIndex = 1
+            }
         }
 
         Label {
@@ -35,7 +41,6 @@ BusyStackLayout {
             id: detailed
             Layout.fillWidth: true
             wrapMode: Label.Wrap
-            padding: 6
         }
     }
 }
