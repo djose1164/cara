@@ -78,6 +78,7 @@ PaymentEntity::Status PaymentEntity::status() const
 QByteArray PaymentEntity::toJson() const
 {
     QJsonObject object{};
+    object["id"] = paymentId_;
     object["paid_amount"] = paidAmount_;
     object["amount_to_pay"] = amountToPay_;
     object["payment_status_id"] = int(status());
