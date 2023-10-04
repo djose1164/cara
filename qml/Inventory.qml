@@ -35,6 +35,7 @@ Page {
                 onClicked: stackView.push("qrc:/product/ProductForm.qml", {inventoryId: id, product, stocks: quantity_available, mode: "edit"})
 
                 width: root.width
+                height: 100
 
                 ProductThumbnail {
                     anchors.left: parent.left
@@ -43,7 +44,7 @@ Page {
                     anchors.rightMargin: 5
 
                     width: parent.width
-                    height: 75
+                    height: 100
                     detailed: `Disponible ${quantity_available}`
                     source: item.product.image_url
                     name: item.product.name
