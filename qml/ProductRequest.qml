@@ -33,5 +33,6 @@ Item {
     
     function addSuggetionsToModel() {
         request.get('/');
+        request.succeeded.connect(r => root.succeeded(r.products));
     }
 }
