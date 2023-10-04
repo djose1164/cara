@@ -27,7 +27,7 @@ Page {
 
     ScrollView {
         anchors.fill: parent
-        contentWidth: availableWidth
+        contentWidth: root.width
 
         ColumnLayout {
             anchors.fill: parent
