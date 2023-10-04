@@ -25,13 +25,6 @@ ColumnLayout {
 
     onPaymentApplied: p => payment = p
 
-    anchors {
-        left: parent.left
-        leftMargin: 10
-        right: parent.right
-        rightMargin: 5
-    }
-
     Label {
         text: `Estado de Orden ID#${orderId}`
         font.pointSize: 12.5
