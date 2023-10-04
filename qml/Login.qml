@@ -3,6 +3,7 @@ import QtQuick.Controls
 import QtQuick.Layouts
 import QtQuick.Dialogs
 import core 1.0
+import entities
 import "qrc:/main"
 import "qrc:/singleton"
 
@@ -72,8 +73,8 @@ Item {
             font.pointSize: 12
             Layout.alignment: Qt.AlignCenter
             font.capitalization: Font.MixedCase
-            Material.background: Material.Blue
-            Material.foreground: "white"
+//            Material.background: Material.Blue
+//            Material.foreground: "white"
         }
 
         Label {
