@@ -30,12 +30,14 @@ Item {
             font.bold: true
             wrapMode: Label.Wrap
         }
+        spacing: 20
         model: listModel
         delegate: ProductThumbnail {
             required name
             required property string image_url
             required property int quantity
 
+            height: 100
             width: root.width
             source: image_url
             detailed: `Cantidad vendida: ${quantity}`
