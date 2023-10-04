@@ -43,8 +43,15 @@ ColumnLayout {
     }
 
     RowLayout {
-        Layout.topMargin: 0
-        Label { text: statusString[payment.status] }
+        Layout.topMargin: 20
+        Layout.bottomMargin: 10
+
+        Label {
+            padding: 12
+            text: statusString[payment.status]
+            font.bold: true
+            font.pointSize: 12
+        }
 
         Button {
             text: "Actualizar"
