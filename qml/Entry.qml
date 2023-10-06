@@ -33,12 +33,10 @@ RowLayout {
 
     SpinBox {
         id: quantityField
-        Layout.preferredHeight: productField.height
-        Layout.maximumWidth: root.width*.3
-        Layout.minimumWidth: 100
+        Layout.preferredHeight: productField.height*.8
+        Layout.preferredWidth: root.width/3
         from: 1
         editable: true
-        Layout.preferredWidth: root.width*.4
         Keys.onReturnPressed: Qt.inputMethod.hide()
     }
 
