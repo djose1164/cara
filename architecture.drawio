@@ -1,9 +1,92 @@
-<mxfile host="app.diagrams.net" modified="2023-10-06T16:14:51.458Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/118.0" version="22.0.3" etag="sUUMI7pCEI8olYWrCnAz" type="github">
+<mxfile host="app.diagrams.net" modified="2023-10-07T03:01:58.790Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/118.0" etag="BXEqUrksUnA2Mxiidyfx" version="22.0.3" type="github">
   <diagram name="Page-1" id="ftJ-EOC9g1HyqNR5bp8t">
-    <mxGraphModel>
+    <mxGraphModel dx="1034" dy="414" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
+        <mxCell id="p5SD8SCXxMQzoqA0o00n-1" value="«Module»&lt;br&gt;&lt;b&gt;Core&lt;/b&gt;" style="html=1;dropTarget=0;whiteSpace=wrap;" vertex="1" parent="1">
+          <mxGeometry x="40" y="40" width="180" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="p5SD8SCXxMQzoqA0o00n-2" value="" style="shape=module;jettyWidth=8;jettyHeight=4;" vertex="1" parent="p5SD8SCXxMQzoqA0o00n-1">
+          <mxGeometry x="1" width="20" height="20" relative="1" as="geometry">
+            <mxPoint x="-27" y="7" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="p5SD8SCXxMQzoqA0o00n-3" value="«Module»&lt;br&gt;&lt;b&gt;Entities&lt;/b&gt;" style="html=1;dropTarget=0;whiteSpace=wrap;" vertex="1" parent="1">
+          <mxGeometry x="280" y="40" width="180" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="p5SD8SCXxMQzoqA0o00n-4" value="" style="shape=module;jettyWidth=8;jettyHeight=4;" vertex="1" parent="p5SD8SCXxMQzoqA0o00n-3">
+          <mxGeometry x="1" width="20" height="20" relative="1" as="geometry">
+            <mxPoint x="-27" y="7" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="p5SD8SCXxMQzoqA0o00n-5" value="«Module»&lt;br&gt;&lt;b&gt;Models&lt;/b&gt;" style="html=1;dropTarget=0;whiteSpace=wrap;" vertex="1" parent="1">
+          <mxGeometry x="520" y="40" width="180" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="p5SD8SCXxMQzoqA0o00n-6" value="" style="shape=module;jettyWidth=8;jettyHeight=4;" vertex="1" parent="p5SD8SCXxMQzoqA0o00n-5">
+          <mxGeometry x="1" width="20" height="20" relative="1" as="geometry">
+            <mxPoint x="-27" y="7" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="p5SD8SCXxMQzoqA0o00n-7" value="«Module»&lt;br&gt;&lt;b&gt;Data&lt;/b&gt;" style="html=1;dropTarget=0;whiteSpace=wrap;" vertex="1" parent="1">
+          <mxGeometry x="760" y="40" width="180" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="p5SD8SCXxMQzoqA0o00n-8" value="" style="shape=module;jettyWidth=8;jettyHeight=4;" vertex="1" parent="p5SD8SCXxMQzoqA0o00n-7">
+          <mxGeometry x="1" width="20" height="20" relative="1" as="geometry">
+            <mxPoint x="-27" y="7" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="p5SD8SCXxMQzoqA0o00n-11" value="" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=4;spacingRight=4;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;" vertex="1" parent="1">
+          <mxGeometry x="50" y="270" width="250" height="14" as="geometry" />
+        </mxCell>
+        <mxCell id="p5SD8SCXxMQzoqA0o00n-13" value="&lt;p style=&quot;margin:0px;margin-top:6px;text-align:center;&quot;&gt;«Subsystem»&lt;br&gt;&lt;b&gt;SMO&lt;/b&gt;&lt;/p&gt;&lt;hr&gt;&lt;p style=&quot;margin:0px;margin-left:8px;&quot;&gt;&lt;br&gt;&lt;/p&gt;" style="align=left;overflow=fill;html=1;dropTarget=0;whiteSpace=wrap;" vertex="1" parent="1">
+          <mxGeometry x="40" y="200" width="330" height="400" as="geometry" />
+        </mxCell>
+        <mxCell id="p5SD8SCXxMQzoqA0o00n-14" value="" style="shape=component;jettyWidth=8;jettyHeight=4;" vertex="1" parent="p5SD8SCXxMQzoqA0o00n-13">
+          <mxGeometry x="1" width="20" height="20" relative="1" as="geometry">
+            <mxPoint x="-24" y="4" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="p5SD8SCXxMQzoqA0o00n-15" value="«Component»&lt;br&gt;&lt;b&gt;AdminOrderForm&lt;/b&gt;" style="html=1;dropTarget=0;whiteSpace=wrap;" vertex="1" parent="1">
+          <mxGeometry x="50" y="270" width="150" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="p5SD8SCXxMQzoqA0o00n-16" value="" style="shape=module;jettyWidth=8;jettyHeight=4;" vertex="1" parent="p5SD8SCXxMQzoqA0o00n-15">
+          <mxGeometry x="1" width="20" height="20" relative="1" as="geometry">
+            <mxPoint x="-27" y="7" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="p5SD8SCXxMQzoqA0o00n-17" value="&lt;p style=&quot;margin:0px;margin-top:6px;text-align:center;&quot;&gt;«Subsystem»&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-top:6px;text-align:center;&quot;&gt;&lt;b&gt;Catalogo&lt;/b&gt;&lt;br&gt;&lt;/p&gt;&lt;hr&gt;&lt;p style=&quot;margin:0px;margin-left:8px;&quot;&gt;&lt;br&gt;&lt;/p&gt;" style="align=left;overflow=fill;html=1;dropTarget=0;whiteSpace=wrap;" vertex="1" parent="1">
+          <mxGeometry x="400" y="200" width="330" height="400" as="geometry" />
+        </mxCell>
+        <mxCell id="p5SD8SCXxMQzoqA0o00n-18" value="" style="shape=component;jettyWidth=8;jettyHeight=4;" vertex="1" parent="p5SD8SCXxMQzoqA0o00n-17">
+          <mxGeometry x="1" width="20" height="20" relative="1" as="geometry">
+            <mxPoint x="-24" y="4" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="p5SD8SCXxMQzoqA0o00n-19" value="&lt;p style=&quot;margin:0px;margin-top:6px;text-align:center;&quot;&gt;«Subsystem»&lt;br&gt;&lt;b&gt;SMC&lt;/b&gt;&lt;/p&gt;&lt;hr&gt;&lt;p style=&quot;margin:0px;margin-left:8px;&quot;&gt;&lt;br&gt;&lt;/p&gt;" style="align=left;overflow=fill;html=1;dropTarget=0;whiteSpace=wrap;" vertex="1" parent="1">
+          <mxGeometry x="760" y="200" width="330" height="400" as="geometry" />
+        </mxCell>
+        <mxCell id="p5SD8SCXxMQzoqA0o00n-20" value="" style="shape=component;jettyWidth=8;jettyHeight=4;" vertex="1" parent="p5SD8SCXxMQzoqA0o00n-19">
+          <mxGeometry x="1" width="20" height="20" relative="1" as="geometry">
+            <mxPoint x="-24" y="4" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="p5SD8SCXxMQzoqA0o00n-21" value="«Component»&lt;br&gt;&lt;b&gt;Cart&lt;/b&gt;" style="html=1;dropTarget=0;whiteSpace=wrap;" vertex="1" parent="1">
+          <mxGeometry x="50" y="380" width="150" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="p5SD8SCXxMQzoqA0o00n-22" value="" style="shape=module;jettyWidth=8;jettyHeight=4;" vertex="1" parent="p5SD8SCXxMQzoqA0o00n-21">
+          <mxGeometry x="1" width="20" height="20" relative="1" as="geometry">
+            <mxPoint x="-27" y="7" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="p5SD8SCXxMQzoqA0o00n-23" value="«Annotation»&lt;br&gt;&lt;b&gt;ProductForm&lt;/b&gt;" style="html=1;dropTarget=0;whiteSpace=wrap;" vertex="1" parent="1">
+          <mxGeometry x="410" y="270" width="180" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="p5SD8SCXxMQzoqA0o00n-24" value="" style="shape=module;jettyWidth=8;jettyHeight=4;" vertex="1" parent="p5SD8SCXxMQzoqA0o00n-23">
+          <mxGeometry x="1" width="20" height="20" relative="1" as="geometry">
+            <mxPoint x="-27" y="7" as="offset" />
+          </mxGeometry>
+        </mxCell>
       </root>
     </mxGraphModel>
   </diagram>
