@@ -1,8 +1,7 @@
 #include "productentity.h"
 
-using namespace EntityLayer;
-
-ProductEntity::ProductEntity(QObject *parent)
+namespace EntityLayer {
+Product::Product(QObject *parent)
     : QObject{parent}
     , name_{}
     , description_{}
@@ -12,9 +11,9 @@ ProductEntity::ProductEntity(QObject *parent)
 {
 }
 
-ProductEntity *ProductEntity::fromMap(const QVariantMap &map)
+Product *Product::fromMap(const QVariantMap &map)
 {
-    const auto product{new ProductEntity};
+    const auto product{new Product};
     product->setName(map["name"].toString());
     product->setImageUrl(map["image_url"].toString());
     product->setPrice(map["sell_price"].toInt());
@@ -22,47 +21,47 @@ ProductEntity *ProductEntity::fromMap(const QVariantMap &map)
     return product;
 }
 
-bool ProductEntity::operator==(ProductEntity * const rhs)
+bool Product::operator==(Product * const rhs)
 {
     return productId_ == rhs->productId();
 }
 
-bool ProductEntity::operator!=(ProductEntity * const rhs)
+bool Product::operator!=(Product * const rhs)
 {
     return !(*this == rhs);
 }
 
-QString ProductEntity::name() const
+QString Product::name() const
 {
     return name_;
 }
 
-QString ProductEntity::description() const
+QString Product::description() const
 {
     return description_;
 }
 
-QString ProductEntity::imageUrl() const
+QString Product::imageUrl() const
 {
     return imageUrl_;
 }
 
-int ProductEntity::price() const
+int Product::price() const
 {
     return price_;
 }
 
-QBindable<int> ProductEntity::bindablePrice() const
+QBindable<int> Product::bindablePrice() const
 {
     return &price_;
 }
 
-int ProductEntity::productId() const
+int Product::productId() const
 {
     return productId_;
 }
 
-QByteArray ProductEntity::toJson() const
+QByteArray Product::toJson() const
 {
     QJsonObject obj{};
     obj["product_id"] = productId_;
@@ -75,7 +74,7 @@ QByteArray ProductEntity::toJson() const
     return doc.toJson(QJsonDocument::Compact);
 }
 
-void ProductEntity::setName(const QString &name)
+void Product::setName(const QString &name)
 {
     if (name_ != name)
     {
@@ -84,7 +83,7 @@ void ProductEntity::setName(const QString &name)
     }
 }
 
-void ProductEntity::setDescription(const QString &description)
+void Product::setDescription(const QString &description)
 {
     if (description_ != description)
     {
@@ -93,7 +92,7 @@ void ProductEntity::setDescription(const QString &description)
     }
 }
 
-void ProductEntity::setImageUrl(const QString &url)
+void Product::setImageUrl(const QString &url)
 {
     if (imageUrl_ != url)
     {
@@ -102,7 +101,7 @@ void ProductEntity::setImageUrl(const QString &url)
     }
 }
 
-void ProductEntity::setPrice(int price)
+void Product::setPrice(int price)
 {
     price_ = price;
 
@@ -110,11 +109,12 @@ void ProductEntity::setPrice(int price)
     //emit priceChanged();
 }
 
-void ProductEntity::setProductId(int productId)
+void Product::setProductId(int productId)
 {
     if (productId_ != productId)
     {
         productId_ = productId;
         emit productIdChanged();
     }
+}
 }

@@ -44,7 +44,7 @@ ModelLayer::OrderModel *CartBusiness::model() const
     return model_;
 }
 
-bool CartBusiness::isProductInCart(EntityLayer::ProductEntity * const product)
+bool CartBusiness::isProductInCart(EntityLayer::Product * const product)
 {
     // TODO: This' being repetive. Consider to create a find method in model_.
     const auto predicate = [&](EntityLayer::DetailsEntity *const d) -> bool {

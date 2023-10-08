@@ -18,17 +18,17 @@ public:
 
     int total() const;
     QBindable<int> bindableTotal() const;
-
-    void setProduct(ProductEntity *const product);
-    ProductEntity *product() const;
+    
+    void setProduct(Product *const product);
+    Product *product() const;
 
     QByteArray toJson() const override;
 
 private:
     QProperty<int> quantity_;
     QProperty<int> total_;
-
-    QProperty<ProductEntity *> product_;
+    
+    QProperty<Product *> product_;
 };
 }
 
