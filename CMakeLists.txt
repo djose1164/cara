@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.16)
 
-project(Cara VERSION 0.1 LANGUAGES CXX)
+project(Cara VERSION 0.13.0 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -16,6 +16,7 @@ add_subdirectory(core)
 add_subdirectory(models)
 add_subdirectory(data)
 add_subdirectory(entities)
+add_subdirectory(catalogue)
 
 qt_add_executable(Cara
     qml/qml.qrc
@@ -34,6 +35,7 @@ target_link_libraries(Cara PRIVATE
     Modelsplugin
     Dataplugin
     Entitiesplugin
+    Catalogueplugin
 )
 
 # Link the resources to the executable
