@@ -7,7 +7,7 @@ import "qrc:/product"
 Page {
     id: root
 
-    readonly property var stackView: StackView.view
+    readonly property StackView stackView: StackView.view
 
     title: "Inventario"
     header: TitleHeader {
@@ -30,10 +30,26 @@ Page {
                 id: item
                 required property int id
                 required property var product
+                required property var warehouse
                 required property int quantity_available
+                required property int minimun_stock_level
+                required property int maximun_stock_level
+                required property int reorder_point
 
-                onClicked: stackView.push("qrc:/product/ProductForm.qml", {inventoryId: id, product, stocks: quantity_available, mode: "edit"})
-
+                onClicked: {
+                    stackView.push(
+                        "qrc:/inventory/InventoryForm.qml",
+                        {
+                            inventoryId: id,
+                            product,
+                            warehouse,
+                            minimunStockLevel: minimun_stock_level,
+                            maximunStockLevel: maximun_stock_level,
+                            reorderPoint: reorder_point,
+                            quantityAvailable: quantity_available
+                        }
+                    );
+                }
                 width: root.width
                 height: 100
 
@@ -64,20 +80,5 @@ Page {
             wrapMode: Label.WordWrap
         }
         }
-    }
-
-    RoundButton {
-        onClicked: stackView.push("qrc:/product/ProductForm.qml")
-        anchors {
-            bottom: parent.bottom
-            bottomMargin: 15
-            right: parent.right
-            rightMargin: 10
-        }
-//        Material.background: Material.Blue
-//        Material.foreground: "white"
-        icon.source: "qrc:/icons/new_product.svg"
-        icon.width: 24
-        icon.height: 24
     }
 }
