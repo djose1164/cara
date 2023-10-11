@@ -90,6 +90,7 @@
         <file>RefreshIndicator.qml</file>
         <file>SearchButton.qml</file>
         <file>MoreVertButton.qml</file>
+        <file>ImagePicker.qml</file>
     </qresource>
     <qresource prefix="/payment">
         <file>PaymentStatus.qml</file>
@@ -166,5 +167,13 @@
         <file>PaymentStatusFilter.qml</file>
         <file>FilterButton.qml</file>
         <file>OrderStatusFilter.qml</file>
+    </qresource>
+    <qresource prefix="/address">
+        <file>CountryComboBox.qml</file>
+        <file>AddressAPI.qml</file>
+        <file>ProvinceComboBox.qml</file>
+        <file>AddressSelector.qml</file>
+        <file>MunicipalityComboBox.qml</file>
+        <file>SectorCombBox.qml</file>
     </qresource>
 </RCC>
