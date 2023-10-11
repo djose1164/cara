@@ -5,7 +5,7 @@ qt_add_qml_module(Catalogue
     QML_FILES
         Catalogue.qml
         CategoryComboBox.qml
-
+        StatusPopup.qml
     RESOURCES
         catalogue.svg
     SOURCES
@@ -13,7 +13,7 @@ qt_add_qml_module(Catalogue
         cataloguerepository.h cataloguerepository.cpp
         productcategoryrepository.h productcategoryrepository.cpp
         iproductrepository.h iproductrepository.cpp
-
+        iproductcategoryrepository.h iproductcategoryrepository.cpp
 )
 
 include_directories(../entities)
