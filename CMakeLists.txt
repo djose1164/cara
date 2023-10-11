@@ -17,6 +17,7 @@ add_subdirectory(models)
 add_subdirectory(data)
 add_subdirectory(entities)
 add_subdirectory(catalogue)
+add_subdirectory(inventory)
 
 qt_add_executable(Cara
     qml/qml.qrc
@@ -36,6 +37,7 @@ target_link_libraries(Cara PRIVATE
     Dataplugin
     Entitiesplugin
     Catalogueplugin
+    Inventoryplugin
 )
 
 # Link the resources to the executable
