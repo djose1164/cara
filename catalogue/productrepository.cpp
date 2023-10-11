@@ -36,6 +36,7 @@ void ProductRepository::add(const QVariantMap &product)
     if (!img->open(QIODevice::ReadOnly))
     {
         qDebug() << "Failed to open file for reading";
+        emit errorOccurred("El archivo no existe.");
         return;
     }
     imagePart.setBodyDevice(img);
@@ -49,18 +50,18 @@ void ProductRepository::add(const QVariantMap &product)
 
     const QUrl url{"http://127.0.0.1:5000/api/products/"};
     QNetworkRequest request{url};
+    request.setRawHeader("Authorization", CurrentUser::instance()->accessToken().toUtf8());
 
     reply_ = manager_->post(request, multiPart);
     multiPart->setParent(reply_);
 
     connect(reply_, &QNetworkReply::finished, this, [&] {
-        qDebug("Handling request");
-
         const auto content{reply_->readAll()};
-        emit added(content);
+        if (reply_->error() == QNetworkReply::NoError)
+            emit added(content);
+        else
+            emit errorOccurred(content);
 
-        qDebug() << reply_->errorString();
-        // Clean up
         reply_->deleteLater();
     });
 }
