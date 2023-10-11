@@ -34,12 +34,13 @@ public slots:
 
 signals:
     void categoriesFetched(const QByteArray &data);
-
     void productsFetched(const QByteArray &data);
 
     void productAdded(const QByteArray &data);
 
     void productEdited();
+
+    void errorOccurred(const QByteArray &data);
 
 private:
     IProductRepository *productRepository_;
