@@ -10,7 +10,6 @@
 #include <QtQml>
 
 namespace BusinessLayer {
-using EntityLayer::Product;
 
 class CartBusiness : public QObject
 {
@@ -39,7 +38,7 @@ public slots:
     void setOrder(EntityLayer::OrderEntity *const order);
     void setModel(ModelLayer::OrderModel *const model);
 
-    void addtoCart(ProductEntity *const detail);
+    void addtoCart(EntityLayer::Product *const detail);
     void removeFromCart(EntityLayer::DetailsEntity *const detail);
 
     /**

@@ -2,15 +2,13 @@
 #include "billentity.h"
 #include "constants.h"
 
-using namespace EntityLayer;
-
 namespace BusinessLayer {
 CartBusiness::CartBusiness(QObject *parent)
     : QObject{parent}
     , rest_{new Rest(this)}
-    , user_{new UserEntity(this)}
-    , order_{new OrderEntity(this)}
-    , model_{new OrderModel(this)}
+    , user_{new EntityLayer::UserEntity(this)}
+    , order_{new EntityLayer::OrderEntity(this)}
+    , model_{new EntityLayer::OrderModel(this)}
     , totalToPay_{}
 {
     const QString base{Constants::instance()->base()};
@@ -23,8 +21,8 @@ CartBusiness::CartBusiness(QObject *parent)
     rest_->refreshAccessToken();
 
     // Keep totalToPay updated in the view
-    connect(model_, &OrderModel::dataChanged, this, [this](const QModelIndex &, const QModelIndex &, const QList<int> &roles) {
-        if (roles.indexOf(int(OrderModel::RoleNames::TotalRole)) != -1)
+    connect(model_, &EntityLayer::OrderModel::dataChanged, this, [this](const QModelIndex &, const QModelIndex &, const QList<int> &roles) {
+        if (roles.indexOf(int(EntityLayer::OrderModel::RoleNames::TotalRole)) != -1)
             emit totalToPayChanged();
     });
 }
@@ -96,9 +94,9 @@ void CartBusiness::setModel(ModelLayer::OrderModel * const model)
     }
 }
 
-void CartBusiness::addtoCart(ProductEntity *const product)
+void CartBusiness::addtoCart(EntityLayer::Product *const product)
 {
-    auto detail{new DetailsEntity(model_)};
+    auto detail{new EntityLayer::DetailsEntity(model_)};
     detail->setProduct(product);
 
     model_->append(detail);
