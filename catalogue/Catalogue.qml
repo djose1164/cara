@@ -1,13 +1,15 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
+import catalogue as Catalogue
 import "qrc:/utils"
 import "qrc:/product"
+import "qrc:/singleton"
 
 Page {
     id: root
 
-    readonly property var stackView: StackView.view
+    readonly property StackView stackView: StackView.view
 
     title: "Catalogo"
     header: TitleHeader {
@@ -15,24 +17,41 @@ Page {
         onBackClicked: stackView.pop()
     }
 
+    Component.onCompleted: if (ProductManager.modelIsEmpty) catalogueRepository.fetchProducts()
+
     StackLayout {
         id: stackLayout
         anchors.fill: parent
         anchors.topMargin: 5
 
         // FIXME: A new component `InventoryView` must be created.
-        ProductView {
+        ListView {
             id: productView
 
-            onEntriesAdded: total => { if (total === 0) stackLayout.currentIndex = 1 }
+            model: ProductManager.model
 
             delegate: ItemDelegate {
                 id: item
                 required property int id
-                required property var product
-                required property int quantity_available
+                required property int category_id
+                required property url image_url
+                required property string description
+                required property string name
+                required property int sell_price
+                required property int buy_price
 
-                onClicked: stackView.push("qrc:/product/ProductForm.qml", {inventoryId: id, product, stocks: quantity_available, mode: "edit"})
+                onClicked: {
+                    stackView.push("qrc:/product/ProductForm.qml", {
+                        productId: id,
+                        name,
+                        imageUrl: image_url,
+                        categoryId: category_id,
+                        description,
+                        buyPrice: buy_price,
+                        sellPrice: sell_price,
+                        mode: "edit"
+                   });
+                }
 
                 width: root.width
                 height: 100
@@ -45,9 +64,9 @@ Page {
 
                     width: parent.width
                     height: 100
-                    detailed: `Disponible ${quantity_available}`
-                    source: item.product.image_url
-                    name: item.product.name
+                    source: item.image_url
+                    name: item.name
+                    detailed: description
                 }
             }
         }
@@ -66,6 +85,11 @@ Page {
         }
     }
 
+    Catalogue.CatalogueRepository {
+        id: catalogueRepository
+        onProductsFetched: data => ProductManager.modelAppend(JSON.parse(data).products)
+    }
+
     RoundButton {
         onClicked: stackView.push("qrc:/product/ProductForm.qml")
         anchors {
@@ -74,8 +98,8 @@ Page {
             right: parent.right
             rightMargin: 10
         }
-//        Material.background: Material.Blue
-//        Material.foreground: "white"
+        Material.background: Material.Blue
+        Material.foreground: "white"
         icon.source: "qrc:/icons/new_product.svg"
         icon.width: 24
         icon.height: 24
