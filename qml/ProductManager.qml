@@ -17,4 +17,14 @@ QtObject {
     function modelClear() {
         model.clear();
     }
+
+    function findById(productId: int) {
+        const pred = product => product.id === productId;
+
+        for (let i = 0; i < model.count; ++i)
+            if (pred(model.get(i)))
+                return model.get(i);
+
+        return null;
+    }
 }
