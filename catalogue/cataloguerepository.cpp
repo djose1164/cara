@@ -8,7 +8,8 @@ CatalogueRepository::CatalogueRepository(QObject *parent)
     , productRepository_{new ProductRepository(this)}
     , categoryRepository_{new ProductCategoryRepository(this)}
 {
-
+    const auto repository{dynamic_cast<ProductRepository *>(productRepository_)};
+    connect(repository, &ProductRepository::errorOccurred, this, &CatalogueRepository::errorOccurred);
 }
 
 void CatalogueRepository::addProduct(const QVariantMap &product)
