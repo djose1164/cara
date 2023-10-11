@@ -7,7 +7,7 @@ import core
 Page {
     id: root
 
-    readonly property var stackView: StackView.view
+    readonly property StackView stackView: StackView.view
     readonly property UserEntity user: CurrentUser.user
 
     title: "Perfil"

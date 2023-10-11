@@ -6,7 +6,7 @@ import "qrc:/customers"
 Page {
     id: root
 
-    readonly property var stackView: StackView.view
+    readonly property StackView stackView: StackView.view
     required property ListModel model
 
     header: SearchBar {

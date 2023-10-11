@@ -6,7 +6,7 @@ import "qrc:/product"
 Item {
     id: root
 
-    readonly property var stackView: StackView.view
+    readonly property StackView stackView: StackView.view
     property string headerTitle
 
     Component.onCompleted: statisticsApi.fetchStatistics()

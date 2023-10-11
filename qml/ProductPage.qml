@@ -12,7 +12,7 @@ import "qrc:/inventory"
 Page {
     id: root
 
-    readonly property var stackView: StackView.view
+    readonly property StackView stackView: StackView.view
     readonly property TabBar bar: stackView ? stackView.bar : null
     readonly property bool userIsAdmin: CurrentUser.isAdmin
     readonly property int customerId: TheCurrentUser.customerId

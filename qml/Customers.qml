@@ -7,7 +7,7 @@ Page {
     id: root
 
     readonly property int fontSize: 12
-    readonly property var stackView: StackView.view
+    readonly property StackView stackView: StackView.view
 
     Component.onCompleted: if (CustomerManager.modelIsEmpty()) customerApi.fetchCustomers()
 

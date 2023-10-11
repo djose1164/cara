@@ -6,7 +6,7 @@ import "qrc:/product" as Products
 Page {
     id: root
     property string placeholderText: ""
-    readonly property var stackView: StackView.view
+    readonly property StackView stackView: StackView.view
 
     signal acceptedText(text: string)
 
