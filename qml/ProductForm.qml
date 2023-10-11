@@ -15,13 +15,13 @@ Page {
     id: root
 
     readonly property var myStack: StackView.view
-    required property int productId
-    required property int categoryId
-    required property int sellPrice
-    required property int buyPrice
-    required property string description
-    required property string name
-    required property url imageUrl
+    property int productId
+    property int categoryId
+    property int sellPrice
+    property int buyPrice
+    property string description
+    property string name
+    property url imageUrl
     property string mode: "add"
 
     header: TitleHeader {
@@ -111,29 +111,6 @@ Page {
         }
     }
 
-    MessageDialog {
-        id: messageDialog
-        text: mode === "add" ? "Producto guardado." : "Producto editado."
-        informativeText: "Puedes chequear el producto desde Inventario.";
-        onButtonClicked: close()
-    }
-
-    ProductRequest {
-        id: productRequest
-        request.onSucceeded: {
-            ProductManager.updateModel();
-            stackLayout.currentIndex = 1;
-            messageDialog.open();
-        }
-
-        request.onFailed: resp => {
-            messageDialog.text = "No se ha podido guardar el producto.";
-            messageDialog.informativeText = resp.message;
-            messageDialog.open();
-            stackLayout.currentIndex = 1;
-        }
-    }
-
     Catalogue.CatalogueRepository {
         id: catalogueRepository
         onProductAdded: data => {
@@ -144,6 +121,7 @@ Page {
             popup.state = "success";
             updateCatalogue();
         }
+        onErrorOccurred: popup.state = "error"
     }
 
     Catalogue.StatusPopup {
@@ -184,9 +162,10 @@ Page {
             description: descriptionField.text,
             buy_price: priceBuy.text,
             sell_price: priceSell.text,
-            imageUrl: imgPicker.imagePath,
+            image_url: imgPicker.imagePath,
             category_id: categoryCB.currentValue
         };
+        print(JSON.stringify(productJson, null, 2));
         catalogueRepository.addProduct(productJson);
     }
 
