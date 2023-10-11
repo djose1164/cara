@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
+import catalogue
 import "qrc:/orders" as Order
 import "qrc:/singleton"
 
@@ -112,6 +113,12 @@ Home {
             source: "qrc:/icons/hand-bill.svg"
             path: "qrc:/bills/BillHomePage.qml"
             name: "Cuentas"
+        }
+
+        ListElement {
+            source: "qrc:/catalogue/catalogue.svg"
+            path: "qrc:/catalogue/Catalogue.qml"
+            name: "Catalogo"
         }
     }
 }
