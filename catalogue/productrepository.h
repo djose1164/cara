@@ -24,10 +24,9 @@ public slots:
 
 signals:
     void added(const QByteArray &body);
-
     void updated();
-
     void allFetched(const QByteArray &data);
+    void errorOccurred(const QByteArray &data);
 
 private:
     QNetworkAccessManager *manager_;
