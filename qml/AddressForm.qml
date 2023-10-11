@@ -1,38 +1,44 @@
+import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
+import "qrc:/address"
 
 GroupBox {
     readonly property var address: {
-        "country": country.text,
-        "province": province.text,
-        "municipality": municipality.text,
+        "country_id": country.comboBox.currentValue,
+        "province_id": province.comboBox.currentValue,
+        "municipality_id": municipality.comboBox.currentValue,
+        "sector_id": sector.comboBox.currentValue,
+        "street": street.text,
+        "house_number": house_num.text
     }
 
     title: "Direccion"
+
     ColumnLayout {
         anchors.fill: parent
         spacing: 20
 
-        TextField {
+        CountryComboBox {
             id: country
-            placeholderText: "Pais"
-            text: "Republica Dominicana"
             Layout.columnSpan: 2
             Layout.fillWidth: true
         }
 
-        TextField {
+        ProvinceComboBox {
             id: province
-            placeholderText: "Provincia"
-            text: "Monseñor Nouel"
             Layout.columnSpan: 2
             Layout.fillWidth: true
         }
 
-        TextField {
+        MunicipalityComboBox {
             id: municipality
-            placeholderText: "Municipio"
-            text: "Bonao"
+            Layout.columnSpan: 2
+            Layout.fillWidth: true
+        }
+
+        SectorCombBox {
+            id: sector
             Layout.columnSpan: 2
             Layout.fillWidth: true
         }
@@ -53,7 +59,11 @@ GroupBox {
     }
 
     function fillFields(address: var) {
-        country.text = address.country;
-        province.text = address.province;
+        country.comboBox.currentIndex = address.country_id - 1;
+        province.comboBox.currentIndex = address.province_id - 1;
+        municipality.comboBox.currentIndex = address.municipality_id - 1;
+        sector.comboBox.currentIndex = address.sector_id - 1;
+        street.text = address.street;
+        house_num.text  = address.house_number;
     }
 }
