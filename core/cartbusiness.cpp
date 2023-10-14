@@ -11,7 +11,9 @@ CartBusiness::CartBusiness(QObject *parent)
     , model_{new EntityLayer::OrderModel(this)}
     , totalToPay_{}
 {
-    const QString base{Constants::instance()->base()};
+    QQmlEngine engine;
+    const auto instance{engine.singletonInstance<DataLayer::Constants *>("data", "Constants")};
+    const QString base{instance->base()};
     rest_->base(base + "/orders");
 
     QSettings settings{};
