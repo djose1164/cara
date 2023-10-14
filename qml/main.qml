@@ -7,6 +7,7 @@ import "qrc:/singleton"
 import "qrc:/utils"
 import models
 import core
+import data
 
 ApplicationWindow {
     id: app
@@ -40,7 +41,6 @@ ApplicationWindow {
         onStatusChanged: if (status === WebSocket.Open)sendBinaryMessage(`{"app_version": "${Qt.application.version}"}`)
     }*/
 
-
     Shortcut {
         sequence: StandardKey.Quit
         onActivated: Qt.quit()
@@ -58,9 +58,7 @@ ApplicationWindow {
         }
         onSucceeded: {
             loginSetup();
-
             mainStackView.replace("qrc:/main/MainPage.qml");
-            print("Manager.status: " + LoginManager.status + " CurrentUser.isAdmin: " + CurrentUser.isAdmin)
         }
 
         function checkStatus() {
@@ -75,29 +73,21 @@ ApplicationWindow {
         function onLoggedIn(resp) {
             print("onLoggedIn: counter: ", ++counter)
             CurrentUser.fillUserInfo(resp);
-            TokenManager.setAccessToken(resp.access_token);
-            TokenManager.refreshToken = resp.refresh_token;
+            TheCurrentUser.accessToken = "Bearer " + resp.access_token;
         }
 
-        function onLoggedInWithToken() {
-            print("onLoggedInWithToken")
+        function onLoggedInWithToken(resp) {
             CurrentUser.userFromSettings();
-            TokenManager.init();
+            TheCurrentUser.accessToken = "Bearer " + resp.access_token;
+
+            print("onLoggedInWithToken: isAdmin", CurrentUser.isAdmin);
         }
 
         function onLoggedOut() {
             CurrentUser.clear();
-            TokenManager.clear();
         }
     }
 
-    Connections {
-        target: TokenManager
-
-        function onAccessTokenRefreshed() {
-            CurrentUser.accessToken = TokenManager.accessToken;
-        }
-    }
 
     function loginSetup() {
         if (LoginManager.hasPreviousLogin()) {
