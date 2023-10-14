@@ -11,6 +11,7 @@ find_package(Qt6 6.2 REQUIRED
     COMPONENTS Qml Quick Core Network Svg QuickControls2 REQUIRED)
 
 qt_standard_project_setup(REQUIRES 6.2)
+qt_policy(SET QTP0001 NEW)
 
 add_subdirectory(core)
 add_subdirectory(models)
@@ -46,7 +47,9 @@ target_sources(Cara PRIVATE ${QT_RESOURCES})
 # Additional configurations
 set_target_properties(Cara PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin"
+    QT_ANDROID_PACKAGE_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/android
 )
+
 
 include(FetchContent)
 
