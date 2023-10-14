@@ -34,14 +34,9 @@ Item {
         AdminBillDelegate {
             id: adminDelegate
 
-            onClicked: {
-                billStack.push("qrc:/bills/OrderPage.qml", {
-                    name, customerId
-                });
-            }
-
             name: root.name
             customerId: root.customerId
+            onClicked: billStack.push("qrc:/bills/BillHomePage.qml", {customerId})
         }
 
         CustomerBillDelegate {
