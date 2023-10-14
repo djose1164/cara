@@ -1,19 +1,11 @@
 #include "currentuser.h"
-#include "constants.h"
-
-#define createIfNull()          \
-do {                            \
-    if (!instance_)             \
-    instance_ = new CurrentUser;\
-} while(0)                      \
 
 using EntityLayer::UserEntity;
 using UserTypes = EntityLayer::UserEntity::UserTypes;
 
-CurrentUser *CurrentUser::instance_{nullptr};
-
-CurrentUser::CurrentUser()
-    : QObject{}
+namespace BusinessLayer {
+CurrentUser::CurrentUser(QObject *parent)
+    : QObject{parent}
     , hasPreviousLogin_{} //TODO: Does Qt's engine free the memory later?
     , settings_{}
     , user_{new UserEntity(this)}
@@ -30,32 +22,11 @@ CurrentUser::CurrentUser()
 void CurrentUser::setup()
 {
     if (hasPreviousLogin_)
-    {
-        const auto refreshToken{settings_.value("Credentials/refreshToken").toString()};
-        initRest(refreshToken);
         emit previousLoginFound();
-    }
     else
         emit noPreviousLoginFound();
 
     emit completed();
-}
-
-CurrentUser *CurrentUser::create(QQmlEngine *qmlEngine, QJSEngine *jsEngine)
-{
-    Q_UNUSED(qmlEngine)
-    Q_UNUSED(jsEngine)
-
-    createIfNull();
-
-    return instance_;
-}
-
-CurrentUser *CurrentUser::instance()
-{  
-    createIfNull();
-
-    return instance_;
 }
 
 QString CurrentUser::accessToken() const
@@ -99,16 +70,12 @@ bool CurrentUser::isCustomer() const
     return isCustomer_;
 }
 
-void CurrentUser::initRest(const QString &refreshToken)
+CurrentUser *CurrentUser::instance()
 {
-    const QString restBase{BusinessLayer::Constants::instance()->base()};
-    rest_.base(restBase + "/users");
-    rest_.refreshToken(refreshToken);
-    rest_.refreshAccessToken();
-
-    connect(&rest_, &Rest::accessTokenChanged, this, [this] {
-        emit restReady(rest_.accessToken());
-    });
+    const auto engine{new QQmlEngine};
+    auto currentUser = engine->singletonInstance<CurrentUser *>("core", "CurrentUser");
+    engine->deleteLater();
+    return currentUser;
 }
 
 void CurrentUser::fillUserInfo(const QVariantMap &user)
@@ -139,7 +106,7 @@ void CurrentUser::userFromSettings()
     user_->setWarehouseId(settings.value("warehouseId").toInt());
     setAccessToken(settings.value("accessToken").toString());
     settings.endGroup();
-    qDebug() << "CurrentUser::userFromSettings: customerId: " << user_->customerId();
+    qDebug() << "CurrentUser::userFromSettings: userType: " << user_->userType();
     emit userChanged();
 }
 
@@ -173,4 +140,5 @@ bool CurrentUser::existPreviousLogin()
         return false;
 
     return true;
+}
 }
