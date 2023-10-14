@@ -1,7 +1,7 @@
-
 #include "productrepository.h"
 #include "constants.h"
 #include "currentuser.h"
+#include  <QHttpMultiPart>
 
 namespace Catalogue {
 ProductRepository::ProductRepository(QObject *parent)
