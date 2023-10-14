@@ -24,8 +24,6 @@ void BillRepository::fetchByCustomerId(int customerId)
 
     const auto tokenManager{TokenManager::instance()};
     const QString token{tokenManager->accessToken()};
-    qDebug() << "TokenManager: " << token;
-    Q_ASSERT(!token.isEmpty());
 
     request.setRawHeader("Authorization", token.toUtf8());
 
