@@ -11,6 +11,10 @@ namespace DataLayer {
 class TokenManager : public QObject
 {
     Q_OBJECT
+    QML_ELEMENT
+    QML_SINGLETON
+
+    Q_PROPERTY(QString accessToken READ accessToken WRITE setAccessToken NOTIFY accessTokenChanged FINAL)
 
 public:
     QString accessToken() const;
@@ -19,6 +23,7 @@ public:
     QString refreshToken() const;
     void setRefreshToken(const QString &newRefreshToken);
 
+    static TokenManager *create(QQmlEngine *qmlEngine, QJSEngine *jsEngine);
     static TokenManager *instance();
 
 public slots:
@@ -39,8 +44,6 @@ private:
     QSettings settings_;
 
     DataLayer::IRefreshable *refresher_;
-
-    QTimer *timer_;
 
     static TokenManager *instance_;
 };

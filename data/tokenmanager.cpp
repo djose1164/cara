@@ -5,27 +5,23 @@
 #include <QJsonObject>
 
 namespace DataLayer {
+TokenManager *TokenManager::instance_{nullptr};
+
 TokenManager::TokenManager(QObject *parent)
     : QObject{parent}
     , accessToken_{}
     , refreshToken_{}
     , refresher_{new DataLayer::Refresher(this)}
-    , timer_{new QTimer(this)}
 {
-    timer_->start(840'000);
-    connect(timer_, &QTimer::timeout, this, [&] {
-        refresher_->refresh();
-    });
-
     auto refresher{dynamic_cast<DataLayer::Refresher *>(refresher_)};
     connect(refresher, &DataLayer::Refresher::accessTokenRefreshed, this, [&](const QByteArray &data) {
-        qDebug() << "Token refreshed: " << data;
+        qDebug() << "TokenManager: access token has refresh";
         const QString token{
             QJsonDocument::fromJson(data)
-                .object()["refresh_token"]
+                .object()["access_token"]
                 .toString()
         };
-        setAccessToken(token);
+        setAccessToken("Bearer " + token);
     });
 }
 
@@ -57,10 +53,18 @@ void TokenManager::setRefreshToken(const QString &newRefreshToken)
     emit refreshTokenChanged();
 }
 
+TokenManager *TokenManager::create(QQmlEngine *qmlEngine, QJSEngine *jsEngine)
+{
+    return instance();
+}
+
 TokenManager *TokenManager::instance()
 {
-    static TokenManager tokenManager{};
-    return &tokenManager;
+    if (instance_)
+        return instance_;
+
+    instance_ = new TokenManager;
+    return instance_;
 }
 
 void TokenManager::clear()
