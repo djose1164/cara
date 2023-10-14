@@ -7,9 +7,6 @@
 #include <QObjectBindableProperty>
 
 namespace BusinessLayer {
-class LoginManager;
-}
-
 class LoginManager : public QObject
 {
     Q_OBJECT
@@ -48,7 +45,7 @@ signals:
     void loginRequested();
 
     void loggedIn(const QVariantMap &resp);
-    void loggedInWithToken();
+    void loggedInWithToken(const QVariantMap &data);
     void loggedOut();
     void invalidCredentials();
     void notRegistered();
@@ -64,5 +61,6 @@ private:
 
     BusinessLayer::Auth *auth_;
 };
+}
 
 #endif // LOGINMANAGER_H
