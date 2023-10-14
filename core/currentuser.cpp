@@ -106,7 +106,7 @@ void CurrentUser::userFromSettings()
     user_->setWarehouseId(settings.value("warehouseId").toInt());
     setAccessToken(settings.value("accessToken").toString());
     settings.endGroup();
-    qDebug() << "CurrentUser::userFromSettings: userType: " << user_->userType();
+
     emit userChanged();
 }
 
