@@ -18,12 +18,6 @@ Page {
     property var status
     property var details
 
-    anchors {
-        left: parent.left
-        leftMargin: 10
-        right: parent.right
-        rightMargin: 5
-    }
     title: CurrentUser.isAdmin ? "Cliente: "+name+" ID #"+customerId : "Estado de Orden"
     header: titleHeader
 
@@ -38,7 +32,11 @@ Page {
 
     StackLayout {
         id: stackLayout
-        anchors.fill: parent
+        anchors {
+            fill: parent
+            leftMargin: 10
+            rightMargin: 5
+        }
         currentIndex: CurrentUser.isAdmin ? 1 : 0
 
         OrderState {
