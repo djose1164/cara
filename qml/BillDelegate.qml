@@ -1,4 +1,3 @@
-/* IMPORTANT: This delegate receives orders a model. */
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
@@ -22,8 +21,6 @@ Item {
     readonly property int widthLV: ListView.view.width
     readonly property int heightLV: ListView.view.height
     readonly property bool isHorizontal: orientation === ListView.Horizontal
-
-    signal updateCustomer(customerId: int)
 
     width: orientation === ListView.Horizontal ? ListView.view.width*.65
                                                : ListView.view.width
