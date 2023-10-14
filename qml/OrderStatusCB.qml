@@ -1,7 +1,7 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Dialogs
-import QtQuick.Controls.Material
+import core
 import "qrc:/utils"
 import "qrc:/singleton"
 
@@ -79,7 +79,7 @@ Item {
         }
 
         endpoint: "/statuses"
-        accessToken: TokenManager.accessToken
+        accessToken: TheCurrentUser.accessToken
 
         function update(newOrderStatus: int) {
             patch(`/${orderId}`, {"status_id": newOrderStatus});

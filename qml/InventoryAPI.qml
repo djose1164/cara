@@ -12,7 +12,7 @@ QtObject {
 
     readonly property CaraApi api: CaraApi {
         endpoint: "/inventory"
-        accessToken: TokenManager.accessToken
+        accessToken: TheCurrentUser.accessToken
     }
 
     function fetchAll() {

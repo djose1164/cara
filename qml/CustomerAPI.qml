@@ -18,7 +18,7 @@ QtObject {
         readonly property int adminId: CurrentUser.user.userId
 
         endpoint: "/customers"
-        accessToken: TokenManager.accessToken
+        accessToken: TheCurrentUser.accessToken
     }
 
     function fetchCustomers() {

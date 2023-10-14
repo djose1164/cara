@@ -6,7 +6,7 @@ import "qrc:/singleton"
 CaraApi {
     id: api
     endpoint: "/orders/buy"
-    accessToken: TokenManager.accessToken
+    accessToken: TheCurrentUser.accessToken
 
     signal buyOrderCreated(buyOrder: var)
     signal buyOrdersFetched(buyOrders: var)
