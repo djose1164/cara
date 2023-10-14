@@ -12,7 +12,9 @@ ProductCategoryRepository::ProductCategoryRepository(QObject *parent)
 
 void ProductCategoryRepository::fetchAll()
 {
-    const QString base{BusinessLayer::Constants::instance()->base()};
+    QQmlEngine engine;
+    const auto instance{engine.singletonInstance<DataLayer::Constants *>("data", "Constants")};
+    const QString base{instance->base()};
     const QUrl url{base + "/products/categories/"};
 
     QNetworkRequest request{url};

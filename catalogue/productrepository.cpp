@@ -8,9 +8,11 @@ ProductRepository::ProductRepository(QObject *parent)
     : QObject{parent}
     , manager_{new QNetworkAccessManager(this)}
     , reply_{nullptr}
-    , base_{BusinessLayer::Constants::instance()->base() + "/products"}
+    , base_{}
 {
-
+    QQmlEngine engine;
+    const auto constants{engine.singletonInstance<DataLayer::Constants *>("data", "Constants")};
+    base_ = constants->base() + "/products";
 }
 
 void ProductRepository::add(const QVariantMap &product)
@@ -50,7 +52,7 @@ void ProductRepository::add(const QVariantMap &product)
 
     const QUrl url{"http://127.0.0.1:5000/api/products/"};
     QNetworkRequest request{url};
-    request.setRawHeader("Authorization", CurrentUser::instance()->accessToken().toUtf8());
+    request.setRawHeader("Authorization", BusinessLayer::CurrentUser::instance()->accessToken().toUtf8());
 
     reply_ = manager_->post(request, multiPart);
     multiPart->setParent(reply_);
@@ -72,7 +74,7 @@ void ProductRepository::update(const QVariantMap &product)
     const QUrl url{base_ + "/" + productTmp["id"].toString()};
     productTmp.remove("id");
 
-    const QString token{CurrentUser::instance()->accessToken()};
+    const QString token{BusinessLayer::CurrentUser::instance()->accessToken()};
     QNetworkRequest request{url};
     request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
     request.setRawHeader("Authorization", token.toUtf8());
