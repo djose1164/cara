@@ -30,6 +30,8 @@ private:
     QNetworkReply *reply_;
 
     QString refreshToken_;
+
+    QTimer *timer_;
 };
 }
 

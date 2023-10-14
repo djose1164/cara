@@ -8,8 +8,12 @@ Refresher::Refresher(QObject *parent)
     , manager_{new QNetworkAccessManager(this)}
     , reply_{nullptr}
     , refreshToken_{}
+    , timer_{new QTimer(this)}
 {
-
+    timer_->start(840'000);
+    connect(timer_, &QTimer::timeout, this, [&] {
+        refresh();
+    });
 }
 
 void Refresher::refresh()
