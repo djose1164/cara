@@ -110,12 +110,6 @@ Home {
         }
 
         ListElement {
-            source: "qrc:/icons/hand-bill.svg"
-            path: "qrc:/bills/BillHomePage.qml"
-            name: "Cuentas"
-        }
-
-        ListElement {
             source: "qrc:/qt/qml/catalogue/catalogue.svg"
             path: "qrc:/qt/qml/catalogue/Catalogue.qml"
             name: "Catalogo"
