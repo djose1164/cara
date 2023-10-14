@@ -1,9 +1,9 @@
 
 #include "customermodel.h"
 #include "../core/currentuser.h"
-#include "../core/constants.h"
+#include "../data/constants.h"
 
-using ModelLayer::CustomerModel, EntityLayer::BillEntity, EntityLayer::UserEntity, BusinessLayer::Constants;
+using ModelLayer::CustomerModel, EntityLayer::BillEntity, EntityLayer::UserEntity, DataLayer::Constants;
 
 CustomerModel::CustomerModel(QObject *parent)
     : QAbstractListModel(parent)
@@ -17,7 +17,9 @@ CustomerModel::CustomerModel(QObject *parent)
     roleNames_[int(RoleNames::CustomerIdRole)] = "customerId";
     roleNames_[int(RoleNames::TypeRole)] = "userType";
 
-    const QString base{Constants::instance()->base()};
+    QQmlEngine engine;
+    const auto constants{engine.singletonInstance<DataLayer::Constants *>("data", "Constants")};
+    const QString base{constants->base()};
     rest_->base(base + "/customers");
 }
 
@@ -98,12 +100,12 @@ int CustomerModel::count() const
 
 void CustomerModel::populate()
 {
-    const auto userInstance{CurrentUser::instance()->user()};
+    const auto userInstance{BusinessLayer::CurrentUser::instance()->user()};
     const auto userType(userInstance->userType());
     using UserTypes = UserEntity::UserTypes;
 
     Q_ASSERT(userType == UserTypes::ADMIN);
-    Q_ASSERT(!CurrentUser::instance()->accessToken().isEmpty());
+    Q_ASSERT(!BusinessLayer::CurrentUser::instance()->accessToken().isEmpty());
 
     switch (userType) {
     case UserTypes::ADMIN:
@@ -126,11 +128,11 @@ void CustomerModel::populate()
 void CustomerModel::fetchAllCustomers()
 {
     using UserTypes = UserEntity::UserTypes;
-    const auto currentUser{CurrentUser::instance()};
+    const auto currentUser{BusinessLayer::CurrentUser::instance()};
     const auto userType(currentUser->user()->userType());
 
     Q_ASSERT(userType == UserTypes::ADMIN);
-    const QString token{currentUser->accessToken()};
+    const QString token{BusinessLayer::CurrentUser::instance()->accessToken()};
     Q_ASSERT(!token.isEmpty());
     rest_->accessToken(token);
 
