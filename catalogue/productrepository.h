@@ -6,6 +6,7 @@
 #include <QNetworkReply>
 #include <QObject>
 #include <QQmlEngine>
+#include <QHttpPart>
 
 namespace Catalogue {
 class ProductRepository : public QObject, public IProductRepository
@@ -29,10 +30,16 @@ signals:
     void errorOccurred(const QByteArray &data);
 
 private:
+    void prepareImagePart(const QUrl imageUrl);
+
+    void prepareJsonPart(const QVariantMap &product);
+
     QNetworkAccessManager *manager_;
     QNetworkReply *reply_;
 
     QString base_;
+
+    QHttpMultiPart *multiPart_;
 };
 }
 

@@ -1,7 +1,7 @@
 #include "productrepository.h"
 #include "constants.h"
-#include "currentuser.h"
-#include  <QHttpMultiPart>
+#include "tokenmanager.h"
+#include <QHttpMultiPart>
 
 namespace Catalogue {
 ProductRepository::ProductRepository(QObject *parent)
@@ -9,6 +9,7 @@ ProductRepository::ProductRepository(QObject *parent)
     , manager_{new QNetworkAccessManager(this)}
     , reply_{nullptr}
     , base_{}
+    , multiPart_{nullptr}
 {
     QQmlEngine engine;
     const auto constants{engine.singletonInstance<DataLayer::Constants *>("data", "Constants")};
@@ -17,45 +18,16 @@ ProductRepository::ProductRepository(QObject *parent)
 
 void ProductRepository::add(const QVariantMap &product)
 {
-    QHttpPart imagePart;
-    imagePart.setHeader(QNetworkRequest::ContentTypeHeader, "image/jpeg");
-
-    const QUrl imgUrl{product.value("image_url").toUrl()};
-    auto img{ new QFile(imgUrl.toLocalFile()) };
-    imagePart.setHeader(
-        QNetworkRequest::ContentDispositionHeader,
-        QString("form-data; name=\"image\"; filename=\"%1\"")
-            .arg(QFileInfo(*img).fileName())
-    );
-
-    QHttpPart jsonPart;
-    jsonPart.setHeader(QNetworkRequest::ContentDispositionHeader, "form-data; name=\"jsonData\"");
-    jsonPart.setBody(
-        QJsonDocument::fromVariant(product)
-            .toJson(QJsonDocument::Compact)
-    );
-
-    if (!img->open(QIODevice::ReadOnly))
-    {
-        qDebug() << "Failed to open file for reading";
-        emit errorOccurred("El archivo no existe.");
-        return;
-    }
-    imagePart.setBodyDevice(img);
-
-    auto multiPart{ new QHttpMultiPart(QHttpMultiPart::FormDataType) };
-
-    img->setParent(multiPart);
-
-    multiPart->append(imagePart);
-    multiPart->append(jsonPart);
+    multiPart_ = new QHttpMultiPart(QHttpMultiPart::FormDataType);
+    prepareImagePart(product.value("image_url").toUrl());
+    prepareJsonPart(product);
 
     const QUrl url{"http://127.0.0.1:5000/api/products/"};
     QNetworkRequest request{url};
-    request.setRawHeader("Authorization", BusinessLayer::CurrentUser::instance()->accessToken().toUtf8());
+    request.setRawHeader("Authorization", DataLayer::TokenManager::instance()->accessToken().toUtf8());
 
-    reply_ = manager_->post(request, multiPart);
-    multiPart->setParent(reply_);
+    reply_ = manager_->post(request, multiPart_);
+    multiPart_->setParent(reply_);
 
     connect(reply_, &QNetworkReply::finished, this, [&] {
         const auto content{reply_->readAll()};
@@ -74,7 +46,7 @@ void ProductRepository::update(const QVariantMap &product)
     const QUrl url{base_ + "/" + productTmp["id"].toString()};
     productTmp.remove("id");
 
-    const QString token{BusinessLayer::CurrentUser::instance()->accessToken()};
+    const QString token{DataLayer::TokenManager::instance()->accessToken()};
     QNetworkRequest request{url};
     request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
     request.setRawHeader("Authorization", token.toUtf8());
@@ -103,5 +75,42 @@ void ProductRepository::fetchAll()
 
         reply_->deleteLater();
     });
+}
+
+void ProductRepository::prepareImagePart(const QUrl imageUrl)
+{
+    QHttpPart imagePart;
+    imagePart.setHeader(QNetworkRequest::ContentTypeHeader, "image/jpeg");
+
+    auto img{ new QFile(imageUrl.toLocalFile()) };
+    imagePart.setHeader(
+        QNetworkRequest::ContentDispositionHeader,
+        QString("form-data; name=\"image\"; filename=\"%1\"")
+            .arg(QFileInfo(*img).fileName())
+    );
+
+    if (!img->open(QIODevice::ReadOnly))
+    {
+        qDebug() << "Failed to open file for reading";
+        emit errorOccurred("El archivo no existe.");
+        return;
+    }
+
+    imagePart.setBodyDevice(img);
+    img->setParent(multiPart_);
+
+    multiPart_->append(imagePart);
+}
+
+void ProductRepository::prepareJsonPart(const QVariantMap &product)
+{
+    QHttpPart jsonPart;
+    jsonPart.setHeader(QNetworkRequest::ContentDispositionHeader, "form-data; name=\"jsonData\"");
+    jsonPart.setBody(
+        QJsonDocument::fromVariant(product)
+            .toJson(QJsonDocument::Compact)
+    );
+
+    multiPart_->append(jsonPart);
 }
 }
