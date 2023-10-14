@@ -1,7 +1,6 @@
 #include "billbusiness.h"
 #include "constants.h"
 #include "currentuser.h"
-#include "tokenmanager.h"
 #include "billrepository.h"
 
 using namespace EntityLayer;
@@ -55,8 +54,16 @@ void BillBusiness::fetchBillsByCustomerId(int customerId)
 
     connect(repository, &DataLayer::BillRepository::billsFetched, this, [&](const QByteArray &data) {
         const auto resp{QJsonDocument::fromJson(data).object()};
-        for (const auto &order : resp["orders"].toVariant().toList())
-            model_->append(BillEntity::fromMap(order.toMap()));
+        const auto orders{resp["orders"].toArray()};
+
+        if (orders.isEmpty())
+        {
+            emit ordersNotFound();
+            return;
+        }
+
+        for (const auto &order : orders)
+            model_->append(BillEntity::fromMap(order.toVariant().toMap()));
         emit populated();
     });
 }
