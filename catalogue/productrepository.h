@@ -32,7 +32,7 @@ private:
     QNetworkAccessManager *manager_;
     QNetworkReply *reply_;
 
-    const QString base_;
+    QString base_;
 };
 }
 
