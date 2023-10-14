@@ -5,7 +5,6 @@ import QtQuick.Layouts
 import QtQuick.Dialogs
 import core as Core
 import catalogue as Catalogue
-import "qrc:/catalogue" as Catalogue
 import "qrc:/utils"
 import "qrc:/main"
 import "qrc:/singleton"
@@ -88,9 +87,10 @@ Page {
                 }
 
                 RowLayout {
-                    Layout.fillWidth: true
                     Button {
-                        text: "Nueva categoria"
+                        visible: mode !== "add"
+                        text: "Ver en inventario"
+                        onClicked: openProductInInventory()
                     }
 
                     Button {
@@ -100,12 +100,6 @@ Page {
                         Material.foreground: "white"
                         onClicked: mode === "add" ? createProduct() : updateProduct()
                     }
-                }
-
-                Button {
-                    text: "Ver en inventario"
-                    Layout.fillWidth: true
-                    onClicked: openProductInInventory()
                 }
             }
         }
