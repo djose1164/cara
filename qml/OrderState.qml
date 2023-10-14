@@ -2,7 +2,6 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 import "qrc:/payment"
-import "qrc:/singleton"
 import core 1.0
 import "qrc:/product"
 
@@ -55,7 +54,7 @@ ColumnLayout {
 
         Button {
             text: "Actualizar"
-            visible: TheCurrentUser.isAdmin
+            visible: CurrentUser.isAdmin
             onClicked: updatePayment.open()
         }
     }
