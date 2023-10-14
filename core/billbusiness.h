@@ -36,6 +36,7 @@ public slots:
 signals:
     void modelChanged();
     void populated();
+    void ordersNotFound();
 
     void completed();
 
