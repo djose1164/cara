@@ -116,8 +116,8 @@ Home {
         }
 
         ListElement {
-            source: "qrc:/catalogue/catalogue.svg"
-            path: "qrc:/catalogue/Catalogue.qml"
+            source: "qrc:/qt/qml/catalogue/catalogue.svg"
+            path: "qrc:/qt/qml/catalogue/Catalogue.qml"
             name: "Catalogo"
         }
     }
