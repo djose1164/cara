@@ -89,7 +89,7 @@ void LoginManager::logOut()
     settings.remove("Contact");
 
     QQmlEngine engine;
-    const auto currentUser{engine.singletonInstance<CurrentUser *>("core", "LoginManager")};
+    const auto currentUser{engine.singletonInstance<CurrentUser *>("core", "CurrentUser")};
     currentUser->clear();
 
     const auto manager{DataLayer::TokenManager::instance()};
