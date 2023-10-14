@@ -1,7 +1,7 @@
-
 #include "customermodel.h"
 #include "../core/currentuser.h"
 #include "../data/constants.h"
+#include "tokenmanager.h"
 
 using ModelLayer::CustomerModel, EntityLayer::BillEntity, EntityLayer::UserEntity, DataLayer::Constants;
 
@@ -105,7 +105,7 @@ void CustomerModel::populate()
     using UserTypes = UserEntity::UserTypes;
 
     Q_ASSERT(userType == UserTypes::ADMIN);
-    Q_ASSERT(!BusinessLayer::CurrentUser::instance()->accessToken().isEmpty());
+    Q_ASSERT(!DataLayer::TokenManager::instance()->accessToken().isEmpty());
 
     switch (userType) {
     case UserTypes::ADMIN:
@@ -132,7 +132,7 @@ void CustomerModel::fetchAllCustomers()
     const auto userType(currentUser->user()->userType());
 
     Q_ASSERT(userType == UserTypes::ADMIN);
-    const QString token{BusinessLayer::CurrentUser::instance()->accessToken()};
+    const QString token{DataLayer::TokenManager::instance()->accessToken()};
     Q_ASSERT(!token.isEmpty());
     rest_->accessToken(token);
 
