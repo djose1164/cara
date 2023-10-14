@@ -24,7 +24,7 @@ ToolBar {
             id: lbl
             font.bold: true
             font.pointSize: 15
-            horizontalAlignment:Label.AlignLeft
+            horizontalAlignment: leftArrowBtn.visible ? Label.AlignLeft : Label.AlignHCenter
             Layout.alignment: Qt.AlignLeft
             Layout.fillWidth: true
         }
