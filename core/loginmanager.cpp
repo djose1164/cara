@@ -70,7 +70,12 @@ void LoginManager::requestLoginFromSettings()
     connect(auth_, &Auth::authenticatedWithToken, this, [&](const QVariantMap &data) {
         setStatus(Status::LoggedIn);
         const QString token{"Bearer " + data["access_token"].toString()};
-        DataLayer::TokenManager::instance()->setAccessToken(token);
+        const auto tokenManager{DataLayer::TokenManager::instance()};
+        tokenManager->setAccessToken(token);
+
+        const QSettings settings;
+        tokenManager->setRefreshToken(settings.value("Credentials/refreshToken").toString());
+
         emit loggedInWithToken(data);
         auth_->deleteLater();
     });
