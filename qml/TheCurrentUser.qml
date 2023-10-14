@@ -25,7 +25,7 @@ QtObject {
 
     // TODO: This should be deleted
     property alias refreshToken: settings.refreshToken
-    readonly property alias accessToken: request.accessToken
+    property string accessToken
     property int userId
     property int customerId
     property string username
@@ -80,16 +80,6 @@ QtObject {
     signal notLoggedIn
     signal verificationDone
 
-    Component.onCompleted: {
-        healthApi.get("/");
-        if (previousLogin) {
-            TheCurrentUser.init();
-        } else {
-            root.notLoggedIn();
-        }
-        isVerificationDone = true;
-    }
-
     onIsAdminChanged: root.adminChanged()
     onHomePathChanged: root.homeChanged()
     onIsVerificationDoneChanged: if (isVerificationDone) root.verificationDone()
@@ -105,7 +95,7 @@ QtObject {
 
     function initOnLogin(response) {
         settings.refreshToken = "Bearer " + response.refresh_token;
-
+        request.accessToken = "Bearer " + response.access_token;
         initWithUser(response.user);
     }
 
