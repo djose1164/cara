@@ -18,11 +18,12 @@ GroupBox {
     title: "Condiicon de Pago"
 
     RowLayout {
+        id: rowLayout
         anchors.centerIn: parent
 
         ButtonGroup {
             id: group
-            buttons: root.children
+            buttons: rowLayout.children
         }
 
         RadioButton {
