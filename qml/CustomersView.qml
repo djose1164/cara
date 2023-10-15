@@ -9,6 +9,8 @@ import core
 ListView {
     id: root
 
+    Component.onDestruction: CustomerManager.clearModel()
+
     delegate: BillDelegate {
         required name
         required property int customer_id
