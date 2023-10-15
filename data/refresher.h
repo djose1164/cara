@@ -4,6 +4,7 @@
 #include "irefreshable.h"
 #include <QObject>
 #include <QNetworkAccessManager>
+#include <QTimer>
 
 namespace DataLayer {
 class Refresher : public QObject, public IRefreshable
