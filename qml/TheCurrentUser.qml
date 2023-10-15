@@ -25,7 +25,7 @@ QtObject {
 
     // TODO: This should be deleted
     property alias refreshToken: settings.refreshToken
-    property string accessToken
+    property string accessToken: TokenManager.accessToken
     property int userId
     property int customerId
     property string username
@@ -83,7 +83,7 @@ QtObject {
     onIsAdminChanged: root.adminChanged()
     onHomePathChanged: root.homeChanged()
     onIsVerificationDoneChanged: if (isVerificationDone) root.verificationDone()
-    onUserCredentialsSet: CartBusiness.user = root.user;
+    onUserCredentialsSet: CartBusiness.user = root.user
 
     readonly property UserEntity usrEntity: UserEntity {}
 
