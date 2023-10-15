@@ -19,6 +19,17 @@ ApplicationWindow {
     property string iconSize: "24x24"
     property alias appStack: mainStackView
 
+    onClosing: function(close) {
+        //Manages Android Back-button
+        if(Qt.platform.os === "android") {
+            close.accepted = false;
+            if (appStack.depth > 1)
+                appStack.pop();
+            else
+                Qt.quit()
+        }
+    }
+
     Component.onCompleted: {
         caraApi.checkStatus();
     }
