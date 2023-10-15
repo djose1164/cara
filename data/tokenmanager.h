@@ -4,7 +4,6 @@
 #include <QObject>
 #include <QQmlEngine>
 #include <QSettings>
-#include <QTimer>
 #include "irefreshable.h"
 
 namespace DataLayer {
