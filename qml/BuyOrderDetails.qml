@@ -42,17 +42,10 @@ Page {
             date: root.date
         }
 
-        GroupBox {
-            id: control
+        PaymentStatus {
+            id: paymentStatus
             Layout.fillWidth: true
-            Layout.preferredHeight: 80
-            title: "Condiicon de Pago"
-
-            PaymentStatus {
-                id: paymentStatus
-                anchors.fill: parent
-                partialPaid: false
-            }
+            partialPaid: false
         }
 
         GroupBox {
