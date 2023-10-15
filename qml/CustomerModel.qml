@@ -16,7 +16,6 @@ QtObject {
     property CaraApi rest: CaraApi {
         id: request
         endpoint: "/customers"
-        accessToken: TheCurrentUser.accessToken
     }
 
     property ListModel model

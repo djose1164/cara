@@ -2,7 +2,6 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 import QtQuick.Dialogs
-import QtQuick.Controls.Material
 import "qrc:/customers"
 import "qrc:/product"
 import "qrc:/singleton"
@@ -15,7 +14,6 @@ CaraApi {
     signal orderCreated(resp: var)
 
     endpoint: "/orders"
-    accessToken: TheCurrentUser.accessToken
 
     onSucceeded: r => orderCreated(r)
 }

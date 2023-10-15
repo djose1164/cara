@@ -79,7 +79,6 @@ Item {
         }
 
         endpoint: "/statuses"
-        accessToken: TheCurrentUser.accessToken
 
         function update(newOrderStatus: int) {
             patch(`/${orderId}`, {"status_id": newOrderStatus});
