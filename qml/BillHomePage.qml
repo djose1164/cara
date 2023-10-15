@@ -10,6 +10,7 @@ Page {
     id: root
 
     readonly property StackView stackView: StackView.view
+    required property int customerId
 
     title: "Todas las cuentas"
     header: TitleHeader {
@@ -20,7 +21,21 @@ Page {
 
         onBackClicked: stackView.pop()
     }
-    Component.onCompleted: billBusiness.fetchBillsByAdminId(CurrentUser.user.userId)
+    states: [
+        State {
+            name: "noOrders"
+            PropertyChanges {
+                target: busyIndicator
+                visible: false
+            }
+            PropertyChanges {
+                target: label
+                visible: true
+            }
+        }
+    ]
+
+    Component.onCompleted: billBusiness.fetchBillsByCustomerId(customerId)
 
     OrderStatusFilter {
         id: orderStatusFilter
@@ -36,8 +51,19 @@ Page {
         model: orderStatusPM
 
         BusyIndicator {
+            id: busyIndicator
             anchors.centerIn: parent
             visible: listView.count === 0
+        }
+
+        Label {
+            id: label
+            width: listView.width*.8
+            anchors.centerIn: parent
+            visible: false
+            text: "Este cliente no cuenta con ninguna orden."
+            font.pointSize: 14
+            wrapMode: Label.Wrap
         }
     }
 
@@ -72,5 +98,6 @@ Page {
     BillBusiness {
         id: billBusiness
         model: BillManager.model
+        onOrdersNotFound: root.state = "noOrders"
     }
 }
