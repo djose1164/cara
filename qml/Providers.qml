@@ -6,7 +6,7 @@ import "qrc:/utils"
 Item {
     id: root
 
-    readonly property var stackView: StackView.view
+    readonly property StackView stackView: StackView.view
     Component.onCompleted: {
         providerApi.fetchProviders();
     }

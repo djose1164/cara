@@ -23,20 +23,21 @@ Rectangle {
     radius: 10
     border.width: 1
 
+
     BusyStackLayout {
         id: imageStackLayout
         width: 100
         height: 100
-        anchors.left: root.left
+        anchors.left: parent.left
         anchors.leftMargin: 5
-        anchors.verticalCenter: root.verticalCenter
+        anchors.verticalCenter: parent.verticalCenter
 
-    ProductImage {
-        onReady: imageStackLayout.currentIndex = 1
-        source: imageUrl
-        sourceSize: "100x100"
-        Component.onCompleted: print(imageUrl)
-    }
+        ProductImage {
+            onReady: imageStackLayout.currentIndex = 1
+            source: imageUrl
+            sourceSize: "100x100"
+            Component.onCompleted: print(imageUrl)
+        }
     }
 
     GridLayout {
@@ -74,10 +75,13 @@ Rectangle {
 
         SpinBox {
             id: spinBox
-            Layout.preferredWidth: 128
+            Layout.preferredWidth: 80
+            Layout.preferredHeight: 35
             Layout.row: 1
             Layout.column: 1
             Layout.alignment: Qt.AlignRight
+            Layout.rightMargin: 5
+            Layout.bottomMargin: 5
             from: CurrentUser.user.userType === UserEntity.ADMIN ? 0 : 1
             editable: true
             Keys.onReturnPressed: Qt.inputMethod.hide()

@@ -1,13 +1,8 @@
 import QtQuick.Controls
 
 RoundButton {
-    onClicked: root.close()
-
     flat: true
-
-    IconImage {
-        anchors.centerIn: parent
-        source: "qrc:/crossIcon"
-        sourceSize: "20x20"
-    }
+    icon.source: "qrc:/crossIcon"
+    icon.width: 20
+    icon.height: 20
 }

@@ -21,47 +21,51 @@ Page {
         onBackClicked: stackView_.pop()
     }
 
-    ColumnLayout {
+    ScrollView {
         anchors.fill: parent
-        anchors.leftMargin: 15
-        anchors.rightMargin: 15
+        contentWidth: availableWidth
 
-        RowLayout {
-            TextField {
-                id: forename
-                placeholderText: "Nombre"
-                Layout.fillWidth: true
+        ColumnLayout {
+            width: root.width*.9
+            anchors.centerIn: parent
+
+            RowLayout {
+                TextField {
+                    id: forename
+                    placeholderText: "Nombre"
+                    Layout.fillWidth: true
+                }
+
+                TextField {
+                    id: surname
+                    placeholderText: "Apellido"
+                    Layout.fillWidth: true
+                }
             }
 
-            TextField {
-                id: surname
-                placeholderText: "Apellido"
+            ContactForm {
+                id: contactForm
                 Layout.fillWidth: true
+                Layout.columnSpan: 2
             }
-        }
 
-        ContactForm {
-            id: contactForm
-            Layout.fillWidth: true
-            Layout.columnSpan: 2
-        }
+            Button {
+                Layout.columnSpan: 2
+                Layout.alignment: Qt.AlignCenter
+                text: "Agregar Cliente"
+                onClicked: {
+                    busyIndicator.open();
 
-        Button {
-            Layout.columnSpan: 2
-            Layout.alignment: Qt.AlignCenter
-            text: "Agregar Cliente"
-            onClicked: {
-                busyIndicator.open();
+                    contactForm.removeEmptyFields();
+                    const client = {
+                        "forename": forename.text,
+                        "surname": surname.text,
+                        "contact": contactForm.contact,
+                        "admin_id": CurrentUser.user.userId
+                    };
 
-                contactForm.removeEmptyFields();
-                const client = {
-                    "forename": forename.text,
-                    "surname": surname.text,
-                    "contact": contactForm.contact,
-                    "admin_id": CurrentUser.user.userId
-                };
-
-                clientRequest.create(client);
+                    clientRequest.create(client);
+                }
             }
         }
     }

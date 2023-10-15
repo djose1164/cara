@@ -4,6 +4,7 @@ import QtQuick.Layouts
 import "qrc:/singleton"
 import "qrc:/utils"
 import "qrc:/customers"
+import core
 
 ListView {
     id: root
@@ -17,6 +18,14 @@ ListView {
 
     model: CustomerManager.model
 
+    Connections {
+        target: CurrentUser
+
+        function onUserChanged() {
+            if (CustomerManager.modelIsEmpty()) customerAPI.fetchCustomers()
+        }
+    }
+
     Label {
         id: label
         anchors.centerIn: parent
@@ -26,5 +35,10 @@ ListView {
         font.pointSize: 16
         horizontalAlignment: Label.AlignHCenter
         wrapMode: Label.WordWrap
+    }
+
+    CustomerAPI {
+        id: customerAPI
+        onCustomersFetched: customers => CustomerManager.addCustomer(customers)
     }
 }

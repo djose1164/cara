@@ -1,11 +1,11 @@
 import QtQuick
 import core
 import "qrc:/utils"
+import "qrc:/singleton"
 
 CaraApi {
     id: api
     endpoint: "/orders/buy"
-    accessToken: CurrentUser.accessToken
 
     signal buyOrderCreated(buyOrder: var)
     signal buyOrdersFetched(buyOrders: var)

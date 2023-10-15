@@ -2,6 +2,7 @@
 #define BILLBUSINESS_H
 
 #include "billmodel.h"
+#include "ibillrepository.h"
 #include "rest.h"
 #include <QObject>
 #include <QtQml>
@@ -28,20 +29,20 @@ public slots:
     void populate();
     void fetchBillsByCustomerId(int customerId);
     void fetchBillById(int orderId);
-    void fetchBillsByAdminId(int customerId);
+    void fetchBillsByAdminId(int adminId);
 
     void clearModel();
 
 signals:
     void modelChanged();
     void populated();
+    void ordersNotFound();
 
     void completed();
 
 private:
-    void fetch(QStringView arg);
-
     QProperty<Rest *> rest_;
+    DataLayer::IBillRepository *billRepository_;
 
     Q_OBJECT_BINDABLE_PROPERTY(BillBusiness, BillModel *, model_, &BillBusiness::modelChanged)
 };

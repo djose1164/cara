@@ -40,9 +40,9 @@ public:
 
     unsigned int warehouseId() const;
     void setWarehouseId(unsigned int newWarehouseId);
-
-    ProductEntity *product() const;
-    void setProduct(ProductEntity *newProduct);
+    
+    Product *product() const;
+    void setProduct(Product *newProduct);
 
     UserEntity *admin() const;
     void setAdmin(UserEntity *newAdmin);
@@ -71,8 +71,8 @@ private:
     unsigned maximunStockLevel_;
     unsigned reorderPoint_;
     unsigned warehouseId_;
-
-    ProductEntity *product_;
+    
+    Product *product_;
     UserEntity *admin_;
 };
 }

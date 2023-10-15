@@ -35,7 +35,9 @@ void BusinessLayer::Auth::authenticate()
         {"password", userEntity_->password()}
     };
 
-    const QString base{Constants::instance()->base()};
+    QQmlEngine engine;
+    const auto instance{engine.singletonInstance<DataLayer::Constants *>("data", "Constants")};
+    const QString base{instance->base()};
     caraApi_->base(base + "/users/login");
     caraApi_->post("/", entity);
 
@@ -44,7 +46,10 @@ void BusinessLayer::Auth::authenticate()
 
 void BusinessLayer::Auth::authenticate(const QString &token)
 {
-    const QString base{Constants::instance()->base()};
+    QQmlEngine engine;
+    const auto constants{engine.singletonInstance<DataLayer::Constants *>("data", "Constants")};
+
+    const QString base{constants->base()};
     caraApi_->base(base + "/users/refresh");
     caraApi_->setHeaders({{"Authorization", token}});
     caraApi_->get("/");

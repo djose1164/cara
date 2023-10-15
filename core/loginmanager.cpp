@@ -1,7 +1,8 @@
 #include "loginmanager.h"
+#include "currentuser.h"
+#include "tokenmanager.h"
 
-using BusinessLayer::Auth, EntityLayer::UserEntity;
-
+namespace BusinessLayer {
 LoginManager::LoginManager(QObject *parent)
     : QObject{parent}
     , status_{Status::LoggedOut}
@@ -41,6 +42,14 @@ void LoginManager::requestLogin(const QString &username, const QString &password
     auth_->authenticate();
     connect(auth_, &Auth::authenticated, this, [&](const QVariantMap &resp) {
         setStatus(Status::LoggedIn);
+
+        const auto token{DataLayer::TokenManager::instance()};
+        const QString accessToken{resp["access_token"].toString()};
+        token->setAccessToken("Bearer " + accessToken);
+
+        const QString refreshToken{resp["refresh_token"].toString()};
+        token->setRefreshToken("Bearer " + refreshToken);
+
         emit loggedIn(resp);
         auth_->deleteLater();
     });
@@ -58,9 +67,16 @@ void LoginManager::requestLoginFromSettings()
     auth_->authenticate(token);
 
 
-    connect(auth_, &Auth::authenticatedWithToken, this, [&] {
+    connect(auth_, &Auth::authenticatedWithToken, this, [&](const QVariantMap &data) {
         setStatus(Status::LoggedIn);
-        emit loggedInWithToken();
+        const QString token{"Bearer " + data["access_token"].toString()};
+        const auto tokenManager{DataLayer::TokenManager::instance()};
+        tokenManager->setAccessToken(token);
+
+        const QSettings settings;
+        tokenManager->setRefreshToken(settings.value("Credentials/refreshToken").toString());
+
+        emit loggedInWithToken(data);
         auth_->deleteLater();
     });
 
@@ -76,6 +92,13 @@ void LoginManager::logOut()
     QSettings settings;
     settings.remove("Credentials");
     settings.remove("Contact");
+
+    QQmlEngine engine;
+    const auto currentUser{engine.singletonInstance<CurrentUser *>("core", "CurrentUser")};
+    currentUser->clear();
+
+    const auto manager{DataLayer::TokenManager::instance()};
+    manager->clear();
     emit loggedOut();
 }
 
@@ -100,4 +123,5 @@ void LoginManager::makeConnections()
     });
 
     connect(auth_, &Auth::serviceUnavailable, this, &LoginManager::serviceUnavailable);
+}
 }

@@ -23,7 +23,7 @@ int DetailsEntity::total() const
     return total_.value();
 }
 
-EntityLayer::ProductEntity *DetailsEntity::product() const
+EntityLayer::Product *DetailsEntity::product() const
 {
     return product_.value();
 }
@@ -38,7 +38,7 @@ QByteArray DetailsEntity::toJson() const
     return QJsonDocument(object).toJson(QJsonDocument::Compact);
 }
 
-void DetailsEntity::setProduct(ProductEntity * const product)
+void DetailsEntity::setProduct(Product * const product)
 {
     product_ = product;
     product_->setParent(this);

@@ -6,7 +6,7 @@ import "qrc:/product"
 Page {
     id: root
 
-    readonly property var stackView: StackView.view
+    readonly property StackView stackView: StackView.view
 
     title: "Estadisticas"
     header: TitleHeader {

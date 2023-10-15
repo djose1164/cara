@@ -3,11 +3,12 @@ import QtQuick.Controls
 import QtQuick.Layouts
 import "qrc:/utils"
 import core
+import entities
 
 Page {
     id: root
 
-    readonly property var stackView: StackView.view
+    readonly property StackView stackView: StackView.view
     readonly property UserEntity user: CurrentUser.user
 
     title: "Perfil"
@@ -55,17 +56,16 @@ Page {
 
         Column {
             Layout.fillWidth: true
-        Label {
-            text: "Contraseña"
-        }
+            Label {
+                text: "Contraseña"
+            }
 
-        TextField {
-            id: passwordField
-            width: parent.width
-            text: "Contraseña"
-            echoMode: TextField.Password
-
-        }
+            TextField {
+                id: passwordField
+                width: parent.width
+                text: "Contraseña"
+                echoMode: TextField.Password
+            }
         }
     }
 }

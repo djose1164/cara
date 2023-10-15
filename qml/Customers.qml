@@ -7,7 +7,7 @@ Page {
     id: root
 
     readonly property int fontSize: 12
-    readonly property var stackView: StackView.view
+    readonly property StackView stackView: StackView.view
 
     Component.onCompleted: if (CustomerManager.modelIsEmpty()) customerApi.fetchCustomers()
 
@@ -21,11 +21,10 @@ Page {
         id: listView
         anchors.fill: parent
         model: CustomerManager.model
-        delegate: SwipeDelegate {
+        delegate: ItemDelegate {
             id: control
 
             required property int customer_id
-
             required property string name
 
             onClicked: {
@@ -40,40 +39,16 @@ Page {
                 text: control.text
                 font.pointSize: fontSize
             }
-
-            swipe.right: Row {
-                component SwipeLabel: Label {
-                    property alias backgroundColor: background.color
-
-                    height: parent.height
-                    font.pointSize: fontSize
-                    verticalAlignment: Label.AlignVCenter
-                    padding: 12
-                    color: "white"
-                    background: Rectangle {
-                        id: background
-                        color: "blue"
-                    }
-                }
-
-                height: parent.height
-                anchors.right: parent.right
-
-                SwipeLabel {
-                    text: "Eliminar"
-                    backgroundColor: 'tomato'
-                }
-            }
         }
+    }
 
-        Label {
-            width: listView.width * .9
-            anchors.centerIn: parent
-            visible: listView.count === 0
-            text: "La lista de clientes esta vacia. Inteta agregar uno nuevo."
-            font.pointSize: 14
-            wrapMode: Label.Wrap
-        }
+    Label {
+        width: listView.width * .9
+        anchors.centerIn: parent
+        visible: listView.count === 0
+        text: "La lista de clientes esta vacia. Inteta agregar uno nuevo."
+        font.pointSize: 14
+        wrapMode: Label.Wrap
     }
 
     RoundButton {
@@ -100,5 +75,6 @@ Page {
         id: customerEdit
         width: root.width
         height: root.height
+        stackView: root.stackView
     }
 }

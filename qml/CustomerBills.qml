@@ -60,15 +60,13 @@ ListView {
 
     BillBusiness {
         id: billBusiness
-        onPopulated: {
-            if (billModel.count === 0) {
-                busyIndicator.visible = false;
-                label.visible = true;
-            }
-
-            modelPopulated();
-        }
         model: billModel
+        onPopulated: modelPopulated();
+        onOrdersNotFound: {
+            print("billBusiness: onOrdersNotFound")
+            busyIndicator.visible = false;
+            label.visible = true;
+        }
     }
 
     BillProxyModel {

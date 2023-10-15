@@ -9,7 +9,7 @@ import "qrc:/utils"
 Page {
     id: root
 
-    readonly property var stackView: StackView.view
+    readonly property StackView stackView: StackView.view
     readonly property UserEntity user: CurrentUser.user
     readonly property string adminViewPath: "qrc:/bills/CustomersView.qml"
     readonly property string customerViewPath: "qrc:/bills/BillView.qml"
@@ -66,12 +66,8 @@ Page {
         function onLoggingOut() {
             const loadedItem = loader.item;
             print("---Bills: loggingOut");
-            item.clearModel();
+            loadedItem.clearModel();
         }
-    }
-
-    Connections {
-        target: LoginManager
 
         function onLoggedOut() {
             CustomerManager.clearModel();
@@ -89,7 +85,7 @@ Page {
         },
         State {
             name: "userLoggedIn"
-            when: user.userType === UserEntity.USER && CurrentUser.accessToken
+            when: user.userType === UserEntity.USER
             PropertyChanges {
                 target: loader
                 source: user.customerId ? customerViewPath : messagePath
@@ -97,7 +93,7 @@ Page {
         },
         State { // FIXME: This does not makes sense. userLoggedIn is checking this
             name: "adminLoggedIn"
-            when: CurrentUser.isAdmin && CurrentUser.accessToken !== ""
+            when: CurrentUser.isAdmin
             PropertyChanges {
                 target: loader
                 source: adminViewPath

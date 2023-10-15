@@ -1,0 +1,7 @@
+#ifndef RESTCONFIG_H_IN
+#define RESTCONFIG_H_IN
+
+#define REMOTE_API_URL "@REMOTE_API_URL@"
+#define LOCAL_API_URL "@LOCAL_API_URL@"
+
+#endif // RESTCONFIG_H_IN

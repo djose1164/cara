@@ -8,7 +8,9 @@ PaymentBusiness::PaymentBusiness(QObject *parent)
     , rest_{new Rest(this)}
     , payment_{nullptr}
 {
-    const QString base{BusinessLayer::Constants::instance()->base()};
+    QQmlEngine engine;
+    const auto instance{engine.singletonInstance<DataLayer::Constants *>("data", "Constants")};
+    const QString base{instance->base()};
     rest_->base(base + "/payments");
 
     QSettings settings{};

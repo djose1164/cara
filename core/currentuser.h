@@ -6,6 +6,7 @@
 #include <QObject>
 #include <QtQml>
 
+namespace BusinessLayer {
 class CurrentUser : public QObject
 {
     Q_OBJECT
@@ -19,9 +20,7 @@ class CurrentUser : public QObject
     Q_PROPERTY(bool isCustomer READ isCustomer NOTIFY isCustomerChanged)
 
 public:
-    static CurrentUser *create(QQmlEngine *qmlEngine, QJSEngine *jsEngine);
-    static CurrentUser *instance();
-
+    CurrentUser(QObject *parent = nullptr);
     QString accessToken() const;
     void setAccessToken(const QString &token);
     QBindable<QString> bindableAccessToken();
@@ -35,6 +34,8 @@ public:
     bool isCustomer() const;
     QBindable<bool> bindableIsCustomer();
 
+    static CurrentUser *instance();
+
 public slots:
     void fillUserInfo(const QVariantMap &user);
     void userFromSettings();
@@ -42,10 +43,7 @@ public slots:
     void clear();
 
 private:
-    CurrentUser();
-
     void setup();
-    void initRest(const QString &refreshToken);
     bool existPreviousLogin();
 
 signals:
@@ -60,7 +58,6 @@ signals:
 
     void previousLoginFound();
     void noPreviousLoginFound();
-    void restReady(const QString &accessToken);
 
 private:
     bool hasPreviousLogin_;
@@ -77,5 +74,6 @@ private:
 
     EntityLayer::UserEntity *user_;
 };
+}
 
 #endif // CURRENTUSER_H

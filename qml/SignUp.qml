@@ -8,7 +8,7 @@ import "qrc:/utils"
 Item {
     id: signUp
 
-    readonly property var stackView: StackView.view
+    readonly property StackView stackView: StackView.view
     property int fontSize: 14
 
     Image {

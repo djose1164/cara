@@ -2,7 +2,7 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 import core
-import entities
+import entities as Entity
 import "qrc:/product"
 import "qrc:/singleton"
 
@@ -13,7 +13,7 @@ ListView {
     model: CartBusiness.model
     delegate: ProductCard {
         required property var model
-        required property ProductEntity product
+        required property Entity.Product product
         required property int quantity
         required total
         required property int index

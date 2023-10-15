@@ -14,19 +14,9 @@ ComboBox {
     displayText: currentIndex === -1 ? "Seleccionar Cliente" : currentText
     model: CustomerManager.model
 
+    Component.onCompleted: if (CustomerManager.modelIsEmpty()) customerApi.fetchCustomers()
     CustomerAPI {
         id: customerApi
         onCustomersFetched: customers => CustomerManager.addCustomer(customers)
     }
-
-    Connections {
-        target: TokenManager
-
-        function onAccessTokenAvailable() {
-            if (CustomerManager.modelIsEmpty())
-                customerApi.fetchCustomers()
-        }
-    }
 }
-
-

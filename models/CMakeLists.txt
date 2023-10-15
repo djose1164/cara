@@ -11,3 +11,4 @@ qt_add_qml_module(Models
 )
 
 include_directories(../entities)
+include_directories(../data)

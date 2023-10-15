@@ -3,7 +3,7 @@ import QtQuick.Controls
 Page {
     id: root
 
-    readonly property var stackView: StackView.view
+    readonly property StackView stackView: StackView.view
 
     header: TitleHeader {
         title: root.title

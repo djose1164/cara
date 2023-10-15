@@ -10,7 +10,7 @@ Page {
 
     readonly property alias billStack: billStack
 
-    readonly property var stackView: StackView.view
+    readonly property StackView stackView: StackView.view
     readonly property Component busyIndicator: BusyIndicator {}
     readonly property bool isAdmin: CurrentUser.isAdmin
     readonly property string homePath: isAdmin ? "qrc:/home/AdminHome.qml"

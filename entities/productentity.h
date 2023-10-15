@@ -6,7 +6,7 @@
 #include <QtQml>
 
 namespace EntityLayer {
-class ProductEntity : public QObject, public JsonExportable
+class Product : public QObject, public JsonExportable
 {
     Q_OBJECT
     QML_ELEMENT
@@ -18,12 +18,12 @@ class ProductEntity : public QObject, public JsonExportable
     Q_PROPERTY(QString imageUrl READ imageUrl WRITE setImageUrl NOTIFY imageUrlChanged)
 
 public:
-    explicit ProductEntity(QObject *parent = nullptr);
+    explicit Product(QObject *parent = nullptr);
 
-    static ProductEntity *fromMap(const QVariantMap &map);
+    static Product *fromMap(const QVariantMap &map);
 
-    bool operator==(ProductEntity *const rhs);
-    bool operator!=(ProductEntity *const rhs);
+    bool operator==(Product *const rhs);
+    bool operator!=(Product *const rhs);
 
     QString name() const;
     QString description() const;

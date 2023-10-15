@@ -12,18 +12,13 @@ QtObject {
     signal customerFetched(customer: var)
     signal customersFetched(customers: var)
 
-    default property var data
-
+    readonly property int adminId: CurrentUser.user.userId
     property CaraApi rest: CaraApi{
-        readonly property int adminId: CurrentUser.user.userId
-
         endpoint: "/customers"
-        accessToken: TokenManager.accessToken
     }
 
     function fetchCustomers() {
-        print("fetchCustomers: aceesToken: ", rest.accessToken);
-        rest.get(`/info/?admin_id=${CurrentUser.user.userId}`);
+        rest.get(`/info/?admin_id=${adminId}`);
         rest.succeeded.connect(resp => customersFetched(resp.customers));
     }
 

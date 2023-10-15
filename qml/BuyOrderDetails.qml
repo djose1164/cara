@@ -8,7 +8,7 @@ import "qrc:/payment"
 Page {
     id: root
 
-    readonly property var stackView: StackView.view
+    readonly property StackView stackView: StackView.view
     property int orderId
     property var payment
     property var orderDetails

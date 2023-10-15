@@ -57,7 +57,7 @@ BillEntity *BillEntity::fromMap(const QVariantMap &billMap)
         newDetail->setQuantity(map["quantity"].toInt());
 
         newDetail->setProduct(
-            ProductEntity::fromMap(map["product"].toMap())
+            Product::fromMap(map["product"].toMap())
         );
 
         bill->appendDetail(newDetail);

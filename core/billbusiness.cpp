@@ -1,6 +1,7 @@
 #include "billbusiness.h"
 #include "constants.h"
 #include "currentuser.h"
+#include "billrepository.h"
 
 using namespace EntityLayer;
 using namespace ModelLayer;
@@ -10,8 +11,11 @@ BillBusiness::BillBusiness(QObject *parent)
     : QObject{parent}
     , rest_{new Rest(this)}
     , model_{nullptr}
+    , billRepository_{new DataLayer::BillRepository(this)}
 {
-    const QString base{Constants::instance()->base()};
+    QQmlEngine engine;
+    const auto constants{engine.singletonInstance<DataLayer::Constants *>("data", "Constants")};
+    const QString base{constants->base()};
     rest_->base(base + "/orders");
 }
 
@@ -32,7 +36,7 @@ QBindable<ModelLayer::BillModel *> BillBusiness::bindableModel()
 
 void BillBusiness::populate()
 {
-    const auto user{CurrentUser::instance()->user()};
+    const auto user{BusinessLayer::CurrentUser::instance()->user()};
     if (user->userType() != UserEntity::UserTypes::USER)
         return;
 
@@ -44,11 +48,22 @@ void BillBusiness::fetchBillsByCustomerId(int customerId)
 {
     Q_ASSERT(customerId);
 
-    fetch(QString("/?customer_id=%1").arg(customerId));
+    billRepository_->fetchByCustomerId(customerId);
 
-    connect(rest_, &Rest::succeeded, this, [&](const QVariantMap &resp) {
-        for (const auto &order : resp["orders"].toList())
-            model_->append(BillEntity::fromMap(order.toMap()));
+    const auto repository{dynamic_cast<DataLayer::BillRepository *>(billRepository_)};
+
+    connect(repository, &DataLayer::BillRepository::billsFetched, this, [&](const QByteArray &data) {
+        const auto resp{QJsonDocument::fromJson(data).object()};
+        const auto orders{resp["orders"].toArray()};
+
+        if (orders.isEmpty())
+        {
+            emit ordersNotFound();
+            return;
+        }
+
+        for (const auto &order : orders)
+            model_->append(BillEntity::fromMap(order.toVariant().toMap()));
         emit populated();
     });
 }
@@ -60,13 +75,16 @@ void BillBusiness::fetchBillById(int orderId)
     // FIXME: Implement me
 }
 
-void BillBusiness::fetchBillsByAdminId(int customerId)
-{   
-    fetch(QString("/?admin_id=%1").arg(customerId));
+void BillBusiness::fetchBillsByAdminId(int adminId)
+{
+    billRepository_->fetchByAdminId(adminId);
 
-    connect(rest_, &Rest::succeeded, this, [&](const QVariantMap &resp) {
-        for (const auto &order : resp["orders"].toList())
-            model_->append(BillEntity::fromMap(order.toMap()));
+    const auto repository{dynamic_cast<DataLayer::BillRepository *>(billRepository_)};
+
+    connect(repository, &DataLayer::BillRepository::billsFetched, this, [&](const QByteArray &data) {
+        auto doc{QJsonDocument::fromJson(data).object()};
+        for (const auto &order : doc["orders"].toArray())
+            model_->append(BillEntity::fromMap(order.toVariant().toMap()));
         emit populated();
     });
 }
@@ -74,13 +92,5 @@ void BillBusiness::fetchBillsByAdminId(int customerId)
 void BillBusiness::clearModel()
 {
     model_->clear();
-}
-
-void BillBusiness::fetch(QStringView arg)
-{
-    const auto user{CurrentUser::instance()};
-    rest_->accessToken(user->accessToken());
-
-    rest_->get(arg.toString());
 }
 }

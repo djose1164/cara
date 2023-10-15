@@ -1,22 +1,29 @@
+import QtCore
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 import QtQuick.Dialogs
-import "qrc:/utils" as Utils
+import core as Core
+import catalogue as Catalogue
+import "qrc:/utils"
 import "qrc:/main"
 import "qrc:/singleton"
+import "qrc:/inventory"
 
 Page {
     id: root
 
-    property var pageHeaderView
     readonly property var myStack: StackView.view
-    property var product
-    property var stocks
-    property int inventoryId
+    property int productId
+    property int categoryId
+    property int sellPrice
+    property int buyPrice
+    property string description
+    property string name
+    property url imageUrl
     property string mode: "add"
 
-    header: Utils.TitleHeader {
+    header: TitleHeader {
         title: "Agregar nuevo producto"
         onBackClicked: myStack.pop()
     }
@@ -28,117 +35,158 @@ Page {
 
         BusyIndicator {}
 
-        Item {
+        ScrollView {
+            contentWidth: availableWidth
+
             ColumnLayout {
                 anchors.centerIn: parent
-                width: root.width*.8
+                width: root.width*.9
                 spacing: 10
 
-                Label { text: "Nombre" }
+                ImagePicker {
+                    id: imgPicker
+                    Layout.preferredWidth: root.width/2
+                    Layout.preferredHeight: root.width/2
+                    imagePath: imageUrl
+                }
 
                 TextField {
                     id: productName
-                    text: product.name
+                    text: name
                     placeholderText: "Nombre del producto"
                     Layout.fillWidth: true
                 }
 
-                Label {
-                    text: "Descripcion"
-                    visible: descriptionField.text
-                }
-
                 TextField {
                     id: descriptionField
-                    text: product.description
+                    text: description
                     placeholderText: "Descripcion del producto"
                     Layout.fillWidth: true
                 }
 
-                Label { text: priceBuy.placeholderText }
-
                 TextField {
                     id: priceBuy
-                    text: product.buy_price
+                    text: buyPrice
                     placeholderText: "Precio de compra"
                     Layout.fillWidth: true
                     inputMethodHints: Qt.ImhDigitsOnly
                 }
 
-                Label { text: priceSell.placeholderText }
-
                 TextField {
                     id: priceSell
-                    text: product.sell_price
+                    text: sellPrice
                     placeholderText: "Precio de venta"
                     Layout.fillWidth: true
                     inputMethodHints: Qt.ImhDigitsOnly
                 }
 
-                Label { text: stockField.placeholderText }
-
-                TextField {
-                    id: stockField
-                    Layout.fillWidth: true
-                    text: stocks.in_stock
-                    placeholderText: "Cantidad"
-                    inputMethodHints: Qt.ImhDigitsOnly
+                Catalogue.CategoryComboBox {
+                    id: categoryCB
+                    Layout.preferredWidth: root.width/2
+                    currentIndex: categoryId - 1
                 }
 
-                Button {
-                    text: mode === "add" ? "Agregar" : "Guardar"
-                    Layout.fillWidth: true
-//                    Material.background: Material.Green
-//                    Material.foreground: "white"
-                    onClicked: {
-                        updateInventory();
-                        const body = {
-                            inventoryId,
-                            product,
-                            stocks,
-                        };
-                        stackLayout.currentIndex = 0;
-                        if (mode === "add")
-                        productRequest.addProduct(productName.text, description.text, priceBuy.text, priceSell.text);
-                        else if(mode === "edit")
-                            productRequest.editProduct(body);
+                RowLayout {
+                    Button {
+                        visible: mode !== "add"
+                        text: "Ver en inventario"
+                        onClicked: openProductInInventory()
+                    }
+
+                    Button {
+                        text: mode === "add" ? "Agregar" : "Guardar"
+                        Layout.fillWidth: true
+                        Material.background: Material.Green
+                        Material.foreground: "white"
+                        onClicked: mode === "add" ? createProduct() : updateProduct()
                     }
                 }
             }
         }
     }
 
-    MessageDialog {
-        id: messageDialog
-        text: mode === "add" ? "Producto guardado." : "Producto editado."
-        informativeText: "Puedes chequear el producto desde Inventario.";
-        onButtonClicked: close()
+    Catalogue.CatalogueRepository {
+        id: catalogueRepository
+        onProductAdded: data => {
+            popup.state = "success";
+            ProductManager.modelAppend(JSON.parse(data).product);
+        }
+        onProductEdited: {
+            popup.state = "success";
+            updateCatalogue();
+        }
+        onErrorOccurred: popup.state = "error"
     }
 
-    ProductRequest {
-        id: productRequest
-        request.onSucceeded: {
-            ProductManager.updateModel();
-            stackLayout.currentIndex = 1;
-            messageDialog.open();
-        }
+    Catalogue.StatusPopup {
+        id: popup
+        width: root.width*.8
+        height: root.height/2
+    }
 
-        request.onFailed: resp => {
-            messageDialog.text = "No se ha podido guardar el producto.";
-            messageDialog.informativeText = resp.message;
-            messageDialog.open();
-            stackLayout.currentIndex = 1;
+    InventoryAPI {
+        id: inventoryAPI
+        onFetchedByAdminIdAndProductId: inventory => {
+            myStack.push("qrc:/inventory/InventoryForm.qml", {
+                inventoryId: inventory.id,
+                product: inventory.product,
+                warehouse: inventory.warehouse,
+                minimunStockLevel: inventory.minimun_stock_level,
+                maximunStockLevel: inventory.maximun_stock_level,
+                reorderPoint: inventory.reorder_point,
+                quantityAvailable: inventory.quantity_available
+            });
         }
     }
 
-    function updateInventory() {
+    function openBusyPopup() {
+        popup.state = "busy";
+        popup.open();
+    }
+
+    function closeBusyPopup() {
+        popup.state = "";
+        popup.close();
+    }
+
+    function createProduct() {
+        openBusyPopup();
+        const productJson = {
+            name: productName.text,
+            description: descriptionField.text,
+            buy_price: priceBuy.text,
+            sell_price: priceSell.text,
+            image_url: imgPicker.imagePath,
+            category_id: categoryCB.currentValue
+        };
+        print(JSON.stringify(productJson, null, 2));
+        catalogueRepository.addProduct(productJson);
+    }
+
+    function updateProduct() {
+        openBusyPopup();
+        const productJson = {
+            id: productId,
+            name: productName.text,
+            description: descriptionField.text,
+            buy_price: priceBuy.text,
+            sell_price: priceSell.text,
+            image_url: imgPicker.imagePath,
+            category_id: categoryCB.currentValue
+        };
+        catalogueRepository.editProduct(productJson);
+    }
+
+    function updateCatalogue() {
+        const product = ProductManager.findById(productId);
         product.name = productName.text;
         product.description = descriptionField.text;
         product.buy_price = priceBuy.text;
         product.sell_price = priceSell.text;
-        delete product.id;
+    }
 
-        stocks.in_stock = stockField.text;
-        delete stocks.id;
+    function openProductInInventory() {
+        const adminId = Core.CurrentUser.user.userId;
+        inventoryAPI.fetchByAdminIdAndProductId(adminId, productId);
     }
 }

@@ -12,7 +12,6 @@ Item {
     CaraApi {
         id: request
         endpoint: "/products"
-        accessToken: TheCurrentUser.accessToken
     }
 
     function addProduct(name, desc, buy, sell) {

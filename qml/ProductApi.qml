@@ -6,7 +6,6 @@ CaraApi {
     id: api
     endpoint: "/products"
     onFailed: r => print(JSON.stringify(r, null, 2))
-    accessToken: TheCurrentUser.accessToken
 
     function patchStock(inStock: int, success, fail): void {
         failed.connect(fail);

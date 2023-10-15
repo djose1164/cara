@@ -5,7 +5,6 @@ qt_add_qml_module(Core
     SOURCES
         billbusiness.h billbusiness.cpp
 	cartbusiness.h	cartbusiness.cpp
-	constants.h constants.cpp
 	loginmanager.h loginmanager.cpp
 	paymentbusiness.h paymentbusiness.cpp
         currentuser.h currentuser.cpp

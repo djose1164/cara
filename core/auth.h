@@ -20,7 +20,7 @@ signals:
     void userEntityChanged();
 
     void authenticated(const QVariantMap &resp);
-    void authenticatedWithToken();
+    void authenticatedWithToken(const QVariantMap &data);
     void notFound();
     void invalidCredentials();
     void authenticationDone();

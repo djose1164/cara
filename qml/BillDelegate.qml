@@ -1,4 +1,3 @@
-/* IMPORTANT: This delegate receives orders a model. */
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
@@ -23,8 +22,6 @@ Item {
     readonly property int heightLV: ListView.view.height
     readonly property bool isHorizontal: orientation === ListView.Horizontal
 
-    signal updateCustomer(customerId: int)
-
     width: orientation === ListView.Horizontal ? ListView.view.width*.65
                                                : ListView.view.width
     height: orientation === ListView.Horizontal ? ListView.view.height
@@ -37,14 +34,9 @@ Item {
         AdminBillDelegate {
             id: adminDelegate
 
-            onClicked: {
-                billStack.push("qrc:/bills/OrderPage.qml", {
-                    name, customerId
-                });
-            }
-
             name: root.name
             customerId: root.customerId
+            onClicked: billStack.push("qrc:/bills/BillHomePage.qml", {customerId})
         }
 
         CustomerBillDelegate {

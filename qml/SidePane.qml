@@ -9,7 +9,7 @@ import entities
 Drawer {
     id: root
 
-    required property var stackView
+    required property StackView stackView
     readonly property UserEntity user: CurrentUser.user
     readonly property bool isGuest: user.userType === UserEntity.GUEST
 

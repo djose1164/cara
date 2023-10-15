@@ -93,12 +93,12 @@ void Inventory::setWarehouseId(unsigned int newWarehouseId)
     emit warehouseIdChanged();
 }
 
-ProductEntity *Inventory::product() const
+Product *Inventory::product() const
 {
     return product_;
 }
 
-void Inventory::setProduct(ProductEntity *newProduct)
+void Inventory::setProduct(Product *newProduct)
 {
     if (product_ == newProduct)
         return;
