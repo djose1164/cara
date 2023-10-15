@@ -2,13 +2,17 @@
 
 namespace DataLayer {
 Constants::Constants()
-    : localBase_{"http://127.0.0.1:5000"}
+#ifdef Q_OS_ANDROID
+    : testingBase_{"https://cara-api-testing.onrender.com"}
+#else
+    : testingBase_{"http://127.0.0.1:5000"}
+#endif
     , remoteBase_{"https://cara-rd.live"}
     , appWidth_{400}
     , appHeight_{640}
 {
 #ifdef QT_DEBUG
-    base_ = localBase_ + "/api";
+    base_ = testingBase_ + "/api";
 #else
     base_ = remoteBase_ + "/api";
 #endif
