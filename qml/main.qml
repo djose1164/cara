@@ -73,14 +73,12 @@ ApplicationWindow {
         function onLoggedIn(resp) {
             print("onLoggedIn: counter: ", ++counter)
             CurrentUser.fillUserInfo(resp);
-            TheCurrentUser.accessToken = "Bearer " + resp.access_token;
         }
 
-        function onLoggedInWithToken(resp) {
+        function onLoggedInWithToken() {
             CurrentUser.userFromSettings();
-            TheCurrentUser.accessToken = "Bearer " + resp.access_token;
 
-            print("onLoggedInWithToken: isAdmin", CurrentUser.isAdmin);
+            print("onLoggedInWithToken: userId", CurrentUser.user.userId);
         }
 
         function onLoggedOut() {
