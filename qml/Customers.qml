@@ -9,8 +9,6 @@ Page {
     readonly property int fontSize: 12
     readonly property StackView stackView: StackView.view
 
-    Component.onCompleted: if (CustomerManager.modelIsEmpty()) customerApi.fetchCustomers()
-
     title: "Clientes"
     header: TitleHeader {
         title: root.title
