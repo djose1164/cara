@@ -22,11 +22,12 @@ ApplicationWindow {
     onClosing: function(close) {
         //Manages Android Back-button
         if(Qt.platform.os === "android") {
-            close.accepted = false;
-            if (appStack.depth > 1)
+            if (appStack.depth > 1) {
+                close.accepted = false;
                 appStack.pop();
+            }
             else
-                Qt.quit()
+                close.accepted = true;
         }
     }
 
