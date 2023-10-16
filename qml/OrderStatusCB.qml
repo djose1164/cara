@@ -21,7 +21,7 @@ Item {
     ComboBox {
         id: statusComboBox
 
-        width: root.width*.7
+        width: root.width*.6
         currentIndex: statusId - 1
         textRole: "text"
         valueRole: "value"
@@ -36,19 +36,19 @@ Item {
     }
 
     Button {
+        anchors {
+            left: statusComboBox.right
+            leftMargin: 20
+            right: root.right
+            rightMargin: 10
+        }
+        text: "Aceptar"
         onClicked: {
             if (statusComboBox.currentValue === statusId)
                 return;
             busyPopup.open();
             api.update(statusComboBox.currentValue)
         }
-
-        width: root.width*.25
-        anchors {
-            right: root.right
-            rightMargin: 10
-        }
-        text: "Aceptar"
     }
 
     MessageDialog {
