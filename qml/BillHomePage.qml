@@ -92,12 +92,14 @@ Page {
 
     OrderStatusProxyModel {
         id: orderStatusPM
-        sourceModel: BillManager.model
+        sourceModel: billModel
     }
+
+    BillModel { id: billModel }
 
     BillBusiness {
         id: billBusiness
-        model: BillManager.model
+        model: billModel
         onOrdersNotFound: root.state = "noOrders"
     }
 }

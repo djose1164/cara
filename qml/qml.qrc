@@ -113,25 +113,25 @@
         <file>AddProductView.qml</file>
         <file>ProductComboBox.qml</file>
     </qresource>
-    <qresource prefix="/qr" lang="qml">
+    <qresource lang="qml" prefix="/qr">
         <file>QR.qml</file>
     </qresource>
-    <qresource prefix="/login" lang="qml">
+    <qresource lang="qml" prefix="/login">
         <file>Login.qml</file>
         <file>SignUp.qml</file>
     </qresource>
-    <qresource prefix="/users" lang="qml">
+    <qresource lang="qml" prefix="/users">
         <file>Refresh.qml</file>
         <file>PerfilPage.qml</file>
     </qresource>
-    <qresource prefix="/errors" lang="qml">
+    <qresource lang="qml" prefix="/errors">
         <file>ErrorPage.qml</file>
     </qresource>
     <qresource prefix="/inventory">
         <file>Inventory.qml</file>
         <file>InventoryAPI.qml</file>
     </qresource>
-    <qresource prefix="/reviews" lang="qml">
+    <qresource lang="qml" prefix="/reviews">
         <file>Review.qml</file>
         <file>Comment.qml</file>
         <file>CommentMenuButton.qml</file>
@@ -154,15 +154,14 @@
         <file>ViewManager.qml</file>
         <file>CustomerManager.qml</file>
         <file>ProductManager.qml</file>
-        <file>BillManager.qml</file>
     </qresource>
-    <qresource prefix="/statistics" lang="qml">
+    <qresource lang="qml" prefix="/statistics">
         <file>Statistics.qml</file>
         <file>ProductStatistics.qml</file>
         <file>CustomerStatistics.qml</file>
         <file>StatisticsAPI.qml</file>
     </qresource>
-    <qresource prefix="/filters" lang="qml">
+    <qresource lang="qml" prefix="/filters">
         <file>PaymentStatusFilter.qml</file>
         <file>FilterButton.qml</file>
         <file>OrderStatusFilter.qml</file>
