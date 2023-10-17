@@ -22,7 +22,7 @@ void ProductRepository::add(const QVariantMap &product)
     prepareImagePart(product.value("image_url").toUrl());
     prepareJsonPart(product);
 
-    const QUrl url{"http://127.0.0.1:5000/api/products/"};
+    const QUrl url{base_ + "/products/"};
     QNetworkRequest request{url};
     request.setRawHeader("Authorization", DataLayer::TokenManager::instance()->accessToken().toUtf8());
 
