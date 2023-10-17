@@ -29,7 +29,7 @@ signals:
     void ready();
 
 private:
-    const QString localBase_;
+    const QString testingBase_;
     const QString remoteBase_;
     QString base_;
 

@@ -63,12 +63,6 @@ Page {
     Connections {
         target: LoginManager
 
-        function onLoggingOut() {
-            const loadedItem = loader.item;
-            print("---Bills: loggingOut");
-            loadedItem.clearModel();
-        }
-
         function onLoggedOut() {
             CustomerManager.clearModel();
         }

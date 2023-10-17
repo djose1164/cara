@@ -14,12 +14,21 @@ BackPage {
 
     title: "Detalles de orden"
 
-    OrderState {
-        anchors.fill: parent
-        payment: root.payment
-        orderId: root.orderId
-        details: root.details
-        date: root.date
-        status: root.status
+    ScrollView {
+        contentWidth: availableWidth
+        anchors {
+            fill: parent
+            leftMargin: 10
+            rightMargin: 10
+        }
+
+        OrderState {
+            anchors.fill: parent
+            payment: root.payment
+            orderId: root.orderId
+            details: root.details
+            date: root.date
+            status: root.status
+        }
     }
 }

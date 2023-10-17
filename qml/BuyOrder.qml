@@ -39,8 +39,8 @@ Page {
 
         text: "+"
         font.pointSize: 14
-//        Material.background: Material.Blue
-//        Material.foreground: "white"
+        Material.background: Material.Blue
+        Material.foreground: "white"
     }
 
     ListModel { id: listModel }

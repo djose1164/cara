@@ -2,7 +2,7 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 
-RowLayout {
+GroupBox {
     id: root
 
     property alias checkedButton: group.checkedButton
@@ -13,26 +13,33 @@ RowLayout {
     property alias checkState: group.checkState
     readonly property string buttonText: checkedButton ? checkedButton.text : ""
 
-    height: 40
+    width: 80
+    height: 20
+    title: "Condiicon de Pago"
 
-    ButtonGroup {
-        id: group
-        buttons: root.children
-    }
+    RowLayout {
+        id: rowLayout
+        anchors.centerIn: parent
 
-    RadioButton {
-        id: paidBtn
-        text: "Pago"
-    }
+        ButtonGroup {
+            id: group
+            buttons: rowLayout.children
+        }
 
-    RadioButton {
-        id: creditBtn
-        text: "Credito"
-    }
+        RadioButton {
+            id: paidBtn
+            text: "Pago"
+        }
 
-    RadioButton {
-        id: partial
-        text: "Abono"
+        RadioButton {
+            id: creditBtn
+            text: "Credito"
+        }
+
+        RadioButton {
+            id: partial
+            text: "Abono"
+        }
     }
 }
 
