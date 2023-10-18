@@ -65,6 +65,6 @@ Page {
     MessageDialog {
         id: dialog
         text: "Orden de compra creada con exito!"
-        onAccepted: close()
+        onButtonClicked: close()
     }
 }

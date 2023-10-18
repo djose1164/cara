@@ -104,6 +104,7 @@ Item {
             default:
                 return LoginManager.status;
         }
+        onButtonClicked: close()
     }
 
     Connections {

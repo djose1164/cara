@@ -121,6 +121,7 @@ Drawer {
     MessageDialog {
         id: dialog
         text: "Actualizado con exito!"
+        onButtonClicked: close()
     }
 
     CustomerAPI {

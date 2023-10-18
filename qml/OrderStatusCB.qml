@@ -55,7 +55,8 @@ Item {
         id: msgDialog
         text: "El estatus de la orden ha sido actualizado"
         informativeText: "Si el cliente cuenta con un usuario, el mismo sera notificado."
-        onAccepted: close()
+        buttons: MessageDialog.Ok
+        onButtonClicked: close()
     }
 
     Popup {
