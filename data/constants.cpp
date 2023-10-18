@@ -3,7 +3,7 @@
 namespace DataLayer {
 Constants::Constants()
 #ifdef Q_OS_ANDROID
-    : testingBase_{"https://cara-api-testing.onrender.com"}
+    : testingBase_{"http://10.0.2.2:5000"}
 #else
     : testingBase_{"http://127.0.0.1:5000"}
 #endif
