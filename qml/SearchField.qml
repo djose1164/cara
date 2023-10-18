@@ -15,6 +15,7 @@ TextField {
     color: "black"
     Keys.onEnterPressed: shouldAccept()
     Keys.onReturnPressed: shouldAccept()
+    EnterKey.type: Qt.EnterKeySearch
 
     ToolButton {
         id: lupa
