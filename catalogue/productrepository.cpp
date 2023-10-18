@@ -22,7 +22,7 @@ void ProductRepository::add(const QVariantMap &product)
     prepareImagePart(product.value("image_url").toUrl());
     prepareJsonPart(product);
 
-    const QUrl url{base_ + "/products/"};
+    const QUrl url{base_ + "/"};
     QNetworkRequest request{url};
     request.setRawHeader("Authorization", DataLayer::TokenManager::instance()->accessToken().toUtf8());
 
@@ -82,7 +82,11 @@ void ProductRepository::prepareImagePart(const QUrl imageUrl)
     QHttpPart imagePart;
     imagePart.setHeader(QNetworkRequest::ContentTypeHeader, "image/jpeg");
 
+#ifdef Q_OS_ANDROID
+    auto img{ new QFile(imageUrl.toString()) };
+#else
     auto img{ new QFile(imageUrl.toLocalFile()) };
+#endif
     imagePart.setHeader(
         QNetworkRequest::ContentDispositionHeader,
         QString("form-data; name=\"image\"; filename=\"%1\"")
