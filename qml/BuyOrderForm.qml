@@ -89,7 +89,6 @@ Drawer {
                 partialPaid: false
             }
 
-
             Label {
                 text: "Poductos"
                 font.pointSize: 14
@@ -99,9 +98,9 @@ Drawer {
                 Layout.fillHeight: true
             }
 
-
             AddProductView {
                 id: entry
+                valueRoleType: ProductComboBox.BuyPrice
                 Layout.fillWidth: true
                 Layout.preferredHeight: 200
                 onEntryUpdated: { // TODO: Check why property binding doesn't work

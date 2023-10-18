@@ -6,6 +6,7 @@ import "qrc:/orders"
 ScrollView {
     id: root
 
+    required property int valueRoleType
     readonly property alias count: entries.count
     readonly property alias model: entries
 
@@ -18,6 +19,7 @@ ScrollView {
         spacing: 5
         model: entries
         delegate: Entry {
+            valueRoleType: root.valueRoleType
             onUpdated: (idx, entryValue) => {
                 if (!entryValue.product_id && !entryValue?.unit_price)
                     return;

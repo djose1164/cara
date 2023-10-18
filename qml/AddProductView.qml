@@ -13,6 +13,7 @@ Column {
     id: root
 
     property alias messageDialog: message
+    property alias valueRoleType: productEntry.valueRoleType
 
     property int payment: 2
     property var details

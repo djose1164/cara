@@ -41,6 +41,7 @@ Page {
 
             AddProductView {
                 id: addProductView
+                valueRoleType: ProductComboBox.SellPrice
                 Layout.fillWidth: true
                 Layout.fillHeight: true
                 Layout.topMargin: 20

@@ -18,6 +18,8 @@ RowLayout {
     required property int index
     readonly property ListModel model: productField.model
 
+    property alias valueRoleType: productField.valueRoleType
+
     signal created(entry: var)
     signal updated(idx: int, entry: var)
     signal deleted(idx: int)
