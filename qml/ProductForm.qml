@@ -156,7 +156,6 @@ Page {
             description: descriptionField.text,
             buy_price: priceBuy.text,
             sell_price: priceSell.text,
-            image_url: imgPicker.imagePath,
             category_id: categoryCB.currentValue
         };
         print(JSON.stringify(productJson, null, 2));
