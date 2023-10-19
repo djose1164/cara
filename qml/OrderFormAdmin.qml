@@ -24,6 +24,31 @@ Page {
     readonly property int total: amountField.text ? addProductView.totalToPay - amount : addProductView.totalToPay
 
     header: AddOrderHeader {}
+    states: [
+        State {
+            name: "empty"
+            PropertyChanges {
+                target: clientField
+                currentIndex: -1
+            }
+            PropertyChanges {
+                target: paymentStatus
+                checkState: Qt.Unchecked
+            }
+            PropertyChanges {
+                target: amountField
+                text: ""
+            }
+            PropertyChanges {
+                target: dateField
+                text: ""
+            }
+            StateChangeScript {
+                name: "clearAddProductView"
+                script: addProductView.clear()
+            }
+        }
+    ]
 
     ScrollView {
         anchors.fill: parent
@@ -60,9 +85,7 @@ Page {
                 Layout.fillHeight: true
                 TextField {
                     id: amountField
-                    placeholderText: isPaid || isACreditOrder ? `Monto a pagar: ${total}`
-                                                              : !paymentStatus.checkedButton ? "Seleccione un estado"
-                                                                                             : "Ingrese monto..."
+                    placeholderText: getPlaceholderText()
                     enabled: isPartiallyPaid
                     inputMethodHints: Qt.ImhDigitsOnly
                     Layout.alignment: Qt.AlignLeading
@@ -106,8 +129,10 @@ Page {
             message.informativeText = "¡Gracias por su compra!";
             message.detailedText = "Puedes observar el estado de la orden en Ordenes Recientes.";
             message.open();
-            addProductView.clearOrderForm();
 
+            root.state = "empty";
+
+            // Set the customerId, if this is the first buy from the user.
             if (TheCurrentUser.isCostumer && TheCurrentUser.customerId === 0) {
                 TheCurrentUser.customerId = r.customer_id;
                 CurrentUser.customerId = r.customer_id;
@@ -136,6 +161,7 @@ Page {
     }
 
     function okHandler() {
+        root.state = "";
         const fullOrder = {
             customer_id: clientField.currentValue,
             admin_id: CurrentUser.user.userId,
@@ -149,7 +175,8 @@ Page {
         if (dateField.length)
             fullOrder.date = dateField.text;
 
-        request.post("/", fullOrder);
+        root.state = "empty";
+        //request.post("/", fullOrder);
     }
 
     function validateForm() {
@@ -169,5 +196,14 @@ Page {
         }
 
         return true;
+    }
+
+    function getPlaceholderText() : string {
+        if (isPaid || isACreditOrder)
+            return `Monto a pagar: ${total}`;
+        else if (!paymentStatus.checkedButton)
+            return "Seleccione un estado";
+        else
+            return "Ingrese monto...";
     }
 }
