@@ -12,7 +12,6 @@ import "qrc:/utils"
 Column {
     id: root
 
-    property alias messageDialog: message
     property alias valueRoleType: productEntry.valueRoleType
 
     property int payment: 2
@@ -56,20 +55,7 @@ Column {
 
     function clear() {
         payment = 0;
-    }
-
-    MessageDialog {
-        id: message
-        buttons: MessageDialog.Ok
-        onButtonClicked: close()
-    }
-
-    /**
-    * Clear & prepare the form to be used on another order.
-    */
-    function clearOrderForm() {
         productEntries.resetEntries();
-        clear();
     }
 
     function entryFormData(): var {
