@@ -69,8 +69,9 @@ ScrollView {
     }
 
     function resetEntries() {
-        for (let i = count; i !== 0; --i)
-            entries.remove(idx);
+        entries.clear();
+        addEntry();
+
     }
 
     function selectedProductsAreValid() {
