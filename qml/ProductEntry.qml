@@ -11,6 +11,8 @@ ScrollView {
     readonly property alias model: entries
 
     signal entryUpdated
+
+    ScrollBar.vertical.policy: ScrollBar.AlwaysOff
     Component.onCompleted: entries.append({quantity: 1, unit_price: 0, product_id: 0})
 
     ListView {

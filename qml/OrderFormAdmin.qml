@@ -61,7 +61,7 @@ Page {
             ClientComboBox {
                 id: clientField
                 Layout.fillWidth: true
-                z: 100
+                Layout.preferredHeight: clientField.implicitHeight *1.2
             }
 
             AddProductView {
@@ -69,8 +69,7 @@ Page {
                 valueRoleType: ProductComboBox.SellPrice
                 Layout.fillWidth: true
                 Layout.fillHeight: true
-                Layout.topMargin: 20
-                Layout.minimumHeight: 250
+                Layout.minimumHeight: 200
             }
 
             Payments.PaymentStatus {
@@ -175,8 +174,7 @@ Page {
         if (dateField.length)
             fullOrder.date = dateField.text;
 
-        root.state = "empty";
-        //request.post("/", fullOrder);
+        request.post("/", fullOrder);
     }
 
     function validateForm() {

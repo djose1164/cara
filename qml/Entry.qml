@@ -31,12 +31,14 @@ RowLayout {
     ProductComboBox {
         id: productField
         Layout.fillWidth: true
+        Layout.preferredHeight: 50
     }
 
     SpinBox {
         id: quantityField
         Layout.preferredHeight: productField.height*.8
-        Layout.preferredWidth: root.width/3
+        Layout.preferredWidth: root.width*.25
+        Layout.alignment: Qt.AlignCenter
         from: 1
         editable: true
         Keys.onReturnPressed: Qt.inputMethod.hide()
@@ -49,7 +51,6 @@ RowLayout {
             source: "qrc:/icons/trash-can-outline.svg"
         }
         flat: true
-        Layout.alignment: Qt.AlignTrailing
     }
 
     function find(criteria) {
