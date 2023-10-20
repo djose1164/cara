@@ -1,6 +1,7 @@
 #ifndef BILLPROXYMODEL_H
 #define BILLPROXYMODEL_H
 
+#include "orderstatus.h"
 #include "paymententity.h"
 
 #include <QSortFilterProxyModel>
@@ -15,7 +16,8 @@ class BillProxyModel : public QSortFilterProxyModel
 
     using PaymentStatus = EntityLayer::PaymentEntity::Status;
 
-    Q_PROPERTY(PaymentStatus statusFilter READ statusFilter WRITE setStatusFilter NOTIFY statusFilterChanged)
+    Q_PROPERTY(PaymentStatus paymentFilter READ statusFilter WRITE setStatusFilter NOTIFY statusFilterChanged FINAL)
+    Q_PROPERTY(OrderStatus::Status orderFilter READ orderFilter WRITE setOrderFilter NOTIFY orderFilterChanged FINAL)
 
 public:
     explicit BillProxyModel(QObject *parent = nullptr);
@@ -23,15 +25,26 @@ public:
     PaymentStatus statusFilter() const;
     void setStatusFilter(const PaymentStatus &newStatusFilter);
 
+    OrderStatus orderStatus() const;
+    void setOrderStatus(const OrderStatus &newOrderStatus);
+
+    OrderStatus::Status orderFilter() const;
+    void setOrderFilter(const OrderStatus::Status &newOrderFilter);
+
 signals:
     void statusFilterChanged();
 
     // QSortFilterProxyModel interface
+    void orderStatusChanged();
+
+    void orderFilterChanged();
+
 protected:
     bool filterAcceptsRow(int source_row, const QModelIndex &source_parent) const override;
 
 private:
-    PaymentStatus statusFilter_;
+    PaymentStatus paymentFilter_;
+    OrderStatus::Status orderFilter_;
 };
 }
 
