@@ -92,7 +92,7 @@ ColumnLayout {
     ReviewHeader {
         id: reviewHeader
         Layout.preferredWidth: isReviewOwner ? root.width : root.width/2
-        Layout.maximumWidth: Constants.appWidth*1.5
+        Layout.maximumWidth: app.width*1.5
         customerNameTxt: customerName
         dateTxt: agoDate
         canModify: isReviewOwner && reviewText
