@@ -115,6 +115,7 @@ Page {
 
     BillFilterPopup {
         id: billFilter
+        width: root.width * .9
         onAccepted: {
             billProxyModel.orderFilter = orderFilterValue;
             billProxyModel.paymentFilter = paymentFilterValue;
