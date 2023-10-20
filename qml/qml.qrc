@@ -26,16 +26,13 @@
         <file>BillPage.qml</file>
         <file>BillPageHeader.qml</file>
         <file>BillDelegate.qml</file>
-        <file>OptionPopup.qml</file>
         <file>BillSearch.qml</file>
         <file>BillMessage.qml</file>
         <file>CustomersView.qml</file>
-        <file>OrderPage.qml</file>
         <file>CustomerBills.qml</file>
         <file>AdminBillDelegate.qml</file>
         <file>CustomerBillDelegate.qml</file>
         <file>BillViewChooser.qml</file>
-        <file>BillView.qml</file>
         <file>BillDetailsPage.qml</file>
         <file>BillHomePage.qml</file>
     </qresource>
@@ -113,25 +110,25 @@
         <file>AddProductView.qml</file>
         <file>ProductComboBox.qml</file>
     </qresource>
-    <qresource lang="qml" prefix="/qr">
+    <qresource prefix="/qr" lang="qml">
         <file>QR.qml</file>
     </qresource>
-    <qresource lang="qml" prefix="/login">
+    <qresource prefix="/login" lang="qml">
         <file>Login.qml</file>
         <file>SignUp.qml</file>
     </qresource>
-    <qresource lang="qml" prefix="/users">
+    <qresource prefix="/users" lang="qml">
         <file>Refresh.qml</file>
         <file>PerfilPage.qml</file>
     </qresource>
-    <qresource lang="qml" prefix="/errors">
+    <qresource prefix="/errors" lang="qml">
         <file>ErrorPage.qml</file>
     </qresource>
     <qresource prefix="/inventory">
         <file>Inventory.qml</file>
         <file>InventoryAPI.qml</file>
     </qresource>
-    <qresource lang="qml" prefix="/reviews">
+    <qresource prefix="/reviews" lang="qml">
         <file>Review.qml</file>
         <file>Comment.qml</file>
         <file>CommentMenuButton.qml</file>
@@ -155,16 +152,16 @@
         <file>CustomerManager.qml</file>
         <file>ProductManager.qml</file>
     </qresource>
-    <qresource lang="qml" prefix="/statistics">
+    <qresource prefix="/statistics" lang="qml">
         <file>Statistics.qml</file>
         <file>ProductStatistics.qml</file>
         <file>CustomerStatistics.qml</file>
         <file>StatisticsAPI.qml</file>
     </qresource>
-    <qresource lang="qml" prefix="/filters">
+    <qresource prefix="/filters" lang="qml">
         <file>PaymentStatusFilter.qml</file>
         <file>FilterButton.qml</file>
-        <file>OrderStatusFilter.qml</file>
+        <file>BillFilterPopup.qml</file>
     </qresource>
     <qresource prefix="/address">
         <file>CountryComboBox.qml</file>
