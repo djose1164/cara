@@ -51,13 +51,4 @@ Page {
             id: customerBills
         }
     }
-
-    PaymentStatusFilter {
-        id: paymentStatusFilter
-        width: root.width * .8
-        height: root.height/2
-        modal: true
-        anchors.centerIn: Overlay.overlay
-        onApplyFilter: filterValue => customerBills.statusFilter = filterValue
-    }
 }
