@@ -30,7 +30,7 @@ Pane {
 
     MessageDialog {
         id: dialog
-        onAccepted: close()
+        onButtonClicked: close()
         text: "Usuario no registrado"
         informativeText: "Para poder realizar compras necesitas estar registrado."
         buttons: MessageDialog.Ok

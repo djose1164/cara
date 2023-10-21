@@ -7,7 +7,6 @@ qt_add_qml_module(Models
 	billproxymodel.h billproxymodel.cpp
 	customermodel.h customermodel.cpp
 	ordermodel.h ordermodel.cpp
-	orderstatusproxymodel.h orderstatusproxymodel.cpp
 )
 
 include_directories(../entities)

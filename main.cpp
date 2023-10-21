@@ -1,7 +1,6 @@
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
-#include <QQuickStyle>
 
 int main(int argc, char *argv[])
 {
@@ -11,10 +10,9 @@ int main(int argc, char *argv[])
     app.setOrganizationDomain("cara.com");
     app.setOrganizationName("Cara");
     app.setApplicationName("Cara");
-    app.setApplicationVersion("0.13.0");
+    app.setApplicationVersion("0.13.2");
 
     QQmlApplicationEngine engine;
-    QQuickStyle::setStyle("Material");
     const QUrl url(u"qrc:/main/main.qml"_qs);
     QObject::connect(&engine, &QQmlApplicationEngine::objectCreated,
                      &app, [url](QObject *obj, const QUrl &objUrl) {

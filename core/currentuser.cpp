@@ -15,7 +15,7 @@ CurrentUser::CurrentUser(QObject *parent)
     });
 
     isCustomer_.setBinding([&] {
-        return user_->userType() == UserTypes::CUSTOMER;
+        return user_->customerId() > 0;
     });
 }
 

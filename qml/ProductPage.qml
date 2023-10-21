@@ -3,7 +3,7 @@ import QtQuick.Controls
 import QtQuick.Layouts
 import QtQuick.Dialogs
 import core
-import entities
+import entities as Entity
 import "qrc:/singleton"
 import "qrc:/utils"
 import "qrc:/reviews"
@@ -28,7 +28,7 @@ Page {
         "description": description,
     }
 
-    ProductEntity {
+    Entity.Product {
         id: detailsEntity
         name: root.name
         price: root.sell_price

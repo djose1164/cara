@@ -22,6 +22,21 @@ ColumnLayout {
 
     signal paymentApplied(newPayment: var)
 
+    states: [
+        State {
+            name: "customerView"
+            when: CurrentUser.isCustomer
+            PropertyChanges {
+                target: orderStatusCB
+                enabled: false
+            }
+            PropertyChanges {
+                target: updatePaymentBtn
+                visible: false
+            }
+        }
+    ]
+
     onPaymentApplied: p => payment = p
 
     Label {
@@ -31,6 +46,7 @@ ColumnLayout {
     }
 
     OrderStatusCB {
+        id: orderStatusCB
         onStatusUpdated: (newStatusId, newStatusString) => {
                              status.statusId = newStatusId;
                              status.statusString = newStatusString;
@@ -53,8 +69,8 @@ ColumnLayout {
         }
 
         Button {
+            id: updatePaymentBtn
             text: "Actualizar"
-            visible: CurrentUser.isAdmin
             onClicked: updatePayment.open()
         }
     }
@@ -74,28 +90,25 @@ ColumnLayout {
         text: "Detalles"
         font.pointSize: 12
         font.bold: true
+        Layout.topMargin: 20
     }
 
-    ColumnLayout {
-        id: productsColumn
-        Layout.fillHeight: true
-        Layout.fillWidth: true
+    Repeater {
+        id: repeater
+        model: details
+        delegate: ProductCard {
+            required property var product
+            required property int quantity
+            required total
 
-        Repeater {
-            id: repeater
-            model: details
-            delegate: ProductCard {
-                required property var product
-                required property int quantity
-                required total
-
-                width: root.width-20
-                enabled: false
-                productName: product.name
-                productPrice: product.price
-                spinBox.value: quantity
-                imageUrl: product.imageUrl
-            }
+            Layout.fillHeight: true
+            Layout.fillWidth: true
+            Component.onCompleted: print("productcard: ",width, ` ${root.width}`)
+            enabled: false
+            productName: product.name
+            productPrice: product.price
+            spinBox.value: quantity
+            imageUrl: product.imageUrl
         }
     }
 

@@ -1,29 +1,38 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
-import core
 import entities
-import "qrc:/utils"
 
-Popup {
+Dialog {
     id: root
 
-    signal applyFilter(statusId: int)
+    readonly property alias paymentFilterValue: paymentComboBox.currentValue
+    readonly property alias orderFilterValue: orderComboBox.currentValue
 
     anchors.centerIn: Overlay.overlay
+    title:  "Filter ordenes"
+    standardButtons: Dialog.Ok | Dialog.Cancel
 
     GridLayout {
         anchors.fill: parent
         columns: 2
-
         Label {
-            text: "Filtrar cuentas"
-            font.pointSize: 14
+            text: "Estado de cuenta"
         }
 
-        CloseButton {
-            Layout.alignment: Qt.AlignRight
-            onClicked: close()
+        ComboBox {
+            id: paymentComboBox
+            textRole: "text"
+            valueRole: "value"
+            model: [
+                {text: "Cuentas pagadas", value: PaymentEntity.Paid},
+                {text: "Cuentas por pagar", value: PaymentEntity.Unpaid},
+                {text: "Cuentas abonadas", value: PaymentEntity.Credited},
+                {text: "Todas", value: PaymentEntity.Any}
+            ]
+            Layout.fillWidth: true
+            flat: true
+            currentIndex: 3
         }
 
         Label {
@@ -31,7 +40,7 @@ Popup {
         }
 
         ComboBox {
-            id: comboBox
+            id: orderComboBox
             textRole: "text"
             valueRole: "value"
             model: [
@@ -43,17 +52,8 @@ Popup {
                 {text: "En Espera", value: OrderStatus.OnHold},
                 {text: "Todas", value: OrderStatus.Any},
             ]
-            currentIndex: comboBox.count - 1
-        }
-
-        Button {
-            text: "Aceptar"
-            Layout.columnSpan: 2
-            Layout.alignment: Qt.AlignCenter
-            onClicked: {
-                applyFilter(comboBox.currentValue);
-                close();
-            }
+            currentIndex: count - 1
+            Layout.fillWidth: true
         }
     }
 }

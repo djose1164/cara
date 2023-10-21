@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.16)
 
-project(Cara VERSION 0.13.0 LANGUAGES CXX)
+project(Cara VERSION 0.13.2 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -8,7 +8,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_AUTORCC ON)
 
 find_package(Qt6 6.2 REQUIRED
-    COMPONENTS Qml Quick Core Network Svg QuickControls2 REQUIRED)
+    COMPONENTS Qml Quick Core Network Svg REQUIRED)
 
 qt_standard_project_setup(REQUIRES 6.2)
 qt_policy(SET QTP0001 NEW)
@@ -26,13 +26,18 @@ qt_add_executable(Cara
     main.cpp
 )
 
+qt_add_resources(Cara "configuration"
+    PREFIX "/"
+    FILES
+        qtquickcontrols2.conf
+)
+
 target_link_libraries(Cara PRIVATE
     Qt6::Qml
     Qt6::Quick
     Qt6::Core
     Qt6::Network
     Qt6::Svg
-    Qt6::QuickControls2
     Coreplugin
     Modelsplugin
     Dataplugin

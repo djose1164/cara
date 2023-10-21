@@ -6,10 +6,13 @@ import "qrc:/orders"
 ScrollView {
     id: root
 
+    required property int valueRoleType
     readonly property alias count: entries.count
     readonly property alias model: entries
 
     signal entryUpdated
+
+    ScrollBar.vertical.policy: ScrollBar.AlwaysOff
     Component.onCompleted: entries.append({quantity: 1, unit_price: 0, product_id: 0})
 
     ListView {
@@ -18,6 +21,7 @@ ScrollView {
         spacing: 5
         model: entries
         delegate: Entry {
+            valueRoleType: root.valueRoleType
             onUpdated: (idx, entryValue) => {
                 if (!entryValue.product_id && !entryValue?.unit_price)
                     return;
@@ -67,8 +71,9 @@ ScrollView {
     }
 
     function resetEntries() {
-        for (let i = count; i !== 0; --i)
-            entries.remove(idx);
+        entries.clear();
+        addEntry();
+
     }
 
     function selectedProductsAreValid() {

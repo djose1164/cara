@@ -42,6 +42,7 @@ Item {
             right: root.right
             rightMargin: 10
         }
+        visible: root.enabled
         text: "Aceptar"
         onClicked: {
             if (statusComboBox.currentValue === statusId)
@@ -55,7 +56,8 @@ Item {
         id: msgDialog
         text: "El estatus de la orden ha sido actualizado"
         informativeText: "Si el cliente cuenta con un usuario, el mismo sera notificado."
-        onAccepted: close()
+        buttons: MessageDialog.Ok
+        onButtonClicked: close()
     }
 
     Popup {

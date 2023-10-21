@@ -12,7 +12,7 @@ Page {
     readonly property StackView stackView: StackView.view
     readonly property UserEntity user: CurrentUser.user
     readonly property string adminViewPath: "qrc:/bills/CustomersView.qml"
-    readonly property string customerViewPath: "qrc:/bills/BillView.qml"
+    readonly property string customerViewPath: "qrc:/bills/CustomerBillsHome.qml"
     readonly property string messagePath: "qrc:/bills/BillMessage.qml"
 
     title: "Facturas"
@@ -58,6 +58,14 @@ Page {
         property StackView stackView: root.stackView
         readonly property int customerId: user.customerId
         anchors.fill: parent
+        source: {
+            if (CurrentUser.isCustomer)
+                return customerViewPath;
+            else if (user.userType === UserEntity.ADMIN)
+                return adminViewPath;
+            else if (user.userType === UserEntity.USER || user.userType === UserEntity.GUEST)
+                return messagePath;
+        }
     }
 
     Connections {
@@ -67,31 +75,4 @@ Page {
             CustomerManager.clearModel();
         }
     }
-
-    states: [
-        State {
-            name: "userNotLoggedIn"
-            when: user.userType === UserEntity.GUEST
-            PropertyChanges {
-                target: loader
-                source: messagePath
-            }
-        },
-        State {
-            name: "userLoggedIn"
-            when: user.userType === UserEntity.USER
-            PropertyChanges {
-                target: loader
-                source: user.customerId ? customerViewPath : messagePath
-            }
-        },
-        State { // FIXME: This does not makes sense. userLoggedIn is checking this
-            name: "adminLoggedIn"
-            when: CurrentUser.isAdmin
-            PropertyChanges {
-                target: loader
-                source: adminViewPath
-            }
-        }
-    ]
 }

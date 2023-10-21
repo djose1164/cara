@@ -17,7 +17,7 @@ Page {
         onBackClicked: stackView.pop()
     }
 
-    Component.onCompleted: if (ProductManager.modelIsEmpty) catalogueRepository.fetchProducts()
+    Component.onCompleted: if (ProductManager.modelIsEmpty()) catalogueRepository.fetchProducts()
 
     StackLayout {
         id: stackLayout

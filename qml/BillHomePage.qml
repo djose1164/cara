@@ -9,21 +9,37 @@ import "qrc:/singleton"
 Page {
     id: root
 
-    readonly property StackView stackView: StackView.view
+    property StackView stackView: StackView.view
     required property int customerId
 
     title: "Todas las cuentas"
     header: TitleHeader {
         title: root.title
         btnLoader.sourceComponent: FilterButton {
-            onClicked: orderStatusFilter.open()
+            onClicked: billFilter.open()
         }
 
         onBackClicked: stackView.pop()
     }
     states: [
         State {
+            name: "fetching"
+            PropertyChanges {
+                target: label
+                visible: false
+            }
+        },
+        State {
+            name: "hasOrders"
+            when: listView.count > 0
+            PropertyChanges {
+                target: label
+                visible: false
+            }
+        },
+        State {
             name: "noOrders"
+            when: listView.count === 0
             PropertyChanges {
                 target: busyIndicator
                 visible: false
@@ -35,36 +51,31 @@ Page {
         }
     ]
 
-    Component.onCompleted: billBusiness.fetchBillsByCustomerId(customerId)
-
-    OrderStatusFilter {
-        id: orderStatusFilter
-        width: root.width*.8
-        height: root.height/2
-        onApplyFilter: statusId => orderStatusPM.statusFilter = statusId
+    Component.onCompleted: {
+        root.state = "fetching";
+        billBusiness.fetchBillsByCustomerId(customerId);
     }
 
     ListView {
         id: listView
         anchors.fill: parent
         delegate: billDelegate
-        model: orderStatusPM
+        model: billProxyModel
+    }
 
-        BusyIndicator {
-            id: busyIndicator
-            anchors.centerIn: parent
-            visible: listView.count === 0
-        }
+    BusyIndicator {
+        id: busyIndicator
+        anchors.centerIn: parent
+        visible: false
+    }
 
-        Label {
-            id: label
-            width: listView.width*.8
-            anchors.centerIn: parent
-            visible: false
-            text: "Este cliente no cuenta con ninguna orden."
-            font.pointSize: 14
-            wrapMode: Label.Wrap
-        }
+    Label {
+        id: label
+        width: root.width*.8
+        anchors.centerIn: parent
+        text: "No se ha podido encontrar ninguna orden."
+        font.pointSize: 14
+        wrapMode: Label.Wrap
     }
 
     Component {
@@ -72,9 +83,9 @@ Page {
         CustomerBillDelegate {
             id: customerBillDelegate
             required property var model
-             property var details: model.details
-             property var payment: model.payment
-             property var status: model.status
+            property var details: model.details
+            property var payment: model.payment
+            property var status: model.status
 
             width: root.width
             height: 100
@@ -90,8 +101,8 @@ Page {
         }
     }
 
-    OrderStatusProxyModel {
-        id: orderStatusPM
+    BillProxyModel {
+        id: billProxyModel
         sourceModel: billModel
     }
 
@@ -100,6 +111,14 @@ Page {
     BillBusiness {
         id: billBusiness
         model: billModel
-        onOrdersNotFound: root.state = "noOrders"
+    }
+
+    BillFilterPopup {
+        id: billFilter
+        width: root.width * .9
+        onAccepted: {
+            billProxyModel.orderFilter = orderFilterValue;
+            billProxyModel.paymentFilter = paymentFilterValue;
+        }
     }
 }

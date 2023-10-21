@@ -1,7 +1,7 @@
 import QtQuick.Dialogs
 
 MessageDialog {
-    onAccepted: close()
+    onButtonClicked: close()
     function show(message: string) {
         text = message;
         open();
