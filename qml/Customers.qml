@@ -32,11 +32,7 @@ Page {
 
             width: listView.width
             text: `${name}\nClient ID: ${customer_id}`
-            contentItem: Label {
-                width: control.width
-                text: control.text
-                font.pointSize: fontSize
-            }
+            font.pointSize: 14
         }
     }
 
