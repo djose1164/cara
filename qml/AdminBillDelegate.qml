@@ -11,6 +11,7 @@ ItemDelegate {
 
     ColumnLayout {
         anchors.fill: parent
+        anchors.leftMargin: 10
 
         Label {
             id: nameLbl
