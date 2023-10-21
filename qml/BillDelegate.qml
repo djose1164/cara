@@ -25,7 +25,7 @@ Item {
     width: orientation === ListView.Horizontal ? ListView.view.width*.65
                                                : ListView.view.width
     height: orientation === ListView.Horizontal ? ListView.view.height
-                                                : ListView.view.height * .15
+                                                : ListView.view.height * .12
 
     StackLayout {
         anchors.fill: parent
