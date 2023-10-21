@@ -53,6 +53,7 @@ Dialog {
                 {text: "Todas", value: OrderStatus.Any},
             ]
             currentIndex: count - 1
+            Layout.fillWidth: true
         }
     }
 }
