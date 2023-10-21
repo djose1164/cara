@@ -48,7 +48,7 @@ Drawer {
             Layout.rightMargin: 20
             onClicked: {
                 root.close();
-                stackView.push("qrc:/bills/OrderPage.qml", {customerId});
+                stackView.push("qrc:/bills/BillHomePage.qml", {customerId});
             }
         }
     }
