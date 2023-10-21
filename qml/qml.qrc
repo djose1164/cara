@@ -35,6 +35,7 @@
         <file>BillViewChooser.qml</file>
         <file>BillDetailsPage.qml</file>
         <file>BillHomePage.qml</file>
+        <file>CustomerBillsHome.qml</file>
     </qresource>
     <qresource prefix="/orders">
         <file>Entry.qml</file>
