@@ -42,6 +42,7 @@ Item {
             right: root.right
             rightMargin: 10
         }
+        visible: root.enabled
         text: "Aceptar"
         onClicked: {
             if (statusComboBox.currentValue === statusId)
