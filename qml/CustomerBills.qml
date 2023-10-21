@@ -13,7 +13,6 @@ ListView {
     property bool shouldRefresh
     property StackView stackView
     property alias billBusiness: billBusiness
-    property alias statusFilter: billProxyModel.statusFilter
 
     signal modelPopulated
 
