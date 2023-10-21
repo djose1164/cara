@@ -9,7 +9,7 @@ import "qrc:/singleton"
 Page {
     id: root
 
-    readonly property StackView stackView: StackView.view
+    property StackView stackView: StackView.view
     required property int customerId
 
     title: "Todas las cuentas"
