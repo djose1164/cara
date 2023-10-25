@@ -29,18 +29,8 @@ Page {
             width: root.width*.9
             anchors.centerIn: parent
 
-            RowLayout {
-                TextField {
-                    id: forename
-                    placeholderText: "Nombre"
-                    Layout.fillWidth: true
-                }
-
-                TextField {
-                    id: surname
-                    placeholderText: "Apellido"
-                    Layout.fillWidth: true
-                }
+            NameForm {
+                id: nameForm
             }
 
             ContactForm {
@@ -53,19 +43,7 @@ Page {
                 Layout.columnSpan: 2
                 Layout.alignment: Qt.AlignCenter
                 text: "Agregar Cliente"
-                onClicked: {
-                    busyIndicator.open();
-
-                    contactForm.removeEmptyFields();
-                    const client = {
-                        "forename": forename.text,
-                        "surname": surname.text,
-                        "contact": contactForm.contact,
-                        "admin_id": CurrentUser.user.userId
-                    };
-
-                    clientRequest.create(client);
-                }
+                onClicked: addCustomer()
             }
         }
     }
@@ -92,6 +70,20 @@ Page {
             messageDialog.informativeText = resp.message;
             messageDialog.open();
         }
+    }
+
+    function addCustomer(): void {
+        busyIndicator.open();
+
+        contactForm.removeEmptyFields();
+        const client = {
+            "forename": nameForm.forename,
+            "surname": nameForm.surname,
+            "contact": contactForm.contact,
+            "admin_id": CurrentUser.user.userId
+        };
+
+        clientRequest.create(client);
     }
 
     function customerCreated(customer) {
