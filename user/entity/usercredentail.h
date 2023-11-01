@@ -1,0 +1,36 @@
+#ifndef USERCREDENTAIL_H
+#define USERCREDENTAIL_H
+
+#include <QObject>
+
+namespace User::Entity {
+class UserCredentail
+{
+    Q_GADGET
+    Q_PROPERTY(QString username READ username WRITE setUsername FINAL)
+    Q_PROPERTY(QString email READ email WRITE setEmail FINAL)
+    Q_PROPERTY(QString password READ password WRITE setPassword FINAL)
+public:
+    static UserCredentail fromMap(const QVariantMap &data);
+
+    UserCredentail();
+
+    QString username() const;
+    void setUsername(const QString &newUsername);
+
+    QString email() const;
+    void setEmail(const QString &newEmail);
+
+    QString password() const;
+    void setPassword(const QString &newPassword);
+
+    bool isValid() const;
+
+private:
+    QString username_;
+    QString email_;
+    QString password_;
+};
+}
+
+#endif // USERCREDENTAIL_H
