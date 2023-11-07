@@ -11,7 +11,7 @@ class RestUserAuthentication : public QObject, public Business::Authentication
 {
     Q_OBJECT
 public:
-    explicit RestUserAuthentication(QObject *parent = nullptr);
+    explicit RestUserAuthentication(User::Entity::UserCredentail userCredentail, QObject *parent = nullptr);
 
     QByteArray data() const;
 
@@ -22,7 +22,7 @@ signals:
     void finished();
 
 private:
-    User::Entity::UserCredentail userCredentail_;
+    const User::Entity::UserCredentail userCredentail_;
     QByteArray data_;
 
     QNetworkAccessManager *manager_;
