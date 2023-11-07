@@ -3,6 +3,7 @@
 
 #include "business/authentication.h"
 #include <QObject>
+#include <QNetworkAccessManager>
 
 namespace Service {
 class LocalUserAuthentication : public QObject, public Business::Authentication
@@ -13,15 +14,23 @@ public:
 
     bool isAuthenticated() const;
 
+    QByteArray buffer() const;
+    void setBuffer(const QByteArray &newBuffer);
+
 public slots:
     void authenticate() override;
 
 signals:
     void finished();
+    void errorOccurred();
 
 private:
     QString refreshToken_;
     bool isAuthenticated_;
+
+    QNetworkAccessManager *manager_;
+    QNetworkReply *reply_;
+    QByteArray buffer_;
 };
 }
 
