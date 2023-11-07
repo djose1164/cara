@@ -17,7 +17,8 @@ class Login : public QObject
     Q_PROPERTY(QByteArray data READ data WRITE setData NOTIFY dataChanged FINAL)
     Q_PROPERTY(UserStore *userStore READ userStore WRITE setUserStore NOTIFY userStoreChanged FINAL)
     Q_PROPERTY(bool hasPreviousLogin READ hasPreviousLogin NOTIFY hasPreviousLoginChanged FINAL)
-
+    Q_PROPERTY(QString username READ username WRITE setUsername NOTIFY usernameChanged FINAL)
+    Q_PROPERTY(QString password READ password WRITE setPassword NOTIFY passwordChanged FINAL)
 public:
     enum class Status {
         Authenticated,
@@ -40,6 +41,12 @@ public:
 
     bool hasPreviousLogin() const;
 
+    QString username() const;
+    void setUsername(const QString &newUsername);
+
+    QString password() const;
+    void setPassword(const QString &newPassword);
+
 signals:
     void authenticated();
     void errorOccurred();
@@ -52,9 +59,13 @@ signals:
 
     void hasPreviousLoginChanged();
 
+    void usernameChanged();
+
+    void passwordChanged();
+
 public slots:
-    void authenticateCredentails(const QVariantMap &credentails);
-    void authenticateRefreshToken(const QString &token);
+    void authenticateCredentials();
+    void authenticateRefreshToken();
 
 private:
     void save();
@@ -67,6 +78,10 @@ private:
     UserStore *userStore_;
 
     bool hasPreviousLogin_;
+    QString refreshToken_;
+
+    QString username_;
+    QString password_;
 };
 }
 
