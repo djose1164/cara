@@ -2,11 +2,16 @@
 #define ENTITY_USER_H
 
 #include <QObject>
+#include <QQmlEngine>
 
 namespace Entity {
-class User
+class UserEntity
 {
     Q_GADGET
+    QML_NAMED_ELEMENT(UserEntity)
+    QML_VALUE_TYPE(user)
+    QML_UNCREATABLE("This is a gadget")
+    QML_ELEMENT
 
     Q_PROPERTY(QString username READ username WRITE setUsername)
     Q_PROPERTY(QString password READ password WRITE setPassword)
@@ -25,21 +30,20 @@ class User
 
 public:
     enum class UserTypes {
-        ADMIN = 1,
-        USER,
-        GUEST,
-        CUSTOMER
+        Guest,
+        Admin = 1,
+        User,
+        Salesperson,
+        Customer,
     };
     Q_ENUM(UserTypes)
 
-    User();
+    UserEntity();
 
-    static User fromMap(const QVariantMap &map);
+    static UserEntity fromMap(const QVariantMap &map);
 
-    void fill(const QVariantMap &map);
-
-    bool operator==(const User &other);
-    bool operator!=(const User &other);
+    bool operator==(const UserEntity &other);
+    bool operator!=(const UserEntity &other);
 
     QString username() const;    
     QString password() const;
