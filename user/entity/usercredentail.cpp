@@ -1,5 +1,7 @@
 #include "usercredentail.h"
 #include <QVariantMap>
+#include <QJsonDocument>
+#include <QJsonObject>
 
 namespace User::Entity {
 UserCredentail UserCredentail::fromMap(const QVariantMap &data)
@@ -62,5 +64,14 @@ bool UserCredentail::isValid() const
     else if (username_.isEmpty() && email_.isEmpty())
         return false;
     return true;
+}
+
+QByteArray UserCredentail::toJson() const
+{
+    QJsonObject obj;
+    obj["username"] = username_;
+    obj["password"] = password_;
+
+    return QJsonDocument(obj).toJson();
 }
 }

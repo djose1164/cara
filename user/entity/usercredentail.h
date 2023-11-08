@@ -26,6 +26,8 @@ public:
 
     bool isValid() const;
 
+    QByteArray toJson() const;
+
 private:
     QString username_;
     QString email_;
