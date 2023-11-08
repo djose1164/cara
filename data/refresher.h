@@ -5,6 +5,7 @@
 #include <QObject>
 #include <QNetworkAccessManager>
 #include <QTimer>
+#include <QSettings>
 
 namespace DataLayer {
 class Refresher : public QObject, public IRefreshable
@@ -33,6 +34,7 @@ private:
     QString refreshToken_;
 
     QTimer *timer_;
+    QSettings settings_;
 };
 }
 

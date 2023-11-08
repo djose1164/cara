@@ -9,6 +9,7 @@ Refresher::Refresher(QObject *parent)
     , reply_{nullptr}
     , refreshToken_{}
     , timer_{new QTimer(this)}
+    , settings_{}
 {
     timer_->start(840'000);
     connect(timer_, &QTimer::timeout, this, [&] {
@@ -18,6 +19,8 @@ Refresher::Refresher(QObject *parent)
 
 void Refresher::refresh()
 {
+    const QString token{settings_.value("Credentials/refreshToken").toString()};
+    setRefreshToken(token);
     if (refreshToken_.isEmpty())
     {
         qWarning() << "Refresher::refresh: Refresh token is empty.";
@@ -36,9 +39,13 @@ void Refresher::refresh()
 
     connect(reply_, &QNetworkReply::finished, this, [&] {
         const auto data{reply_->readAll()};
+        const auto obj{QJsonDocument::fromJson(data).object()};
 
         if (reply_->error() == QNetworkReply::NoError)
+        {
+            settings_.setValue("Credentials/accessToken", obj["access_token"].toString());
             emit accessTokenRefreshed(data);
+        }
         else
             emit errorOccurred(data);
     });
