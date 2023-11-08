@@ -1,11 +1,13 @@
 cmake_minimum_required(VERSION 3.16)
 
-project(Cara VERSION 0.13.2 LANGUAGES CXX)
+project(Cara VERSION 0.14.0 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 set(CMAKE_AUTORCC ON)
+set(CMAKE_AUTOMOC ON)
+set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 find_package(Qt6 6.2 REQUIRED
     COMPONENTS Qml Quick Core Network Svg REQUIRED)
@@ -19,9 +21,13 @@ add_subdirectory(data)
 add_subdirectory(entities)
 add_subdirectory(catalogue)
 add_subdirectory(inventory)
+add_subdirectory(salesperson)
+add_subdirectory(user)
+add_subdirectory(authentication)
+add_subdirectory(utils)
 
+qt_add_resources(QML_RESOURCES qml/qml.qrc)
 qt_add_executable(Cara
-    qml/qml.qrc
     assets/res.qrc
     main.cpp
 )
@@ -44,10 +50,14 @@ target_link_libraries(Cara PRIVATE
     Entitiesplugin
     Catalogueplugin
     Inventoryplugin
+    associate_salespersonplugin
+    UserLibplugin
+    AuthenticationLibplugin
+    UtilsLibplugin
 )
 
 # Link the resources to the executable
-target_sources(Cara PRIVATE ${QT_RESOURCES})
+target_sources(Cara PRIVATE ${QML_RESOURCES})
 
 # Additional configurations
 set_target_properties(Cara PROPERTIES
