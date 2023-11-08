@@ -4,7 +4,6 @@ qt_add_qml_module(Entities
     VERSION 1.0
     SOURCES
         billentity.h billentity.cpp
-	customerentity.h customerentity.cpp
 	detailsentity.h detailsentity.cpp
 	inventory.h inventory.cpp
 	jsonexportable.h
@@ -12,7 +11,7 @@ qt_add_qml_module(Entities
 	orderstatus.h orderstatus.cpp
 	paymententity.h paymententity.cpp
 	productentity.h productentity.cpp
-	userentity.h userentity.cpp
 )
 
 include_directories(../models)
+include_directories(../user)
