@@ -13,6 +13,7 @@ using User::Entity::UserCredentail;
 Login::Login(QObject *parent)
     : QObject{parent}
     , status_{Status::UnAuthenticated}
+    , mode_{AuthenticationMode::Undefined}
     , data_{}
     , authenticator_{}
     , userStore_{}
@@ -46,9 +47,10 @@ void Login::authenticateCredentials()
     // TODO: Think whether ResetUserAuthentication should be a QML_ELEMENT
     authenticator_ = new Data::RestUserAuthentication(credentials, this);
     authenticator_->authenticate();
+    mode_ = AuthenticationMode::LoginCredentials;
 
     const auto restAuth{static_cast<Data::RestUserAuthentication *>(authenticator_)};
-    connect(restAuth, &Data::RestUserAuthentication::finished, this, [=] {
+    connect(restAuth, &Data::RestUserAuthentication::finished, this, [=, this] {
         setData(restAuth->data());
         const auto obj{QJsonDocument::fromJson(data_).object()};
         const QString codeString{obj.value("code").toString()};
@@ -85,15 +87,19 @@ void Login::authenticateRefreshToken()
     qDebug() << "Authenticationg user through LocalUserAuthentication...";
     authenticator_ = new Service::LocalUserAuthentication(this);
     authenticator_->authenticate();
+    mode_ = AuthenticationMode::RefreshToken;
 
     const auto localAuth{static_cast<Service::LocalUserAuthentication *>(authenticator_)};
     connect(localAuth, &Service::LocalUserAuthentication::finished, this, [=, this] {
         data_ = localAuth->buffer();
         qDebug() << "localAuth->isAuthenticated(): " << localAuth->isAuthenticated();
-        if (localAuth->isAuthenticated()) {
+        if (localAuth->isAuthenticated())
+        {
             emit authenticated();
             QSettings settings;
-            settings.setValue("Credentials/accessToken", DataLayer::TokenManager::instance()->accessToken());
+            const QString token{DataLayer::TokenManager::instance()->accessToken()};
+            Q_ASSERT(!token.isEmpty());
+            settings.setValue("Credentials/accessToken", token);
             qDebug() << "User authenticated successfully through LocalUserAuthentication.";
         }
 
@@ -119,6 +125,19 @@ void Login::setHasPreviousLogin(bool newHasPreviousLogin)
 
     hasPreviousLogin_ = newHasPreviousLogin;
     emit hasPreviousLoginChanged();
+}
+
+Login::AuthenticationMode Login::mode() const
+{
+    return mode_;
+}
+
+void Login::setMode(AuthenticationMode newMode)
+{
+    if (mode_ == newMode)
+        return;
+    mode_ = newMode;
+    emit modeChanged();
 }
 
 QString Login::password() const

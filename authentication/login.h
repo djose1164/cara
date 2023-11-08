@@ -19,14 +19,24 @@ class Login : public QObject
     Q_PROPERTY(bool hasPreviousLogin READ hasPreviousLogin NOTIFY hasPreviousLoginChanged FINAL)
     Q_PROPERTY(QString username READ username WRITE setUsername NOTIFY usernameChanged FINAL)
     Q_PROPERTY(QString password READ password WRITE setPassword NOTIFY passwordChanged FINAL)
+    Q_PROPERTY(AuthenticationMode mode READ mode WRITE setMode NOTIFY modeChanged FINAL)
 public:
-    enum class Status {
+    enum class Status
+    {
         Authenticated,
         UnAuthenticated,
         InvalidCredentials,
         Error
     };
     Q_ENUM(Status)
+
+    enum class AuthenticationMode
+    {
+        Undefined,
+        RefreshToken,
+        LoginCredentials
+    };
+    Q_ENUM(AuthenticationMode)
 
     explicit Login(QObject *parent = nullptr);
 
@@ -47,6 +57,9 @@ public:
     QString password() const;
     void setPassword(const QString &newPassword);
 
+    AuthenticationMode mode() const;
+    void setMode(AuthenticationMode newMode);
+
 signals:
     void authenticated();
     void errorOccurred();
@@ -63,6 +76,8 @@ signals:
 
     void passwordChanged();
 
+    void modeChanged();
+
 public slots:
     void authenticateCredentials();
     void authenticateRefreshToken();
@@ -73,6 +88,7 @@ private:
 
 private:
     Status status_;
+    AuthenticationMode mode_;
     QByteArray data_;
     Authentication *authenticator_;
     UserStore *userStore_;
