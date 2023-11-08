@@ -14,7 +14,7 @@ public:
     virtual ~UserStore();
 
 public slots:
-    virtual void save(const QByteArray &data) const = 0;
+    virtual void save(const QByteArray &data) = 0;
 };
 }
 Q_DECLARE_INTERFACE(Business::UserStore, "UserStore")
