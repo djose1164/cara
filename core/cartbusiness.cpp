@@ -6,7 +6,7 @@ namespace BusinessLayer {
 CartBusiness::CartBusiness(QObject *parent)
     : QObject{parent}
     , rest_{new Rest(this)}
-    , user_{new EntityLayer::UserEntity(this)}
+    , user_{}
     , order_{new EntityLayer::OrderEntity(this)}
     , model_{new EntityLayer::OrderModel(this)}
     , totalToPay_{}
@@ -29,7 +29,7 @@ CartBusiness::CartBusiness(QObject *parent)
     });
 }
 
-EntityLayer::UserEntity *CartBusiness::user() const
+Entity::UserEntity CartBusiness::user() const
 {
     return user_;
 }
@@ -69,7 +69,7 @@ int CartBusiness::totalToPay() const
     return sum;
 }
 
-void CartBusiness::setUser(EntityLayer::UserEntity *user)
+void CartBusiness::setUser(Entity::UserEntity user)
 {
     if (user_ != user)
     {
@@ -146,9 +146,9 @@ void CartBusiness::prepareOrder()
 {
     // TODO: For later, the payment process with credit/debit card must taken
     // into account.
-    const auto user{order_->user()};
-    user->setUserId(user_->userId());
-    user->setCustomerId(user_->customerId());
+    auto user{order_->user()};
+    user.setUserId(user_.userId());
+    user.setCustomerId(user_.customerId());
 
     order_->setDetails(model_->toJson());
 }

@@ -4,7 +4,7 @@
 #include "../models/ordermodel.h"
 #include "orderstatus.h"
 #include "paymententity.h"
-#include "userentity.h"
+#include "../user/userentity.h"
 #include <QObject>
 #include <QtQml>
 
@@ -23,9 +23,9 @@ public:
     int orderId() const;
     void setOrderId(int orderId);
     QBindable<int> bindableOrderId();
-
-    UserEntity *user() const;
-    void setUser(UserEntity *const user);
+    
+    Entity::UserEntity user() const;
+    void setUser(Entity::UserEntity user);
 
     OrderModel *details() const;
     void setDetailsModel(OrderModel *const model);
@@ -47,7 +47,7 @@ public slots:
 
 private:
     QProperty<int> orderId_;
-    UserEntity * user_;
+    Entity::UserEntity user_;
     OrderModel *details_;
     PaymentEntity * payment_;
     OrderStatus *orderStatus_;

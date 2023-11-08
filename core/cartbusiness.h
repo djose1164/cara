@@ -17,15 +17,15 @@ class CartBusiness : public QObject
     QML_ELEMENT
     QML_SINGLETON
 
-    Q_PROPERTY(EntityLayer::UserEntity *user READ user WRITE setUser NOTIFY userChanged)
+    Q_PROPERTY(Entity::UserEntity user READ user WRITE setUser NOTIFY userChanged)
     Q_PROPERTY(EntityLayer::OrderEntity *order READ order WRITE setOrder NOTIFY orderChanged)
     Q_PROPERTY(ModelLayer::OrderModel *model READ model WRITE setModel NOTIFY modelChanged)
     Q_PROPERTY(int totalToPay READ totalToPay NOTIFY totalToPayChanged)
 
 public:
     explicit CartBusiness(QObject *parent = nullptr);
-
-    EntityLayer::UserEntity *user() const;
+    
+    Entity::UserEntity user() const;
     EntityLayer::OrderEntity *order() const;
 
     ModelLayer::OrderModel *model() const;
@@ -34,7 +34,7 @@ public:
     Q_INVOKABLE int totalToPay() const;
 
 public slots:
-    void setUser(EntityLayer::UserEntity *user);
+    void setUser(Entity::UserEntity user);
     void setOrder(EntityLayer::OrderEntity *const order);
     void setModel(ModelLayer::OrderModel *const model);
 
@@ -60,8 +60,8 @@ private:
     void prepareOrder();
 
     Rest *rest_;
-
-    EntityLayer::UserEntity *user_;
+    
+    Entity::UserEntity user_;
     EntityLayer::OrderEntity *order_;
     ModelLayer::OrderModel *model_;
 

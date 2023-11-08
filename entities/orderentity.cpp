@@ -3,13 +3,13 @@
 namespace EntityLayer {
 OrderEntity::OrderEntity(QObject *parent)
     : QObject{parent}
-    , user_{new UserEntity(this)}
+    , user_{}
     , details_{}
     , payment_{new PaymentEntity(this)}
 {
 }
 
-UserEntity *OrderEntity::user() const
+Entity::UserEntity &OrderEntity::user()
 {
     return user_;
 }
@@ -29,7 +29,7 @@ QByteArray OrderEntity::details() const
     return details_.value();
 }
 
-void OrderEntity::setUser(UserEntity * const user)
+void OrderEntity::setUser(Entity::UserEntity user)
 {
     if (user_ != user)
     {
@@ -41,8 +41,8 @@ void OrderEntity::setUser(UserEntity * const user)
 QByteArray OrderEntity::toJson() const
 {
     QJsonObject object{};
-    object["user_id"] = user_->userId();
-    object["customer_id"] = user_->customerId();
+    object["user_id"] = user_.userId();
+    object["customer_id"] = user_.customerId();
 
     const auto detailsDoc{QJsonDocument::fromJson(details_)};
     QJsonArray arr{};
