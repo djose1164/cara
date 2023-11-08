@@ -1,6 +1,12 @@
 #include "constants.h"
 
 namespace DataLayer {
+QUrl Constants::getBase()
+{
+    QSettings settings;
+    return settings.value("base").toUrl();
+}
+
 Constants::Constants()
 #ifdef Q_OS_ANDROID
     : testingBase_{"http://10.0.2.2:5000"}
@@ -16,6 +22,8 @@ Constants::Constants()
 #else
     base_ = remoteBase_ + "/api";
 #endif
+    QSettings settings;
+    settings.setValue("base", base_);
 }
 
 void Constants::setBase(const QString &base)

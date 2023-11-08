@@ -16,6 +16,8 @@ class Constants : public QObject
     Q_PROPERTY(int appHeight READ appHeight CONSTANT)
 
 public:
+    static QUrl getBase();
+
     Constants();
 
     void setBase(const QString &base);
