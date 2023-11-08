@@ -106,12 +106,12 @@ void Inventory::setProduct(Product *newProduct)
     emit productChanged();
 }
 
-UserEntity *Inventory::admin() const
+Entity::UserEntity *Inventory::admin() const
 {
     return admin_;
 }
 
-void Inventory::setAdmin(UserEntity *newAdmin)
+void Inventory::setAdmin(Entity::UserEntity *newAdmin)
 {
     if (admin_ == newAdmin)
         return;

@@ -43,9 +43,9 @@ public:
     
     Product *product() const;
     void setProduct(Product *newProduct);
-
-    UserEntity *admin() const;
-    void setAdmin(UserEntity *newAdmin);
+    
+    Entity::UserEntity *admin() const;
+    void setAdmin(Entity::UserEntity *newAdmin);
 
 signals:
     void inventoryIdChanged();
@@ -73,7 +73,7 @@ private:
     unsigned warehouseId_;
     
     Product *product_;
-    UserEntity *admin_;
+    Entity::UserEntity *admin_;
 };
 }
 
