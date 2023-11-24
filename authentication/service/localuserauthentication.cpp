@@ -1,4 +1,5 @@
 #include "localuserauthentication.h"
+#include "localuserstore.h"
 #include <QSettings>
 #include <QNetworkReply>
 
@@ -21,7 +22,7 @@ void LocalUserAuthentication::authenticate()
     QNetworkRequest request{QUrl(base)};
     request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
 
-    const QString token{settings.value("Credentials/refreshToken").toString()};
+    const QString token{Business::LocalUserStore().user().refreshToken()};
     request.setRawHeader("Authorization", token.toUtf8());
 
     reply_ = manager_->get(request);
