@@ -2,11 +2,20 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 import catalogue
+import User
 import "qrc:/orders" as Order
 import "qrc:/singleton"
 
 Home {
     id: root
+
+    Component.onCompleted: {
+        if (userStore.user.userType !== UserEntity.Admin) {
+            for (let i = 0; i < model.count; ++i)
+                if (model.get(i).name === "Vendedor Asociado")
+                    model.remove(i);
+        }
+    }
 
     GridView {
         id: grid
@@ -63,7 +72,7 @@ Home {
                     sourceSize: "50x50"
                 }
 
-                TapHandler { onTapped: appStack.push(path) }
+                TapHandler { onTapped: homeStack.push(path) }
 
                 HoverHandler { id: control }
             }
@@ -74,6 +83,10 @@ Home {
                 wrapMode: Label.Wrap
             }
         }
+    }
+
+    LocalUserStore {
+        id: userStore
     }
 
     ListModel {
@@ -113,6 +126,12 @@ Home {
             source: "qrc:/qt/qml/catalogue/catalogue.svg"
             path: "qrc:/qt/qml/catalogue/Catalogue.qml"
             name: "Catalogo"
+        }
+
+        ListElement {
+            source: "qrc:/qt/qml/Salesperson/salesperson.svg"
+            path: "qrc:/qt/qml/Salesperson/AssociateSalesperson.qml"
+            name: "Vendedor Asociado"
         }
     }
 }
