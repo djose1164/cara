@@ -85,6 +85,7 @@ public slots:
 private:
     void save();
     void setHasPreviousLogin(bool newHasPreviousLogin);
+    void restoreUser() const;
 
 private:
     Status status_;

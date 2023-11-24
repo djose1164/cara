@@ -1,8 +1,9 @@
 #include "login.h"
 #include "entity/usercredentail.h"
 #include "data/restuserauthentication.h"
-#include "service/localuserauthentication.h"
 #include "../data/tokenmanager.h"
+#include "localuserstore.h"
+#include "service/localuserauthentication.h"
 #include <QJsonObject>
 #include <QJsonDocument>
 #include <QSettings>
@@ -17,20 +18,12 @@ Login::Login(QObject *parent)
     , data_{}
     , authenticator_{}
     , userStore_{}
+    , refreshToken_{}
 {
-    QSettings settings;
-    refreshToken_ = settings.value("Credentials/refreshToken").toString();
+    const auto user{LocalUserStore().user()};
 
-    setHasPreviousLogin(!refreshToken_.isEmpty());
-
-    connect(this, &Login::authenticated, this, [&] {
-        const auto obj{QJsonDocument::fromJson(data_).object()};
-        const QString token{"Bearer " + obj["access_token"].toString()};
-
-        qDebug() << "Setting access token...";
-        Q_ASSERT(!token.isEmpty());
-        DataLayer::TokenManager::instance()->setAccessToken(token);
-    });
+    refreshToken_ = user.refreshToken();
+    setHasPreviousLogin(!user.refreshToken().isEmpty());
 }
 
 void Login::authenticateCredentials()
@@ -47,7 +40,7 @@ void Login::authenticateCredentials()
     // TODO: Think whether ResetUserAuthentication should be a QML_ELEMENT
     authenticator_ = new Data::RestUserAuthentication(credentials, this);
     authenticator_->authenticate();
-    mode_ = AuthenticationMode::LoginCredentials;
+    setMode(AuthenticationMode::LoginCredentials);
 
     const auto restAuth{static_cast<Data::RestUserAuthentication *>(authenticator_)};
     connect(restAuth, &Data::RestUserAuthentication::finished, this, [=, this] {
@@ -87,7 +80,7 @@ void Login::authenticateRefreshToken()
     qDebug() << "Authenticationg user through LocalUserAuthentication...";
     authenticator_ = new Service::LocalUserAuthentication(this);
     authenticator_->authenticate();
-    mode_ = AuthenticationMode::RefreshToken;
+    setMode(AuthenticationMode::RefreshToken);
 
     const auto localAuth{static_cast<Service::LocalUserAuthentication *>(authenticator_)};
     connect(localAuth, &Service::LocalUserAuthentication::finished, this, [=, this] {
@@ -95,13 +88,14 @@ void Login::authenticateRefreshToken()
         qDebug() << "localAuth->isAuthenticated(): " << localAuth->isAuthenticated();
         if (localAuth->isAuthenticated())
         {
-            emit authenticated();
-            QSettings settings;
-            const QString token{DataLayer::TokenManager::instance()->accessToken()};
-            Q_ASSERT(!token.isEmpty());
-            settings.setValue("Credentials/accessToken", token);
+            restoreUser();
+            const auto resp{QJsonDocument::fromJson(data_).object()};
+            DataLayer::TokenManager::instance()->setAccessToken("Bearer " + resp["access_token"].toString());
             qDebug() << "User authenticated successfully through LocalUserAuthentication.";
+            emit authenticated();
         }
+        else
+            emit errorOccurred();
 
         localAuth->deleteLater();
     });
@@ -125,6 +119,14 @@ void Login::setHasPreviousLogin(bool newHasPreviousLogin)
 
     hasPreviousLogin_ = newHasPreviousLogin;
     emit hasPreviousLoginChanged();
+}
+
+void Login::restoreUser() const
+{
+    if (userStore_)
+        userStore_->restore();
+    else
+        qDebug() << "Login::restoreUser: userStore is not set, the user cannot be restored.";
 }
 
 Login::AuthenticationMode Login::mode() const
