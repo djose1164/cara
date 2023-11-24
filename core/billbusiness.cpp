@@ -43,7 +43,6 @@ void BillBusiness::fetchBillsByCustomerId(int customerId)
 
     connect(repository, &DataLayer::BillRepository::billsFetched, this, [&](const QByteArray &data) {
         const auto resp{QJsonDocument::fromJson(data).object()};
-        qDebug() << resp << "\n";
         const auto orders{resp["orders"].toArray()};
 
         if (orders.isEmpty())
