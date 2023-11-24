@@ -1,9 +1,10 @@
-import QtQuick
+﻿import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 import QtQuick.Dialogs
-import core 1.0
-import entities
+import User
+import core
+import Authentication
 import "qrc:/main"
 import "qrc:/singleton"
 
@@ -73,8 +74,8 @@ Item {
             font.pointSize: 12
             Layout.alignment: Qt.AlignCenter
             font.capitalization: Font.MixedCase
-//            Material.background: Material.Blue
-//            Material.foreground: "white"
+            Material.background: Material.Blue
+            Material.foreground: "white"
         }
 
         Label {
@@ -96,33 +97,13 @@ Item {
 
     MessageDialog {
         id: popup
-        text: switch (LoginManager.status) {
-            case LoginManager.InvalidCredentials:
-                return "Contraseña incorrecta.";
-            case LoginManager.NotRegistered:
-                return "Cuenta no registrada.";
+        text: switch (login.status) {
+            case Auth.Login.InvalidCredentials:
+                return "Usuario o contraseña incorrecta.";
             default:
-                return LoginManager.status;
+                return "Ha ocurrido un error. Favor de intentar mas tarder";
         }
         onButtonClicked: close()
-    }
-
-    Connections {
-        target: LoginManager
-
-        function onLoggedIn(resp) {
-            CurrentUser.fillUserInfo(resp);
-            TheCurrentUser.init(resp);
-            TheCurrentUser.isLoggedIn = true;
-
-            appStack.pop();
-        }
-
-        function onAuthenticationDone() {
-            busyIndicator.close();
-            if (LoginManager.status !== LoginManager.LoggedIn)
-                popup.open();
-        }
     }
 
     BusyPopup { id: busyIndicator }
@@ -135,15 +116,23 @@ Item {
         }
     }
 
-    UserEntity {
-        id: user
+    Login {
+        id: login
         username: usernameInput.text
         password: passwordInput.text
+        userStore: LocalUserStore {}
+        onAuthenticated: {
+            LoginManager.authenticated();
+            appStack.pop();
+        }
+        onErrorOccurred: {
+            busyIndicator.close();
+            popup.open();
+        }
     }
 
     function requestAuthentication() {
         busyIndicator.open();
-        if (areInputsValid)
-            LoginManager.requestLogin(user.username, user.password);
+        login.authenticateCredentials();
     }
 }
