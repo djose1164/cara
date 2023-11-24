@@ -1,4 +1,5 @@
 #include "billentity.h"
+#include "userentity.h"
 
 namespace EntityLayer {
 using ModelLayer::OrderModel;
