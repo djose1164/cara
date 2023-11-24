@@ -22,7 +22,7 @@ public slots:
     void refresh() override;
 
 signals:
-    void accessTokenRefreshed(const QByteArray &data);
+    void accessTokenRefreshed(const QString &token);
     void errorOccurred(const QByteArray &data);
 
     void refreshTokenChanged();
