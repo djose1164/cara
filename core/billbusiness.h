@@ -4,6 +4,7 @@
 #include "billmodel.h"
 #include "ibillrepository.h"
 #include "rest.h"
+#include "userentity.h"
 #include <QObject>
 #include <QtQml>
 
