@@ -1,12 +1,14 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
+import User
 import core
-import "qrc:/users"
 import "qrc:/customers"
 
 Item {
     id: root
+
+    required property int userType
     property int orderId
     property int customerId
     property string name
@@ -29,7 +31,9 @@ Item {
 
     StackLayout {
         anchors.fill: parent
-        currentIndex: CurrentUser.isAdmin ? 0 : 1
+        currentIndex: userType === UserEntity.Admin
+                      || userType === UserEntity.Salesperson
+                      ? 0 : 1
 
         AdminBillDelegate {
             id: adminDelegate
