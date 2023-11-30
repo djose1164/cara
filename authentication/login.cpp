@@ -1,11 +1,11 @@
 #include "login.h"
-#include "entity/usercredentail.h"
-#include "data/restuserauthentication.h"
 #include "../data/tokenmanager.h"
+#include "data/restuserauthentication.h"
+#include "entity/usercredentail.h"
 #include "localuserstore.h"
 #include "service/localuserauthentication.h"
-#include <QJsonObject>
 #include <QJsonDocument>
+#include <QJsonObject>
 #include <QSettings>
 
 namespace Business {
