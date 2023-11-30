@@ -9,6 +9,8 @@ import "qrc:/singleton"
 Home {
     id: root
 
+    readonly property LocalUserStore userStore: LocalUserStore {}
+
     Component.onCompleted: {
         if (userStore.user.userType !== UserEntity.Admin) {
             for (let i = 0; i < model.count; ++i)
@@ -34,6 +36,8 @@ Home {
             required property string source
             required property string path
             required property string name
+            required property bool showCustomers
+
             width: grid.cellWidth - 15
             height: grid.cellHeight - 10
 
@@ -72,7 +76,10 @@ Home {
                     sourceSize: "50x50"
                 }
 
-                TapHandler { onTapped: homeStack.push(path) }
+                TapHandler {
+                    onTapped: showCustomers ? homeStack.push(path, {salespersonId: userStore.user.salespersonId})
+                                                     : homeStack.push(path)
+                }
 
                 HoverHandler { id: control }
             }
@@ -96,42 +103,49 @@ Home {
             source: "qrc:/icons/complete_order.svg"
             path: "qrc:/orders/BuyOrder.qml"
             name: "Ordenes de Compra"
+            showCustomers: false
         }
 
         ListElement {
             source: "qrc:/icons/customers.svg"
             path: "qrc:/customers/Customers.qml"
             name: "Clientes"
+            showCustomers: true
         }
 
         ListElement {
             source: "qrc:/icons/inventory.svg"
             path: "qrc:/inventory/Inventory.qml"
             name: "Inventario"
+            showCustomers: true
         }
 
         ListElement {
             source: "qrc:/icons/supplier.svg"
             path: "qrc:/provider/Providers.qml"
             name: "Proveedores"
+            showCustomers: false
         }
 
         ListElement {
             source: "qrc:/icons/statistics.svg"
             path: "qrc:/statistics/Statistics.qml"
             name: "Estadisticas"
+            showCustomers: true
         }
 
         ListElement {
             source: "qrc:/qt/qml/catalogue/catalogue.svg"
             path: "qrc:/qt/qml/catalogue/Catalogue.qml"
             name: "Catalogo"
+            showCustomers: false
         }
 
         ListElement {
             source: "qrc:/qt/qml/Salesperson/salesperson.svg"
             path: "qrc:/qt/qml/Salesperson/AssociateSalesperson.qml"
             name: "Vendedor Asociado"
+            showCustomers: false
         }
     }
 }
