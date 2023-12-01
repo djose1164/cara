@@ -1,5 +1,6 @@
 import QtQuick
 import QtQuick.Controls
+import User
 import "qrc:/search"
 import "qrc:/customers"
 
@@ -33,10 +34,11 @@ Page {
             required property int customer_id
 
             customerId: customer_id
-
-            Component.onCompleted: print(name+" "+customerId)
+            userType: userStore.user.userType
         }
     }
+
+    LocalUserStore { id: userStore }
 
     ListModel { id: resultModel }
 
