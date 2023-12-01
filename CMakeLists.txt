@@ -50,7 +50,7 @@ target_link_libraries(Cara PRIVATE
     Entitiesplugin
     Catalogueplugin
     Inventoryplugin
-    associate_salespersonplugin
+    salespersonplugin
     UserLibplugin
     AuthenticationLibplugin
     UtilsLibplugin
