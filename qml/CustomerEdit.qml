@@ -9,8 +9,8 @@ Drawer {
     id: root
 
     readonly property var customer: {
-        "forename": forename.text,
-        "surname": surname.text,
+        "forename": personalInfoForm.forename,
+        "surname": personalInfoForm.surname,
         "contact": contactForm.contact,
     };
 
@@ -67,27 +67,19 @@ Drawer {
         ColumnLayout {
             anchors.fill: parent
             anchors.rightMargin: 15
-            GroupBox {
-                title: "Informacion Personal"
-                Layout.fillWidth: true
-                RowLayout {
-                    anchors.fill: parent
-                    TextField {
-                        id: forename
-                        placeholderText: "Nombre"
-                        Layout.fillWidth: true
-                    }
 
-                    TextField {
-                        id: surname
-                        placeholderText: "Apellido"
-                        Layout.fillWidth: true
-                    }
-                }
+            PersonalInformationForm {
+                id: personalInfoForm
             }
 
             ContactForm {
                 id: contactForm
+                Layout.fillWidth: true
+                Layout.columnSpan: 2
+            }
+
+            AddressForm {
+                id: addresForm
                 Layout.fillWidth: true
                 Layout.columnSpan: 2
             }
@@ -132,10 +124,12 @@ Drawer {
             dialog.open();
         }
         onCustomerFetched: function(customer) {
-            forename.text = customer.forename;
-            surname.text = customer.surname;
+            personalInfoForm.forename = customer.forename;
+            personalInfoForm.surname = customer.surname;
             if (customer.contact)
                 contactForm.fillFields(customer.contact);
+            if (customer.contact.address)
+                addressForm.fillFields(contact.address);
         }
     }
 }
