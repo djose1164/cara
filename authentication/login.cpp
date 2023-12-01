@@ -47,7 +47,7 @@ void Login::authenticateCredentials()
         setData(restAuth->data());
         const auto obj{QJsonDocument::fromJson(data_).object()};
         const QString codeString{obj.value("code").toString()};
-        qDebug() << "Login::authenticateCredentials: codeString: " << codeString;
+
         if (codeString == "success")
         {
             save();
