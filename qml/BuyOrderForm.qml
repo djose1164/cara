@@ -1,7 +1,8 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
-import core
+import User
+import Salesperson
 import "qrc:/provider"
 import "qrc:/payment"
 import "qrc:/utils"
@@ -10,16 +11,19 @@ import "qrc:/product"
 Drawer {
     id: root
 
+    readonly property var user: UserSession.user
+    readonly property var salesperson: UserSession.salesperson
     readonly property var buyOrder: {
         "date": dateField.text,
-        "admin_id": CurrentUser.user.userId,
         "description": descriptionArea.text,
         "provider_id": providerComboBox.currentValue,
         "payment": {
             "amount_to_pay": entry.totalToPay,
             "paid_amount": !paymentStatus.isCredit ? entry.totalToPay : 0
         },
+        "total_amount": totalAmount
     }
+    property int totalAmount
 
     signal accepted
 
@@ -61,6 +65,7 @@ Drawer {
 
             ProviderComboBox {
                 id: providerComboBox
+                visible: user.userType === UserEntity.Salesperson
                 Layout.fillWidth: true
             }
 
@@ -103,16 +108,15 @@ Drawer {
                 valueRoleType: ProductComboBox.BuyPrice
                 Layout.fillWidth: true
                 Layout.preferredHeight: 200
-                onEntryUpdated: { // TODO: Check why property binding doesn't work
-                    totalLabel.total = entry.calculateTotal();
+                onEntryUpdated: {
+                    totalAmount = entry.calculateTotal();
                     buyOrder.order_details = productEntries.entryValues();
                 }
             }
 
             Label {
-                id: totalLabel
                 property int total
-                text: "Total: RD$" + total
+                text: "Total: RD$" + totalAmount
                 font.pointSize: 14
             }
 
