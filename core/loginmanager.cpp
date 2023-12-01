@@ -56,7 +56,6 @@ void LoginManager::authenticated()
 {
     setStatus(Status::LoggedIn);
     emit loggedIn();
-    emit authenticationDone();
 }
 
 Session *LoginManager::session() const
