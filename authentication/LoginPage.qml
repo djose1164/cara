@@ -98,7 +98,7 @@ Item {
     MessageDialog {
         id: popup
         text: switch (login.status) {
-            case Auth.Login.InvalidCredentials:
+            case Login.InvalidCredentials:
                 return "Usuario o contraseña incorrecta.";
             default:
                 return "Ha ocurrido un error. Favor de intentar mas tarder";
@@ -122,8 +122,8 @@ Item {
         password: passwordInput.text
         userStore: LocalUserStore {}
         onAuthenticated: {
-            LoginManager.authenticated();
             appStack.pop();
+            LoginManager.authenticated();
         }
         onErrorOccurred: {
             busyIndicator.close();
