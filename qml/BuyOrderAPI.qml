@@ -1,26 +1,28 @@
 import QtQuick
-import core
 import "qrc:/utils"
 import "qrc:/singleton"
 
 CaraApi {
     id: api
-    endpoint: "/orders/buy"
 
-    signal buyOrderCreated(buyOrder: var)
+    required property int salespersonId
+
+    signal buyOrderCreated(resp: var)
     signal buyOrdersFetched(buyOrders: var)
+
+    endpoint: "/salespersons/" + salespersonId
 
     function createBuyOrder(buyOrder) {
         succeeded.connect(function(resp) {
-            buyOrderCreated(resp.buy_order);
+            buyOrderCreated(resp);
         });
-        post("/", buyOrder);
+        post("/buy_orders", buyOrder);
     }
 
-    function fetchBuyOrders() {
+    function fetchBuyOrders(): void {
         succeeded.connect(function(resp) {
-            buyOrdersFetched(resp.orders);
+            buyOrdersFetched(resp.buy_orders);
         });
-        get("/"+CurrentUser.user.userId);
+        get("/buy_orders");
     }
 }
