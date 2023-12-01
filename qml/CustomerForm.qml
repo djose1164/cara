@@ -2,7 +2,7 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 import QtQuick.Dialogs
-import core
+import User
 import "qrc:/utils"
 import "qrc:/customers"
 import "qrc:/singleton"
@@ -13,6 +13,7 @@ Page {
 
     property string imgURL: "qrc:/icons/done.svg"
     readonly property StackView stackView_: StackView.view
+    readonly property LocalUserStore userStore: LocalUserStore {}
 
     signal clientAdded
 
@@ -29,7 +30,7 @@ Page {
             width: root.width*.9
             anchors.centerIn: parent
 
-            NameForm {
+            PersonalInformationForm {
                 id: nameForm
             }
 
@@ -37,6 +38,11 @@ Page {
                 id: contactForm
                 Layout.fillWidth: true
                 Layout.columnSpan: 2
+            }
+
+            AddressForm {
+                id: addressForm
+                Layout.fillWidth: true
             }
 
             Button {
@@ -47,8 +53,6 @@ Page {
             }
         }
     }
-
-    CustomerModel { id: customerModel }
 
     BusyPopup { id: busyIndicator }
 
@@ -76,11 +80,15 @@ Page {
         busyIndicator.open();
 
         contactForm.removeEmptyFields();
-        const client = {
+        const contact = {
+            address: addressForm.address,
             "forename": nameForm.forename,
             "surname": nameForm.surname,
-            "contact": contactForm.contact,
-            "admin_id": CurrentUser.user.userId
+        };
+        Object.assign(contact, contactForm.contact);
+        const client = {
+            "contact": contact,
+            "salesperson_id": userStore.user.salespersonId
         };
 
         clientRequest.create(client);
