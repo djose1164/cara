@@ -9,7 +9,6 @@ ColumnLayout {
     readonly property var contact: {
         "telephone": phoneNumber.text,
         "email": email.text,
-        "address": addressForm.address,
     }
 
     GroupBox {
@@ -37,11 +36,6 @@ ColumnLayout {
         }
     }
 
-    AddressForm {
-        id: addressForm
-        Layout.fillWidth: true
-    }
-
     function removeEmptyFields() {
         if (contact.email === "")
             delete contactForm.contact.email;
@@ -52,8 +46,5 @@ ColumnLayout {
     function fillFields(contact: var) {
         phoneNumber.text = contact.telephone;
         email.text = contact.email;
-
-        if (contact.address)
-            addressForm.fillFields(contact.address);
     }
 }
