@@ -1,10 +1,14 @@
 import QtQuick
 import QtQuick.Controls
+import Salesperson
+import User
 import "qrc:/utils"
 import "qrc:/singleton"
 
 Page {
     id: root
+
+    required property int salespersonId
 
     readonly property int fontSize: 12
     readonly property StackView stackView: StackView.view
@@ -14,11 +18,12 @@ Page {
         title: root.title
         onBackClicked: stackView.pop()
     }
+    Component.onCompleted: spService.fetchCustomers()
 
     ListView {
         id: listView
         anchors.fill: parent
-        model: CustomerManager.model
+        model: listModel
         delegate: ItemDelegate {
             id: control
 
@@ -35,6 +40,8 @@ Page {
             font.pointSize: 14
         }
     }
+
+    ListModel { id: listModel }
 
     Label {
         width: listView.width * .9
@@ -60,9 +67,10 @@ Page {
         icon.height: 30
     }
 
-    CustomerAPI {
-        id: customerApi
-        onCustomersFetched: customers => listView.model.append(customers);
+    AssociateSalespersonService {
+        id: spService
+        salespersonId: root.salespersonId
+        onFetched: listModel.append(JSON.parse(data).customers)
     }
 
     CustomerEdit {
