@@ -3,12 +3,9 @@ import QtQuick
 
 QtObject {
     readonly property ListModel model: ListModel {}
+    readonly property bool isEmpty: model.count === 0
 
     signal updateModel
-
-    function modelIsEmpty() {
-        return model.count === 0;
-    }
 
     function addCustomer(customer) {
         model.append(customer);
