@@ -2,8 +2,8 @@ import QtQuick
 import QtQuick.Controls
 import "qrc:/utils"
 import "qrc:/singleton"
-import core 1.0
 
+@Deprecated { reason: "Use AssociateSalespersonService or SalespersonController." }
 QtObject {
     id: root
 
@@ -12,13 +12,14 @@ QtObject {
     signal customerFetched(customer: var)
     signal customersFetched(customers: var)
 
-    readonly property int adminId: CurrentUser.user.userId
+    property int salespersonId
+
     property CaraApi rest: CaraApi{
         endpoint: "/customers"
     }
 
     function fetchCustomers() {
-        rest.get(`/info/?admin_id=${adminId}`);
+        rest.get(`/info/?salesperson_id=${salespersonId}`);
         rest.succeeded.connect(resp => customersFetched(resp.customers));
     }
 
