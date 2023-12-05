@@ -5,6 +5,7 @@ import QtQuick.Layouts
 import QtQuick.Dialogs
 import core as Core
 import catalogue as Catalogue
+import User
 import "qrc:/utils"
 import "qrc:/main"
 import "qrc:/singleton"
@@ -14,6 +15,7 @@ Page {
     id: root
 
     readonly property var myStack: StackView.view
+    readonly property var user: UserSession.user
     property int productId
     property int categoryId
     property int sellPrice
@@ -185,7 +187,7 @@ Page {
     }
 
     function openProductInInventory() {
-        const adminId = Core.CurrentUser.user.userId;
+        const adminId = user.userId;
         inventoryAPI.fetchByAdminIdAndProductId(adminId, productId);
     }
 }
