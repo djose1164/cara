@@ -37,6 +37,7 @@ Home {
             required property string path
             required property string name
             required property bool showCustomers
+            required property bool admin
 
             width: grid.cellWidth - 15
             height: grid.cellHeight - 10
@@ -78,7 +79,8 @@ Home {
 
                 TapHandler {
                     onTapped: showCustomers ? homeStack.push(path, {salespersonId: userStore.user.salespersonId})
-                                                     : homeStack.push(path)
+                                                     : admin ? homeStack.push(path, {adminId: userStore.user.userId})
+                                                            : homeStack.push(path)
                 }
 
                 HoverHandler { id: control }
@@ -104,6 +106,7 @@ Home {
             path: "qrc:/orders/BuyOrder.qml"
             name: "Ordenes de Compra"
             showCustomers: false
+            admin: false
         }
 
         ListElement {
@@ -111,6 +114,7 @@ Home {
             path: "qrc:/customers/Customers.qml"
             name: "Clientes"
             showCustomers: true
+            admin: false
         }
 
         ListElement {
@@ -118,6 +122,7 @@ Home {
             path: "qrc:/inventory/Inventory.qml"
             name: "Inventario"
             showCustomers: true
+            admin: false
         }
 
         ListElement {
@@ -125,6 +130,7 @@ Home {
             path: "qrc:/provider/Providers.qml"
             name: "Proveedores"
             showCustomers: false
+            admin: false
         }
 
         ListElement {
@@ -132,6 +138,7 @@ Home {
             path: "qrc:/statistics/Statistics.qml"
             name: "Estadisticas"
             showCustomers: true
+            admin: false
         }
 
         ListElement {
@@ -139,12 +146,14 @@ Home {
             path: "qrc:/qt/qml/catalogue/Catalogue.qml"
             name: "Catalogo"
             showCustomers: false
+            admin: false
         }
 
         ListElement {
             source: "qrc:/qt/qml/Salesperson/salesperson.svg"
             path: "qrc:/qt/qml/Salesperson/AssociateSalesperson.qml"
             name: "Vendedor Asociado"
+            admin: true
             showCustomers: false
         }
     }
