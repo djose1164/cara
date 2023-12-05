@@ -1,15 +1,8 @@
 import QtQuick
-import QtQuick.Controls
-import QtQuick.Layouts
-import "qrc:/singleton"
-import core
+import User
 
 Home {
     id: root
-
-    readonly property string fullName: TheCurrentUser.isUser ?
-                                           ` ${TheCurrentUser.forename} ${TheCurrentUser.surname}`
-                                         : ""
 
     Column {
         id: column
@@ -18,7 +11,7 @@ Home {
         Welcome {
             id: welcome
             width: root.width
-            fullName: root.fullName
+            fullName: userStore.user.forename ?? "Invitado"
         }
 
         Offers {
@@ -27,5 +20,9 @@ Home {
             height: root.height - welcome.height - 40
             stackView: root.stackView
         }
+    }
+
+    LocalUserStore {
+        id: userStore
     }
 }
