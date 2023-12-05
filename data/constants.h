@@ -32,7 +32,8 @@ signals:
 
 private:
     const QString testingBase_;
-    const QString remoteBase_;
+    const QString remoteTesting_;
+    const QString production_;
     QString base_;
 
     int appWidth_;
