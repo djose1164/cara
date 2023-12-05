@@ -2,14 +2,15 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 import QtQuick.Dialogs
-import AssociateSalesperson
+import Salesperson
+import User
 import "qrc:/utils"
 import "qrc:/customers"
-import "qrc:/users"
 
 Page {
     id: root
 
+    required property int adminId
     readonly property StackView stackView: StackView.view
 
     header: TitleHeader {
@@ -52,6 +53,7 @@ Page {
     AssociateSalespersonService {
         id: service
         onAdded: {
+            SalespersonManager.add(JSON.parse(data).salesperson)
             message.text = "¡Exito al agregar al vendedor!";
             message.informativeText = "";
             message.open();
@@ -78,6 +80,7 @@ Page {
             email: credentialsForm.email,
             forename: nameForm.forename,
             surname: nameForm.surname,
+            adminId
         }
 
         service.addAssociateSalesperson(payload);
