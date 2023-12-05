@@ -66,14 +66,7 @@ set_target_properties(Cara PROPERTIES
 )
 
 
-include(FetchContent)
-
+include(android_openssl/android_openssl.cmake)
 if (ANDROID)
-    FetchContent_Declare(
-      android_openssl
-      DOWNLOAD_EXTRACT_TIMESTAMP true
-      URL      https://github.com/KDAB/android_openssl/archive/refs/heads/master.zip
-    )
-    FetchContent_MakeAvailable(android_openssl)
-    include(${android_openssl_SOURCE_DIR}/android_openssl.cmake)
+    add_android_openssl_libraries(Cara)
 endif()
