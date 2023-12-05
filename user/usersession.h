@@ -3,6 +3,7 @@
 
 #include "session.h"
 #include "userentity.h"
+#include "../salesperson/salesperson.h"
 #include <QObject>
 #include <QQmlEngine>
 
@@ -15,6 +16,7 @@ class UserSession : public QObject, public Session
 
     Q_PROPERTY(Entity::UserEntity user READ user WRITE setUser NOTIFY userChanged FINAL)
     Q_PROPERTY(Session *session READ session CONSTANT FINAL)
+    Q_PROPERTY(Entity::Salesperson salesperson READ salesperson WRITE setSalesperson NOTIFY salespersonChanged FINAL)
 public:
     explicit UserSession(QObject *parent = nullptr);
 
@@ -22,6 +24,9 @@ public:
     void setUser(const Entity::UserEntity &newUser);
 
     Session *session();
+
+    Entity::Salesperson salesperson() const;
+    void setSalesperson(const Entity::Salesperson &newSalesperson);
 
 public slots:
     void buildUser(const QByteArray &data);
@@ -31,8 +36,11 @@ public slots:
 signals:
     void userChanged();
 
+    void salespersonChanged();
+
 private:
     Entity::UserEntity user_;
+    Entity::Salesperson salesperson_;
 };
 
 #endif // USERSESSION_H
