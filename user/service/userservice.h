@@ -1,7 +1,7 @@
 #ifndef USERSERVICE_H
 #define USERSERVICE_H
 
-namespace Entity { class User; }
+namespace Entity { class UserEntity; }
 namespace Service {
 class UserService
 {
@@ -9,8 +9,8 @@ public:
     ~UserService();
 
     virtual void clear() = 0;
-
-    virtual const Entity::User *currentUser() const = 0;
+    
+    virtual const Entity::UserEntity currentUser() const = 0;
 };
 }
 
