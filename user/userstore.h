@@ -1,6 +1,7 @@
 #ifndef USERSTORE_H
 #define USERSTORE_H
 
+#include "userentity.h"
 #include <QQmlEngine>
 
 namespace Business {
@@ -15,6 +16,8 @@ public:
 
 public slots:
     virtual void save(const QByteArray &data) = 0;
+
+    virtual std::optional<Entity::UserEntity> restore() = 0;
 };
 }
 Q_DECLARE_INTERFACE(Business::UserStore, "UserStore")
