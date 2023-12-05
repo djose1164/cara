@@ -27,7 +27,6 @@ Page {
             return 0;
     }
     readonly property int total: amountField.text ? addProductView.totalToPay - amount : addProductView.totalToPay
-    readonly property var user: UserSession.user
 
     header: AddOrderHeader {}
     states: [
@@ -163,7 +162,7 @@ Page {
         root.state = "";
         const fullOrder = {
             customer_id: clientField.currentValue,
-            salesperson_id: user.salespersonId,
+            salesperson_id: salesperson.salespersonId,
             details: addProductView.entryFormData(),
             payment: {
                 amount_to_pay: addProductView.totalToPay,
