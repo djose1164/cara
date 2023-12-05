@@ -1,6 +1,7 @@
 #ifndef USERSERVICEIMPL_H
 #define USERSERVICEIMPL_H
 
+#include "userentity.h"
 #include "userservice.h"
 #include <QObject>
 
@@ -12,14 +13,14 @@ public:
     explicit UserServiceImpl(QObject *parent = nullptr);
 
     void clear() override;
-
-    const Entity::User *currentUser() const override;
+    
+    const Entity::UserEntity currentUser() const override;
 
 signals:
     void cleared();
 
 private:
-    Entity::User *user_;
+    Entity::UserEntity user_;
 };
 }
 
