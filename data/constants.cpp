@@ -13,14 +13,15 @@ Constants::Constants()
 #else
     : testingBase_{"http://127.0.0.1:5000"}
 #endif
-    , remoteBase_{"https://cara-rd.live"}
+    , remoteTesting_{"https://cara-api-testing.onrender.com"}
+    , production_{"https://cara-rd.live"}
     , appWidth_{400}
     , appHeight_{640}
 {
 #ifdef QT_DEBUG
     base_ = testingBase_ + "/api";
 #else
-    base_ = remoteBase_ + "/api";
+    base_ = remoteTesting_ + "/api";
 #endif
     QSettings settings;
     settings.setValue("base", base_);
