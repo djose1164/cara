@@ -1,7 +1,7 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
-import core
+import User
 import "qrc:/utils"
 import "qrc:/search" as Search
 import "qrc:/customers"
@@ -27,8 +27,12 @@ ToolBar {
             Layout.alignment: Qt.AlignCenter
         }
 
+        LocalUserStore {
+            id: userStore
+        }
+
         SearchButton {
-            visible: CurrentUser.isAdmin
+            visible: userStore.user.userType === UserEntity.Admin || userStore.user.userType === UserEntity.Salesperson
             onClicked: doSearch()
         }
 
