@@ -4,16 +4,25 @@ import "qrc:/utils"
 
 CaraApi {
     id: statisticsApi
+
+    required property int salespersonId
+
     endpoint: "/statistics"
-    accessToken: CurrentUser.accessToken
 
     signal mostSellingProductsFetched(products: var)
-    signal unpaidBillsFetched(customers: var)
+    signal customerStatisticsFetched(customers: var)
 
     function fetchMostSellingProducts() {
-        get("/");
+        get("/"+salespersonId+"/products");
         succeeded.connect(function(resp) {
-            mostSellingProductsFetched(resp.statistics);
+            mostSellingProductsFetched(resp.most_selling_products);
+        });
+    }
+
+    function fetchBillsStatistics(): void {
+        get("/"+salespersonId+"/customers");
+        succeeded.connect(function(resp) {
+            customerStatisticsFetched(resp.customers_statistics);
         });
     }
 
@@ -21,7 +30,7 @@ CaraApi {
         get("/");
         succeeded.connect(function(resp) {
             mostSellingProductsFetched(resp.statistics.most_selling_products);
-            unpaidBillsFetched(resp.statistics.customers);
+            customerStatisticsFetched(resp.statistics.customers);
         });
     }
 }

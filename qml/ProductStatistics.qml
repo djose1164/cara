@@ -6,10 +6,11 @@ import "qrc:/product"
 Item {
     id: root
 
+    required property int salespersonId
     readonly property StackView stackView: StackView.view
     property string headerTitle
 
-    Component.onCompleted: statisticsApi.fetchStatistics()
+    Component.onCompleted: statisticsApi.fetchMostSellingProducts()()
 
     Header {
         id: header
@@ -35,12 +36,12 @@ Item {
         delegate: ProductThumbnail {
             required name
             required property string image_url
-            required property int quantity
+            required property int sold_quantity
 
             height: 100
             width: root.width
             source: image_url
-            detailed: `Cantidad vendida: ${quantity}`
+            detailed: `Cantidad vendida: ${sold_quantity}`
         }
 
         BusyIndicator {
@@ -53,7 +54,7 @@ Item {
 
     StatisticsAPI {
         id: statisticsApi
-
+        salespersonId: root.salespersonId
         onMostSellingProductsFetched: products => listModel.append(products)
     }
 }
