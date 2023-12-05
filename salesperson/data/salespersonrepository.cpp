@@ -1,7 +1,7 @@
-#include "associatesalespersonrepository.h"
+#include "salespersonrepository.h"
 
 namespace Data {
-AssociateSalespersonRepository::~AssociateSalespersonRepository()
+SalespersonRepository::~SalespersonRepository()
 {
 
 }

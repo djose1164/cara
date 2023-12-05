@@ -1,20 +1,24 @@
-#ifndef ASSOCIATESALESPERSONREPOSITORY_H
-#define ASSOCIATESALESPERSONREPOSITORY_H
+#ifndef SALESPERSONREPOSITORY_H
+#define SALESPERSONREPOSITORY_H
 
-#include "entity/salesperson.h"
+#include "salesperson.h"
 
 namespace Data {
-class AssociateSalespersonRepository
+class SalespersonRepository
 {
 public:
-    virtual ~AssociateSalespersonRepository();
-
-    virtual void getAssociateSalespersonById(int id) = 0;
+    virtual ~SalespersonRepository();
+    
+    virtual void getSalespersonById(int id) = 0;
 
     virtual void getAssociateSalespersons() = 0;
 
     virtual void addAssociateSalesperson(const Entity::Salesperson &salesperson) = 0;
+
+    virtual void patch(int id, const QByteArray &payload) = 0;
+
+    virtual void getCustomers(int id) = 0;
 };
 }
 
-#endif // ASSOCIATESALESPERSONREPOSITORY_H
+#endif // SALESPERSONREPOSITORY_H
