@@ -1,39 +1,49 @@
-#ifndef ASSOCIATESALESPERSONREPOSITORYIMP_H
-#define ASSOCIATESALESPERSONREPOSITORYIMP_H
+#ifndef SALESPERSONREPOSITORYIMP_H
+#define SALESPERSONREPOSITORYIMP_H
 
-#include "associatesalespersonrepository.h"
+#include "salespersonrepository.h"
 
 #include <QObject>
 #include <QNetworkAccessManager>
 
 namespace Data {
-class AssociateSalespersonRepositoryImpl : public QObject, public AssociateSalespersonRepository
+class SalespersonRepositoryImpl : public QObject, public SalespersonRepository
 {
     Q_OBJECT
 public:
-    explicit AssociateSalespersonRepositoryImpl(QObject *parent = nullptr);
+    explicit SalespersonRepositoryImpl(QObject *parent = nullptr);
+
+    QByteArray buffer() const;
+
+    int salespersonId() const;
 
 public slots:
-    void getAssociateSalespersonById(int id) override;
+    void getSalespersonById(int id) override;
 
-    void addAssociateSalesperson(const Entity::Salesperson &salesperson) override ;
+    void addAssociateSalesperson(const Entity::Salesperson &salesperson) override;
 
     void getAssociateSalespersons() override;
 
+    void patch(int id, const QByteArray &payload) override;
+
+    void getCustomers(int id) override;
 signals:
-    void finished(const QByteArray &data);
+    void finished();
     void errorOccurred();
     void fetched();
     void added();
+    void patched();
+
 private:
-    QNetworkRequest prepareRequest() const;
+    QNetworkRequest prepareRequest(const QString &endpoint = {}) const;
 
 private:
     QNetworkAccessManager *manager_;
     QNetworkReply *reply_;
 
     QUrl base_;
+    QByteArray buffer_;
 };
 }
 
-#endif // ASSOCIATESALESPERSONREPOSITORYIMP_H
+#endif // SALESPERSONREPOSITORYIMP_H
