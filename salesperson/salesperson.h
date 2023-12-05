@@ -72,6 +72,9 @@ public:
     int salespersonId() const;
     void setSalespersonId(int newSalespersonId);
 
+    int adminId() const;
+    void setAdminId(int newAdminId);
+
 private:
     QJsonObject prepareUser() const;
 
@@ -81,6 +84,8 @@ private:
 
 private:
     int salespersonId_;
+    int adminId_;
+
     QString username_;
     QString password_;
     QString email_;
@@ -93,6 +98,7 @@ private:
     int creditAvailable_;
 
     SalespersonTypes salespersonType_;
+    Q_PROPERTY(int adminId READ adminId WRITE setAdminId NOTIFY adminIdChanged FINAL)
 };
 }
 

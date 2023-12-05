@@ -8,6 +8,7 @@ const int Salesperson::userTypeId{3};
 
 Salesperson::Salesperson()
     : salespersonId_{}
+    , adminId_{}
     , username_{}
     , password_{}
     , email_{}
@@ -106,6 +107,7 @@ QByteArray Salesperson::toJson() const
     QJsonObject obj;
     obj["user"] = prepareUser();
     obj["salesperson_type_id"] = int(salespersonType_);
+    obj["admin_id"] = adminId_;
 
     return QJsonDocument(obj).toJson();
 }
@@ -137,6 +139,18 @@ QJsonObject Salesperson::prepareContact() const
     contact["surname"] = surname_;
 
     return contact;
+}
+
+int Salesperson::adminId() const
+{
+    return adminId_;
+}
+
+void Salesperson::setAdminId(int newAdminId)
+{
+    if (adminId_ == newAdminId)
+        return;
+    adminId_ = newAdminId;
 }
 
 int Salesperson::salespersonId() const
@@ -198,6 +212,7 @@ Salesperson Salesperson::fromMap(const QVariantMap &data)
     sp.setUsername(data.value("username").toString());
     sp.setPassword(data.value("password").toString());
     sp.setEmail(data.value("email").toString());
+    sp.setAdminId(data.value("adminId").toInt());
 
     return sp;
 }
