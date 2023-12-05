@@ -7,6 +7,10 @@
 #include <QQmlEngine>
 
 namespace Business {
+/**
+ * @brief The LocalUserStore class can save an user entity & create, if available,
+ * the saved user entity in settings.
+ */
 class LocalUserStore : public QObject, public UserStore
 {
     Q_OBJECT
@@ -19,6 +23,8 @@ public:
     
     Entity::UserEntity user() const;
     void setUser(const Entity::UserEntity &newUser);
+
+    std::optional<Entity::UserEntity> restore() override;
 
 public slots:
     void save(const QByteArray &data) override;

@@ -1,4 +1,5 @@
 #include "localuserstore.h"
+#include "salesperson.h"
 #include "userentity.h"
 #include <QJsonDocument>
 #include <QJsonObject>
@@ -14,28 +15,47 @@ LocalUserStore::LocalUserStore(QObject *parent)
 
 void LocalUserStore::save(const QByteArray &data)
 {
-    const auto map{QJsonDocument::fromJson(data).object().toVariantHash()};
-    user_ = Entity::UserEntity::fromMap(map["user"].toMap());
+    const auto obj{QJsonDocument::fromJson(data).object()};
+    const auto map{obj.toVariantMap()};
+    const auto userJson{QJsonDocument::fromVariant(obj["user"].toVariant()).toJson()};
+    const auto salespersonObj{obj["user"]["salesperson"]};
+    
+    setUser(Entity::UserEntity::fromJson(userJson));
 
     Q_ASSERT(!user_.username().isEmpty());
     Q_ASSERT(user_.userId());
     Q_ASSERT(int(user_.userType()));
 
     QSettings settings;
-    settings.beginGroup("Contact");
-    settings.setValue("forename", user_.forename());
-    settings.setValue("surname", user_.surname());
-    settings.setValue("email", user_.email());
-    settings.endGroup();
-
-    settings.beginGroup("Credentials")    ;
-    settings.setValue("username", user_.username());
+    settings.beginGroup("User");
     settings.setValue("userTypeId", int(user_.userType()));
-    settings.setValue("customerId", user_.customerId());
     settings.setValue("userId", user_.userId());
-    settings.setValue("warehouseId", user_.warehouseId());
+    settings.setValue("username", user_.username());
     settings.setValue("accessToken", "Bearer " + map["access_token"].toString());
     settings.setValue("refreshToken", "Bearer " + map["refresh_token"].toString());
+    settings.endGroup();
+
+    settings.beginGroup("Contact");
+    const auto contactData{obj["user"]["contact"].toObject()};
+    Q_ASSERT(!contactData.isEmpty());
+    Q_ASSERT(!contactData["forename"].isUndefined());
+
+    settings.setValue("forename", contactData["forename"].toString());
+    settings.setValue("surname", contactData["surname"].toString());
+    settings.setValue("email", contactData["email"].toString());
+    settings.endGroup();
+
+    settings.beginGroup("Salesperson");
+    settings.setValue("salespersonId", salespersonObj["id"].toInt());
+    settings.setValue("creditLimit", salespersonObj["credit_limit"].toInt());
+    settings.setValue("creditAvailable",
+                      salespersonObj["credit_available"].toInt());
+    settings.setValue("creditConsumed",
+                      salespersonObj["credit_consumed"].toInt());
+    settings.setValue("salespersonTypeId",
+                      salespersonObj["salesperson_type"]["id"].toInt());
+    settings.setValue("salespersonTypeName",
+                      salespersonObj["salesperson_type"]["name"].toString());
     settings.endGroup();
 }
 
@@ -43,13 +63,13 @@ void LocalUserStore::createFromStore()
 {
     using UserTypes = Entity::UserEntity::UserTypes;
     QSettings settings;
+
     settings.beginGroup("Contact");
     user_.setForename(settings.value("forename").toString());
-    user_.setEmail(settings.value("email").toString());
     user_.setSurname(settings.value("surname").toString());
     settings.endGroup();
 
-    settings.beginGroup("Credentials");
+    settings.beginGroup("User");
     bool userTypeAvailable{};
     const int userTypeId{settings.value("userTypeId").toInt(&userTypeAvailable)};
     const int guestType{int(Entity::UserEntity::UserTypes::Guest)};
@@ -58,10 +78,24 @@ void LocalUserStore::createFromStore()
     user_.setUsername(settings.value("username").toString());
     user_.setCustomerId(settings.value("customerId").toInt());
     user_.setUserId(settings.value("userId").toInt());
-    user_.setWarehouseId(settings.value("warehouseId").toInt());
-    // setAccessToken(settings.value("accessToken").toString());
+    user_.setRefreshToken(settings.value("refreshToken").toString());
     settings.endGroup();
 
+    using SalespersonTypes = Entity::Salesperson::SalespersonTypes;
+    settings.beginGroup("Salesperson");
+    Entity::Salesperson sp{};
+    sp.setSalespersonId(settings.value("salespersonId").toInt());
+    sp.setCreditAvailable(settings.value("creditAvailable").toInt());
+    sp.setCreditLimit(settings.value("creditLimit").toInt());
+    sp.setCreditConsumed(settings.value("creditConsumed").toInt());
+    sp.setSalespersonType(
+        static_cast<SalespersonTypes>(
+            settings.value("salespersonTypeId").toInt()
+    ));
+    settings.endGroup();
+
+    user_.setSalesperson(sp);
+    user_.setSalespersonId(sp.salespersonId());
     emit userChanged();
 }
 
@@ -81,5 +115,12 @@ void LocalUserStore::setUser(const Entity::UserEntity &newUser)
         return;
     user_ = newUser;
     emit userChanged();
+}
+
+std::optional<Entity::UserEntity> LocalUserStore::restore()
+{
+    if (user_.username().isEmpty())
+        return std::nullopt;
+    return user_;
 }
 }
