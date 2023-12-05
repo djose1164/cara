@@ -5,28 +5,22 @@ import "qrc:/singleton"
 import "qrc:/utils"
 import "qrc:/customers"
 import core
+import User
+import Salesperson
 
 ListView {
     id: root
 
-    Component.onDestruction: CustomerManager.clearModel()
+    readonly property LocalUserStore userStore: LocalUserStore {}
 
     delegate: BillDelegate {
         required name
         required property int customer_id
+        userType: userStore.user.userType
 
         customerId: customer_id
     }
-
     model: CustomerManager.model
-
-    Connections {
-        target: CurrentUser
-
-        function onUserChanged() {
-            if (CustomerManager.modelIsEmpty()) customerAPI.fetchCustomers()
-        }
-    }
 
     Label {
         id: label
@@ -37,10 +31,5 @@ ListView {
         font.pointSize: 16
         horizontalAlignment: Label.AlignHCenter
         wrapMode: Label.WordWrap
-    }
-
-    CustomerAPI {
-        id: customerAPI
-        onCustomersFetched: customers => CustomerManager.addCustomer(customers)
     }
 }
