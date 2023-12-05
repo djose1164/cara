@@ -1,29 +1,28 @@
 import QtQuick
 import QtQuick.Controls
-import AssociateSalesperson
+import Salesperson
 import "qrc:/utils"
 
 Page {
     id: root
 
+    required property int adminId
     readonly property StackView stackView: StackView.view
 
     title: "Vendedor Asociado"
     header: TitleHeader {
         title: root.title
-        backBtn.visible: false
+        backBtn.onClicked: stackView.pop()
     }
-    Component.onCompleted: service.fetchAllAssociateSalesperson()
+    Component.onCompleted: if (SalespersonManager.isEmpty) service.readAll()
 
     ListView {
         id: listView
         anchors.fill: parent
         spacing: 15
-        model: listModel
+        model: SalespersonManager.model
         delegate: salespersonDelegate
     }
-
-    ListModel { id: listModel }
 
     RoundButton {
         anchors.bottom: parent.bottom
@@ -33,23 +32,20 @@ Page {
         text: "+"
         font.pointSize: 16
         font.bold: true
-        onClicked: stackView.push("NewSalesperson.qml")
+        onClicked: stackView.push("NewSalesperson.qml", {adminId})
     }
 
-    AssociateSalespersonService {
+    SalespersonController {
         id: service
-        onFetched: {
-            const salespersons = JSON.parse(data).associate_salespersons;
-            listModel.append(salespersons);
-            console.assert(listModel.count > 0 && listView.count > 0);
-        }
+        adminId: root.adminId
+        onFetched: SalespersonManager.add(JSON.parse(buffer).salespersons)
     }
 
     Component {
         id: salespersonDelegate
         ItemDelegate {
             required property int id
-            required property var person_info
+            required property var user
             required property int credit_limit
             required property int credit_available
             required property int credit_consumed
@@ -59,7 +55,7 @@ Page {
             spacing: 5
             onClicked: stackView.push("delegate/AssociateSalespersonDelegate.qml", {
                                           salespersonId: id,
-                                          personInfo: person_info,
+                                          user,
                                           creditLimit: credit_limit,
                                           creditAvailable: credit_available,
                                           creditConsumed: credit_consumed
@@ -67,7 +63,7 @@ Page {
 
             Label {
                 id: label
-                text: person_info.name + `\nID #${id}`
+                text: user.contact.forename +" "+ user.contact.surname + `\nID #${id}`
                 padding: 12
                 font.pointSize: 12
             }
