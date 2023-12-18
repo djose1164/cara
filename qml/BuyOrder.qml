@@ -90,6 +90,7 @@ Page {
 
     SalespersonController {
         id: spController
+        adminId: userStore.user.userId
         onFetched: function(sp) {
             root.salesperson = sp;
         }
