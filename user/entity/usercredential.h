@@ -1,19 +1,19 @@
-#ifndef USERCREDENTAIL_H
-#define USERCREDENTAIL_H
+#ifndef USERcredential_H
+#define USERcredential_H
 
 #include <QObject>
 
 namespace User::Entity {
-class UserCredentail
+class UserCredential
 {
     Q_GADGET
     Q_PROPERTY(QString username READ username WRITE setUsername FINAL)
     Q_PROPERTY(QString email READ email WRITE setEmail FINAL)
     Q_PROPERTY(QString password READ password WRITE setPassword FINAL)
 public:
-    static UserCredentail fromMap(const QVariantMap &data);
+    static UserCredential fromMap(const QVariantMap &data);
 
-    UserCredentail();
+    UserCredential();
 
     QString username() const;
     void setUsername(const QString &newUsername);
@@ -35,4 +35,4 @@ private:
 };
 }
 
-#endif // USERCREDENTAIL_H
+#endif // USERcredential_H
