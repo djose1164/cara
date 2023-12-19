@@ -1,10 +1,12 @@
 import QtQuick
 import QtQuick.Controls
-import core
+import User
 
 BillHomePage {
     header: null
-    customerId: CurrentUser.user.customerId
+    customerId: userStore.user.customerId
     stackView: billStack
     Component.onCompleted: print("customerId "+customerId)
+
+    LocalUserStore { id: userStore }
 }
