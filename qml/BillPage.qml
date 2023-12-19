@@ -59,7 +59,6 @@ Page {
 
     Loader {
         id: loader
-        property StackView stackView: root.stackView
         readonly property int customerId: user.customerId
         anchors.fill: parent
         onSourceChanged: print("Loader.onSourceChanged: "+source)
