@@ -13,13 +13,15 @@ ListView {
 
     readonly property LocalUserStore userStore: LocalUserStore {}
 
-    delegate: BillDelegate {
-        required name
+    delegate: AdminBillDelegate {
         required property int customer_id
-        userType: userStore.user.userType
 
+        width: root.width
+        height: 80
         customerId: customer_id
+        onClicked: billStack.push("qrc:/bills/BillHomePage.qml", {customerId})
     }
+
     model: CustomerManager.model
 
     Label {
