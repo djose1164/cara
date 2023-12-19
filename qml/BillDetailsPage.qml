@@ -15,15 +15,15 @@ BackPage {
     title: "Detalles de orden"
 
     ScrollView {
+        anchors.fill: parent
         contentWidth: availableWidth
-        anchors {
-            fill: parent
-            leftMargin: 10
-            rightMargin: 10
-        }
 
         OrderState {
-            anchors.fill: parent
+            anchors {
+                fill: parent
+                leftMargin: 10
+                rightMargin: 10
+            }
             payment: root.payment
             orderId: root.orderId
             details: root.details
