@@ -13,7 +13,7 @@ qt_add_qml_module(UserLib
     SOURCES
         user.h user.cpp
         service/userservice.h service/userservice.cpp
-        entity/usercredentail.h entity/usercredentail.cpp
+        entity/usercredential.h entity/usercredential.cpp
         userstore.h userstore.cpp
         localuserstore.h localuserstore.cpp
         service/userserviceimpl.h service/userserviceimpl.cpp
