@@ -70,7 +70,7 @@ bool BillModel::setData(const QModelIndex &index, const QVariant &value, int rol
     const int row{index.row()};
     switch (static_cast<RoleNames>(role)) {
     case RoleNames::DateRole:
-        data_[row]->setDate(value.toDate());
+        data_[row]->setDate(value.toDateTime());
         emit dataChanged(index, index, {role});
         return true;
     case RoleNames::DetailsRole:

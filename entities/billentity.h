@@ -33,9 +33,9 @@ public:
     PaymentEntity *payment() const;
     void setPayment(PaymentEntity *const payment);
 
-    QDate date() const;
-    void setDate(QDate date);
-    QBindable<QDate> bindableDate();
+    QDateTime date() const;
+    void setDate(QDateTime date);
+    QBindable<QDateTime> bindableDate();
 
     Q_INVOKABLE QByteArray toJson() const;
 
@@ -51,7 +51,7 @@ private:
     OrderModel *details_;
     PaymentEntity * payment_;
     OrderStatus *orderStatus_;
-    QProperty<QDate> date_;
+    QProperty<QDateTime> date_;
 };
 }
 

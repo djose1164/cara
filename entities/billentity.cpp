@@ -20,17 +20,17 @@ Entity::UserEntity BillEntity::user() const
     return user_;
 }
 
-QDate BillEntity::date() const
+QDateTime BillEntity::date() const
 {
     return date_.value();
 }
 
-void BillEntity::setDate(QDate date)
+void BillEntity::setDate(QDateTime date)
 {
     date_ = date;
 }
 
-QBindable<QDate> BillEntity::bindableDate()
+QBindable<QDateTime> BillEntity::bindableDate()
 {
     return &date_;
 }
@@ -42,7 +42,7 @@ BillEntity *BillEntity::fromMap(const QVariantMap &billMap)
 
     const auto strDate{billMap["date"].toString()};
 
-    bill->setDate(QDate::fromString(strDate, "dd/MM/yyyy"));
+    bill->setDate(QDateTime::fromString(strDate, "dd/MM/yyyy"));
     bill->setOrderId(billMap["id"].toInt());
 
     bill->setPayment(
