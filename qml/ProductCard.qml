@@ -36,7 +36,6 @@ Rectangle {
             onReady: imageStackLayout.currentIndex = 1
             source: imageUrl
             sourceSize: "100x100"
-            Component.onCompleted: print(imageUrl)
         }
     }
 
