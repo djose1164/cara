@@ -7,10 +7,11 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 set(CMAKE_AUTORCC ON)
 set(CMAKE_AUTOMOC ON)
+set(CMAKE_AUTOUIC ON)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 find_package(Qt6 6.2 REQUIRED
-    COMPONENTS Qml Quick Core Network Svg REQUIRED)
+    COMPONENTS Qml Quick Core Network Svg Test REQUIRED)
 
 qt_standard_project_setup(REQUIRES 6.2)
 qt_policy(SET QTP0001 NEW)
@@ -26,24 +27,20 @@ add_subdirectory(user)
 add_subdirectory(authentication)
 add_subdirectory(utils)
 
-qt_add_resources(QML_RESOURCES qml/qml.qrc)
-qt_add_executable(Cara
-    assets/res.qrc
-    main.cpp
-)
+if(NOT CMAKE_BUILD_TYPE STREQUAL "Release")
+    add_subdirectory(tests)
+endif()
 
-qt_add_resources(Cara "configuration"
-    PREFIX "/"
-    FILES
-        qtquickcontrols2.conf
-)
+# Create CaraLib target
+add_library(CaraLib STATIC)
 
-target_link_libraries(Cara PRIVATE
+target_link_libraries(CaraLib PUBLIC
     Qt6::Qml
     Qt6::Quick
     Qt6::Core
     Qt6::Network
     Qt6::Svg
+    Qt6::Test
     Coreplugin
     Modelsplugin
     Dataplugin
@@ -56,15 +53,31 @@ target_link_libraries(Cara PRIVATE
     UtilsLibplugin
 )
 
-# Link the resources to the executable
-target_sources(Cara PRIVATE ${QML_RESOURCES})
+# Additional configurations for CaraLib
+set_target_properties(CaraLib PROPERTIES
+    ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib"
+)
 
-# Additional configurations
+# Create Cara executable
+qt_add_executable(Cara
+    main.cpp
+    assets/res.qrc
+    qml/qml.qrc
+)
+
+qt_add_resources(Cara "configuration"
+    PREFIX "/"
+    FILES
+        qtquickcontrols2.conf
+)
+
+target_link_libraries(Cara PRIVATE CaraLib)
+
+# Additional configurations for Cara
 set_target_properties(Cara PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin"
     QT_ANDROID_PACKAGE_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/android
 )
-
 
 include(android_openssl/android_openssl.cmake)
 if (ANDROID)
