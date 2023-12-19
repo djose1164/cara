@@ -1,7 +1,7 @@
 #include "login.h"
 #include "../data/tokenmanager.h"
 #include "data/restuserauthentication.h"
-#include "entity/usercredentail.h"
+#include "entity/usercredential.h"
 #include "localuserstore.h"
 #include "service/localuserauthentication.h"
 #include <QJsonDocument>
@@ -9,7 +9,7 @@
 #include <QSettings>
 
 namespace Business {
-using User::Entity::UserCredentail;
+using User::Entity::UserCredential;
 
 Login::Login(QObject *parent)
     : QObject{parent}
@@ -19,6 +19,8 @@ Login::Login(QObject *parent)
     , authenticator_{}
     , userStore_{}
     , refreshToken_{}
+    , username_{}
+    , password_{}
 {
     const auto user{LocalUserStore().user()};
 
@@ -28,7 +30,7 @@ Login::Login(QObject *parent)
 
 void Login::authenticateCredentials()
 {
-    UserCredentail credentials{};
+    UserCredential credentials{};
     credentials.setUsername(username_);
     credentials.setPassword(password_);
     if (!credentials.isValid())
@@ -105,7 +107,7 @@ void Login::save()
 {
     if (!userStore_)
     {
-        qWarning() << "None userStore was provided. User won't be stored.";
+        qInfo() << "None userStore was provided. User won't be stored.";
         return;
     }
 
