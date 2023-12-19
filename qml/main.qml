@@ -1,7 +1,5 @@
 import QtQuick
 import QtQuick.Controls
-import QtQuick.Controls.Material
-import QtQuick.Layouts
 import "qrc:/errors"
 import "qrc:/singleton"
 import "qrc:/utils"
@@ -53,7 +51,13 @@ ApplicationWindow {
 
     UserController {
         id: userController
-        onFetched: resp => stackView.replace(mainPage, {user: userController.create(JSON.stringify(JSON.parse(resp).user))});
+        onFetched: function(resp) {
+            const user = userController.create(
+                JSON.stringify(JSON.parse(resp).user)
+            );
+            print("Replacing appStack with MainPage");
+            stackView.replace(mainPage, {user});
+        }
     }
 
     Connections {
