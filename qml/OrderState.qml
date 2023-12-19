@@ -88,6 +88,15 @@ ColumnLayout {
     }
 
     Label {
+        text: `
+            <strong>Total</strong><br>
+            RD$${internal.orderTotal}
+        `
+        font.pointSize: 12
+        Layout.topMargin: 20
+    }
+
+    Label {
         text: "Detalles"
         font.pointSize: 12
         font.bold: true
@@ -102,9 +111,10 @@ ColumnLayout {
             required property int quantity
             required total
 
+            Component.onCompleted: internal.orderTotal += total
+
             Layout.fillHeight: true
             Layout.fillWidth: true
-            Component.onCompleted: print("productcard: ",width, ` ${root.width}`)
             enabled: false
             productName: product.name
             productPrice: product.price
@@ -124,5 +134,11 @@ ColumnLayout {
         paidAmount: payment.paidAmount
         paymentStatus: payment.status
         paymentId: payment.paymentId
+    }
+
+    QtObject {
+        id: internal
+
+        property int orderTotal
     }
 }
