@@ -3,9 +3,10 @@
 #include <QNetworkReply>
 
 namespace Data {
-RestUserAuthentication::RestUserAuthentication(User::Entity::UserCredentail userCredentail, QObject *parent)
+RestUserAuthentication::RestUserAuthentication(User::Entity::UserCredential userCredential, QObject *parent)
     : QObject{parent}
-    , userCredentail_{userCredentail}
+    , userCredential_{userCredential}
+    , base_{QSettings().value("base").toString() + "/users/login"}
     , data_{}
     , manager_{new QNetworkAccessManager(this)}
     , reply_{}
@@ -20,18 +21,26 @@ QByteArray RestUserAuthentication::data() const
 
 void RestUserAuthentication::authenticate()
 {
-    QSettings settings;
-    const QUrl url{settings.value("base").toString() + "/users/login"};
+    const QUrl url{base_};
     QNetworkRequest request{url};
     request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
 
-    reply_ = manager_->post(request, userCredentail_.toJson());
+    reply_ = manager_->post(request, userCredential_.toJson());
 
     connect(reply_, &QNetworkReply::finished, this, [&] {
         data_ = reply_->readAll();
         emit finished();
+        if (reply_->error() == QNetworkReply::NoError)
+            emit succeeded();
+        else if (reply_->error() == QNetworkReply::AuthenticationRequiredError)
+            emit failed();
 
         reply_->deleteLater();
     });
+}
+
+QString RestUserAuthentication::base() const
+{
+    return base_;
 }
 }

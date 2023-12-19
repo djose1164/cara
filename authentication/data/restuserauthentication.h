@@ -2,7 +2,7 @@
 #define RESTUSERAUTHENTICATION_H
 
 #include "business/authentication.h"
-#include "entity/usercredentail.h"
+#include "entity/usercredential.h"
 #include <QObject>
 #include <QNetworkAccessManager>
 
@@ -11,18 +11,24 @@ class RestUserAuthentication : public QObject, public Business::Authentication
 {
     Q_OBJECT
 public:
-    explicit RestUserAuthentication(User::Entity::UserCredentail userCredentail, QObject *parent = nullptr);
+    explicit RestUserAuthentication(User::Entity::UserCredential userCredential, QObject *parent = nullptr);
 
     QByteArray data() const;
+
+    QString base() const;
 
 public slots:
     void authenticate() override;
 
 signals:
     void finished();
+    void succeeded();
+    void failed();
 
 private:
-    const User::Entity::UserCredentail userCredentail_;
+    const User::Entity::UserCredential userCredential_;
+    const QString base_;
+
     QByteArray data_;
 
     QNetworkAccessManager *manager_;
