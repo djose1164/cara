@@ -6,8 +6,8 @@ import core
 ItemDelegate {
     id: root
 
-    property int customerId
-    property alias name: nameLbl.text
+    required property int customerId
+    required property string name
 
     ColumnLayout {
         anchors.fill: parent
