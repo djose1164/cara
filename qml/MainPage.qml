@@ -16,7 +16,7 @@ Page {
     required property var user
 
     readonly property alias billStack: billStack
-    readonly property alias homeStack: homeStack
+    // readonly property alias homeStack: homeStack
 
     readonly property StackView stackView: StackView.view
     readonly property string userHomePath: "qrc:/home/UserHome.qml"
@@ -72,20 +72,15 @@ Page {
             id: homeStack
             readonly property TabBar bar: bar
             readonly property bool isCurrentView: StackLayout.isCurrentItem
-            //initialItem: busyIndicator
         }
 
         StackView {
             id: orderStackView
-           // initialItem: busyIndicator
         }
 
         StackView {
             id: billStack
-            BillPage {
-                anchors.fill: parent
-                user: root.user
-            }
+            Component.onCompleted: replace("qrc:/bills/BillPage.qml", {user})
         }
     }
 
