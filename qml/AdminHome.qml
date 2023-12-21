@@ -38,6 +38,8 @@ Home {
             required property string name
             required property bool showCustomers
             required property bool admin
+            required property bool needSalesperson
+            required property bool needUser
 
             width: grid.cellWidth - 15
             height: grid.cellHeight - 10
@@ -78,9 +80,18 @@ Home {
                 }
 
                 TapHandler {
-                    onTapped: showCustomers ? homeStack.push(path, {salespersonId: userStore.user.salespersonId})
-                                                     : admin ? homeStack.push(path, {adminId: userStore.user.userId})
-                                                            : homeStack.push(path)
+                    onTapped: {
+                        if (needUser)
+                            homeStack.push(path, {user: userStore.user});
+                        else if (showCustomers)
+                            homeStack.push(path, {salespersonId: userStore.user.salespersonId});
+                        else if (admin)
+                            homeStack.push(path, {adminId: userStore.user.userId});
+                        else if (needSalesperson)
+                            homeStack.push(path, {salesperson: userStore.user.salesperson});
+                        else
+                            homeStack.push(path);
+                    }
                 }
 
                 HoverHandler { id: control }
@@ -107,6 +118,7 @@ Home {
             name: "Ordenes de Compra"
             showCustomers: false
             admin: false
+            needSalesperson: true
         }
 
         ListElement {
@@ -145,16 +157,13 @@ Home {
             source: "qrc:/qt/qml/catalogue/catalogue.svg"
             path: "qrc:/qt/qml/catalogue/Catalogue.qml"
             name: "Catalogo"
-            showCustomers: false
-            admin: false
         }
 
         ListElement {
             source: "qrc:/qt/qml/Salesperson/salesperson.svg"
             path: "qrc:/qt/qml/Salesperson/AssociateSalesperson.qml"
             name: "Vendedor Asociado"
-            admin: true
-            showCustomers: false
+            needUser: true
         }
     }
 }
