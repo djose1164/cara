@@ -10,7 +10,7 @@ GroupBox {
         "municipality_id": municipality.comboBox.currentValue,
         "sector_id": sector.comboBox.currentValue,
         "street": street.text,
-        "house_number": house_num.text
+        "house_number": parseInt(house_num.text)
     }
 
     title: "Direccion"
@@ -50,7 +50,7 @@ GroupBox {
             Layout.fillWidth: true
         }
 
-        TextField {
+        NumberTextField {
             id: house_num
             placeholderText: "Numero de casa"
             Layout.columnSpan: 2
