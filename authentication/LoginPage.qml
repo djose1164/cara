@@ -124,6 +124,7 @@ Item {
         onAuthenticated: {
             appStack.pop();
             LoginManager.authenticated();
+            // TODO: Pass the created user to MainPage while showing the busyIndicator
         }
         onErrorOccurred: {
             busyIndicator.close();
