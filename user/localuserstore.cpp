@@ -22,10 +22,6 @@ void LocalUserStore::save(const QByteArray &data)
     
     setUser(Entity::UserEntity::fromJson(userJson));
 
-    Q_ASSERT(!user_.username().isEmpty());
-    Q_ASSERT(user_.userId());
-    Q_ASSERT(int(user_.userType()));
-
     QSettings settings;
     settings.beginGroup("User");
     settings.setValue("userTypeId", int(user_.userType()));
@@ -37,8 +33,6 @@ void LocalUserStore::save(const QByteArray &data)
 
     settings.beginGroup("Contact");
     const auto contactData{obj["user"]["contact"].toObject()};
-    Q_ASSERT(!contactData.isEmpty());
-    Q_ASSERT(!contactData["forename"].isUndefined());
 
     settings.setValue("forename", contactData["forename"].toString());
     settings.setValue("surname", contactData["surname"].toString());
@@ -79,6 +73,7 @@ void LocalUserStore::createFromStore()
     user_.setCustomerId(settings.value("customerId").toInt());
     user_.setUserId(settings.value("userId").toInt());
     user_.setRefreshToken(settings.value("refreshToken").toString());
+    user_.setAccessToken(settings.value("accessToken").toString());
     settings.endGroup();
 
     using SalespersonTypes = Entity::Salesperson::SalespersonTypes;
@@ -88,9 +83,10 @@ void LocalUserStore::createFromStore()
     sp.setCreditAvailable(settings.value("creditAvailable").toInt());
     sp.setCreditLimit(settings.value("creditLimit").toInt());
     sp.setCreditConsumed(settings.value("creditConsumed").toInt());
+    const int sptypeId{settings.value("salespersonTypeId").toInt()};
     sp.setSalespersonType(
         static_cast<SalespersonTypes>(
-            settings.value("salespersonTypeId").toInt()
+            sptypeId
     ));
     settings.endGroup();
 
@@ -122,5 +118,11 @@ std::optional<Entity::UserEntity> LocalUserStore::restore()
     if (user_.username().isEmpty())
         return std::nullopt;
     return user_;
+}
+
+bool LocalUserStore::hasUser() const
+{
+    QSettings settings;
+    return settings.contains("User/userId") && settings.contains("User/refreshToken");
 }
 }

@@ -26,6 +26,8 @@ public:
 
     std::optional<Entity::UserEntity> restore() override;
 
+    bool hasUser() const;
+
 public slots:
     void save(const QByteArray &data) override;
 
