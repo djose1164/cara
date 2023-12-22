@@ -11,9 +11,10 @@ import "qrc:/singleton"
 Page {
     id: root
 
+    required property var salesperson
+
     readonly property var myStack: StackView.view
     readonly property LocalUserStore userStore: LocalUserStore {}
-    property var salesperson
 
     title: "Ordenes de Compra"
     header: TitleHeader {
@@ -23,7 +24,7 @@ Page {
 
     Component.onCompleted: {
         const spId = userStore.user.salespersonId;
-        spController.getSalespersonById(spId);
+        spController.read(spId);
         api.fetchBuyOrders();
     }
 
@@ -59,6 +60,12 @@ Page {
         width: appStack.width
         height: appStack.height
         onAccepted: {
+            if (root.salesperson.salespersonType === Salesperson.Administrator)
+            {
+                api.createBuyOrder(buyOrder);
+                return;
+            }
+
             const creditAvailable = root.salesperson.creditAvailable;
             if (creditAvailable >= totalAmount)
                 api.createBuyOrder(buyOrder);
@@ -75,6 +82,12 @@ Page {
         salespersonId: userStore.user.salespersonId
         onBuyOrdersFetched: orders => listModel.append(orders)
         onBuyOrderCreated: function(resp) {
+            if (root.salesperson.salespersonType === Salesperson.Administrator) {
+                dialog.text = "Orden de compra creada con exito!";
+                dialog.open();
+                return;
+            }
+
             const totalAmount = buyOrderForm.totalAmount;
             root.salesperson.creditAvailable -= totalAmount;
             root.salesperson.creditConsumed += totalAmount;
@@ -85,6 +98,11 @@ Page {
             dialog.open();
 
             buyOrderForm.close();
+        }
+        onFailed: function(resp) {
+            dialog.text = "Error al realizar Orden de Compra";
+            dialog.informativeText = resp.message;
+            dialog.open();
         }
     }
 
