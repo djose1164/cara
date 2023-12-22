@@ -70,6 +70,7 @@ Page {
     MessageDialog {
         id: message
         buttons: MessageDialog.Ok
+        onButtonClicked: close()
     }
 
     function addSalesperson() {
