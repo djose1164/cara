@@ -1,4 +1,5 @@
 #include "salespersonmanager.h"
+#include "localuserstore.h"
 #include "tokenmanager.h"
 #include <QNetworkReply>
 
@@ -18,6 +19,7 @@ void SalespersonManager::read(int id)
 
     connect(reply_, &QNetworkReply::finished, this, [&] {
         setBuffer(reply_->readAll());
+        emit finished();
         if (reply_->error() == QNetworkReply::NoError)
             emit fetched();
         else
@@ -37,6 +39,7 @@ void SalespersonManager::readAll(int adminId)
 
     connect(reply_, &QNetworkReply::finished, this, [&] {
         setBuffer(reply_->readAll());
+        emit finished();
         if (reply_->error() == QNetworkReply::NoError)
             emit fetched();
         else
@@ -58,6 +61,7 @@ void SalespersonManager::add(const QByteArray &data)
 
     connect(reply_, &QNetworkReply::finished, this, [&] {
         setBuffer(reply_->readAll());
+        emit finished();
         if (reply_->error() == QNetworkReply::NoError)
             emit added();
         else
@@ -83,7 +87,7 @@ QNetworkRequest SalespersonManager::prepareRequest(const QString &endpoint)
 {
     QNetworkRequest req{QUrl(base() + endpoint)};
     req.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
-    const QString token{DataLayer::TokenManager::instance()->accessToken()};
+    const QString token{Business::LocalUserStore().user().accessToken()};
     req.setRawHeader("Authorization", token.toUtf8());
 
     return req;
