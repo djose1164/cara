@@ -33,6 +33,7 @@ signals:
     void edited();
     void fetched();
 
+    void finished();
     void errorOccurred();
 
 private:
