@@ -6,7 +6,11 @@ import "qrc:/utils"
 Page {
     id: root
 
-    required property int adminId
+    required property var user
+
+    readonly property int adminId: user.userId
+    readonly property int salespersonId: user.salespersonId
+
     readonly property StackView stackView: StackView.view
 
     title: "Vendedor Asociado"
@@ -14,7 +18,26 @@ Page {
         title: root.title
         backBtn.onClicked: stackView.pop()
     }
-    Component.onCompleted: if (SalespersonManager.isEmpty) service.readAll()
+
+    states: [
+        State {
+            name: "fetching"
+            PropertyChanges {
+                target: busyIndicator
+                visible: true
+            }
+            PropertyChanges {
+                target: listView
+                visible: false
+            }
+        }
+    ]
+    Component.onCompleted: {
+        if (SalespersonManager.isEmpty){
+            service.readSalespeople();
+            root.state = "fetching";
+        }
+    }
 
     ListView {
         id: listView
@@ -22,6 +45,19 @@ Page {
         spacing: 15
         model: SalespersonManager.model
         delegate: salespersonDelegate
+
+        Label {
+            width: listView.width * .8
+            visible: listView.count === 0
+            text: "No cuentas con ningun vendedor asociado. Intenta agregar uno."
+            font.pointSize: 14
+        }
+    }
+
+    BusyIndicator {
+        id: busyIndicator
+        anchors.centerIn: parent
+        visible: false
     }
 
     RoundButton {
@@ -38,7 +74,10 @@ Page {
     SalespersonController {
         id: service
         adminId: root.adminId
-        onFetched: SalespersonManager.add(JSON.parse(buffer).salespersons)
+        onFetched: {
+            SalespersonManager.add(JSON.parse(buffer).salespersons);
+            root.state = "";
+        }
     }
 
     Component {
