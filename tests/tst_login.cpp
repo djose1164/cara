@@ -1,6 +1,7 @@
 #include <QtTest>
 #include <QSignalSpy>
 #include "../authentication/login.h"
+#include "localuserstore.h"
 
 // add necessary includes here
 
@@ -16,6 +17,8 @@ private slots:
     void initTestCase();
     void cleanupTestCase();
 
+    void init();
+
     void test_shouldEmitAuthenticatedOnceUsingValidCredentials() const;
     void test_shouldSwitchToLoginCredentialsModeUponAuthenticateCredentials() const;
     void test_shouldSwitchToRefreshTokenModeUponAuthenticateRefreshToken() const;
@@ -30,12 +33,28 @@ void TestLogin::initTestCase()
 {
     QCoreApplication::setOrganizationDomain("cara.com");
     QCoreApplication::setOrganizationName("Cara");
-    QCoreApplication::setApplicationName("Cara");
+    QCoreApplication::setApplicationName("CaraTesting");
 }
 
 void TestLogin::cleanupTestCase()
 {
 
+}
+
+void TestLogin::init()
+{
+    Business::Login login{};
+    Business::LocalUserStore userStore{};
+    login.setUserStore(&userStore);
+    login.setUsername("cara");
+    login.setPassword("1234");
+
+    QSignalSpy spy(&login, SIGNAL(authenticated(void)));
+
+    QVERIFY(spy.isValid());
+
+    login.authenticateCredentials();
+    QVERIFY(spy.wait());
 }
 
 void TestLogin::test_shouldEmitAuthenticatedOnceUsingValidCredentials() const
