@@ -21,7 +21,7 @@ Constants::Constants()
 #ifdef QT_DEBUG
     base_ = testingBase_ + "/api";
 #else
-    base_ = remoteTesting_ + "/api";
+    base_ = production_ + "/api";
 #endif
     QSettings settings;
     settings.setValue("base", base_);
