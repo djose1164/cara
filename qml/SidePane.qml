@@ -4,14 +4,15 @@ import QtQuick.Layouts
 import "qrc:/utils"
 import "qrc:/singleton"
 import core
-import entities
+import User
 
 Drawer {
     id: root
 
+    required property var user
+
     required property StackView stackView
-    readonly property UserEntity user: CurrentUser.user
-    readonly property bool isGuest: user.userType === UserEntity.GUEST
+    readonly property bool isGuest: user.userType === UserEntity.Guest
 
     width: {
         if (parent.width >= 200 && parent.width <= 500)
@@ -74,10 +75,9 @@ Drawer {
             Layout.bottomMargin: 15
             text: "Cerrar sesion"
             flat: true
-            visible: LoginManager.status == LoginManager.LoggedIn
+            visible: !isGuest
             onClicked: {
                 close();
-                TheCurrentUser.clear();
                 LoginManager.logOut();
             }
         }
@@ -91,7 +91,7 @@ Drawer {
             Button {
                 onClicked: {
                     close();
-                    stackView.push("qrc:/login/Login.qml");
+                    appStack.push("qrc:/qt/qml/Authentication/LoginPage.qml");
                 }
                 text: "Iniciar Sesion"
                 flat: true
@@ -100,7 +100,7 @@ Drawer {
             Button {
                 onClicked: {
                     close();
-                    stackView.push("qrc:/login/SignUp.qml");
+                    stackView.push("qrc:/qt/qml/Authentication/SignUp.qml");
                 }
                 text: "Registrarse"
                 flat: true
@@ -110,6 +110,7 @@ Drawer {
 
     Component {
         id: logged
+
         ColumnLayout {
             Layout.fillWidth: true
             spacing: 20
@@ -121,7 +122,7 @@ Drawer {
             }
 
             Label {
-                text: user.fullname
+                text: user.forename + " " + user.surname
                 font.pointSize: 11
             }
 
@@ -130,7 +131,7 @@ Drawer {
                 flat: true
                 onClicked: {
                     close();
-                    appStack.push("qrc:/users/PerfilPage.qml");
+                    appStack.push("qrc:/qt/qml/User/PerfilPage.qml");
                 }
             }
         }

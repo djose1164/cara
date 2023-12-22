@@ -1,5 +1,6 @@
 #include "paymentbusiness.h"
 #include "constants.h"
+#include "localuserstore.h"
 
 using BusinessLayer::PaymentBusiness;
 
@@ -14,7 +15,7 @@ PaymentBusiness::PaymentBusiness(QObject *parent)
     rest_->base(base + "/payments");
 
     QSettings settings{};
-    const QString token{settings.value("Credentials/refreshToken").toString()};
+    const QString token{Business::LocalUserStore().user().refreshToken()};
 
     Q_ASSERT(!token.isEmpty());
     rest_->refreshToken(token);

@@ -7,6 +7,7 @@ import "qrc:/product"
 Page {
     id: root
 
+    required property int salespersonId
     readonly property StackView stackView: StackView.view
 
     title: "Inventario"
@@ -23,7 +24,7 @@ Page {
         // FIXME: A new component `InventoryView` must be created.
         ProductView {
             id: productView
-
+            salespersonId: root.salespersonId
             onEntriesAdded: total => { if (total === 0) stackLayout.currentIndex = 1 }
 
             delegate: ItemDelegate {

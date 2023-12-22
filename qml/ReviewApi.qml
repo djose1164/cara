@@ -1,6 +1,5 @@
 import QtQuick
 import "qrc:/utils"
-import "qrc:/users"
 
 CaraApi {
     id: api

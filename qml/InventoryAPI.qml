@@ -1,10 +1,12 @@
 import QtQuick
-import core
+import User
 import "qrc:/utils"
 import "qrc:/singleton"
 
 QtObject {
     id: root
+
+    property int salespersonId
 
     signal fetchedAll(resp: var)
     signal fetchedInventoriesByProductId(inventories: var)
@@ -15,7 +17,7 @@ QtObject {
     }
 
     function fetchAll() {
-        api.get(`/?admin_id=${CurrentUser.user.userId}`);
+        api.get(`/?salesperson_id=${salespersonId}`);
         api.succeeded.connect(fetchedAll);
     }
 
@@ -24,8 +26,8 @@ QtObject {
         api.succeeded.connect(resp => fetchedInventoriesByProductId(resp.inventories));
     }
 
-    function fetchByAdminIdAndProductId(adminId: int, productId: int) {
-        api.get(`/?product_id=${productId}&admin_id=${adminId}`);
+    function fetchByAdminIdAndProductId(salespersonId: int, productId: int) {
+        api.get(`/?product_id=${productId}&salesperson_id=${salespersonId}`);
         api.succeeded.connect(resp => fetchedByAdminIdAndProductId(resp.inventory));
     }
 }

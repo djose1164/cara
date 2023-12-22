@@ -7,10 +7,9 @@ qt_add_qml_module(Core
 	cartbusiness.h	cartbusiness.cpp
 	loginmanager.h loginmanager.cpp
 	paymentbusiness.h paymentbusiness.cpp
-        currentuser.h currentuser.cpp
-        auth.h auth.cpp
 )
 
 include_directories(../models)
 include_directories(../entities)
+include_directories(../user)
 include_directories(../data)

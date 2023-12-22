@@ -25,9 +25,4 @@ Rectangle {
         displayText: currentIndex === -1 ? "Seleccionar Cliente" : currentText
         model: CustomerManager.model
     }
-
-    CustomerAPI {
-        id: customerApi
-        onCustomersFetched: customers => CustomerManager.addCustomer(customers)
-    }
 }

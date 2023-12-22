@@ -1,14 +1,17 @@
 cmake_minimum_required(VERSION 3.16)
 
-project(Cara VERSION 0.13.2 LANGUAGES CXX)
+project(Cara VERSION 0.14.0 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 set(CMAKE_AUTORCC ON)
+set(CMAKE_AUTOMOC ON)
+set(CMAKE_AUTOUIC ON)
+set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 find_package(Qt6 6.2 REQUIRED
-    COMPONENTS Qml Quick Core Network Svg REQUIRED)
+    COMPONENTS Qml Quick Core Network Svg Test REQUIRED)
 
 qt_standard_project_setup(REQUIRES 6.2)
 qt_policy(SET QTP0001 NEW)
@@ -19,11 +22,47 @@ add_subdirectory(data)
 add_subdirectory(entities)
 add_subdirectory(catalogue)
 add_subdirectory(inventory)
+add_subdirectory(salesperson)
+add_subdirectory(user)
+add_subdirectory(authentication)
+add_subdirectory(utils)
 
+if(NOT CMAKE_BUILD_TYPE STREQUAL "Release")
+    add_subdirectory(tests)
+endif()
+
+# Create CaraLib target
+add_library(CaraLib STATIC)
+
+target_link_libraries(CaraLib PUBLIC
+    Qt6::Qml
+    Qt6::Quick
+    Qt6::Core
+    Qt6::Network
+    Qt6::Svg
+    Qt6::Test
+    Coreplugin
+    Modelsplugin
+    Dataplugin
+    Entitiesplugin
+    Catalogueplugin
+    Inventoryplugin
+    salespersonplugin
+    UserLibplugin
+    AuthenticationLibplugin
+    UtilsLibplugin
+)
+
+# Additional configurations for CaraLib
+set_target_properties(CaraLib PROPERTIES
+    ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib"
+)
+
+# Create Cara executable
 qt_add_executable(Cara
-    qml/qml.qrc
-    assets/res.qrc
     main.cpp
+    assets/res.qrc
+    qml/qml.qrc
 )
 
 qt_add_resources(Cara "configuration"
@@ -32,33 +71,16 @@ qt_add_resources(Cara "configuration"
         qtquickcontrols2.conf
 )
 
-target_link_libraries(Cara PRIVATE
-    Qt6::Qml
-    Qt6::Quick
-    Qt6::Core
-    Qt6::Network
-    Qt6::Svg
-    Coreplugin
-    Modelsplugin
-    Dataplugin
-    Entitiesplugin
-    Catalogueplugin
-    Inventoryplugin
-)
+target_link_libraries(Cara PRIVATE CaraLib)
 
-# Link the resources to the executable
-target_sources(Cara PRIVATE ${QT_RESOURCES})
-
-# Additional configurations
+# Additional configurations for Cara
 set_target_properties(Cara PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin"
     QT_ANDROID_PACKAGE_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/android
 )
 
-
-include(FetchContent)
-
 if (ANDROID)
+    include(FetchContent)
     FetchContent_Declare(
       android_openssl
       DOWNLOAD_EXTRACT_TIMESTAMP true
@@ -66,4 +88,6 @@ if (ANDROID)
     )
     FetchContent_MakeAvailable(android_openssl)
     include(${android_openssl_SOURCE_DIR}/android_openssl.cmake)
+
+    add_android_openssl_libraries(Cara)
 endif()

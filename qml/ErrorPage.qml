@@ -1,6 +1,5 @@
 import QtQuick
 import QtQuick.Controls
-import "qrc:/users"
 
 Page {
     required property string message

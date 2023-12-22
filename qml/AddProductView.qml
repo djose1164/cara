@@ -13,7 +13,6 @@ Column {
     id: root
 
     property alias valueRoleType: productEntry.valueRoleType
-
     property int payment: 2
     property var details
     readonly property alias entriesCount: productEntry.count

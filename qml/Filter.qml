@@ -2,7 +2,6 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 import "qrc:/customers"
-import "qrc:/users"
 
 Drawer {
     id: root
@@ -57,15 +56,6 @@ Drawer {
                 close();
             }
             Layout.alignment: Qt.AlignRight
-        }
-    }
-
-    CustomerAPI {
-        id: customerApi
-
-        function filterCustomersByOrderStatus(status: int) {
-            rest.get(`/?filter_by=order_status&status=${status}`);
-            rest.succeeded.connect(resp => filtered(resp.customers));
         }
     }
 

@@ -14,14 +14,9 @@ TokenManager::TokenManager(QObject *parent)
     , refresher_{new DataLayer::Refresher(this)}
 {
     auto refresher{dynamic_cast<DataLayer::Refresher *>(refresher_)};
-    connect(refresher, &DataLayer::Refresher::accessTokenRefreshed, this, [&](const QByteArray &data) {
+    connect(refresher, &DataLayer::Refresher::accessTokenRefreshed, this, [&](const QString &token) {
+        setAccessToken(token);
         qDebug() << "TokenManager: access token has refresh";
-        const QString token{
-            QJsonDocument::fromJson(data)
-                .object()["access_token"]
-                .toString()
-        };
-        setAccessToken("Bearer " + token);
     });
 }
 
@@ -35,6 +30,8 @@ void TokenManager::setAccessToken(const QString &newAccessToken)
     if (accessToken_ == newAccessToken)
         return;
     accessToken_ = newAccessToken;
+
+    settings_.setValue("User/accessToken", accessToken_);
     emit accessTokenChanged();
 }
 

@@ -6,10 +6,11 @@ import "qrc:/product"
 Item {
     id: root
 
+    required property int salespersonId
     readonly property StackView stackView: StackView.view
     property string headerTitle
 
-    Component.onCompleted: statisticsApi.fetchStatistics()
+    Component.onCompleted: statisticsApi.fetchBillsStatistics()
 
     Header {
         id: header
@@ -75,7 +76,7 @@ Item {
 
     StatisticsAPI {
         id: statisticsApi
-
-        onUnpaidBillsFetched: bills => unpaidBills.append(bills)
+        salespersonId: root.salespersonId
+        onCustomerStatisticsFetched: bills => unpaidBills.append(bills)
     }
 }

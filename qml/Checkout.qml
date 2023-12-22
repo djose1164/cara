@@ -1,11 +1,11 @@
 import QtQuick.Controls
 import QtQuick.Layouts
 import QtQuick.Dialogs
-import "qrc:/singleton"
+import User
 
 Pane {
     property int total
-    readonly property bool userIsGuest: TheCurrentUser.isGuest
+    readonly property bool userIsGuest: userStore.user.userType === UserEntity.Guest
     signal payClicked
 
     ColumnLayout {
@@ -27,6 +27,8 @@ Pane {
 //            Material.foreground: "white"
         }
     }
+
+    LocalUserStore { id: userStore }
 
     MessageDialog {
         id: dialog

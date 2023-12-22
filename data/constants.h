@@ -16,6 +16,8 @@ class Constants : public QObject
     Q_PROPERTY(int appHeight READ appHeight CONSTANT)
 
 public:
+    static QUrl getBase();
+
     Constants();
 
     void setBase(const QString &base);
@@ -30,7 +32,8 @@ signals:
 
 private:
     const QString testingBase_;
-    const QString remoteBase_;
+    const QString remoteTesting_;
+    const QString production_;
     QString base_;
 
     int appWidth_;

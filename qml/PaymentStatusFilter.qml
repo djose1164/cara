@@ -4,7 +4,6 @@ import QtQuick.Layouts
 import core
 import entities
 import "qrc:/customers"
-import "qrc:/users"
 
 Popup {
     id: root

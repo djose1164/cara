@@ -1,6 +1,5 @@
 #include "billbusiness.h"
 #include "constants.h"
-#include "currentuser.h"
 #include "billrepository.h"
 
 using namespace EntityLayer;
@@ -34,16 +33,6 @@ QBindable<ModelLayer::BillModel *> BillBusiness::bindableModel()
     return &model_;
 }
 
-void BillBusiness::populate()
-{
-    const auto user{BusinessLayer::CurrentUser::instance()->user()};
-    if (user->userType() != UserEntity::UserTypes::USER)
-        return;
-
-    const int customerId{user->customerId()};
-    fetchBillsByCustomerId(customerId);
-}
-
 void BillBusiness::fetchBillsByCustomerId(int customerId)
 {
     Q_ASSERT(customerId);
@@ -61,9 +50,14 @@ void BillBusiness::fetchBillsByCustomerId(int customerId)
             emit ordersNotFound();
             return;
         }
+        const auto ordersArr = resp["orders"].toArray();
+        for (const auto &order : ordersArr)
+        {
+            const auto orderMap{order.toVariant().toMap()};
+            Q_ASSERT(!orderMap.isEmpty());
 
-        for (const auto &order : orders)
-            model_->append(BillEntity::fromMap(order.toVariant().toMap()));
+            model_->append(BillEntity::fromMap(orderMap));
+        }
         emit populated();
     });
 }

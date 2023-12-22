@@ -190,7 +190,7 @@ ColumnLayout {
       return new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate();
     }
 
-    function subtractHours(date: Date, hours: int) {
+    function subtractHours(date: date, hours: int) {
         date.setHours(date.getHours() - hours);
         return date;
     }

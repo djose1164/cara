@@ -2,7 +2,7 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 import QtQuick.Dialogs
-import core
+import User
 import "qrc:/utils"
 import "qrc:/customers"
 import "qrc:/singleton"
@@ -13,6 +13,7 @@ Page {
 
     property string imgURL: "qrc:/icons/done.svg"
     readonly property StackView stackView_: StackView.view
+    readonly property LocalUserStore userStore: LocalUserStore {}
 
     signal clientAdded
 
@@ -29,18 +30,8 @@ Page {
             width: root.width*.9
             anchors.centerIn: parent
 
-            RowLayout {
-                TextField {
-                    id: forename
-                    placeholderText: "Nombre"
-                    Layout.fillWidth: true
-                }
-
-                TextField {
-                    id: surname
-                    placeholderText: "Apellido"
-                    Layout.fillWidth: true
-                }
+            PersonalInformationForm {
+                id: nameForm
             }
 
             ContactForm {
@@ -49,28 +40,19 @@ Page {
                 Layout.columnSpan: 2
             }
 
+            AddressForm {
+                id: addressForm
+                Layout.fillWidth: true
+            }
+
             Button {
                 Layout.columnSpan: 2
                 Layout.alignment: Qt.AlignCenter
                 text: "Agregar Cliente"
-                onClicked: {
-                    busyIndicator.open();
-
-                    contactForm.removeEmptyFields();
-                    const client = {
-                        "forename": forename.text,
-                        "surname": surname.text,
-                        "contact": contactForm.contact,
-                        "admin_id": CurrentUser.user.userId
-                    };
-
-                    clientRequest.create(client);
-                }
+                onClicked: addCustomer()
             }
         }
     }
-
-    CustomerModel { id: customerModel }
 
     BusyPopup { id: busyIndicator }
 
@@ -94,11 +76,43 @@ Page {
         }
     }
 
+    function addCustomer(): void {
+        try {
+            validate();
+            busyIndicator.open();
+
+            contactForm.removeEmptyFields();
+            const contact = {
+                address: addressForm.address,
+                "forename": nameForm.forename,
+                "surname": nameForm.surname,
+            };
+            Object.assign(contact, contactForm.contact);
+            const client = {
+                "contact": contact,
+                "salesperson_id": userStore.user.salespersonId
+            };
+
+            clientRequest.create(client);
+        } catch (err) {
+            messageDialog.text = "Datos invalidos";
+            messageDialog.informativeText = err;
+            messageDialog.open();
+        }
+    }
+
     function customerCreated(customer) {
         CustomerManager.addCustomer(customer);
         busyIndicator.close();
 
         messageDialog.text = "Cliente agregado con exito!";
+        messageDialog.informativeText = "";
         messageDialog.open();
+    }
+
+    function validate(): void {
+        nameForm.validate();
+        contactForm.validate();
+        addressForm.validate();
     }
 }

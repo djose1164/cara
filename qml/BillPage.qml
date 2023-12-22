@@ -1,22 +1,26 @@
 import QtQuick
 import QtQuick.Controls
-import QtQuick.Layouts
-import entities
-import core
-import "qrc:/singleton"
 import "qrc:/utils"
 
 Page {
     id: root
 
+    required property var user
     readonly property StackView stackView: StackView.view
-    readonly property UserEntity user: CurrentUser.user
     readonly property string adminViewPath: "qrc:/bills/CustomersView.qml"
     readonly property string customerViewPath: "qrc:/bills/CustomerBillsHome.qml"
     readonly property string messagePath: "qrc:/bills/BillMessage.qml"
 
     title: "Facturas"
     header: pageHeader
+    onUserChanged: {
+        if (user.customerId > 0)
+            loader.setSource(customerViewPath);
+        else if (user.isAdmin || user.isSalesperson)
+            loader.setSource(adminViewPath);
+        else
+            loader.setSource(messagePath, {user});
+    }
 
     BillPageHeader {
         id: pageHeader
@@ -55,24 +59,8 @@ Page {
 
     Loader {
         id: loader
-        property StackView stackView: root.stackView
         readonly property int customerId: user.customerId
         anchors.fill: parent
-        source: {
-            if (CurrentUser.isCustomer)
-                return customerViewPath;
-            else if (user.userType === UserEntity.ADMIN)
-                return adminViewPath;
-            else if (user.userType === UserEntity.USER || user.userType === UserEntity.GUEST)
-                return messagePath;
-        }
-    }
-
-    Connections {
-        target: LoginManager
-
-        function onLoggedOut() {
-            CustomerManager.clearModel();
-        }
+        onSourceChanged: print("Loader.onSourceChanged: "+source)
     }
 }

@@ -3,6 +3,8 @@ import QtQuick.Controls
 import QtQuick.Layouts
 import QtQuick.Dialogs
 import core
+import User
+import Salesperson
 import "qrc:/payment" as Payments
 import "qrc:/customers"
 import "qrc:/singleton"
@@ -10,6 +12,9 @@ import "qrc:/product"
 
 Page {
     id: root
+
+    required property var salesperson
+
     readonly property bool isACreditOrder: paymentStatus.buttonText === "Credito"
     readonly property bool isPartiallyPaid: paymentStatus.buttonText === "Abono"
     readonly property bool isPaid: paymentStatus.buttonText === "Pago"
@@ -130,12 +135,6 @@ Page {
             message.open();
 
             root.state = "empty";
-
-            // Set the customerId, if this is the first buy from the user.
-            if (TheCurrentUser.isCostumer && TheCurrentUser.customerId === 0) {
-                TheCurrentUser.customerId = r.customer_id;
-                CurrentUser.customerId = r.customer_id;
-            }
         }
 
         onFailed: function(r) {
@@ -163,7 +162,7 @@ Page {
         root.state = "";
         const fullOrder = {
             customer_id: clientField.currentValue,
-            admin_id: CurrentUser.user.userId,
+            salesperson_id: salesperson.salespersonId,
             details: addProductView.entryFormData(),
             payment: {
                 amount_to_pay: addProductView.totalToPay,

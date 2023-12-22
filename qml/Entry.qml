@@ -2,17 +2,16 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 import "qrc:/product"
-import core
 
 RowLayout {
     id: root
+
     readonly property int quantity: quantityField.value
     readonly property alias price: productField.currentValue
     readonly property var entryValue: {
         "product_id": findProductId(productField.currentText),
         "quantity": quantity,
         "unit_price": price,
-        "warehouse_id": CurrentUser.user.warehouseId
     }
     readonly property int total: price * quantity
     required property int index

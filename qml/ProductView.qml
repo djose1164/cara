@@ -7,6 +7,7 @@ import "qrc:/inventory"
 Item {
     id: root
 
+    required property int salespersonId
     property alias delegate: listView.delegate
     property alias spacing: listView.spacing
     property alias listView: listView
@@ -34,6 +35,7 @@ Item {
 
     InventoryAPI {
         id: inventoryApi
+        salespersonId: root.salespersonId
         onFetchedAll: function(resp) {
             model.append(resp.inventory);
             entriesAdded(model.count);

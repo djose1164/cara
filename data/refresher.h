@@ -5,6 +5,7 @@
 #include <QObject>
 #include <QNetworkAccessManager>
 #include <QTimer>
+#include <QSettings>
 
 namespace DataLayer {
 class Refresher : public QObject, public IRefreshable
@@ -21,7 +22,7 @@ public slots:
     void refresh() override;
 
 signals:
-    void accessTokenRefreshed(const QByteArray &data);
+    void accessTokenRefreshed(const QString &token);
     void errorOccurred(const QByteArray &data);
 
     void refreshTokenChanged();
@@ -33,6 +34,7 @@ private:
     QString refreshToken_;
 
     QTimer *timer_;
+    QSettings settings_;
 };
 }
 

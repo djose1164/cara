@@ -2,7 +2,7 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 import "qrc:/payment"
-import core 1.0
+import User
 import "qrc:/product"
 
 ColumnLayout {
@@ -25,7 +25,7 @@ ColumnLayout {
     states: [
         State {
             name: "customerView"
-            when: CurrentUser.isCustomer
+            when: userStore.user.isCustomer
             PropertyChanges {
                 target: orderStatusCB
                 enabled: false
@@ -82,8 +82,18 @@ ColumnLayout {
     }
 
     Label {
-        text: date.toLocaleDateString()
+        property date orderDate: root.date
+        text: orderDate.toLocaleDateString()
         font.pointSize: 12
+    }
+
+    Label {
+        text: `
+            <strong>Total</strong><br>
+            RD$${internal.orderTotal}
+        `
+        font.pointSize: 12
+        Layout.topMargin: 20
     }
 
     Label {
@@ -101,9 +111,10 @@ ColumnLayout {
             required property int quantity
             required total
 
+            Component.onCompleted: internal.orderTotal += total
+
             Layout.fillHeight: true
             Layout.fillWidth: true
-            Component.onCompleted: print("productcard: ",width, ` ${root.width}`)
             enabled: false
             productName: product.name
             productPrice: product.price
@@ -111,6 +122,8 @@ ColumnLayout {
             imageUrl: product.imageUrl
         }
     }
+
+    LocalUserStore { id: userStore }
 
     UpdatePayment {
         id: updatePayment
@@ -121,5 +134,11 @@ ColumnLayout {
         paidAmount: payment.paidAmount
         paymentStatus: payment.status
         paymentId: payment.paymentId
+    }
+
+    QtObject {
+        id: internal
+
+        property int orderTotal
     }
 }

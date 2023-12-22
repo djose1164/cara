@@ -1,8 +1,7 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
-import core
-import entities
+import User
 import "qrc:/utils"
 
 Rectangle {
@@ -13,6 +12,7 @@ Rectangle {
     property int productPrice
     property int productId
     property int total
+    readonly property LocalUserStore userStore: LocalUserStore {}
 
     readonly property alias spinBox: spinBox
 
@@ -36,7 +36,6 @@ Rectangle {
             onReady: imageStackLayout.currentIndex = 1
             source: imageUrl
             sourceSize: "100x100"
-            Component.onCompleted: print(imageUrl)
         }
     }
 
@@ -82,7 +81,7 @@ Rectangle {
             Layout.alignment: Qt.AlignRight
             Layout.rightMargin: 5
             Layout.bottomMargin: 5
-            from: CurrentUser.user.userType === UserEntity.ADMIN ? 0 : 1
+            from: userStore.user.userType === UserEntity.ADMIN ? 0 : 1
             editable: true
             Keys.onReturnPressed: Qt.inputMethod.hide()
         }

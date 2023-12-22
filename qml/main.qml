@@ -1,13 +1,13 @@
 import QtQuick
 import QtQuick.Controls
-import QtQuick.Controls.Material
-import QtQuick.Layouts
 import "qrc:/errors"
 import "qrc:/singleton"
 import "qrc:/utils"
-import models
 import core
 import data
+import Authentication as Auth
+import User
+import Utils
 
 ApplicationWindow {
     id: app
@@ -17,7 +17,9 @@ ApplicationWindow {
     title: "Cara"
 
     property string iconSize: "24x24"
-    property alias appStack: mainStackView
+    property bool authenticatedUser
+    readonly property alias appStack: stackView
+    readonly property string mainPage: "qrc:/main/MainPage.qml"
 
     onClosing: function(close) {
         //Manages Android Back-button
@@ -32,76 +34,95 @@ ApplicationWindow {
     }
 
     Component.onCompleted: {
-        caraApi.checkStatus();
+        LoginManager.session = UserSession.session;
+        internetStatus.checkInternetConnection();
     }
 
     StackView {
-        id: mainStackView
+        id: stackView
         anchors.fill: parent
 
-        initialItem: Item {
-            BusyIndicator { anchors.centerIn: parent }
+        initialItem: Component {
+            Item {
+                BusyIndicator { anchors.centerIn: parent }
+            }
         }
     }
 
-    /*WebSocket {
-        active: true
-        url: "ws://cara-rd.live/echo"
-        onBinaryMessageReceived: msg => print(`msg: ${msg}`)
-        onTextMessageReceived: txt => print(`text: ${txt}`)
-        onErrorStringChanged: print("webSocket's status: " + status + `: ${errorString}`)
-        onStatusChanged: if (status === WebSocket.Open)sendBinaryMessage(`{"app_version": "${Qt.application.version}"}`)
-    }*/
+    UserController {
+        id: userController
+        onFetched: function(resp) {
+            const user = userController.create(
+                JSON.stringify(JSON.parse(resp).user)
+            );
+            print("Replacing appStack with MainPage");
+            stackView.replace(mainPage, {user});
+        }
+    }
+
+    Connections {
+        target: LoginManager
+
+        function onAuthenticationDone() {
+            stackView.replace(mainPage, {user: userController.create({})});
+        }
+    }
 
     Shortcut {
         sequence: StandardKey.Quit
         onActivated: Qt.quit()
     }
 
+    InternetStatus {
+        id: internetStatus
+        onStatusChanged: {
+            print("InternetStatus: "+statusString);
+            if (status === internetStatus.InternetNotAvailable)
+                userModel.append({});
+            else
+                caraApi.checkStatus();
+        }
+    }
+
     CaraApi {
         id: caraApi
 
         endpoint: "/health"
+        //  FIXME: Health should return when the service is unavailable
         onServiceUnavailable: {
-            print("Holalalala")
             const message = "Nuestros servidores se encuentran actualmente bajo "
                           + "mantenimiento. Puedes ver como va en [Twiterr](https://twitter.com/carardoficial).";
-            mainStackView.replace("qrc:/errors/ErrorPage.qml", {message});
+            appStack.replace("qrc:/errors/ErrorPage.qml", {message});
         }
         onSucceeded: {
             loginSetup();
-            mainStackView.replace("qrc:/main/MainPage.qml");
         }
+        Component.onCompleted: print("CaraApi: Healths", caraApi.base)
 
         function checkStatus() {
             get("/");
         }
     }
 
-    Connections {
-        property int counter
-        target: LoginManager
-
-        function onLoggedIn(resp) {
-            print("onLoggedIn: counter: ", ++counter)
-            CurrentUser.fillUserInfo(resp);
-        }
-
-        function onLoggedInWithToken() {
-            CurrentUser.userFromSettings();
-
-            print("onLoggedInWithToken: userId", CurrentUser.user.userId);
-        }
-
-        function onLoggedOut() {
-            CurrentUser.clear();
+    // In charge of checking if there's a previous login, if so logs the user in.
+    // This' not supposod to handle authentication from credentials, only from refresh token.
+    Auth.Login {
+        id: login
+        userStore: LocalUserStore { id: localUserStore }
+        onAuthenticated: {
+            print("onLoggedIn: "+localUserStore.user.userId)
+            userController.getUserById(localUserStore.user.userId);
         }
     }
 
-
     function loginSetup() {
-        if (LoginManager.hasPreviousLogin()) {
-            LoginManager.requestLoginFromSettings();
+        print("user has previoues login: "+login.hasPreviousLogin);
+        if (login.hasPreviousLogin) {
+            print("Previous login found.")
+            print("Authentication refresh token.")
+            login.authenticateRefreshToken();
+        } else {
+            stackView.replace(mainPage, {user: userController.create({})});
         }
     }
 }

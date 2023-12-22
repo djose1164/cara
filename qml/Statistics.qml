@@ -6,6 +6,7 @@ import "qrc:/product"
 Page {
     id: root
 
+    required property int salespersonId
     readonly property StackView stackView: StackView.view
 
     title: "Estadisticas"
@@ -27,7 +28,7 @@ Page {
             width: 180
             height: 180
 
-            onClicked: stackView.push(path, {headerTitle: title})
+            onClicked: stackView.push(path, {headerTitle: title, salespersonId})
 
             Column {
                 anchors.fill: parent

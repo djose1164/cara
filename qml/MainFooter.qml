@@ -1,8 +1,11 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
+import User
 
 TabBar {
+    id: root
+
     readonly property int addOrderIdx: shopBtn.TabBar.index
 
     signal homeClicked
@@ -14,29 +17,17 @@ TabBar {
 
     TabButton {
         id: homeBtn
-        background: IconImage {
-            source: "qrc:/icons/home.svg"
-            antialiasing: false
-            sourceSize: iconSize
-        }
+        icon.source: "qrc:/icons/home.svg"
         onClicked: homeClicked()
     }
 
     TabButton {
         id: shopBtn
-        background: IconImage {
-            source: "qrc:/icons/shopping-cart.svg"
-            antialiasing: false
-            sourceSize: iconSize
-        }
+        icon.source: "qrc:/icons/shopping-cart.svg"
     }
 
     TabButton {
         id: billBtn
-        background: IconImage {
-            source: "qrc:/icons/bill.svg"
-            antialiasing: false
-            sourceSize: "32x32"
-        }
+        icon.source: "qrc:/icons/bill.svg"
     }
 }

@@ -1,8 +1,12 @@
 import QtQuick
 import QtQuick.Controls
-import core
+import User
 
 Item {
+    id: root
+
+    property var user
+
     Label {
         width: parent.width * .8
         anchors.horizontalCenter: parent.horizontalCenter
@@ -14,12 +18,10 @@ Item {
         horizontalAlignment: Label.AlignHCenter
     }
 
-    Component.onCompleted: print(CurrentUser.user.customerId, CurrentUser.user.userType)
-
     function statusText() : string {
-        if (!CurrentUser.isUser)
+        if (user.userType === UserEntity.Guest)
             return "Necesitas registrarte para poder ver tus ordenes recientes.";
-        else if (!CurrentUser.isCostumer)
+        else if (user.isCustomer)
             return "Aun no haz realizado ninguna orden.";
 
         return "Error en mostrar todas las ordenes";

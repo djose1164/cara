@@ -13,13 +13,13 @@ class OrderEntity : public QObject, public JsonExportable
     Q_OBJECT
     QML_ELEMENT
 
-    Q_PROPERTY(UserEntity *user READ user WRITE setUser NOTIFY userChanged)
+    Q_PROPERTY(Entity::UserEntity user READ user WRITE setUser NOTIFY userChanged)
     Q_PROPERTY(PaymentEntity *payment MEMBER payment_ NOTIFY paymentChanged)
 
 public:
     explicit OrderEntity(QObject *parent = nullptr);
-
-    UserEntity *user() const;
+    
+    Entity::UserEntity &user();
 
     PaymentEntity *payment() const;
 
@@ -30,7 +30,7 @@ public:
     DetailsEntity *detail(qsizetype index) const;
 
 public slots:
-    void setUser(UserEntity *const user);
+    void setUser(Entity::UserEntity user);
 
     Q_INVOKABLE QByteArray toJson() const;
 
@@ -40,7 +40,7 @@ signals:
     void paymentChanged();
 
 private:
-    UserEntity *user_;
+    Entity::UserEntity user_;
     QProperty<QByteArray> details_;
     PaymentEntity *payment_;
 };

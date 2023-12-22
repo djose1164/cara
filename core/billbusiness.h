@@ -4,11 +4,12 @@
 #include "billmodel.h"
 #include "ibillrepository.h"
 #include "rest.h"
+#include "userentity.h"
 #include <QObject>
 #include <QtQml>
 
 namespace BusinessLayer {
-using EntityLayer::UserEntity, EntityLayer::BillEntity,
+using Entity::UserEntity, EntityLayer::BillEntity,
     ModelLayer::BillModel;
 
 class BillBusiness : public QObject
@@ -26,7 +27,6 @@ public:
     QBindable<BillModel *> bindableModel();
 
 public slots:
-    void populate();
     void fetchBillsByCustomerId(int customerId);
     void fetchBillById(int orderId);
     void fetchBillsByAdminId(int adminId);
