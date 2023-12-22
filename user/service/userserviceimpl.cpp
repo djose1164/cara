@@ -25,6 +25,9 @@ void UserServiceImpl::clear()
 {
     QSettings settings;
     settings.remove("User");
+    settings.remove("Contact");
+    settings.remove("Salesperson");
+    settings.remove("Credentials");
     emit cleared();
 }
 
