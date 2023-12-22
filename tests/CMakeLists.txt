@@ -12,7 +12,11 @@ SETUP_TESTS(
    login
    restuserauthentication
    usercredential
+   salespersoncontroller
+   salespersonmanager
+   localuserstore
 )
 
 include_directories(../authentication)
 include_directories(../user)
+include_directories(../salesperson)
