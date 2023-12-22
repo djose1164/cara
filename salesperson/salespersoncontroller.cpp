@@ -10,10 +10,13 @@ SalespersonController::SalespersonController(QObject *parent)
     , salespersonId_{}
     , buffer_{}
 {
-    connect(manageable_, &Business::Manageable::fetched, this, [&] {
+    connect(manageable_, &Business::Manageable::finished, this, [&] {
         setBuffer(manageable_->buffer());
-        emit fetched();
     });
+
+    connect(manageable_, &Business::Manageable::fetched, this, &SalespersonController::fetched);
+
+    connect(manageable_, &Business::Manageable::errorOccurred, this, &SalespersonController::errorOccurred);
 }
 
 int SalespersonController::adminId() const
@@ -21,7 +24,7 @@ int SalespersonController::adminId() const
     return adminId_;
 }
 
-void SalespersonController::setAdminId(int newAdminId)
+void SalespersonController::setAdminId(SalespersonId newAdminId)
 {
     if (adminId_ == newAdminId)
         return;
@@ -29,16 +32,18 @@ void SalespersonController::setAdminId(int newAdminId)
     emit adminIdChanged();
 }
 
-void SalespersonController::readAll()
+void SalespersonController::readSalespeople()
 {
     Q_ASSERT(adminId_ > 0);
 
     manageable_->readAll(adminId_);
 }
 
-void SalespersonController::read(int salespersonId)
+void SalespersonController::readSalesperson()
 {
+    Q_ASSERT(salespersonId_ > 0);
 
+    manageable_->read(salespersonId_);
 }
 
 void SalespersonController::update()
@@ -51,7 +56,7 @@ int SalespersonController::salespersonId() const
     return salespersonId_;
 }
 
-void SalespersonController::setSalespersonId(int newSalespersonId)
+void SalespersonController::setSalespersonId(SalespersonId newSalespersonId)
 {
     if (salespersonId_ == newSalespersonId)
         return;
