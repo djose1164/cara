@@ -2,10 +2,11 @@ import QtQuick
 import QtQuick.Controls
 import Salesperson
 import User
+import Utils
 import "qrc:/utils"
 import "qrc:/singleton"
 
-Page {
+ListViewPage {
     id: root
 
     required property int salespersonId
@@ -18,11 +19,10 @@ Page {
         title: root.title
         onBackClicked: stackView.pop()
     }
-    Component.onCompleted: spService.fetchCustomers()
+    noDataMessage: userStore.user.isAdmin ? "Este vendedor no cuenta con ningun cliente."
+                                          : "La lista de clientes esta vacia. Inteta agregar uno nuevo."
 
-    ListView {
-        id: listView
-        anchors.fill: parent
+    listView {
         model: listModel
         delegate: ItemDelegate {
             id: control
@@ -30,47 +30,46 @@ Page {
             required property int customer_id
             required property string name
 
+            width: listView.width
+            text: `${name}\nClient ID: ${customer_id}`
+            font.pointSize: 14
             onClicked: {
                 customerEdit.customerId = customer_id;
                 customerEdit.open();
             }
-
-            width: listView.width
-            text: `${name}\nClient ID: ${customer_id}`
-            font.pointSize: 14
         }
+    }
+
+    Component.onCompleted: {
+        spService.fetchCustomers();
+        root.state = "fetching";
     }
 
     ListModel { id: listModel }
 
-    Label {
-        width: listView.width * .9
-        anchors.centerIn: parent
-        visible: listView.count === 0
-        text: "La lista de clientes esta vacia. Inteta agregar uno nuevo."
-        font.pointSize: 14
-        wrapMode: Label.Wrap
-    }
+    LocalUserStore { id: userStore }
 
     RoundButton {
-        onClicked: stackView.push("qrc:/customers/CustomerForm.qml")
-
         anchors {
             right: parent.right
             rightMargin: 10
             bottom: parent.bottom
             bottomMargin: 15
         }
-
+        visible: userStore.user.isSalesperson
         icon.source: "qrc:/icons/person_add.svg"
         icon.width: 30
         icon.height: 30
+        onClicked: stackView.push("qrc:/customers/CustomerForm.qml")
     }
 
     AssociateSalespersonService {
         id: spService
         salespersonId: root.salespersonId
-        onFetched: listModel.append(JSON.parse(data).customers)
+        onFetched: {
+            listModel.append(JSON.parse(data).customers);
+            root.state = "";
+        }
     }
 
     CustomerEdit {
