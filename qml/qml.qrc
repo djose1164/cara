@@ -91,6 +91,7 @@
         <file>MoreVertButton.qml</file>
         <file>ImagePicker.qml</file>
         <file>utils.js</file>
+        <file>NumberTextField.qml</file>
     </qresource>
     <qresource prefix="/payment">
         <file>PaymentStatus.qml</file>
