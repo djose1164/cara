@@ -141,16 +141,38 @@ QJsonObject Salesperson::prepareContact() const
     return contact;
 }
 
-int Salesperson::adminId() const
+Salesperson::UserId Salesperson::adminId() const
 {
     return adminId_;
 }
 
-void Salesperson::setAdminId(int newAdminId)
+void Salesperson::setAdminId(UserId newAdminId)
 {
     if (adminId_ == newAdminId)
         return;
     adminId_ = newAdminId;
+}
+
+bool Salesperson::isValid() const
+{
+    if (salespersonId_ < 1)
+        return false;
+    if (isAssociate() && (creditLimit_ < 0
+                          || creditAvailable_ > creditLimit_
+                          || creditConsumed_ > creditLimit_))
+        return false;
+
+    return true;
+}
+
+bool Salesperson::isAssociate() const
+{
+    return salespersonType_ == SalespersonTypes::Associate;
+}
+
+bool Salesperson::isAdministrator() const
+{
+    return salespersonType_ == SalespersonTypes::Administrator;
 }
 
 int Salesperson::salespersonId() const
@@ -158,7 +180,7 @@ int Salesperson::salespersonId() const
     return salespersonId_;
 }
 
-void Salesperson::setSalespersonId(int newSalespersonId)
+void Salesperson::setSalespersonId(SalespersonId newSalespersonId)
 {
     if (salespersonId_ == newSalespersonId)
         return;
@@ -203,7 +225,7 @@ void Salesperson::setCreditConsumed(int newCreditConsumed)
 
 Salesperson Salesperson::fromMap(const QVariantMap &data)
 {
-    Q_ASSERT(!data.isEmpty());
+    qDebug() << data;
 
     Salesperson sp{};
 
@@ -214,17 +236,14 @@ Salesperson Salesperson::fromMap(const QVariantMap &data)
     sp.setEmail(data.value("email").toString());
     sp.setAdminId(data.value("adminId").toInt());
 
+    const int salespersonTypeId{data.value("salesperson_type").toJsonObject()["id"].toInt()};
+    sp.setSalespersonType(static_cast<SalespersonTypes>(salespersonTypeId));
+
     return sp;
 }
 
 Salesperson Salesperson::fromJson(const QByteArray &data)
 {
-    Q_ASSERT(!data.isEmpty());
-    Q_ASSERT(data.contains("credit_limit"));
-    Q_ASSERT(data.contains("credit_available"));
-    Q_ASSERT(data.contains("credit_consumed"));
-    Q_ASSERT(data.contains("id"));
-
     const auto spObj{QJsonDocument::fromJson(data).object()};
     Salesperson sp{};
 
@@ -237,11 +256,6 @@ Salesperson Salesperson::fromJson(const QByteArray &data)
     const auto typesMap{spObj.value("salesperson_type").toObject()};
     sp.setSalespersonType(static_cast<SalespersonTypes>(typesMap["id"].toInt()));
 
-    Q_ASSERT(sp.salespersonId() > 0);
-    Q_ASSERT(sp.creditAvailable() > 0);
-    Q_ASSERT(sp.creditLimit() > 0);
-    Q_ASSERT(sp.creditLimit() >= sp.creditAvailable());
-    Q_ASSERT(sp.creditLimit() >= sp.creditConsumed());
     return sp;
 }
 }

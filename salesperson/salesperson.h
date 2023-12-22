@@ -21,6 +21,9 @@ class Salesperson
     Q_PROPERTY(SalespersonTypes salespersonType READ salespersonType WRITE setSalespersonType FINAL)
     Q_PROPERTY(int salespersonId READ salespersonId WRITE setSalespersonId FINAL)
 public:
+    using SalespersonId = int;
+    using UserId = int;
+
     enum class SalespersonTypes
     {
         Administrator = 1,
@@ -70,10 +73,15 @@ public:
     void setSalespersonType(const SalespersonTypes &newSalespersonType);
 
     int salespersonId() const;
-    void setSalespersonId(int newSalespersonId);
+    void setSalespersonId(SalespersonId newSalespersonId);
 
-    int adminId() const;
-    void setAdminId(int newAdminId);
+    UserId adminId() const;
+    void setAdminId(UserId newAdminId);
+
+    bool isValid() const;
+
+    bool isAssociate() const;
+    bool isAdministrator() const;
 
 private:
     QJsonObject prepareUser() const;
@@ -83,8 +91,8 @@ private:
     QJsonObject prepareContact() const;
 
 private:
-    int salespersonId_;
-    int adminId_;
+    SalespersonId salespersonId_;
+    UserId adminId_;
 
     QString username_;
     QString password_;
