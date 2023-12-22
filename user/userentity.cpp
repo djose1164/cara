@@ -9,7 +9,7 @@ UserEntity UserEntity::fromJson(const QByteArray &data)
     const auto map{QJsonDocument::fromJson(data).object()};
     UserEntity user{};
     const auto contactDoc{map["contact"].toObject()};
-    Q_ASSERT(!contactDoc.isEmpty());
+
     user.setForename(contactDoc["forename"].toString());
     user.setSurname(contactDoc["surname"].toString());
     user.setCustomerId(map["customer_id"].toInt());
@@ -20,7 +20,6 @@ UserEntity UserEntity::fromJson(const QByteArray &data)
 
     const auto salespersonData{QJsonDocument(map["salesperson"].toObject())};
     user.setSalespersonId(salespersonData["id"].toInt());
-    Q_ASSERT(user.salespersonId());
 
     user.setSalesperson(Salesperson::fromJson(salespersonData.toJson()));
     return user;
@@ -34,6 +33,9 @@ UserEntity::UserEntity()
     , customerId_{}
     , userId_{}
     , userType_{UserTypes::Guest}
+    , refreshToken_{}
+    , accessToken_{}
+    , salesperson_{}
 {
 
 }
@@ -108,12 +110,12 @@ void UserEntity::setCustomerId(int newCustomerId)
     customerId_ = newCustomerId;
 }
 
-int UserEntity::userId() const
+UserEntity::UserId UserEntity::userId() const
 {
     return userId_;
 }
 
-void UserEntity::setUserId(int newUserId)
+void UserEntity::setUserId(UserId newUserId)
 {
     if (userId_ == newUserId)
         return;
@@ -177,8 +179,6 @@ Salesperson UserEntity::salesperson() const
 
 void UserEntity::setSalesperson(const Salesperson &newSalesperson)
 {
-    if (salesperson_ == newSalesperson)
-        return;
     salesperson_ = newSalesperson;
 }
 
@@ -192,5 +192,15 @@ void UserEntity::setSalespersonId(int newSalespersonId)
     if (salespersonId_ == newSalespersonId)
         return;
     salespersonId_ = newSalespersonId;
+}
+
+QString UserEntity::accessToken() const
+{
+    return accessToken_;
+}
+
+void UserEntity::setAccessToken(const QString &newAccessToken)
+{
+    accessToken_ = newAccessToken;
 }
 }

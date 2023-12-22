@@ -25,6 +25,9 @@ class UserEntity
     Q_PROPERTY(int salespersonId READ salespersonId WRITE setSalespersonId FINAL)
 
 public:
+    using UserId = int;
+    using SalespersonId = Entity::Salesperson::SalespersonId;
+
     enum class UserTypes
     {
         Guest,
@@ -56,8 +59,8 @@ public:
     int customerId() const;
     void setCustomerId(int newCustomerId);
 
-    int userId() const;
-    void setUserId(int newUserId);
+    UserId userId() const;
+    void setUserId(UserId newUserId);
 
     UserTypes userType() const;
     void setUserType(UserTypes newUserType);
@@ -74,8 +77,11 @@ public:
     Entity::Salesperson salesperson() const;
     void setSalesperson(const Entity::Salesperson &newSalesperson);
 
-    int salespersonId() const;
-    void setSalespersonId(int newSalespersonId);
+    SalespersonId salespersonId() const;
+    void setSalespersonId(SalespersonId newSalespersonId);
+
+    QString accessToken() const;
+    void setAccessToken(const QString &newAccessToken);
 
 private:
     QString username_;
@@ -85,12 +91,13 @@ private:
     QString surname_;
 
     int customerId_;
-    int userId_;
-    int salespersonId_;
+    UserId userId_;
+    SalespersonId salespersonId_;
 
     UserTypes userType_;
 
     QString refreshToken_;
+    QString accessToken_;
     Entity::Salesperson salesperson_;
 };
 }
