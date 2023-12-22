@@ -59,6 +59,20 @@ Page {
         }
     }
 
+    states: [
+        State {
+            name: "fetching"
+            PropertyChanges {
+                target: stackLayout
+                visible: false
+            }
+            PropertyChanges {
+                target: busyIndicator
+                visible: true
+            }
+        }
+    ]
+
     Component.onCompleted: {
         updateViews();
     }
@@ -84,11 +98,11 @@ Page {
         }
     }
 
-    Component {
+
+    BusyIndicator {
         id: busyIndicator
-        Item {
-            BusyIndicator { anchors.centerIn: parent }
-        }
+        anchors.centerIn: parent
+        visible: false
     }
 
     SidePane {
@@ -101,7 +115,9 @@ Page {
         target: LoginManager
 
         function onLoggedIn() {
-           userController.getUserById(userStore.user.userId);
+            userStore.update();
+            userController.getUserById(userStore.user.userId);
+            root.state = "fetching";
         }
 
         function onLoggingOut() {
@@ -124,6 +140,7 @@ Page {
                     JSON.parse(data).user
             ));
             updateViews();
+            root.state = "";
         }
     }
 
