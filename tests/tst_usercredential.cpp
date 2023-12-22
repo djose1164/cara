@@ -30,7 +30,7 @@ void TestUserCredential::initTestCase()
 {
     QCoreApplication::setOrganizationDomain("cara.com");
     QCoreApplication::setOrganizationName("Cara");
-    QCoreApplication::setApplicationName("Cara");
+    QCoreApplication::setApplicationName("CaraTesting");
 }
 
 void TestUserCredential::cleanupTestCase()

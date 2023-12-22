@@ -34,7 +34,7 @@ void TestRestUserAuthentication::initTestCase()
 {
     QCoreApplication::setOrganizationDomain("cara.com");
     QCoreApplication::setOrganizationName("Cara");
-    QCoreApplication::setApplicationName("Cara");
+    QCoreApplication::setApplicationName("CaraTesting");
 }
 
 void TestRestUserAuthentication::init()
