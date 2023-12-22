@@ -79,7 +79,7 @@ Drawer {
             }
 
             AddressForm {
-                id: addresForm
+                id: addressForm
                 Layout.fillWidth: true
                 Layout.columnSpan: 2
             }
@@ -126,10 +126,11 @@ Drawer {
         onCustomerFetched: function(customer) {
             personalInfoForm.forename = customer.forename;
             personalInfoForm.surname = customer.surname;
-            if (customer.contact)
-                contactForm.fillFields(customer.contact);
-            if (customer.contact.address)
-                addressForm.fillFields(contact.address);
+
+            if (customer)
+                contactForm.fillFields(customer);
+            if (customer.address)
+                addressForm.fillFields(customer.address);
         }
     }
 }
