@@ -77,21 +77,28 @@ Page {
     }
 
     function addCustomer(): void {
-        busyIndicator.open();
+        try {
+            validate();
+            busyIndicator.open();
 
-        contactForm.removeEmptyFields();
-        const contact = {
-            address: addressForm.address,
-            "forename": nameForm.forename,
-            "surname": nameForm.surname,
-        };
-        Object.assign(contact, contactForm.contact);
-        const client = {
-            "contact": contact,
-            "salesperson_id": userStore.user.salespersonId
-        };
+            contactForm.removeEmptyFields();
+            const contact = {
+                address: addressForm.address,
+                "forename": nameForm.forename,
+                "surname": nameForm.surname,
+            };
+            Object.assign(contact, contactForm.contact);
+            const client = {
+                "contact": contact,
+                "salesperson_id": userStore.user.salespersonId
+            };
 
-        clientRequest.create(client);
+            clientRequest.create(client);
+        } catch (err) {
+            messageDialog.text = "Datos invalidos";
+            messageDialog.informativeText = err;
+            messageDialog.open();
+        }
     }
 
     function customerCreated(customer) {
@@ -99,6 +106,13 @@ Page {
         busyIndicator.close();
 
         messageDialog.text = "Cliente agregado con exito!";
+        messageDialog.informativeText = "";
         messageDialog.open();
+    }
+
+    function validate(): void {
+        nameForm.validate();
+        contactForm.validate();
+        addressForm.validate();
     }
 }

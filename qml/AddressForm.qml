@@ -66,4 +66,8 @@ GroupBox {
         street.text = address.street;
         house_num.text  = address.house_number;
     }
+
+    function validate(): void {
+
+    }
 }

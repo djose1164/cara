@@ -1,6 +1,8 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
+import "qrc:/utils"
+import "qrc:/utils/utils.js" as JS
 
 ColumnLayout {
     id: root
@@ -18,11 +20,10 @@ ColumnLayout {
         ColumnLayout {
             anchors.fill: parent
 
-            TextField {
+            NumberTextField {
                 id: phoneNumber
                 Layout.fillWidth: true
                 placeholderText: "Numero telefonico"
-                validator: IntValidator {}
             }
 
             TextField {
@@ -46,5 +47,14 @@ ColumnLayout {
     function fillFields(contact: var) {
         phoneNumber.text = contact.telephone;
         email.text = contact.email;
+    }
+
+    function validate(): void {
+        if (JS.isEmpty(phoneNumber.text))
+            throw "El numero telefonico no puede estar vacio.";
+        else if (JS.isEmpty(email.text))
+            throw "El correo electronico no puede estar vacio";
+        else if (!email.acceptableInput)
+            throw "El Correo electronico no es valido.";
     }
 }
