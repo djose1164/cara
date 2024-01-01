@@ -68,5 +68,6 @@ Page {
     BusyIndicator {
         id: busyIndicator
         visible: false
+        anchors.centerIn: parent
     }
 }
