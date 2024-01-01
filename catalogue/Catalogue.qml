@@ -17,7 +17,7 @@ Page {
         onBackClicked: stackView.pop()
     }
 
-    Component.onCompleted: if (ProductManager.modelIsEmpty()) catalogueRepository.fetchProducts()
+    Component.onCompleted: catalogueRepository.fetchProducts()
 
     StackLayout {
         id: stackLayout
@@ -28,7 +28,7 @@ Page {
         ListView {
             id: productView
 
-            model: ProductManager.model
+            model: listModel
 
             delegate: ItemDelegate {
                 id: item
@@ -70,24 +70,27 @@ Page {
                 }
             }
         }
+
         Item {
-        Label {
-            id: label
-            anchors.centerIn: parent
-            width: parent.width*.9
-            horizontalAlignment: Label.AlignHCenter
-            text: "Tu inventario esta vacio. Intenta crear una nueva [Orden de Compra](qrc:/orders/BuyOrder.qml)."
-            onLinkActivated: link => stackView.push(link)
-            textFormat: Label.MarkdownText
-            font.pointSize: 14
-            wrapMode: Label.WordWrap
-        }
+            Label {
+                id: label
+                anchors.centerIn: parent
+                width: parent.width*.9
+                horizontalAlignment: Label.AlignHCenter
+                text: "Tu inventario esta vacio. Intenta crear una nueva [Orden de Compra](qrc:/orders/BuyOrder.qml)."
+                onLinkActivated: link => stackView.push(link)
+                textFormat: Label.MarkdownText
+                font.pointSize: 14
+                wrapMode: Label.WordWrap
+            }
         }
     }
 
+    ListModel { id: listModel }
+
     Catalogue.CatalogueRepository {
         id: catalogueRepository
-        onProductsFetched: data => ProductManager.modelAppend(JSON.parse(data).products)
+        onProductsFetched: data => listModel.append(JSON.parse(data).products)
     }
 
     RoundButton {
