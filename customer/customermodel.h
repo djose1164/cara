@@ -41,6 +41,7 @@ public:
 signals:
     void countChanged();
     void repositoryChanged();
+    void updated();
 
 public slots:
     void insert(int index, const QJsonObject &data);

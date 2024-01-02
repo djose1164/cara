@@ -108,6 +108,8 @@ void CustomerModel::update(SalespersonId salespersonId)
         for (const auto customerValue : std::as_const(customersArray))
             data_.append(customerValue.toObject());
         endResetModel();
+        emit countChanged();
+        emit updated();
     });
 }
 }
