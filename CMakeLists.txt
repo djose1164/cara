@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.16)
 
-project(Cara VERSION 0.14.0 LANGUAGES CXX)
+project(Cara VERSION 0.15.0 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -26,6 +26,9 @@ add_subdirectory(salesperson)
 add_subdirectory(user)
 add_subdirectory(authentication)
 add_subdirectory(utils)
+add_subdirectory(billing)
+add_subdirectory(Customer)
+add_subdirectory(Product)
 
 if(NOT CMAKE_BUILD_TYPE STREQUAL "Release")
     add_subdirectory(tests)
@@ -46,11 +49,14 @@ target_link_libraries(CaraLib PUBLIC
     Dataplugin
     Entitiesplugin
     Catalogueplugin
-    Inventoryplugin
+    InventoryLibplugin
     salespersonplugin
     UserLibplugin
     AuthenticationLibplugin
     UtilsLibplugin
+    BillingLibplugin
+    CustomerLibplugin
+    ProductLibplugin
 )
 
 # Additional configurations for CaraLib
