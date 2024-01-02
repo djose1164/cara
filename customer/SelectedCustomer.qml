@@ -7,11 +7,11 @@ import "qrc:/customers"
 Item {
     id: root
 
-    required property string fullname
     required property CustomerSelector customerSelector
     required property T.StackView stackView
+    required property int customerId
 
-    property alias customerId: customerEdit.customerId
+    property alias fullname: customerDelegate.fullname
 
     implicitHeight: 100
 
@@ -23,8 +23,8 @@ Item {
         onRedirectClicked: customerSelector.open()
 
         CustomerSelectorDelegate {
+            id: customerDelegate
             anchors.fill: parent
-            fullname: root.fullname
             customerId: root.customerId
             onClicked: customerEdit.open()
         }
@@ -35,5 +35,10 @@ Item {
         width: app.width
         height: app.height
         stackView: root.stackView
+        customerId: root.customerId
+    }
+
+    function toJson() {
+        return {fullname, id: customerId};
     }
 }
