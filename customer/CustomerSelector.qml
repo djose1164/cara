@@ -45,13 +45,28 @@ Drawer {
                 customerSelected(model);
                 root.close();
             }
+        }
 
+        BusyIndicator {
+            id: busyIndicator
+            anchors.centerIn: parent
+        }
+
+        Label {
+            width: listView.width
+            anchors.verticalCenter: parent.verticalCenter
+            horizontalAlignment: Label.AlignHCenter
+            visible: listView.count === 0 && busyIndicator.visible === false
+            text: "Aun no tienes ningun cliente registrado"
         }
     }
 
     CustomerModel {
         id: customerModel
         repository: customerRepository
+        onUpdated: {
+            busyIndicator.visible = false;
+        }
     }
 
     RestCustomerRepository {
