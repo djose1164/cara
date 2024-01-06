@@ -11,7 +11,7 @@ set(CMAKE_AUTOUIC ON)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 find_package(Qt6 6.2 REQUIRED
-    COMPONENTS Qml Quick Core Network Svg Test REQUIRED)
+    COMPONENTS Qml Quick Core Network Svg Test Charts REQUIRED)
 
 qt_standard_project_setup(REQUIRES 6.2)
 qt_policy(SET QTP0001 NEW)
@@ -29,6 +29,7 @@ add_subdirectory(utils)
 add_subdirectory(billing)
 add_subdirectory(Customer)
 add_subdirectory(Product)
+add_subdirectory(Statistics)
 
 if(NOT CMAKE_BUILD_TYPE STREQUAL "Release")
     add_subdirectory(tests)
@@ -44,6 +45,7 @@ target_link_libraries(CaraLib PUBLIC
     Qt6::Network
     Qt6::Svg
     Qt6::Test
+    Qt6::Charts
     Coreplugin
     Modelsplugin
     Dataplugin
@@ -57,6 +59,7 @@ target_link_libraries(CaraLib PUBLIC
     BillingLibplugin
     CustomerLibplugin
     ProductLibplugin
+    StatisticsLibplugin
 )
 
 # Additional configurations for CaraLib
