@@ -7,16 +7,6 @@ CostCalculator::CostCalculator(QObject *parent)
     , model_{}
     , total_{}
 {
-    connect(this, &CostCalculator::modelChanged, this, [&] {
-        qDebug() << "CostCalculator::CostCalculator: connecting dataChanged with calculateTotal";
-        if (model_ == nullptr)
-            return;
-
-        connect(model_, &Model::ProductModel::countChanged,
-                this, &CostCalculator::calculateTotal);
-        connect(model_, &Model::ProductModel::dataChanged,
-                this, &CostCalculator::calculateTotal);
-    });
 }
 
 Model::ProductModel *CostCalculator::model() const
@@ -56,5 +46,17 @@ void CostCalculator::calculateTotal()
         totalPrice += product->price() * product->selectedQty();
     }
     setTotal(totalPrice);
+}
+
+void CostCalculator::classBegin()
+{
+}
+
+void CostCalculator::componentComplete()
+{
+    connect(model_, &Model::ProductModel::countChanged,
+            this, &CostCalculator::calculateTotal);
+    connect(model_, &Model::ProductModel::dataChanged,
+            this, &CostCalculator::calculateTotal);
 }
 }
