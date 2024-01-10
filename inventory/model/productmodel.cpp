@@ -26,6 +26,10 @@ bool ProductModel::setData(const QModelIndex &index, const QVariant &value, int 
         product->setSelectedQty(value.toInt());
         emit dataChanged(QModelIndex(), QModelIndex(), {role});
         return true;
+    case RoleNames::QuantityAvailableRole:
+        product->setQuantityAvailable(value.toInt());
+        emit dataChanged(QModelIndex(), QModelIndex(), {role});
+        return true;
     default:
         return false;
     }
@@ -104,11 +108,15 @@ void ProductModel::update(SalespersonId spId)
     repository_->fetchAll(spId);
 
     connect(repository_, &Business::IInventoryRepository::fetchedAll, this, [&](const QList<QPointer<EntityLayer::Product>> &products) {
+        for (auto &el : products)
+            el->setParent(this);
+
         beginResetModel();
         data_.clear();
         data_ = products;
         endResetModel();
         emit countChanged();
+        emit updated();
     });
 }
 
@@ -116,8 +124,8 @@ void ProductModel::append(QObject *product)
 {
     beginInsertRows(QModelIndex(), count(), count());
     data_.append(qobject_cast<EntityLayer::Product *>(product));
-    emit countChanged();
     endInsertRows();
+    emit countChanged();
 }
 
 void ProductModel::clear()

@@ -58,11 +58,11 @@ public slots:
 signals:
     void repositoryChanged();
     void countChanged();
+    void updated();
 
 private:
     QList<QPointer<EntityLayer::Product>> data_;
     Business::IInventoryRepository *repository_;
-
 };
 }
 
