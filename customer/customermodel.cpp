@@ -5,6 +5,8 @@
 namespace Model {
 CustomerModel::CustomerModel(QObject *parent)
     : QAbstractListModel{parent}
+    , data_{}
+    , repository_{}
 {}
 
 int CustomerModel::count() const
