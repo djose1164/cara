@@ -76,8 +76,9 @@ void BillBusiness::fetchBillsByAdminId(int adminId)
     const auto repository{dynamic_cast<DataLayer::BillRepository *>(billRepository_)};
 
     connect(repository, &DataLayer::BillRepository::billsFetched, this, [&](const QByteArray &data) {
-        auto doc{QJsonDocument::fromJson(data).object()};
-        for (const auto &order : doc["orders"].toArray())
+        const auto doc = QJsonDocument::fromJson(data).object();
+        const auto ordersArray = doc["orders"].toArray();
+        for (const auto &order : ordersArray)
             model_->append(BillEntity::fromMap(order.toVariant().toMap()));
         emit populated();
     });
