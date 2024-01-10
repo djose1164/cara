@@ -9,11 +9,12 @@ import Utils
 import Inventory
 import Product
 import entities
+import Billing
 import "qrc:/utils"
 import "qrc:/product"
 import "qrc:/payment"
 
-ScrollablePage {
+Page {
     id: root
 
     readonly property T.StackView stackView: StackView.view
@@ -26,97 +27,119 @@ ScrollablePage {
             font.bold: true
         }
     }
-    columnLayout {
-        spacing: 20
-    }
-    scrollView.contentWidth: scrollView.availableWidth
 
-    Item { height: 1 }
-
-    Loader {
-        id: customerLoader
-        Layout.fillWidth: true
-        // Layout.fillHeight: true
-        onHeightChanged: print("loader height: "+height)
-        sourceComponent: RedirectLabel {
-            id: customerRedirect
-            title: "Elegir cliente"
-            font.pointSize: 14
-            onClicked: customerSelector.open()
+    states: [
+        State {
+            name: "creating"
+            PropertyChanges {
+                target: busyIndicator
+                visible: true
+            }
+        },
+        State {
+            name: "orderCreated"
+            PropertyChanges {
+                target: busyIndicator
+                visible: false
+            }
         }
-    }
+    ]
 
-    CustomerSelector {
-        id: customerSelector
-        readonly property string delegateSource: "qrc:/qt/qml/Customer/SelectedCustomer.qml"
-        width: root.width
-        height: root.height
-        salespersonId: userStore.user.salespersonId
-        onCustomerSelected: model => {
-            const customerId = model.customerId;
-            customerLoader.setSource(delegateSource, {
-                fullname: model.fullname,
-                stackView: root.stackView,
-                customerId,
-                customerSelector
-            });
-        }
-    }
+    ScrollView {
+        anchors.fill: parent
+        contentWidth: availableWidth
+        contentHeight: columnLayout.implicitHeight
+        ColumnLayout {
+            id: columnLayout
+            width: root.width * .95
+            anchors.horizontalCenter: parent.horizontalCenter
+            spacing: 30
 
-    StackLayout {
-        id: stackLayout
-        currentIndex: thisSelectedProducts.count > 0 ? 1 : 0
-        Layout.minimumHeight: {
-            if (currentIndex === 0)
-                return productRedirect.implicitHeight;
-            const count = selectedProductsView.model.count;
-            const itemHeight = 160;
-            if (count === 1)
-                return itemHeight;
-            else if (count === 2)
-                return itemHeight * 1.65;
-            else
-                return itemHeight * 2;
-        }
+            Loader {
+                id: customerLoader
+                Layout.fillWidth: true
+                Layout.topMargin: 10
+                sourceComponent: RedirectLabel {
+                    id: customerRedirect
+                    title: "Elegir cliente"
+                    font.pointSize: 14
+                    onClicked: customerSelector.open()
+                }
+            }
 
-        RedirectLabel {
-            id: productRedirect
-            title: "Agregar producto(s)"
-            font.pointSize: 14
-            Layout.maximumHeight: implicitHeight
-            onClicked: productSelector.open()
-        }
+            CustomerSelector {
+                id: customerSelector
+                readonly property string delegateSource: "qrc:/qt/qml/Customer/SelectedCustomer.qml"
+                width: root.width
+                height: root.height
+                salespersonId: userStore.user.salespersonId
+                onCustomerSelected: model => {
+                    const customerId = model.customerId;
+                    customerLoader.setSource(delegateSource, {
+                        fullname: model.fullname,
+                        stackView: root.stackView,
+                        customerId,
+                        customerSelector
+                    });
+                }
+            }
 
-        SelectedProducts {
-            id: selectedProductsView
-            model: thisSelectedProducts
-            onRedirectClicked: productSelector.open()
-            onDeleteClicked: (index, productId) => {
-                productSelector.removeSelectionOf(productId);
-                thisSelectedProducts.remove(index);
+            StackLayout {
+                id: stackLayout
+                currentIndex: thisSelectedProducts.count > 0 ? 1 : 0
+                Layout.minimumHeight: {
+                    if (currentIndex === 0)
+                        return productRedirect.implicitHeight;
+                    const count = selectedProductsView.model.count;
+                    const itemHeight = 160;
+                    if (count === 1)
+                        return itemHeight;
+                    else if (count === 2)
+                        return itemHeight * 1.65;
+                    else
+                        return itemHeight * 2;
+                }
+
+                RedirectLabel {
+                    id: productRedirect
+                    title: "Agregar producto(s)"
+                    font.pointSize: 14
+                    Layout.maximumHeight: implicitHeight
+                    onClicked: productSelector.open()
+                }
+
+                SelectedProducts {
+                    id: selectedProductsView
+                    model: thisSelectedProducts
+                    onRedirectClicked: productSelector.open()
+                    onDeleteClicked: (index, productId) => {
+                        productSelector.removeSelectionOf(productId);
+                        thisSelectedProducts.remove(index);
+                    }
+                }
+            }
+
+            PaymentInput {
+                id: paymentInput
+                calculator: costCalculator
+                Layout.fillWidth: true
+            }
+
+            RedirectLabel {
+                id: dateRedirectLbl
+                title: datePicker.selectedDate.toLocaleDateString()
+                font.pointSize: 14
+                onClicked: datePicker.open()
+            }
+
+            Button {
+                text: "Aceptar"
+                Layout.fillWidth: true
+                Layout.bottomMargin: 10
+                onClicked: acceptHandle()
             }
         }
     }
-
-    PaymentInput {
-        id: paymentInput
-        calculator: costCalculator
-        Layout.fillWidth: true
-    }
-
-    RedirectLabel {
-        id: dateRedirectLbl
-        title: datePicker.selectedDate.toLocaleDateString()
-        onClicked: datePicker.open()
-    }
-
-    Button {
-        text: "Aceptar"
-        Layout.fillWidth: true
-        onClicked: acceptHandle()
-    }
-
-    Item { height: 1 }
 
     DatePicker {
         id: datePicker
@@ -147,10 +170,39 @@ ScrollablePage {
         onButtonClicked: close()
     }
 
+    OrderController {
+        id: orderController
+        onOrderCreated: {
+            root.state = "orderCreated";
+            message.title = "Exito al crear orden";
+            message.informativeText = "La orden ha sido adjuntada al cliente "
+                    + "exitosamente. Puedes verla en el area de 'Clientes'";
+            message.open();
+        }
+    }
+
+    BusyIndicator {
+        id: busyIndicator
+        visible: false
+    }
+
     function acceptHandle() {
         try {
             validate();
+            const customerItem = customerLoader.item;
+            for (let i = 0; i < thisSelectedProducts.count; ++i)
+                print(thisSelectedProducts.get(i));
+            const orderJson = {
+                salesperson: { id: userStore.user.salespersonId },
+                customer: customerItem.toJson(),
+                products: selectedProductsView.toJson(),
+                pay: paymentInput.toJson(),
+                orderDate: datePicker.toShortDate()
+            };
+            print(`orderJson: ${JSON.stringify(orderJson, null, 2)}`);
+            orderController.createOrder(orderJson);
         } catch (err) {
+            print("NewPurchaseOrder: "+err);
             message.title = "Error al crear orden"
             message.informativeText = err;
             message.open();
