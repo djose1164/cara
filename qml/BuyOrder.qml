@@ -4,6 +4,7 @@ import QtQuick.Layouts
 import QtQuick.Dialogs
 import Salesperson
 import User
+import Billing
 import "qrc:/utils"
 import "qrc:/orders"
 import "qrc:/singleton"
@@ -11,10 +12,8 @@ import "qrc:/singleton"
 Page {
     id: root
 
-    required property var salesperson
-
     readonly property var myStack: StackView.view
-    readonly property LocalUserStore userStore: LocalUserStore {}
+    readonly property alias salesperson: userStore.user.salesperson
 
     title: "Ordenes de Compra"
     header: TitleHeader {
@@ -24,7 +23,7 @@ Page {
 
     Component.onCompleted: {
         const spId = userStore.user.salespersonId;
-        spController.read(spId);
+        spController.readSalesperson();
         api.fetchBuyOrders();
     }
 
@@ -82,6 +81,7 @@ Page {
         salespersonId: userStore.user.salespersonId
         onBuyOrdersFetched: orders => listModel.append(orders)
         onBuyOrderCreated: function(resp) {
+            listModel.append(resp.buy_order);
             if (root.salesperson.salespersonType === Salesperson.Administrator) {
                 dialog.text = "Orden de compra creada con exito!";
                 dialog.open();
@@ -92,7 +92,6 @@ Page {
             root.salesperson.creditAvailable -= totalAmount;
             root.salesperson.creditConsumed += totalAmount;
 
-            listModel.append(resp.buy_order);
             dialog.text = "Orden de compra creada con exito!";
             dialog.informativeText = `En esta compra has consumido RD$${totalAmount} creditos. Ahora cuentas con RD$${salesperson.creditAvailable} creditos disponibles.`;
             dialog.open();
@@ -109,13 +108,13 @@ Page {
     SalespersonController {
         id: spController
         adminId: userStore.user.userId
-        onFetched: function(sp) {
-            root.salesperson = sp;
-        }
+        salespersonId: userStore.user.salespersonId
     }
 
     MessageDialog {
         id: dialog
         onButtonClicked: close()
     }
+
+    LocalUserStore { id: userStore }
 }
