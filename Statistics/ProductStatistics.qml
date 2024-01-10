@@ -10,7 +10,7 @@ Item {
     readonly property StackView stackView: StackView.view
     property string headerTitle
 
-    Component.onCompleted: statisticsApi.fetchMostSellingProducts()()
+    Component.onCompleted: statisticsApi.fetchMostSellingProducts()
 
     Header {
         id: header
@@ -36,7 +36,7 @@ Item {
         delegate: ProductThumbnail {
             required name
             required property string image_url
-            required property int sold_quantity
+            required property string sold_quantity
 
             height: 100
             width: root.width
@@ -50,11 +50,13 @@ Item {
         }
     }
 
-    ListModel { id: listModel }
+    ListModel {
+        id: listModel
+    }
 
     StatisticsAPI {
         id: statisticsApi
         salespersonId: root.salespersonId
-        onMostSellingProductsFetched: products => listModel.append(products)
+        onMostSellingProductsFetched: products => products.forEach(e => listModel.append(e))
     }
 }
