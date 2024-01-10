@@ -19,7 +19,7 @@ class PaymentEntity : public QObject, public JsonExportable
 public:
     enum class Status
     {
-        Paid,
+        Paid = 1,
         Unpaid,
         Credited,
         Any
