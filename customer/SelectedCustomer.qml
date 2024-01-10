@@ -13,7 +13,7 @@ Item {
 
     property alias fullname: customerDelegate.fullname
 
-    implicitHeight: 100
+    implicitHeight: 125
 
     RedirectGroupBox {
         id: groupBox
@@ -22,7 +22,7 @@ Item {
         redirectText: "Editar cliente"
         onRedirectClicked: customerSelector.open()
 
-        CustomerSelectorDelegate {
+        CustomerCard {
             id: customerDelegate
             anchors.fill: parent
             customerId: root.customerId
