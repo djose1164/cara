@@ -2,6 +2,7 @@
 #define BILLENTITY_H
 
 #include "../models/ordermodel.h"
+#include "../Customer/entity/customer.h"
 #include "orderstatus.h"
 #include "paymententity.h"
 #include "../user/userentity.h"
@@ -42,6 +43,9 @@ public:
     OrderStatus *orderStatus() const;
     void setOrderStatus(OrderStatus *newOrderStatus);
 
+    Entity::Customer customer() const;
+    void setCustomer(const Entity::Customer &newCustomer);
+
 public slots:
     void appendDetail(DetailsEntity *const detail);
 
@@ -52,6 +56,7 @@ private:
     PaymentEntity * payment_;
     OrderStatus *orderStatus_;
     QProperty<QDateTime> date_;
+    Entity::Customer customer_;
 };
 }
 

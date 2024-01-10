@@ -12,6 +12,7 @@ BillEntity::BillEntity(QObject *parent)
     , payment_{nullptr}
     , orderStatus_{nullptr}
     , date_{}
+    , customer_{}
 {
 }
 
@@ -51,6 +52,10 @@ BillEntity *BillEntity::fromMap(const QVariantMap &billMap)
 
     bill->setOrderStatus(
         OrderStatus::fromMap(billMap["order_status"].toMap())
+    );
+
+    bill->setCustomer(
+        Entity::Customer::fromJson(billMap["customer"].toJsonObject())
     );
 
     for (const auto &detail : billMap["order_details"].toList())
@@ -140,6 +145,16 @@ void BillEntity::appendDetail(DetailsEntity * const detail)
     Q_ASSERT(detail);
 
     details_->append(detail);
+}
+
+Entity::Customer BillEntity::customer() const
+{
+    return customer_;
+}
+
+void BillEntity::setCustomer(const Entity::Customer &newCustomer)
+{
+    customer_ = newCustomer;
 }
 
 OrderStatus *BillEntity::orderStatus() const
