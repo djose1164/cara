@@ -13,5 +13,4 @@ qt_add_qml_module(Entities
 	productentity.h productentity.cpp
 )
 
-include_directories(../models)
-include_directories(../user)
+target_include_directories(Entities PRIVATE ../models ../user)

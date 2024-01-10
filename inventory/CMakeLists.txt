@@ -6,11 +6,12 @@ qt_add_qml_module(InventoryLib
         InventoryForm.qml
         ProductSelector.qml
         ProductSelectorDelegate.qml
+        SelectedProducts.qml
     SOURCES
         iinventoryrepository.h iinventoryrepository.cpp
         inventoryrepository.h inventoryrepository.cpp
         model/productmodel.h model/productmodel.cpp
-        QML_FILES SelectedProducts.qml
+        model/productproxymodel.h model/productproxymodel.cpp
 )
 
 target_include_directories(InventoryLib

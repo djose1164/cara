@@ -5,13 +5,16 @@ qt_add_qml_module(CustomerLib
     VERSION 1.0
     QML_FILES
         CustomerSelector.qml
-        CustomerSelectorDelegate.qml
+        CustomerCard.qml
         SelectedCustomer.qml
+        CustomerInfoBox.qml
+        CustomerViewItem.qml
     SOURCES
         customermodel.h customermodel.cpp
         customerrepository.h customerrepository.cpp
         data/restcustomerrepository.h data/restcustomerrepository.cpp
         entity/customer.h entity/customer.cpp
+        model/customerproxymodel.h model/customerproxymodel.cpp
     RESOURCES
         person.svg
         person-add.svg
@@ -23,4 +26,5 @@ target_include_directories(CustomerLib PRIVATE
     ./data/
     entity
     ../salesperson
+    model
 )
