@@ -1,6 +1,6 @@
 #include "iinventoryrepository.h"
 
-namespace Inventory {
+namespace Business {
 IInventoryRepository::~IInventoryRepository()
 {
 
