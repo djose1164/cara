@@ -8,6 +8,7 @@ Product::Product(QObject *parent)
     , price_{}
     , productId_{}
     , imageUrl_{}
+    , selectedQty_{}
 {
 }
 
@@ -18,6 +19,25 @@ Product *Product::fromMap(const QVariantMap &map)
     product->setImageUrl(map["image_url"].toString());
     product->setPrice(map["sell_price"].toInt());
 
+    return product;
+}
+
+QPointer<Product> Product::fromJson(const QByteArray &data)
+{
+    const auto inventoryObj{QJsonDocument::fromJson(data).object()};
+    const auto productObj = inventoryObj.value("product").toObject();
+
+    const auto product{new Product};
+    product->setProductId(productObj.value("id").toInt());
+    product->setName(productObj.value("name").toString());
+    product->setDescription(productObj.value("description").toString());
+    product->setImageUrl(productObj.value("image_url").toString());
+    product->setPrice(productObj.value("sell_price").toInt());
+    product->setBuyPrice(productObj.value("buy_price").toInt());
+    product->setMaximumStockLevel(inventoryObj.value("maximum_stock_level").toInt());
+    product->setMinimumStockLevel(inventoryObj.value("minimum_stock_level").toInt());
+    product->setReorderPoint(inventoryObj.value("reorder_point").toInt());
+    product->setQuantityAvailable(inventoryObj.value("quantity_available").toInt());
     return product;
 }
 
@@ -49,11 +69,6 @@ QString Product::imageUrl() const
 int Product::price() const
 {
     return price_;
-}
-
-QBindable<int> Product::bindablePrice() const
-{
-    return &price_;
 }
 
 int Product::productId() const
@@ -116,5 +131,83 @@ void Product::setProductId(int productId)
         productId_ = productId;
         emit productIdChanged();
     }
+}
+
+int Product::selectedQty() const
+{
+    return selectedQty_;
+}
+
+void Product::setSelectedQty(int newSelectedQty)
+{
+    if (selectedQty_ == newSelectedQty)
+        return;
+    selectedQty_ = newSelectedQty;
+    emit selectedQtyChanged();
+}
+
+int Product::reorderPoint() const
+{
+    return reorderPoint_;
+}
+
+void Product::setReorderPoint(int newReorderPoint)
+{
+    if (reorderPoint_ == newReorderPoint)
+        return;
+    reorderPoint_ = newReorderPoint;
+    emit reorderPointChanged();
+}
+
+int Product::quantityAvailable() const
+{
+    return quantityAvailable_;
+}
+
+void Product::setQuantityAvailable(int newQuantityAvailable)
+{
+    if (quantityAvailable_ == newQuantityAvailable)
+        return;
+    quantityAvailable_ = newQuantityAvailable;
+    emit quantityAvailableChanged();
+}
+
+int Product::minimumStockLevel() const
+{
+    return minimumStockLevel_;
+}
+
+void Product::setMinimumStockLevel(int newMinimumStockLevel)
+{
+    if (minimumStockLevel_ == newMinimumStockLevel)
+        return;
+    minimumStockLevel_ = newMinimumStockLevel;
+    emit minimumStockLevelChanged();
+}
+
+int Product::maximumStockLevel() const
+{
+    return maximumStockLevel_;
+}
+
+void Product::setMaximumStockLevel(int newMaximumStockLevel)
+{
+    if (maximumStockLevel_ == newMaximumStockLevel)
+        return;
+    maximumStockLevel_ = newMaximumStockLevel;
+    emit maximumStockLevelChanged();
+}
+
+int Product::buyPrice() const
+{
+    return buyPrice_;
+}
+
+void Product::setBuyPrice(int newBuyPrice)
+{
+    if (buyPrice_ == newBuyPrice)
+        return;
+    buyPrice_ = newBuyPrice;
+    emit buyPriceChanged();
 }
 }
