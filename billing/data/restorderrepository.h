@@ -2,6 +2,8 @@
 #define RESTORDERREPOSITORY_H
 
 #include "orderrepository.h"
+#include <QNetworkAccessManager>
+#include <QNetworkReply>
 
 namespace Data
 {
@@ -14,18 +16,17 @@ public:
     QString errorString() const;
     void setErrorString(const QString &newErrorString);
 
+public slots:
+    void add(const QVariantMap &payload) override;
+
 private:
     QNetworkRequest prepareRequest(const QString &endpoint = "/");
 
 private:
-    QRestAccessManager *manager_;
-    QRestReply *reply_;
+    QNetworkAccessManager *manager_;
+    QNetworkReply *reply_;
     const QString base_;
     QString errorString_;
-
-    // OrderRepository interface
-public slots:
-    void add(const QVariantMap &payload) override;
 };
 }
 

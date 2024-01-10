@@ -2,8 +2,6 @@
 #define ORDERREPOSITORY_H
 
 #include <QObject>
-#include <QRestAccessManager>
-#include <QRestReply>
 
 namespace Business
 {

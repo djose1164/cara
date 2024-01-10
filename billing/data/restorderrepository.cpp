@@ -1,5 +1,6 @@
 #include "restorderrepository.h"
 #include "localuserstore.h"
+#include <QJsonDocument>
 #include <QJsonObject>
 #include <QSettings>
 
@@ -7,7 +8,7 @@ namespace Data
 {
 RestOrderRepository::RestOrderRepository(QObject *parent)
     : OrderRepository{parent}
-    , manager_{new QRestAccessManager(this)}
+    , manager_{new QNetworkAccessManager(this)}
     , reply_{}
     , base_{QSettings().value("base").toString() + "/orders"}
     , errorString_{}
@@ -36,15 +37,19 @@ QNetworkRequest RestOrderRepository::prepareRequest(const QString &endpoint)
 void RestOrderRepository::add(const QVariantMap &payload)
 {
     const auto req{prepareRequest()};
-    manager_->post(req, payload, this, [&](QRestReply *reply) {
-        if (!reply->isSuccess())
+    const auto jsonPayload{QJsonDocument::fromVariant(payload)};
+    reply_ = manager_->post(req, jsonPayload.toJson(QJsonDocument::Compact));
+
+    connect(reply_, &QNetworkReply::finished, this, [&] {
+        if (reply_->error() != QNetworkReply::NoError)
         {
-            setErrorString(reply->errorString());
+            setErrorString(reply_->errorString());
             emit errorOccurred();
             return;
         }
-        if (const auto json = reply->json())
-            emit resourceAdded(*json);
+        const auto data{reply_->readAll()};
+        const auto doc{QJsonDocument::fromJson(data)};
+        emit resourceAdded(doc.object());
     });
 }
 }
