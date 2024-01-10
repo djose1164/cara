@@ -3,6 +3,7 @@ import QtQuick.Controls
 import QtQuick.Layouts
 import QtQuick.Templates as T
 import QtCharts
+import data
 import "qrc:/utils"
 
 Page {
@@ -26,7 +27,7 @@ Page {
             for (let element of data.month_vs_order_qty) {
                 const month = element.month;
                 currDate.setMonth(month-1);
-                const monthString = currDate.toLocaleString(locale, "MMMM") + ` ${element.year}`;
+                const monthString = currDate.toLocaleString(locale, "MMM") + ` ${element.year}`;
                 months.push(monthString);
                 orderQty.push(element.order_qty);
             }
@@ -121,12 +122,11 @@ Page {
     } // ScrollView
 
     function fetchData(endpoint, callback) {
-        const base = "http://127.0.0.1:5000/api/statistics"+endpoint;
+        const base = Constants.base + "/statistics"+endpoint;
         const xhr = new XMLHttpRequest;
         xhr.onreadystatechange = () => {
             if (xhr.readyState === XMLHttpRequest.DONE) {
                 const response = xhr.responseText.toString();
-                print("response type: "+xhr.responseType);
                 callback(JSON.parse(response))
             }
         }
