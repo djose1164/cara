@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
+import QtQuick.Templates as T
 import QtCharts
 import Customer
 import Utils
@@ -10,6 +11,7 @@ ScrollablePage {
     id: root
 
     required property var customer
+    readonly property T.StackView stackView: StackView.view
 
     title: "Detalles"
     header: TitleHeader {
