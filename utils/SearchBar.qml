@@ -10,10 +10,15 @@ ToolBar {
 
     signal backClicked
 
+    background: Rectangle {
+        color: "floralwhite"
+    }
+
     RowLayout {
         anchors.fill: parent
 
         BackButton {
+            icon.color: "black"
             Layout.alignment: Qt.AlignLeading
             onClicked: backClicked()
         }
