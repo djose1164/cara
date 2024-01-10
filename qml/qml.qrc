@@ -17,18 +17,12 @@
         <file>Offers.qml</file>
         <file>RecentOrders.qml</file>
     </qresource>
-    <qresource prefix="/search">
-        <file>SearchPage.qml</file>
-        <file>SearchBar.qml</file>
-        <file>SearchField.qml</file>
-    </qresource>
     <qresource prefix="/bills">
         <file>BillPage.qml</file>
         <file>BillPageHeader.qml</file>
         <file>BillDelegate.qml</file>
         <file>BillSearch.qml</file>
         <file>BillMessage.qml</file>
-        <file>CustomersView.qml</file>
         <file>CustomerBills.qml</file>
         <file>AdminBillDelegate.qml</file>
         <file>CustomerBillDelegate.qml</file>
@@ -40,7 +34,6 @@
     <qresource prefix="/orders">
         <file>Entry.qml</file>
         <file>OrderState.qml</file>
-        <file>AddOrderHeader.qml</file>
         <file>OrderFormAdmin.qml</file>
         <file>OrderStatusCB.qml</file>
         <file>BuyOrder.qml</file>
@@ -73,7 +66,6 @@
         <file>Filter.qml</file>
         <file>CaDrawer.qml</file>
         <file>TitleHeader.qml</file>
-        <file>SettingsHeader.qml</file>
         <file>CaraApi.qml</file>
         <file>Star.qml</file>
         <file>StarRating.qml</file>
@@ -87,7 +79,6 @@
         <file>CloseButton.qml</file>
         <file>Header.qml</file>
         <file>RefreshIndicator.qml</file>
-        <file>SearchButton.qml</file>
         <file>MoreVertButton.qml</file>
         <file>ImagePicker.qml</file>
         <file>utils.js</file>
@@ -96,6 +87,7 @@
     <qresource prefix="/payment">
         <file>PaymentStatus.qml</file>
         <file>UpdatePayment.qml</file>
+        <file>PaymentInput.qml</file>
     </qresource>
     <qresource prefix="/product">
         <file>ProductForm.qml</file>
@@ -146,12 +138,6 @@
         <file>ViewManager.qml</file>
         <file>CustomerManager.qml</file>
         <file>ProductManager.qml</file>
-    </qresource>
-    <qresource lang="qml" prefix="/statistics">
-        <file>Statistics.qml</file>
-        <file>ProductStatistics.qml</file>
-        <file>CustomerStatistics.qml</file>
-        <file>StatisticsAPI.qml</file>
     </qresource>
     <qresource lang="qml" prefix="/filters">
         <file>PaymentStatusFilter.qml</file>
