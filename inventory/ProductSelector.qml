@@ -4,6 +4,7 @@ import QtQuick.Layouts
 import QtQml.Models
 import Utils
 import Inventory
+import Billing
 import "qrc:/product"
 import "qrc:/utils"
 
@@ -16,30 +17,18 @@ Drawer {
     signal productSelected(products: ProductModel)
 
     interactive: false
+    onAboutToHide: closeHandle()
     Component.onCompleted: {
         productModel.update(salespersonId);
     }
 
-    DrawerHeader {
+    SearchHeaderItem {
         id: header
         anchors.top: parent.top
         width: root.width
+        height: 50
         title: "Seleccionar producto"
-        menu.sourceComponent: RoundButton {
-            id: acceptBtn
-            enabled: internal.isAcceptBtnEnabled
-            text: "Aceptar"
-            onClicked: {
-                for (let selected of selectionModel.selectedIndexes) {
-                    const selectedAt = selected.model.get(selected.row);
-                    if (selectedProducts.contains(selectedAt))
-                        continue;
-                    selectedProducts.append(selectedAt);
-                }
-
-                root.close();
-            }
-        }
+        onCloseClicked: root.close()
     }
 
     ListView {
@@ -49,7 +38,7 @@ Drawer {
             top: header.bottom
             bottom: parent.bottom
         }
-        model: productModel
+        model: proxyModel
         delegate: productDelegate
         clip: true
         spacing: 10
@@ -61,6 +50,12 @@ Drawer {
         onSelectedIndexesChanged: {
             internal.isAcceptBtnEnabled = selectedIndexes.length > 0;
         }
+    }
+
+    ProductProxyModel {
+        id: proxyModel
+        sourceModel: productModel
+        productName: header.displayText
     }
 
     ProductModel {
@@ -78,6 +73,8 @@ Drawer {
             id: productThumbnail
 
             readonly property var modelIndex: productModel.index(index, 0)
+
+            enabled: quantityAvailable > 0
             background: Rectangle{
                 id: backRec
             }
@@ -120,5 +117,16 @@ Drawer {
             if (productModel.get(i).productId === productId)
                 return i;
         return -1;
+    }
+
+    function closeHandle() {
+        for (let selected of selectionModel.selectedIndexes) {
+            const selectedAt = selected.model.get(selected.row);
+            if (selectedProducts.contains(selectedAt))
+                continue;
+            selectedProducts.append(selectedAt);
+        }
+
+        root.close();
     }
 }

@@ -39,4 +39,13 @@ Item {
             }
         }
     }
+
+    function toJson() {
+        const products = [];
+        for (let i = 0; i < model.count; ++i) {
+            const product = model.get(i);
+            products.push({product_id: product.productId, quantity: product.selectedQty});
+        }
+        return products;
+    }
 }

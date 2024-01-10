@@ -30,7 +30,7 @@ ItemDelegate {
             width: productThumbnail.width - image.width
             text: `
             <h3>${productName}</h3>
-            <p>Cantidad disponible: <strong>${reorderPoint}</strong>
+            <p>Cantidad disponible: <strong>${quantityAvailable}</strong>
             `
         }
     }
