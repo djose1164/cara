@@ -70,8 +70,14 @@ set_target_properties(CaraLib PROPERTIES
 # Create Cara executable
 qt_add_executable(Cara
     main.cpp
-    assets/res.qrc
-    qml/qml.qrc
+)
+
+qt_add_qml_module(Cara
+    URI Cara
+    VERSION 1.0
+    RESOURCES
+        assets/res.qrc
+        qml/qml.qrc
 )
 
 qt_add_resources(Cara "configuration"
