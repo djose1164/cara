@@ -3,6 +3,7 @@ import QtQuick.Controls
 import QtQuick.Layouts
 import User
 import Salesperson
+import Utils
 import "qrc:/provider"
 import "qrc:/payment"
 import "qrc:/utils"
@@ -14,7 +15,7 @@ Drawer {
     readonly property var user: UserSession.user
     readonly property var salesperson: UserSession.salesperson
     readonly property var buyOrder: {
-        "date": dateField.text,
+        "date": datePicker.toShortDate(),
         "description": descriptionArea.text,
         "provider_id": providerComboBox.currentValue,
         "payment": {
@@ -80,10 +81,15 @@ Drawer {
                 }
             }
 
-            TextField {
-                id: dateField
-                Layout.fillWidth: true
-                placeholderText: "dia/mes/año"
+            RedirectLabel {
+                title: datePicker.selectedDate.toLocaleDateString()
+                onClicked: datePicker.open()
+            }
+
+            DatePicker {
+                id: datePicker
+                width: root.width * .9
+                height: root.height * .75
             }
 
             PaymentStatus {

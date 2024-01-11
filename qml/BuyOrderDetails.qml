@@ -19,9 +19,9 @@ Page {
 
     onPaymentChanged: {
         if (payment.amount_to_pay === payment.paid_amount)
-            paymentStatus.paid = true;
+            paymentStatus.getButton("Pago").checked = true;
         else
-            paymentStatus.credited = true;
+            paymentStatus.getButton("Credito").checked = true;
     }
 
     title: "Detalles de Orden"
