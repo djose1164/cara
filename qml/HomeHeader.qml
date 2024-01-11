@@ -33,7 +33,7 @@ ToolBar {
             id: homeLbl
             text: "Inicio"
             color: "black"
-            font.pointSize: 18
+            font.pointSize: 20
             font.bold: true
             Layout.leftMargin: 10
             Layout.fillWidth: true
@@ -56,28 +56,6 @@ ToolBar {
                 source: btn.newNotifications
             }
         }*/
-
-        RoundButton {
-            id: userBtn
-            flat: true
-            onClicked: {
-                stackView.push("qrc:/search/SearchPage.qml")
-                const item = stackView.currentItem;
-                // BUG: SearchBar is not working. I don't know even if the model
-                // is being binded to the SearchPage.
-                item.acceptedText.connect(function(t) {
-                    root.acceptedText(t);
-                });
-            }
-            Layout.alignment: Qt.AlignTrailing
-            Layout.rightMargin: 10
-
-            IconImage {
-                anchors.centerIn: parent
-                source: "qrc:/icons/search.svg"
-                sourceSize: "24x24"
-            }
-        }
     }
 
     Drawer {
