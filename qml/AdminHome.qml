@@ -38,7 +38,6 @@ Home {
             required property string name
             required property bool showCustomers
             required property bool admin
-            required property bool needSalesperson
             required property bool needUser
 
             width: grid.cellWidth - 15
@@ -87,8 +86,6 @@ Home {
                             homeStack.push(path, {salespersonId: userStore.user.salespersonId});
                         else if (admin)
                             homeStack.push(path, {adminId: userStore.user.userId});
-                        else if (needSalesperson)
-                            homeStack.push(path, {salesperson: userStore.user.salesperson});
                         else
                             homeStack.push(path);
                     }
@@ -118,7 +115,6 @@ Home {
             name: "Ordenes de Compra"
             showCustomers: false
             admin: false
-            needSalesperson: true
         }
 
         ListElement {
@@ -147,7 +143,7 @@ Home {
 
         ListElement {
             source: "qrc:/icons/statistics.svg"
-            path: "qrc:/statistics/Statistics.qml"
+            path: "qrc:/qt/qml/Statistics/Statistics.qml"
             name: "Estadisticas"
             showCustomers: true
             admin: false
