@@ -20,6 +20,7 @@ ScrollView {
         anchors.fill: parent
         spacing: 5
         model: entries
+        clip: true
         delegate: Entry {
             valueRoleType: root.valueRoleType
             onUpdated: (idx, entryValue) => {
