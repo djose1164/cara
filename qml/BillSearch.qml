@@ -1,7 +1,7 @@
 import QtQuick
 import QtQuick.Controls
 import User
-import "qrc:/search"
+import Utils
 import "qrc:/customers"
 
 Page {
@@ -9,11 +9,12 @@ Page {
 
     readonly property StackView stackView: StackView.view
     required property ListModel model
+    required property var user
 
     header: SearchBar {
         id: searchBar
         loader.sourceComponent: SearchField {
-            placeholderText: "Buscar en facturas..."
+            placeholderText: user.isCustomer ? "Buscar" : "Cliente"
             onAccepted: t => findMatch(t)
         }
         onBackClicked: stackView.pop()

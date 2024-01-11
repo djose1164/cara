@@ -3,7 +3,7 @@ import QtQuick.Controls
 import QtQuick.Layouts
 import User
 import "qrc:/utils"
-import "qrc:/search" as Search
+import Utils
 import "qrc:/customers"
 import "qrc:/singleton"
 

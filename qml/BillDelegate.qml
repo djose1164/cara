@@ -53,7 +53,7 @@ Item {
             }
 
             orderId: root.orderId
-            date: root.date
+            orderDate: root.date
         }
     }
 }

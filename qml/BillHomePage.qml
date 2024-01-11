@@ -59,8 +59,10 @@ Page {
     ListView {
         id: listView
         anchors.fill: parent
+        anchors.topMargin: 5
         delegate: billDelegate
         model: billProxyModel
+        spacing: 20
     }
 
     BusyIndicator {
@@ -83,21 +85,20 @@ Page {
         CustomerBillDelegate {
             id: customerBillDelegate
             required property var model
-            property var details: model.details
-            property var payment: model.payment
-            property var status: model.status
+            required details
+            required payment
+            required status
+            required customer
 
             width: root.width
-            height: 100
-
+            height: 110
+            orderId: model.orderId
+            orderDate: model.date
             onClicked: {
                 stackView.push("qrc:/bills/BillDetailsPage.qml", {
-                    details, date, payment, orderId, status
+                    details, date: orderDate, payment, orderId, status, customer
                 });
             }
-
-            orderId: model.orderId
-            date: model.date
         }
     }
 

@@ -11,6 +11,7 @@ BackPage {
     property var details
     property var payment
     property var status
+    property alias customer: orderState.buyer
 
     title: "Detalles de orden"
 
@@ -19,6 +20,7 @@ BackPage {
         contentWidth: availableWidth
 
         OrderState {
+            id: orderState
             anchors {
                 fill: parent
                 leftMargin: 10
