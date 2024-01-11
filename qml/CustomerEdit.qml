@@ -3,6 +3,7 @@ import QtQuick.Controls
 import QtQuick.Layouts
 import QtQuick.Dialogs
 import core
+import Utils
 import "qrc:/utils"
 
 Drawer {
@@ -17,40 +18,19 @@ Drawer {
     property int customerId
     required property StackView stackView
 
-    onCustomerIdChanged: {
+    onAboutToShow: {
         if (customerId < 0)
             return;
 
         customerApi.fetchCustomerById(customerId);
     }
 
-    RowLayout {
+    DrawerHeader {
         id: header
         anchors.top: root.top
         width: root.width
-        height: 50
-
-        CloseButton {
-            onClicked: close()
-            Layout.alignment: Qt.AlignLeading | Qt.AlignVCenter
-        }
-
-        Label {
-            text: "Actualizar Datos"
-            font.pointSize: 14
-            font.bold: true
-            Layout.alignment: Qt.AlignLeading | Qt.AlignVCenter
-        }
-
-        Button {
-            text: "Ver ordenes"
-            Layout.alignment: Qt.AlignRight
-            Layout.rightMargin: 20
-            onClicked: {
-                root.close();
-                stackView.push("qrc:/bills/BillHomePage.qml", {customerId});
-            }
-        }
+        title: "Actualizar Datos"
+        onCloseClicked: root.close()
     }
 
     ScrollView {
@@ -87,7 +67,7 @@ Drawer {
             Button {
                 Layout.fillWidth: true
                 Layout.topMargin: 15
-                Layout.bottomMargin: 15
+                Layout.bottomMargin: 25
                 text: "Actualizar"
                 onClicked: {
                     busyIndicator.open();

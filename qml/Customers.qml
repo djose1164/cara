@@ -3,6 +3,7 @@ import QtQuick.Controls
 import Salesperson
 import User
 import Utils
+import Customer
 import "qrc:/utils"
 import "qrc:/singleton"
 
@@ -17,35 +18,74 @@ ListViewPage {
     title: "Clientes"
     header: TitleHeader {
         title: root.title
+        btnLoader.sourceComponent: SearchButton {
+            onClicked: root.state = "searching";
+        }
         onBackClicked: stackView.pop()
     }
     noDataMessage: userStore.user.isAdmin ? "Este vendedor no cuenta con ningun cliente."
                                           : "La lista de clientes esta vacia. Inteta agregar uno nuevo."
 
-    listView {
-        model: listModel
-        delegate: ItemDelegate {
-            id: control
+    states: State {
+        name: "searching"
+        PropertyChanges {
+            target: root
+            header: null
+        }
+        PropertyChanges {
+            target: listView
+            anchors.topMargin: searchHeader.height * 1.05
+        }
+        PropertyChanges {
+            target: searchHeader
+            visible: true
+            state: "searching"
+        }
+    }
 
-            required property int customer_id
-            required property string name
+    listView {
+        anchors.topMargin: 5
+        model: proxyModel
+        spacing: 10
+        delegate: CustomerCard {
+            required fullname
+            required customerId
 
             width: listView.width
-            text: `${name}\nClient ID: ${customer_id}`
-            font.pointSize: 14
             onClicked: {
-                customerEdit.customerId = customer_id;
+                customerEdit.customerId = customerId;
                 customerEdit.open();
             }
         }
     }
 
     Component.onCompleted: {
-        spService.fetchCustomers();
+        customerModel.update(salespersonId);
         root.state = "fetching";
     }
 
-    ListModel { id: listModel }
+    SearchHeaderItem {
+        id: searchHeader
+        anchors.top: parent.top
+        width: root.width
+        visible: false
+        title: "Nombre"
+        onSearchClosed: root.state = ""
+    }
+
+    CustomerProxyModel {
+        id: proxyModel
+        sourceModel: customerModel
+        text: searchHeader.displayText
+    }
+
+    CustomerModel {
+        id: customerModel
+        onUpdated: root.state = ""
+        repository: customerRepository
+    }
+
+    RestCustomerRepository { id: customerRepository }
 
     LocalUserStore { id: userStore }
 
@@ -56,20 +96,11 @@ ListViewPage {
             bottom: parent.bottom
             bottomMargin: 15
         }
-        visible: userStore.user.isSalesperson
+        visible: userStore.user.isSalesperson || userStore.user.isAdmin
         icon.source: "qrc:/icons/person_add.svg"
         icon.width: 30
         icon.height: 30
         onClicked: stackView.push("qrc:/customers/CustomerForm.qml")
-    }
-
-    AssociateSalespersonService {
-        id: spService
-        salespersonId: root.salespersonId
-        onFetched: {
-            listModel.append(JSON.parse(data).customers);
-            root.state = "";
-        }
     }
 
     CustomerEdit {
