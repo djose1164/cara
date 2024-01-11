@@ -13,10 +13,12 @@ Row {
 
     Label {
         id: customerLbl
+        anchors.verticalCenter: parent.verticalCenter
         font.pointSize: 11
     }
 
     IconImage {
+        anchors.verticalCenter: parent.verticalCenter
         source: "qrc:/icons/arrow_forward.svg"
         sourceSize: "24x24"
     }
