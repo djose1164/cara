@@ -14,7 +14,6 @@ UserRepositoryImpl::UserRepositoryImpl(QObject *parent)
 
 void UserRepositoryImpl::read(int id)
 {
-    qDebug() << "UserRepositoryImpl::read: Fetching user having id " << id;
     const auto request{createRequest(QString("/%1").arg(id))};
 
     reply_ = manager_->get(request);
@@ -27,10 +26,7 @@ void UserRepositoryImpl::read(int id)
             emit errorOccurred();
         }
         else
-        {
-            qDebug() << "UserRepositoryImpl::read: user with id " << id << "was fetched.";
             emit fetched();
-        }
 
         reply_->deleteLater();
     });
