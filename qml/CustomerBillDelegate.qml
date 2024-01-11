@@ -2,27 +2,67 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 
-ItemDelegate {
+Item {
     id: root
 
     property int orderId
-    property date date
+    property date orderDate
+    property var customer
+    property var details
+    property var payment
+    property var status
     readonly property string delegateUrl: "qrc:/orders/OrderState.qml"
 
-    ColumnLayout {
-        anchors.fill: parent
+    signal clicked
 
-        Label {
-            Layout.leftMargin: 5
-            text: `Orden #${root.orderId}`
-            font.pointSize: 16
+    Frame {
+        width: root.width - 10
+        height: root.height
+        anchors.centerIn: parent
+        Material.elevation: 8
+
+        ColumnLayout {
+            anchors.fill: parent
+            RowLayout {
+                Layout.fillWidth: true
+                Label {
+                    text: `Orden #${root.orderId}`
+                    font.pointSize: 15
+                    Layout.fillWidth: true
+                }
+                Label {
+                    leftPadding: 14
+                    Layout.alignment: Qt.AlignTrailing
+                    text: `**Fecha:** ${root.orderDate.toLocaleDateString(Qt.locale(), Locale.ShortFormat)}`
+                    textFormat: Label.MarkdownText
+                    wrapMode: Label.Wrap
+                }
+            }
+
+            Label {
+                text: `
+                    <strong>Cliente:</strong> ${customer.forename} ${customer.surname}
+                `
+                leftPadding: 14
+            }
+
+            Label {
+                text: `<strong>Estado de pago: </strong>${internal.statusString[payment.status]}`
+                leftPadding: 14
+            }
         }
-        Label {
-            Layout.leftMargin: 15
-            Layout.fillWidth: true
-            text: `**Fecha:** ${root.date.toLocaleDateString()}`
-            textFormat: Label.MarkdownText
-            wrapMode: Label.Wrap
+
+        TapHandler {
+            onTapped: root.clicked()
+        }
+    }
+
+    QtObject {
+        id: internal
+        readonly property var statusString: {
+            1: "Pago",
+            2: "Credito",
+            3: "Abonado"
         }
     }
 }
