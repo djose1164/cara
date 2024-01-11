@@ -21,7 +21,7 @@ Page {
     readonly property StackView stackView: StackView.view
     readonly property string userHomePath: "qrc:/home/UserHome.qml"
     readonly property url adminHomePath: "qrc:/home/AdminHome.qml"
-    readonly property url adminCartPath: "qrc:/orders/OrderFormAdmin.qml"
+    readonly property url adminCartPath: "qrc:/qt/qml/Billing/NewPurchaseOrder.qml"
     readonly property url userCartPath: "qrc:/cart/Cart.qml"
     readonly property bool canPosteOrder: isAdmin || isSalesperson
     readonly property bool isAdmin: user.isAdmin
@@ -156,7 +156,7 @@ Page {
         case UserEntity.Salesperson:
             if (CustomerManager.isEmpty) spService.fetchCustomers();
             homeStack.replace(adminHomePath);
-            orderStackView.replace(adminCartPath, {salesperson: user.salesperson});
+            orderStackView.replace(adminCartPath/*, {salesperson: user.salesperson}*/);
             break;
         case UserEntity.Guest:
         case UserEntity.Customer:
