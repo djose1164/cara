@@ -9,7 +9,10 @@ Rectangle {
     id: root
 
     property string title
-    readonly property alias menu: menuLoader
+    property bool midBtnVisible: true
+    readonly property alias loader: menuLoader
+
+    signal closeClicked
 
     height: 50
     z: 100
@@ -19,11 +22,12 @@ Rectangle {
         anchors.fill: parent
 
         CloseButton {
-            onClicked: close()
             Layout.alignment: Qt.AlignLeading | Qt.AlignVCenter
+            onClicked: root.closeClicked()
         }
 
         Label {
+            visible: midBtnVisible
             text: root.title
             font.pointSize: 14
             font.bold: true
@@ -32,6 +36,8 @@ Rectangle {
 
         Loader {
             id: menuLoader
+            Layout.fillWidth: !midBtnVisible
+            Layout.maximumHeight: root.height
         }
     }
 }
