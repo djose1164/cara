@@ -33,8 +33,8 @@ Page {
                 required property var product
                 required property var warehouse
                 required property int quantity_available
-                required property int minimun_stock_level
-                required property int maximun_stock_level
+                required property int minimum_stock_level
+                required property int maximum_stock_level
                 required property int reorder_point
 
                 onClicked: {
@@ -44,8 +44,8 @@ Page {
                             inventoryId: id,
                             product,
                             warehouse,
-                            minimunStockLevel: minimun_stock_level,
-                            maximunStockLevel: maximun_stock_level,
+                            minimunStockLevel: minimum_stock_level,
+                            maximunStockLevel: maximum_stock_level,
                             reorderPoint: reorder_point,
                             quantityAvailable: quantity_available
                         }
