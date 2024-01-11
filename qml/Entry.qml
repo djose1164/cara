@@ -6,6 +6,8 @@ import "qrc:/product"
 RowLayout {
     id: root
 
+    required property int index
+
     readonly property int quantity: quantityField.value
     readonly property alias price: productField.currentValue
     readonly property var entryValue: {
@@ -14,7 +16,6 @@ RowLayout {
         "unit_price": price,
     }
     readonly property int total: price * quantity
-    required property int index
     readonly property ListModel model: productField.model
 
     property alias valueRoleType: productField.valueRoleType
