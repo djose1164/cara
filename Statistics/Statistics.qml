@@ -1,5 +1,6 @@
 import QtQuick
 import QtQuick.Controls
+import QtQuick.Templates as T
 import "qrc:/utils"
 import "qrc:/product"
 
@@ -7,7 +8,7 @@ Page {
     id: root
 
     required property int salespersonId
-    readonly property StackView stackView: StackView.view
+    readonly property T.StackView stackView: StackView.view
 
     title: "Estadisticas"
     header: TitleHeader {
@@ -28,7 +29,7 @@ Page {
             width: 180
             height: 180
 
-            onClicked: stackView.push(path, {headerTitle: title, salespersonId})
+            onClicked: stackView.push(path, {salespersonId})
 
             Column {
                 anchors.fill: parent
@@ -57,13 +58,19 @@ Page {
         ListElement {
             imageSource: "qrc:/icons/product_statistics.svg"
             title: "Estadisticas de Productos"
-            path: "qrc:/statistics/ProductStatistics.qml"
+            path: "qrc:qt/qml/Statistics/ProductStatistics.qml"
         }
 
         ListElement {
             imageSource: "qrc:/icons/customer_statistics.svg"
             title: "Estadisticas de Clientes"
-            path: "qrc:/statistics/CustomerStatistics.qml"
+            path: "qrc:qt/qml/Statistics/CustomerStatistics.qml"
+        }
+
+        ListElement {
+            imageSource: "statistics-color.svg"
+            title: "Ordenes"
+            path: "OrderStatistics.qml"
         }
     }
 }
