@@ -6,7 +6,7 @@ import core
 import "qrc:/utils"
 import "qrc:/orders"
 import "qrc:/provider"
-import "qrc:/payment"
+import Billing
 
 ListView {
     id: listView

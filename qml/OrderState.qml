@@ -1,8 +1,9 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
-import "qrc:/payment"
+import Billing
 import User
+import Customer
 import "qrc:/product"
 
 ColumnLayout {
@@ -13,11 +14,12 @@ ColumnLayout {
     property date date
     property int orderId
     property var details
+    property customer buyer
 
     readonly property var statusString: {
-        0: "Pago",
-        1: "Credito",
-        2: "Abonado"
+        1: "Pago",
+        2: "Credito",
+        3: "Abonado"
     }
 
     signal paymentApplied(newPayment: var)
@@ -38,6 +40,11 @@ ColumnLayout {
     ]
 
     onPaymentApplied: p => payment = p
+
+    CustomerInfoBox {
+        Layout.fillWidth: true
+        customer: buyer
+    }
 
     Label {
         text: `Estado de Orden ID#${orderId}`

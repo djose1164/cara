@@ -5,7 +5,7 @@ import User
 import Salesperson
 import Utils
 import "qrc:/provider"
-import "qrc:/payment"
+import Billing
 import "qrc:/utils"
 import "qrc:/product"
 

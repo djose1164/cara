@@ -3,7 +3,7 @@ import QtQuick.Controls
 import QtQuick.Layouts
 import "qrc:/utils"
 import "qrc:/product"
-import "qrc:/payment"
+import Billing
 
 Page {
     id: root

@@ -12,7 +12,7 @@ import entities
 import Billing
 import "qrc:/utils"
 import "qrc:/product"
-import "qrc:/payment"
+import Billing
 
 Page {
     id: root
