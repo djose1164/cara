@@ -3,7 +3,7 @@ import QtQuick.Controls
 import "qrc:/singleton"
 
 ComboBox {
-    id: productField
+    id: root
 
     enum ValueRole {
         SellPrice,
