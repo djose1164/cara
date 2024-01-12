@@ -5,7 +5,10 @@ qt_add_qml_module(BillingLib
     VERSION 1.0
     QML_FILES
         NewPurchaseOrder.qml
-
+        PaymentStatus.qml
+        PaymentInput.qml
+        PaymentStatusFilter.qml
+        UpdatePayment.qml
     RESOURCES
         
     SOURCES
