@@ -133,8 +133,8 @@ Page {
                 inventoryId: inventory.id,
                 product: inventory.product,
                 warehouse: inventory.warehouse,
-                minimunStockLevel: inventory.minimun_stock_level,
-                maximunStockLevel: inventory.maximun_stock_level,
+                minimunStockLevel: inventory.minimum_stock_level,
+                maximunStockLevel: inventory.maximum_stock_level,
                 reorderPoint: inventory.reorder_point,
                 quantityAvailable: inventory.quantity_available
             });
