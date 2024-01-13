@@ -165,6 +165,7 @@ Page {
             orderStackView.replace(userCartPath);
             break;
         }
-        billStack.currentItem.user = root.user;
+        if (billStack.currentItem?.user)
+            billStack.currentItem.user = root.user;
     }
 }
