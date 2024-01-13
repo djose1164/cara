@@ -48,7 +48,7 @@ Item {
             Label {
                 id: amountLabel
                 visible: isPartiallyPaid && calculator.total > 0
-                text: `Debera: RD$${calculator.total}`
+                text: `Debera: RD$${calculator.total - value}`
                 font.pointSize: 12
             }
         }
