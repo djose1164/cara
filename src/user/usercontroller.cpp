@@ -67,4 +67,9 @@ Entity::UserEntity UserController::create(const QByteArray &data) const
 {
     return Entity::UserEntity::fromJson(data);
 }
+
+Entity::UserEntity UserController::createEmpty() const
+{
+    return {};
+}
 }

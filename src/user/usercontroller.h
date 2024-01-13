@@ -25,6 +25,8 @@ public:
 
     Q_INVOKABLE Entity::UserEntity create(const QByteArray &data) const;
 
+    Q_INVOKABLE Entity::UserEntity createEmpty() const;
+
 public slots:
     void update(const QVariantMap &data);
 
