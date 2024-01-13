@@ -1,7 +1,7 @@
 #ifndef RESTCUSTOMERREPOSITORY_H
 #define RESTCUSTOMERREPOSITORY_H
 
-#include "customerrepository.h"
+#include "Customer/customerrepository.h"
 #include <QObject>
 #include <QQmlEngine>
 #include <QNetworkAccessManager>

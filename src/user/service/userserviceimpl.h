@@ -1,7 +1,7 @@
 #ifndef USERSERVICEIMPL_H
 #define USERSERVICEIMPL_H
 
-#include "userentity.h"
+#include "user/userentity.h"
 #include "userservice.h"
 #include <QObject>
 

@@ -1,7 +1,7 @@
 #ifndef DATA_SALESPERSONMANAGER_H
 #define DATA_SALESPERSONMANAGER_H
 
-#include "business/manageable.h"
+#include "../business/manageable.h"
 #include <QNetworkAccessManager>
 
 namespace Data

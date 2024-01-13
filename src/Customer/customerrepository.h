@@ -1,7 +1,7 @@
 #ifndef CUSTOMERREPOSITORY_H
 #define CUSTOMERREPOSITORY_H
 
-#include "salesperson.h"
+#include "salesperson/salesperson.h"
 #include <QQmlEngine>
 
 namespace Business

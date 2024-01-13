@@ -1,7 +1,7 @@
 #include <QtTest>
 #include <QSignalSpy>
-#include "../authentication/login.h"
-#include "localuserstore.h"
+#include "authentication/login.h"
+#include "user/localuserstore.h"
 
 // add necessary includes here
 

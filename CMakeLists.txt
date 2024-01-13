@@ -16,20 +16,7 @@ find_package(Qt6 6.2 REQUIRED
 qt_standard_project_setup(REQUIRES 6.2)
 qt_policy(SET QTP0001 NEW)
 
-add_subdirectory(core)
-add_subdirectory(models)
-add_subdirectory(data)
-add_subdirectory(entities)
-add_subdirectory(catalogue)
-add_subdirectory(inventory)
-add_subdirectory(salesperson)
-add_subdirectory(user)
-add_subdirectory(authentication)
-add_subdirectory(utils)
-add_subdirectory(billing)
-add_subdirectory(Customer)
-add_subdirectory(Product)
-add_subdirectory(Statistics)
+add_subdirectory(src)
 
 if(NOT CMAKE_BUILD_TYPE STREQUAL "Release")
     add_subdirectory(tests)
@@ -77,7 +64,7 @@ qt_add_qml_module(Cara
     VERSION 1.0
     RESOURCES
         assets/res.qrc
-        qml/qml.qrc
+        src/qml/qml.qrc
 )
 
 qt_add_resources(Cara "configuration"

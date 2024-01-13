@@ -1,8 +1,8 @@
 #ifndef RESTUSERAUTHENTICATION_H
 #define RESTUSERAUTHENTICATION_H
 
-#include "business/authentication.h"
-#include "entity/usercredential.h"
+#include "../business/authentication.h"
+#include "user/entity/usercredential.h"
 #include <QObject>
 #include <QNetworkAccessManager>
 

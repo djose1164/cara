@@ -1,8 +1,8 @@
 #ifndef PRODUCTMODEL_H
 #define PRODUCTMODEL_H
 
-#include "../entities/productentity.h"
-#include "iinventoryrepository.h"
+#include "entities/productentity.h"
+#include "inventory/iinventoryrepository.h"
 #include <QAbstractListModel>
 #include <QObject>
 #include <QQmlEngine>

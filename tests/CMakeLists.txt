@@ -20,9 +20,4 @@ SETUP_TESTS(
    inventoryrepository
 )
 
-include_directories(../authentication)
-include_directories(../user)
-include_directories(../salesperson)
-include_directories(../customer)
-include_directories(../customer/data)
-include_directories(../inventory)
+include_directories(../src)
