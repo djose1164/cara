@@ -64,7 +64,7 @@ ApplicationWindow {
         target: LoginManager
 
         function onAuthenticationDone() {
-            stackView.replace(mainPage, {user: userController.create({})});
+            stackView.replace(mainPage, {user: userController.createEmpty()});
         }
     }
 
