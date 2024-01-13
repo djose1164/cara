@@ -94,7 +94,7 @@ Page {
 
         StackView {
             id: billStack
-            Component.onCompleted: replace("qrc:/bills/BillPage.qml", {user})
+            Component.onCompleted: replace("qrc:/bills/BillPage.qml", {user});
         }
     }
 
@@ -165,5 +165,6 @@ Page {
             orderStackView.replace(userCartPath);
             break;
         }
+        billStack.currentItem.user = root.user;
     }
 }
