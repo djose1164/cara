@@ -79,7 +79,7 @@ Item {
         }
 
         Label {
-            text: '¿Aun no tienes una cuenta? [Registrate](qrc:/login/SignUp.qml)'
+            text: '¿Aun no tienes una cuenta? [Registrate](SignUp.qml)'
             onLinkActivated: link => appStack.replace(link)
             textFormat: Label.MarkdownText
             Layout.alignment: Qt.AlignCenter

@@ -22,7 +22,7 @@ Item {
 
     Label {
         id: signUpLbl
-        anchors.top: bottom
+        anchors.top: cara.bottom
         anchors.topMargin: 50
         anchors.horizontalCenter: parent.horizontalCenter
         text: "Registrarse"
@@ -98,10 +98,10 @@ Item {
             onClicked: onOk()
         }
 
-        // TODO: Delete weak reference of `mainStackView`.
+        // TODO: Delete weak reference of `appStack`.
         Label {
-            text: '¿Ya tienes una cuenta? [Inicia sesion](qrc:/login/LoginPage.qml)'
-            onLinkActivated: link => mainStackView.replace(link)
+            text: '¿Ya tienes una cuenta? [Inicia sesion](LoginPage.qml)'
+            onLinkActivated: link => appStack.replace(link)
             textFormat: Label.MarkdownText
             Layout.alignment: Qt.AlignCenter
             font.pointSize: 12
