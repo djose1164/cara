@@ -7,8 +7,6 @@ qt_add_qml_module(UtilsLib
     VERSION 1.0
     SOURCES
         internetstatus.h internetstatus.cpp
-        cararestapi.h cararestapi.cpp
-        rest.h rest.cpp
     QML_FILES
         ListViewPage.qml
         DrawerHeader.qml
