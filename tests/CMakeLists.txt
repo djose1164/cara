@@ -15,8 +15,9 @@ SETUP_TESTS(
    salespersoncontroller
    salespersonmanager
    localuserstore
+   restcustomerrepository
+   productmodel
+   inventoryrepository
 )
 
-include_directories(../authentication)
-include_directories(../user)
-include_directories(../salesperson)
+include_directories(../src)

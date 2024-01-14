@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.16)
 
-project(Cara VERSION 0.14.0 LANGUAGES CXX)
+project(Cara VERSION 0.15.0 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -11,21 +11,12 @@ set(CMAKE_AUTOUIC ON)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 find_package(Qt6 6.2 REQUIRED
-    COMPONENTS Qml Quick Core Network Svg Test REQUIRED)
+    COMPONENTS Qml Quick Core Network Svg Test Charts REQUIRED)
 
 qt_standard_project_setup(REQUIRES 6.2)
 qt_policy(SET QTP0001 NEW)
 
-add_subdirectory(core)
-add_subdirectory(models)
-add_subdirectory(data)
-add_subdirectory(entities)
-add_subdirectory(catalogue)
-add_subdirectory(inventory)
-add_subdirectory(salesperson)
-add_subdirectory(user)
-add_subdirectory(authentication)
-add_subdirectory(utils)
+add_subdirectory(src)
 
 if(NOT CMAKE_BUILD_TYPE STREQUAL "Release")
     add_subdirectory(tests)
@@ -41,16 +32,21 @@ target_link_libraries(CaraLib PUBLIC
     Qt6::Network
     Qt6::Svg
     Qt6::Test
+    Qt6::Charts
     Coreplugin
     Modelsplugin
     Dataplugin
     Entitiesplugin
     Catalogueplugin
-    Inventoryplugin
+    InventoryLibplugin
     salespersonplugin
     UserLibplugin
     AuthenticationLibplugin
     UtilsLibplugin
+    BillingLibplugin
+    CustomerLibplugin
+    ProductLibplugin
+    StatisticsLibplugin
 )
 
 # Additional configurations for CaraLib
@@ -61,8 +57,14 @@ set_target_properties(CaraLib PROPERTIES
 # Create Cara executable
 qt_add_executable(Cara
     main.cpp
-    assets/res.qrc
-    qml/qml.qrc
+)
+
+qt_add_qml_module(Cara
+    URI Cara
+    VERSION 1.0
+    RESOURCES
+        assets/res.qrc
+        src/qml/qml.qrc
 )
 
 qt_add_resources(Cara "configuration"
