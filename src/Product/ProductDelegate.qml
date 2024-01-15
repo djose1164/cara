@@ -30,7 +30,7 @@ Item {
         }
 
         ItemDelegate {
-            onClicked: stackView.push("qrc:/product/ProductPage.qml",
+            onClicked: stackView.push("qrc:/qt/qml/Product/ProductPage.qml",
                                       {sell_price, name, image_url, description,
                                         productId})
             Column {

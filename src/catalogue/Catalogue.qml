@@ -41,7 +41,7 @@ Page {
                 required property int buy_price
 
                 onClicked: {
-                    stackView.push("qrc:/product/ProductForm.qml", {
+                    stackView.push("qrc:/qt/qml/Product/ProductForm.qml", {
                         productId: id,
                         name,
                         imageUrl: image_url,
@@ -94,7 +94,7 @@ Page {
     }
 
     RoundButton {
-        onClicked: stackView.push("qrc:/product/ProductForm.qml")
+        onClicked: stackView.push("qrc:/qt/qml/Product/ProductForm.qml")
         anchors {
             bottom: parent.bottom
             bottomMargin: 15
