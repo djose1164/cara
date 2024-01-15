@@ -17,20 +17,6 @@
         <file>Offers.qml</file>
         <file>RecentOrders.qml</file>
     </qresource>
-    <qresource prefix="/bills">
-        <file>BillPage.qml</file>
-        <file>BillPageHeader.qml</file>
-        <file>BillDelegate.qml</file>
-        <file>BillSearch.qml</file>
-        <file>BillMessage.qml</file>
-        <file>CustomerBills.qml</file>
-        <file>AdminBillDelegate.qml</file>
-        <file>CustomerBillDelegate.qml</file>
-        <file>BillViewChooser.qml</file>
-        <file>BillDetailsPage.qml</file>
-        <file>BillHomePage.qml</file>
-        <file>CustomerBillsHome.qml</file>
-    </qresource>
     <qresource prefix="/orders">
         <file>Entry.qml</file>
         <file>OrderState.qml</file>
@@ -135,7 +121,6 @@
     </qresource>
     <qresource lang="qml" prefix="/filters">
         <file>FilterButton.qml</file>
-        <file>BillFilterPopup.qml</file>
     </qresource>
     <qresource prefix="/address">
         <file>CountryComboBox.qml</file>

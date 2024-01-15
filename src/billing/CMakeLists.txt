@@ -9,6 +9,19 @@ qt_add_qml_module(BillingLib
         PaymentInput.qml
         PaymentStatusFilter.qml
         UpdatePayment.qml
+        AdminBillDelegate.qml
+        BillDelegate.qml
+        BillDetailsPage.qml
+        BillHomePage.qml
+        BillMessage.qml
+        BillPage.qml
+        BillPageHeader.qml
+        BillSearch.qml
+        BillViewChooser.qml
+        CustomerBillDelegate.qml
+        CustomerBills.qml
+        CustomerBillsHome.qml
+        BillFilterPopup.qml
     RESOURCES
         
     SOURCES

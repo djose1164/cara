@@ -2,7 +2,7 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 import core
-import "qrc:/bills"
+import Billing
 import "qrc:/singleton"
 
 Item {
