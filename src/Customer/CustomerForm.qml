@@ -4,8 +4,7 @@ import QtQuick.Layouts
 import QtQuick.Dialogs
 import User
 import "qrc:/utils"
-import "qrc:/customers"
-import "qrc:/singleton"
+import Customer
 import "qrc:/main"
 
 Page {

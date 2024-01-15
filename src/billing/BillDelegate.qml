@@ -3,7 +3,7 @@ import QtQuick.Controls
 import QtQuick.Layouts
 import User
 import core
-import "qrc:/customers"
+import Customer
 
 Item {
     id: root

@@ -5,7 +5,7 @@ import core
 import User
 import Salesperson
 import "qrc:/orders" as Orders
-import "qrc:/singleton"
+import Customer
 import Billing
 
 // TODO: MaiPage should be deleted in a future release.

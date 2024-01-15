@@ -5,7 +5,7 @@ import QtQuick.Dialogs
 import Salesperson
 import User
 import "qrc:/utils"
-import "qrc:/customers"
+import Customer
 
 Page {
     id: root

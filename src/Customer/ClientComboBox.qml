@@ -1,7 +1,7 @@
 import QtQuick
 import QtQuick.Controls
 import "qrc:/utils"
-import "qrc:/singleton"
+import Customer
 import core 1.0
 
 Rectangle {

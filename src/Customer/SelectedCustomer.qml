@@ -2,7 +2,7 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Templates as T
 import Utils
-import "qrc:/customers"
+import Customer
 
 Item {
     id: root

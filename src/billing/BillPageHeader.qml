@@ -4,7 +4,7 @@ import QtQuick.Layouts
 import User
 import "qrc:/utils"
 import Utils
-import "qrc:/customers"
+import Customer
 import "qrc:/singleton"
 
 ToolBar {

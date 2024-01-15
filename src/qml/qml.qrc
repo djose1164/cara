@@ -29,16 +29,6 @@
         <file>BuyOrderHeader.qml</file>
         <file>OrderAPI.qml</file>
     </qresource>
-    <qresource prefix="/customers">
-        <file>CustomerForm.qml</file>
-        <file>ClientComboBox.qml</file>
-        <file>CustomerModel.qml</file>
-        <file>ClientView.qml</file>
-        <file>Customers.qml</file>
-        <file>CustomerAPI.qml</file>
-        <file>CustomerEdit.qml</file>
-        <file>PersonalInformationForm.qml</file>
-    </qresource>
     <qresource prefix="/provider">
         <file>Providers.qml</file>
         <file>ProviderAPI.qml</file>
@@ -116,7 +106,6 @@
     <qresource prefix="/singleton">
         <file>qmldir</file>
         <file>ViewManager.qml</file>
-        <file>CustomerManager.qml</file>
         <file>ProductManager.qml</file>
     </qresource>
     <qresource lang="qml" prefix="/filters">

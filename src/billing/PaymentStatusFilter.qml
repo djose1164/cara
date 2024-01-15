@@ -3,7 +3,7 @@ import QtQuick.Controls
 import QtQuick.Layouts
 import core
 import entities
-import "qrc:/customers"
+import Customer
 
 Popup {
     id: root

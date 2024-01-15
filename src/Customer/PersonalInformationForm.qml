@@ -4,7 +4,7 @@ import QtQuick.Layouts
 import QtQuick.Dialogs
 import core
 import "qrc:/utils"
-import "qrc:/customers"
+import Customer
 import "qrc:/singleton"
 import "qrc:/main"
 import "qrc:/utils/utils.js" as JS

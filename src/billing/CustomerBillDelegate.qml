@@ -47,7 +47,7 @@ Item {
             }
 
             Label {
-                text: `<strong>Estado de pago: </strong>${internal.statusString[payment.status]}`
+                text: `<strong>Estado de pago: </strong>${internal.statusString(payment.status)}`
                 leftPadding: 14
             }
         }
@@ -59,10 +59,15 @@ Item {
 
     QtObject {
         id: internal
-        readonly property var statusString: {
-            1: "Pago",
-            2: "Credito",
-            3: "Abonado"
+
+        function statusString(code: int) : string {
+            const map = {
+                1: "Pago",
+                2: "Credito",
+                3: "Abonado"
+            }
+
+            return map[code];
         }
     }
 }
