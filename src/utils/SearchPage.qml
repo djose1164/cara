@@ -1,7 +1,7 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
-import "qrc:/product" as Products
+import Product as Products
 
 Page {
     id: root

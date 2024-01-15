@@ -2,7 +2,7 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Templates as T
 import "qrc:/utils"
-import "qrc:/product"
+import Product
 
 Page {
     id: root

@@ -3,7 +3,7 @@ import QtQuick.Controls
 import QtQuick.Layouts
 import catalogue as Catalogue
 import "qrc:/utils"
-import "qrc:/product"
+import Product
 import "qrc:/singleton"
 
 Popup {

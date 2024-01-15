@@ -11,7 +11,7 @@ import Product
 import entities
 import Billing
 import "qrc:/utils"
-import "qrc:/product"
+import Product
 import Billing
 
 Page {

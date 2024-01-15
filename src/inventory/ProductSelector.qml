@@ -5,7 +5,7 @@ import QtQml.Models
 import Utils
 import Inventory
 import Billing
-import "qrc:/product"
+import Product
 import "qrc:/utils"
 
 Drawer {

@@ -10,8 +10,8 @@ Page {
     required property var user
     readonly property StackView stackView: StackView.view
     readonly property string adminViewPath: "qrc:/qt/qml/Customer/CustomerViewItem.qml"
-    readonly property string customerViewPath: "qrc:/bills/CustomerBillsHome.qml"
-    readonly property string messagePath: "qrc:/bills/BillMessage.qml"
+    readonly property string customerViewPath: "qrc:/qt/qml/Billing/CustomerBillsHome.qml"
+    readonly property string messagePath: "qrc:/qt/qml/Billing/BillMessage.qml"
 
     title: "Facturas"
     header: pageHeader
@@ -38,7 +38,7 @@ Page {
         id: pageHeader
         stackView: root.stackView
         buttonLoader.sourceComponent: moreVertBtn
-        onDoSearch: billStack.push("qrc:/bills/BillSearch.qml", {model: loader.item.model, user});
+        onDoSearch: billStack.push("qrc:/qt/qml/Billing/BillSearch.qml", {model: loader.item.model, user});
     }
 
     Component {
@@ -96,7 +96,7 @@ Page {
                 anchors.bottom: parent.bottom
                 width: root.width
                 searchText: header.displayText
-                onCustomerClicked: customerId => billStack.push("qrc:/bills/BillHomePage.qml", {customerId})
+                onCustomerClicked: customerId => billStack.push("qrc:/qt/qml/Billing/BillHomePage.qml", {customerId})
             }
         }
     }

@@ -4,7 +4,7 @@ import QtQuick.Layouts
 import QtQml.Models
 import Utils
 import Inventory
-import "qrc:/product"
+import Product
 import "qrc:/utils"
 
 ItemDelegate {

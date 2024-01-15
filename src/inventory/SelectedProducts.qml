@@ -1,7 +1,7 @@
 import QtQuick
 import QtQuick.Controls
 import Utils
-import "qrc:/product"
+import Product
 
 Item {
     id: root

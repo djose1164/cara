@@ -59,23 +59,6 @@
         <file>utils.js</file>
         <file>NumberTextField.qml</file>
     </qresource>
-    <qresource prefix="/product">
-        <file>ProductForm.qml</file>
-        <file>ProductRequest.qml</file>
-        <file>ProductEntry.qml</file>
-        <file>ProductDelegate.qml</file>
-        <file>ProductPage.qml</file>
-        <file>ProductImage.qml</file>
-        <file>ProductApi.qml</file>
-        <file>StockPopup.qml</file>
-        <file>Product.qml</file>
-        <file>ProductStocks.qml</file>
-        <file>ProductCard.qml</file>
-        <file>ProductView.qml</file>
-        <file>ProductThumbnail.qml</file>
-        <file>AddProductView.qml</file>
-        <file>ProductComboBox.qml</file>
-    </qresource>
     <qresource lang="qml" prefix="/qr">
         <file>QR.qml</file>
     </qresource>
@@ -106,7 +89,6 @@
     <qresource prefix="/singleton">
         <file>qmldir</file>
         <file>ViewManager.qml</file>
-        <file>ProductManager.qml</file>
     </qresource>
     <qresource lang="qml" prefix="/filters">
         <file>FilterButton.qml</file>

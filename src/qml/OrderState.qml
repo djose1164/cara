@@ -4,7 +4,7 @@ import QtQuick.Layouts
 import Billing
 import User
 import Customer
-import "qrc:/product"
+import Product
 
 ColumnLayout {
     id: root

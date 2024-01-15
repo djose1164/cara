@@ -40,14 +40,14 @@ Item {
 
             name: root.name
             customerId: root.customerId
-            onClicked: billStack.push("qrc:/bills/BillHomePage.qml", {customerId})
+            onClicked: billStack.push("qrc:/qt/qml/Billing/BillHomePage.qml", {customerId})
         }
 
         CustomerBillDelegate {
             id: customerDelegate
 
             onClicked: {
-                billStack.push("qrc:/bills/BillDetailsPage.qml", {
+                billStack.push("qrc:/qt/qml/Billing/BillDetailsPage.qml", {
                     details, date, payment, orderId, status
                 });
             }

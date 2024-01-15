@@ -94,7 +94,7 @@ Page {
 
         StackView {
             id: billStack
-            Component.onCompleted: replace("qrc:/bills/BillPage.qml", {user});
+            Component.onCompleted: replace("qrc:/qt/qml/Billing/BillPage.qml", {user});
         }
     }
 

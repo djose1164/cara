@@ -7,7 +7,7 @@ import Utils
 import "qrc:/provider"
 import Billing
 import "qrc:/utils"
-import "qrc:/product"
+import Product
 
 Drawer {
     id: root

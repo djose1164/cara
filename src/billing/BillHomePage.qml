@@ -95,7 +95,7 @@ Page {
             orderId: model.orderId
             orderDate: model.date
             onClicked: {
-                stackView.push("qrc:/bills/BillDetailsPage.qml", {
+                stackView.push("qrc:/qt/qml/Billing/BillDetailsPage.qml", {
                     details, date: orderDate, payment, orderId, status, customer
                 });
             }

@@ -3,7 +3,7 @@ import QtQuick.Controls
 import QtQuick.Layouts
 import core
 import entities as Entity
-import "qrc:/product"
+import Product
 import "qrc:/singleton"
 
 ListView {
