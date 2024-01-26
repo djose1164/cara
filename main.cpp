@@ -1,4 +1,4 @@
-#include "src/user/localuserstore.h"
+#include "user/localuserstore.h"
 #include <QApplication>
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
@@ -15,7 +15,7 @@ int main(int argc, char *argv[])
 
     QQmlApplicationEngine engine;
     qmlRegisterInterface<Business::UserStore>("Business", 1);
-    const QUrl url(u"qrc:/main/main.qml"_qs);
+    const QUrl url(u"qrc:/qt/qml/Cara/main.qml"_qs);
     QObject::connect(
         &engine,
         &QQmlApplicationEngine::objectCreationFailed,

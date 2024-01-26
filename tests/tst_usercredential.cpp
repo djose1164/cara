@@ -1,4 +1,4 @@
-#include "user/entity/usercredential.h"
+#include "entity/usercredential.h"
 #include <QtTest>
 #include <QSignalSpy>
 

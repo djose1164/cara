@@ -1,6 +1,6 @@
-#include "user/localuserstore.h"
-#include "authentication/login.h"
-#include "Customer/data/restcustomerrepository.h"
+#include "localuserstore.h"
+#include "login.h"
+#include "data/restcustomerrepository.h"
 #include <QTest>
 #include <QSignalSpy>
 #include <QJsonDocument>

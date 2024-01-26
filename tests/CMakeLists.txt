@@ -18,6 +18,24 @@ SETUP_TESTS(
    restcustomerrepository
    productmodel
    inventoryrepository
+   pay
+   payment
 )
 
-include_directories(../src)
+include_directories(
+    ../Core
+    ../Models
+    ../Data
+    ../Entities
+    ../Catalogue
+    ../Inventory
+    ../Salesperson
+    ../User
+    ../Authentication
+    ../Utils
+    ../Billing
+    ../Customer
+    ../Product
+    ../Statistics
+)
+

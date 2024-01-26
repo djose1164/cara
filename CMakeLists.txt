@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.16)
+cmake_minimum_required(VERSION 3.18)
 
 project(Cara VERSION 0.16.0 LANGUAGES CXX)
 
@@ -10,17 +10,34 @@ set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
-find_package(Qt6 6.2 REQUIRED
+find_package(Qt6 6.7 REQUIRED
     COMPONENTS Qml Quick Core Network Svg Test Charts REQUIRED)
 
-qt_standard_project_setup(REQUIRES 6.2)
+qt_standard_project_setup(REQUIRES 6.7)
 qt_policy(SET QTP0001 NEW)
 
-add_subdirectory(src)
+add_subdirectory(Core)
+add_subdirectory(Data)
+add_subdirectory(Entities)
+add_subdirectory(Catalogue)
+add_subdirectory(Inventory)
+add_subdirectory(Salesperson)
+add_subdirectory(User)
+add_subdirectory(Authentication)
+add_subdirectory(Utils)
+add_subdirectory(Billing)
+add_subdirectory(Customer)
+add_subdirectory(Product)
+add_subdirectory(Statistics)
+
 
 if(NOT CMAKE_BUILD_TYPE STREQUAL "Release")
     add_subdirectory(tests)
 endif()
+
+qt_add_executable(Cara
+    main.cpp
+)
 
 # Create CaraLib target
 add_library(CaraLib STATIC)
@@ -34,7 +51,6 @@ target_link_libraries(CaraLib PUBLIC
     Qt6::Test
     Qt6::Charts
     Coreplugin
-    Modelsplugin
     Dataplugin
     Entitiesplugin
     Catalogueplugin
@@ -49,36 +65,32 @@ target_link_libraries(CaraLib PUBLIC
     StatisticsLibplugin
 )
 
-# Additional configurations for CaraLib
-set_target_properties(CaraLib PROPERTIES
-    ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib"
-)
-
-# Create Cara executable
-qt_add_executable(Cara
-    main.cpp
-)
-
 qt_add_qml_module(Cara
     URI Cara
     VERSION 1.0
+    QML_FILES
+        main.qml
     RESOURCES
         assets/res.qrc
-        src/qml/qml.qrc
+        qml/qml.qrc
 )
-
+target_link_libraries(Cara PRIVATE CaraLib)
 qt_add_resources(Cara "configuration"
     PREFIX "/"
     FILES
         qtquickcontrols2.conf
 )
 
-target_link_libraries(Cara PRIVATE CaraLib)
-
-# Additional configurations for Cara
 set_target_properties(Cara PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin"
     QT_ANDROID_PACKAGE_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/android
+)
+
+include(GNUInstallDirs)
+install(TARGETS Cara
+    BUNDLE DESTINATION .
+    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
 )
 
 if (ANDROID)

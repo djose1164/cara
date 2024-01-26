@@ -1,7 +1,7 @@
 #include <QtTest>
 
-#include "authentication/data/restuserauthentication.h"
-#include "user/entity/usercredential.h"
+#include "data/restuserauthentication.h"
+#include "entity/usercredential.h"
 
 class TestRestUserAuthentication : public QObject
 {

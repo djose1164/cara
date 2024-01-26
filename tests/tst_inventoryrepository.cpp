@@ -1,6 +1,6 @@
-#include "inventory/inventoryrepository.h"
-#include "user/localuserstore.h"
-#include "authentication/login.h"
+#include "inventoryrepository.h"
+#include "localuserstore.h"
+#include "login.h"
 #include <QTest>
 #include <QSignalSpy>
 #include <QJsonDocument>
