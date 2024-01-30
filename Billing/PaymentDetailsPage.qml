@@ -29,6 +29,11 @@ Page {
         spacing: 20
     }
 
+    BusyIndicator {
+        id: busyIndicator
+        anchors.centerIn: parent
+    }
+
     Component {
         id: paymentDelegate
         Item {
@@ -60,6 +65,7 @@ Page {
             id: paymentResource
             path: "/payments"
             paymentId: root.paymentId
+            onDataChanged: busyIndicator.running = false
         }
     }
 }
