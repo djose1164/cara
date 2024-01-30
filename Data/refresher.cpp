@@ -40,8 +40,10 @@ void Refresher::refresh()
         const auto data{reply_->readAll()};
         const auto obj{QJsonDocument::fromJson(data).object()};
 
+        const QString newToken{obj["access_token"].toString()};
+        settings_.setValue("User/accessTokenNoLeading", newToken);
         if (reply_->error() == QNetworkReply::NoError)
-            emit accessTokenRefreshed("Bearer " + obj["access_token"].toString());
+            emit accessTokenRefreshed("Bearer " + newToken);
         else
             emit errorOccurred(data);
     });
