@@ -7,20 +7,18 @@ import "qrc:/utils"
 Drawer {
     id: root
 
-    required property int salespersonId
-    readonly property alias model: customerView.model
+    readonly property alias model: customerView.customerModel
 
     signal customerSelected(customer: var)
 
     interactive: false
 
     Component.onCompleted: {
-        customerView.updateModel(salespersonId);
-        header.closeClicked.connect(root.close);
+        headerItem.closeClicked.connect(root.close);
     }
 
     SearchHeaderItem {
-        id: header
+        id: headerItem
         anchors.top: parent.top
         width: root.width
         height: 50
@@ -30,10 +28,11 @@ Drawer {
     CustomerViewItem {
         id: customerView
         width: root.width
-        anchors.top: header.bottom
+        anchors.top: headerItem.bottom
         anchors.bottom: parent.bottom
-        searchText: header.displayText
+        searchText: headerItem.displayText
         customerModel: CustomerManager.model
+        header: headerItem
         onCustomerSelected: customer => {
             root.customerSelected(customer);
             root.close();

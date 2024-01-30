@@ -82,7 +82,7 @@ Page {
             id: itemParent
 
             SearchHeaderItem {
-                id: header
+                id: headerItem
                 anchors.top: parent.top
                 width: root.width
                 height: 50
@@ -92,11 +92,12 @@ Page {
 
             CustomerViewItem {
                 id: cvItem
-                anchors.top: header.bottom
+                anchors.top: headerItem.bottom
                 anchors.bottom: parent.bottom
                 width: root.width
-                searchText: header.displayText
+                searchText: headerItem.displayText
                 customerModel: CustomerManager.model
+                header: headerItem
                 onCustomerClicked: customerId => billStack.push("qrc:/qt/qml/Billing/BillHomePage.qml", {customerId})
             }
         }
