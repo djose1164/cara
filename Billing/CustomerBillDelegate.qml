@@ -56,18 +56,4 @@ Item {
             onTapped: root.clicked()
         }
     }
-
-    QtObject {
-        id: internal
-
-        function statusString(code: int) : string {
-            const map = {
-                1: "Pago",
-                2: "Credito",
-                3: "Abonado"
-            }
-
-            return map[code];
-        }
-    }
 }
