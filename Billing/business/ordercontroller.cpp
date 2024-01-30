@@ -72,9 +72,9 @@ bool OrderController::validateOrder(const QVariantMap &order)
     }
 
     const auto pay{order["pay"].toMap()};
-    if (!pay.contains("paid_amount") || !pay.contains("amount_to_pay"))
+    if (!pay.contains("paid_amount") || !pay.contains("payment_details") || !pay.contains("amount_to_pay"))
     {
-        setErrorString("pay's paid_amount or amount_to_pay are missing.");
+        setErrorString("pay's paid_amount or payment_detail or amount_to_pay are missing.");
         return false;
     }
 
