@@ -5,6 +5,7 @@
 #include <QAbstractListModel>
 #include <QQmlEngine>
 #include <QJsonObject>
+#include <QJsonArray>
 
 namespace Model {
 class CustomerModel : public QAbstractListModel
@@ -13,7 +14,6 @@ class CustomerModel : public QAbstractListModel
     QML_ELEMENT
 
     Q_PROPERTY(int count READ count NOTIFY countChanged FINAL)
-    Q_PROPERTY(Business::CustomerRepository *repository READ repository WRITE setRepository NOTIFY repositoryChanged FINAL)
 public:
     using SalespersonId = Business::CustomerRepository::SalespersonId;
 
@@ -30,9 +30,6 @@ public:
 
     int count() const;
 
-    void setRepository(Business::CustomerRepository * const newRepository);
-    Business::CustomerRepository *repository() const;
-
     // QAbstractItemModel interface
     int rowCount(const QModelIndex &parent) const override;
     QVariant data(const QModelIndex &index, int role) const override;
@@ -47,11 +44,14 @@ public slots:
     void insert(int index, const QJsonObject &data);
     void append(const QJsonObject &data);
 
-    void update(SalespersonId salespersonId);
+    /**
+     * @brief set Clear the model & set the data.
+     * @param data The new data to be set.
+     */
+    void set(const QJsonArray &data);
 
 private:
     QList<QJsonObject> data_;
-    Business::CustomerRepository *repository_;
 };
 }
 
