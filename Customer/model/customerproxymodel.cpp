@@ -6,7 +6,9 @@ namespace Model
 CustomerProxyModel::CustomerProxyModel(QObject *parent)
     : QSortFilterProxyModel{parent}
     , text_{}
-{}
+{
+    sort(0);
+}
 
 QString CustomerProxyModel::text() const
 {
@@ -32,5 +34,13 @@ bool CustomerProxyModel::filterAcceptsRow(int source_row, const QModelIndex &sou
     };
     return fullname.isEmpty() || fullname.contains(text_, Qt::CaseInsensitive);
 }
-}
 
+bool CustomerProxyModel::lessThan(const QModelIndex &source_left, const QModelIndex &source_right) const
+{
+    using enum CustomerModel::RoleNames;
+    const QVariant leftData{sourceModel()->data(source_left, int(FullnameRole))};
+    const QVariant rightData{sourceModel()->data(source_right, int(FullnameRole))};
+
+    return QString::localeAwareCompare(leftData.toString(), rightData.toString()) < 0;
+}
+}
