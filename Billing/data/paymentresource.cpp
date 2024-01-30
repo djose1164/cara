@@ -1,6 +1,7 @@
 #include "paymentresource.h"
 #include <QRestReply>
 #include <QJsonArray>
+#include <QJsonDocument>
 
 using namespace Qt::StringLiterals;
 
@@ -24,7 +25,12 @@ QList<QJsonObject> PaymentResource::data() const
 
 void PaymentResource::refresh()
 {
-    manager_->get(api_->request(resourceIdentification.arg(QString::number(paymentId_))), this, [&](QRestReply *reply) {
+    const QNetworkRequest req{
+        api_->request(
+            path_ + resourceIdentification.arg(QString::number(paymentId_))
+        )
+    };
+    manager_->get(req, this, [&](QRestReply *reply) {
         if (!reply->isSuccess())
         {
             qWarning() << "PaymentResource::refresh: " << reply->errorString();
