@@ -26,7 +26,7 @@ Item {
                 const name = btn.text;
                 if (name === "Pago")
                     internal.selectedStatus = PaymentEntity.Paid;
-                else if (name === "Credit")
+                else if (name === "Credito")
                     internal.selectedStatus = PaymentEntity.Unpaid;
                 else if (name === "Abono")
                     internal.selectedStatus = PaymentEntity.Credited;
