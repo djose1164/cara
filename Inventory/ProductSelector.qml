@@ -44,6 +44,11 @@ Drawer {
         spacing: 10
     }
 
+    BusyIndicator {
+        id: busyIndicator
+        anchors.centerIn: parent
+    }
+
     ItemSelectionModel {
         id: selectionModel
         model: productModel
@@ -61,6 +66,7 @@ Drawer {
     ProductModel {
         id: productModel
         repository: inventoryRepository
+        onUpdated: busyIndicator.running = false
     }
 
     InventoryRepository {
@@ -71,29 +77,33 @@ Drawer {
         id: productDelegate
         ProductSelectorDelegate {
             id: productThumbnail
+            required index
+            required model
+            required productName
+            required productId
+            required quantityAvailable
+            required reorderPoint
+            required imageUrl
 
             readonly property var modelIndex: productModel.index(index, 0)
 
             enabled: quantityAvailable > 0
-            background: Rectangle{
+            background: Rectangle {
                 id: backRec
+                color: {
+                    if (!selectionModel.hasSelection)
+                        return "transparent";
+                    const selectedById = productModel.find(productId);
+                    if (selectionModel.isSelected(selectedById))
+                        return "cornflowerblue";
+                    return "transparent";
+                }
             }
             height: 100
             width: listView.width
             onClicked: {
-                selectionModel.select(modelIndex, ItemSelectionModel.Select | ItemSelectionModel.Toggle);
-            }
-
-            Connections {
-                target: selectionModel
-
-                function onSelectionChanged() {
-                    const idxIsSelected = selectionModel.isSelected(modelIndex);
-                    if (idxIsSelected)
-                        backRec.color = "cornflowerblue";
-                    else
-                        backRec.color = "transparent";
-                }
+                const selectedById = productModel.find(productId);
+                selectionModel.select(selectedById, ItemSelectionModel.Select | ItemSelectionModel.Toggle);
             }
         }
     }

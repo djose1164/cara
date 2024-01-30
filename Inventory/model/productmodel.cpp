@@ -97,6 +97,25 @@ bool ProductModel::contains(const EntityLayer::Product *product)
     return data_.contains(product);
 }
 
+QModelIndex ProductModel::find(int productId)
+{
+    const auto pred = [&](const QPointer<EntityLayer::Product> &p) {
+        return p->productId() == productId;
+    };
+
+
+    if (const auto res{std::find_if(data_.begin(), data_.end(), pred)};
+        res != data_.end())
+    {
+        if (const auto idx{data_.indexOf(*res)}; idx == -1)
+            return {};
+        else
+            return index(idx);
+    }
+
+    return {};
+}
+
 void ProductModel::update(SalespersonId spId)
 {
     if (!repository_)

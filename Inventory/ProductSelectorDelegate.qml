@@ -9,13 +9,13 @@ import "qrc:/utils"
 
 ItemDelegate {
     id: productThumbnail
-    required property int index
-    required property var model
-    required property string productName
-    required property int productId
-    required property int quantityAvailable
-    required property int reorderPoint
-    required property string imageUrl
+    property int index
+    property var model
+    property string productName
+    property int productId
+    property int quantityAvailable
+    property int reorderPoint
+    property string imageUrl
 
     Row {
         spacing: 10

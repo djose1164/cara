@@ -48,6 +48,7 @@ public:
 
     Q_INVOKABLE QObject *get(int index) const;
     Q_INVOKABLE bool contains(const EntityLayer::Product *product);
+    Q_INVOKABLE QModelIndex find(int productId);
 
 public slots:
     void update(SalespersonId spId);
