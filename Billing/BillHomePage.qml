@@ -28,6 +28,10 @@ Page {
                 target: label
                 visible: false
             }
+            PropertyChanges {
+                target: busyIndicator
+                running: true
+            }
         },
         State {
             name: "hasOrders"
@@ -68,7 +72,7 @@ Page {
     BusyIndicator {
         id: busyIndicator
         anchors.centerIn: parent
-        visible: false
+        running: false
     }
 
     Label {
