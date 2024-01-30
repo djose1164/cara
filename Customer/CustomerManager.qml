@@ -1,30 +1,34 @@
 pragma Singleton
 import QtQuick
 import Customer
+import Utils
 
 Item {
+    id: root
+
     readonly property alias model: model
     readonly property bool isEmpty: model.count === 0
 
-    signal updateModel
+    signal populating
 
     CustomerModel {
         id: model
-        repository: customerRepository
+        onUpdated: root.state = "updated"
     }
 
-    RestCustomerRepository { id: customerRepository }
-
-    Connections {
-        target: model
-        function onUpdated() {
-            print("CustomerManager: model was populated. Count: "+model.count)
+    RestService {
+        RestCustomerRepository {
+            id: customerRepository
+            path: "/customers"
+            onFetched: resp => model.set(JSON.parse(resp).customers)
         }
     }
 
     function populate(salespersonId: int) {
         print("CustomerManager: populating.");
-        model.update(salespersonId);
+        root.populating();
+        root.state = "fetching";
+        customerRepository.readBySalespersonId(salespersonId);
     }
 
     function addCustomer(customer) {
