@@ -23,7 +23,7 @@ Home {
         id: grid
         readonly property double prefferedCellSize: {
             if (width <= 500)
-                return 190;
+                return 180;
             else if (width <= 700)
                 return 200;
             else
