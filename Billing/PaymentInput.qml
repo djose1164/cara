@@ -21,6 +21,18 @@ Item {
     width: 200
     implicitHeight: column.childrenRect.height
 
+    states: [
+        State {
+            name: "inputDisabled"
+            when: paymentStatus.selectedStatus === PaymentEntity.Paid
+                  || paymentStatus.selectedStatus === PaymentEntity.Unpaid
+            PropertyChanges {
+                target: amountField
+                text: ""
+            }
+        }
+    ]
+
     Column {
         id: column
         spacing: 20
@@ -29,6 +41,7 @@ Item {
             id: paymentStatus
             width: root.width
             height: 75
+            onSelectedStatusChanged: amountField.text = ""
         }
 
         RowLayout {
@@ -40,7 +53,7 @@ Item {
                 enabled: paymentStatus.selectedStatus === PaymentEntity.Credited
                          && calculator.total > 0
                 inputMethodHints: Qt.ImhDigitsOnly
-
+                validator.top: calculator.total
                 Layout.alignment: Qt.AlignLeading
                 Layout.fillWidth: true
             }
@@ -48,7 +61,13 @@ Item {
             Label {
                 id: amountLabel
                 visible: isPartiallyPaid && calculator.total > 0
-                text: `Debera: RD$${calculator.total - value}`
+                text: {
+                    const debt = calculator.total - value;
+                    if (debt > 0)
+                        return `Debera: RD$${debt}`;
+                    else
+                        "Error: Monto invalido";
+                }
                 font.pointSize: 12
             }
         }
@@ -67,15 +86,27 @@ Item {
     }
 
     function toJson() {
-        const payment_status_id = value === calculator.total
-                                ? PaymentEntity.Paid : (value === 0)
-                                  ? PaymentEntity.Unpaid : PaymentEntity.Credited;
         const isPaid = selectedStatus === PaymentEntity.Paid;
         const calcTotal = calculator.total;
+        const paidAmount = isPaid ? calcTotal : value;
         return {
-            paid_amount: isPaid ? calcTotal : value,
+            payment_details: [
+                {
+                    amount: paidAmount
+                }
+            ],
+            paid_amount: paidAmount,
             amount_to_pay: calcTotal,
-            payment_status_id
+            payment_status_id: selectedStatus
         };
+    }
+
+    function validate() {
+        if (checkState === Qt.Unchecked)
+            throw "Debes selecionar la condicion de pago de la orden";
+        else if(selectedStatus === PaymentEntity.Credited && root.value < 1)
+            throw "Debes digitar un monto valido mayor a 0";
+        else if (!amountField.acceptableInput)
+            throw "El monto digitado excede el total de la orden.";
     }
 }
