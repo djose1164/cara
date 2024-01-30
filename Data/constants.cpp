@@ -14,7 +14,7 @@ Constants::Constants()
     : testingBase_{"http://127.0.0.1:5000"}
 #endif
     , remoteTesting_{"https://cara-api-testing.onrender.com"}
-    , production_{"https://cara-rd.live"}
+    , production_{"https://cara-api.onrender.com"}
     , appWidth_{400}
     , appHeight_{640}
 {
