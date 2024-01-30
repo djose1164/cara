@@ -51,7 +51,8 @@ Rectangle {
             text: productName
             font.pointSize: 13
             font.bold: true
-
+            wrapMode: Label.Wrap
+            Layout.fillWidth: true
         }
 
         Label {
