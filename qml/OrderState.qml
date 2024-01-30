@@ -53,14 +53,13 @@ ColumnLayout {
 
     OrderStatusCB {
         id: orderStatusCB
-        onStatusUpdated: (newStatusId, newStatusString) => {
-                             status.statusId = newStatusId;
-                             status.statusString = newStatusString;
-                         }
-
         Layout.fillWidth: true
         orderId: root.orderId
         statusId: status.statusId
+        onStatusUpdated: (newStatusId, newStatusString) => {
+            status.statusId = newStatusId;
+            status.statusString = newStatusString;
+        }
     }
 
     PaymentDetails {
@@ -122,6 +121,8 @@ ColumnLayout {
             imageUrl: product.imageUrl
         }
     }
+
+    Item { Layout.fillWidth: true }
 
     LocalUserStore { id: userStore }
 
