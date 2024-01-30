@@ -92,7 +92,10 @@ void Login::authenticateRefreshToken()
         {
             restoreUser();
             const auto resp{QJsonDocument::fromJson(data_).object()};
-            DataLayer::TokenManager::instance()->setAccessToken("Bearer " + resp["access_token"].toString());
+            const QString newToken{resp["access_token"].toString()};
+            QSettings().setValue("User/accessTokenNoLeading", newToken);
+
+            DataLayer::TokenManager::instance()->setAccessToken("Bearer " + newToken);
             qDebug() << "User authenticated successfully through LocalUserAuthentication.";
             emit authenticated();
         }
