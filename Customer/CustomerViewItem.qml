@@ -9,11 +9,24 @@ Item {
     id: root
 
     required property CustomerModel customerModel
-    readonly property alias model: listView.model
+
+    property SearchHeaderItem header
+
     property alias searchText: customerProxy.text
 
     signal customerSelected(customer: var)
     signal customerClicked(customerId: int)
+
+    states: [
+        State {
+            name: "searchDisabled"
+            when: CustomerManager.state === "fetching"
+            PropertyChanges {
+                target: headerItem
+                state: "disabled"
+            }
+        }
+    ]
 
     //customerModel.onUpdated: busyIndicator.visible = false;
     ListView {
@@ -38,7 +51,7 @@ Item {
         BusyIndicator {
             id: busyIndicator
             anchors.centerIn: parent
-            visible: false
+            running: CustomerManager.state === "fetching"
         }
 
         Label {
@@ -53,9 +66,5 @@ Item {
     CustomerProxyModel {
         id: customerProxy
         sourceModel: customerModel
-    }
-
-    function updateModel(salespersonId: int) {
-        customerModel.update(salespersonId);
     }
 }
