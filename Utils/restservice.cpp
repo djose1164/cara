@@ -8,9 +8,9 @@ RestService::RestService(QObject *parent)
     , url_{}
     , resources_{}
     , manager_{std::make_shared<QRestAccessManager>()}
-    , api_{std::make_shared<QNetworkRequestFactory>(QSettings().value("base").toString() + "/payments")}
+    , api_{std::make_shared<QNetworkRequestFactory>(QSettings().value("base").toString())}
 {
-    const QString token{QSettings().value("User/accessToken").toString()};
+    const QString token{QSettings().value("User/accessTokenNoLeading").toString()};
     api_->setBearerToken(token.toUtf8());
 }
 
