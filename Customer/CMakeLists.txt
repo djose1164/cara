@@ -29,6 +29,7 @@ qt_add_qml_module(CustomerLib
         data/restcustomerrepository.h data/restcustomerrepository.cpp
         entity/customer.h entity/customer.cpp
         model/customerproxymodel.h model/customerproxymodel.cpp
+        business/customercontroller.h business/customercontroller.cpp
     RESOURCES
         person.svg
         person-add.svg
@@ -37,8 +38,10 @@ qt_add_qml_module(CustomerLib
 )
 
 target_include_directories(CustomerLib PRIVATE
-    ./data/
+    data
     entity
-    ../Salesperson
     model
+    business
+    ../Salesperson
+    ../utils
 )
