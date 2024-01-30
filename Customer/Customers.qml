@@ -59,6 +59,11 @@ ListViewPage {
         }
     }
 
+    Component.onCompleted: {
+        customerRepository.readBySalespersonId(salespersonId);
+        root.state = "fetching";
+    }
+
     SearchHeaderItem {
         id: searchHeader
         anchors.top: parent.top
@@ -70,8 +75,23 @@ ListViewPage {
 
     CustomerProxyModel {
         id: proxyModel
-        sourceModel: CustomerManager.model
+        sourceModel: customerModel
         text: searchHeader.displayText
+    }
+
+    CustomerModel {
+        id: customerModel
+        onUpdated: root.state = ""
+    }
+
+    RestService {
+        RestCustomerRepository {
+            id: customerRepository
+            path: "/customers"
+            onFetched: resp => customerModel.set(JSON.parse(resp).customers)
+            onErrorStringChanged: print(errorString)
+            onContentNotFound: root.state = "contentNotFound"
+        }
     }
 
     LocalUserStore { id: userStore }
@@ -87,7 +107,7 @@ ListViewPage {
         icon.source: "qrc:/icons/person_add.svg"
         icon.width: 30
         icon.height: 30
-        onClicked: stackView.push("qrc:qt/qml/Customer/CustomerForm.qml")
+        onClicked: stackView.push("qrc:qt/qml/Customers/CustomerForm.qml")
     }
 
     CustomerEdit {
