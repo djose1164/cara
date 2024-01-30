@@ -1,24 +1,30 @@
-#include "restcustomerrepository.h"
-#include "../user/localuserstore.h"
+#include "customerresource.h"
 #include <QSettings>
 #include <QNetworkReply>
+#include <QRestReply>
+#include <QJsonObject>
+
+using namespace Qt::StringLiterals;
+
+namespace {
+constexpr auto resourceIdentification = "/%1"_L1;
+}
 
 namespace Data
 {
-RestCustomerRepository::RestCustomerRepository(QObject *parent)
-    : Business::CustomerRepository{parent}
-    , manager_{new QNetworkAccessManager(this)}
-    , reply_{}
+CustomerResource::CustomerResource(QObject *parent)
+    : AbstractResource{parent}
     , data_{}
     , errorString_{}
+    , path_{}
 {}
 
-QByteArray RestCustomerRepository::data() const
+QByteArray CustomerResource::data() const
 {
     return data_;
 }
 
-void RestCustomerRepository::setData(const QByteArray &newData)
+void CustomerResource::setData(const QByteArray &newData)
 {
     if (data_ == newData)
         return;
@@ -26,43 +32,35 @@ void RestCustomerRepository::setData(const QByteArray &newData)
     emit dataChanged();
 }
 
-void RestCustomerRepository::readBySalespersonId(SalespersonId salespersonId)
+void CustomerResource::readBySalespersonId(SalespersonId salespersonId)
 {
-    const auto req{prepareRequest(QString("/?salesperson_id=%1").arg(salespersonId))};
+    const auto req{api_->request(path_
+        + QString("/?salesperson_id=%1").arg(salespersonId))};
 
-    reply_ = manager_->get(req);
-
-    connect(reply_, &QNetworkReply::finished, this, [&] {
-        setData(reply_->readAll());
-        if (reply_->error() != QNetworkReply::NoError)
+    manager_->get(req, this, [&](QRestReply *reply) {
+        if (!reply->isSuccess())
         {
-            setErrorString(reply_->errorString());
+            setErrorString(reply->errorString());
+            qWarning() << "RestCustomerRepository::readBySalespersonId: "
+                       << errorString() << "\n"
+                       << "HttpStatus: " << reply->httpStatus();
             emit errorOccurred();
+            if (reply->httpStatus() == 404)
+                emit contentNotFound();
+            return;
         }
-        else
-            emit fetched(data());
+        setData(reply->body());
 
-        reply_->deleteLater();
+        emit fetched(data());
     });
 }
 
-QNetworkRequest RestCustomerRepository::prepareRequest(const QString &endpoint)
-{
-    const QUrl url{QSettings().value("base").toString() + "/customers" + endpoint};
-    QNetworkRequest req{url};
-    req.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
-
-    const QString token{Business::LocalUserStore().user().accessToken()};
-    req.setRawHeader("Authorization", token.toUtf8());
-    return req;
-}
-
-QString RestCustomerRepository::errorString() const
+QString CustomerResource::errorString() const
 {
     return errorString_;
 }
 
-void RestCustomerRepository::setErrorString(const QString &newErrorString)
+void CustomerResource::setErrorString(const QString &newErrorString)
 {
     if (errorString_ == newErrorString)
         return;

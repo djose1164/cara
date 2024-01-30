@@ -17,7 +17,7 @@ Item {
     }
 
     RestService {
-        RestCustomerRepository {
+        CustomerResource {
             id: customerRepository
             path: "/customers"
             onFetched: resp => model.set(JSON.parse(resp).customers)

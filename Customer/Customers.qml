@@ -85,7 +85,7 @@ ListViewPage {
     }
 
     RestService {
-        RestCustomerRepository {
+        CustomerResource {
             id: customerRepository
             path: "/customers"
             onFetched: resp => customerModel.set(JSON.parse(resp).customers)
