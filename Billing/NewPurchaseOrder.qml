@@ -11,8 +11,6 @@ import Product
 import entities
 import Billing
 import "qrc:/utils"
-import Product
-import Billing
 
 Page {
     id: root
@@ -72,7 +70,6 @@ Page {
                 readonly property string delegateSource: "qrc:/qt/qml/Customer/SelectedCustomer.qml"
                 width: root.width
                 height: root.height
-                salespersonId: userStore.user.salespersonId
                 onCustomerSelected: model => {
                     const customerId = model.customerId;
                     customerLoader.setSource(delegateSource, {
@@ -214,9 +211,6 @@ Page {
             throw "Necesitas elegir un cliente";
         else if (costCalculator.total === 0)
             throw "Debes agregar al menos un producto a la orden";
-        else if (paymentInput.checkState === Qt.Unchecked)
-            throw "Debes selecionar la condicion de pago de la orden";
-        else if(paymentInput.selectedStatus === PaymentEntity.Credited && paymentInput.value < 1)
-            throw "Debes digitar un monto valido mayor a 0";
+        paymentInput.validate();
     }
 }
