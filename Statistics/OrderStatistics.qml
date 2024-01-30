@@ -46,7 +46,8 @@ Page {
 
         }
 
-        StatisticsResource.fetchData("/orders/?start_year=2020&end_year=2024", customersHandler);
+        const currentYear = new Date().getFullYear();
+        StatisticsResource.fetchData("/orders/?start_year=2020&end_year="+currentYear, customersHandler);
 
         const paymentsHandler = data => {
             const stats = {Credito: 0, Abonado: 0, Pago: 0};
@@ -57,7 +58,7 @@ Page {
                 pieSeries.append(key, stats[key]);
         }
 
-        StatisticsResource.fetchData("/payment_status/?start_year=2020&end_year=2024", paymentsHandler);
+        StatisticsResource.fetchData("/payment_status/", paymentsHandler);
     }
 
     ScrollView {
@@ -69,7 +70,7 @@ Page {
                 id: chartView
                 Layout.fillWidth: true
                 Layout.fillHeight: true
-                Layout.preferredHeight: root.height
+                Layout.preferredHeight: root.height * .85
                 title: "Meses vs Cantidad de ordenes"
                 legend.alignment: Qt.AlignBottom
                 antialiasing: true
@@ -161,6 +162,11 @@ Page {
                         }
                      }
                  }
+            }
+
+            ToolSeparator {
+                orientation: Qt.Horizontal
+                Layout.fillWidth: true
             }
 
             ChartView {
