@@ -112,7 +112,7 @@ Page {
 
     function validate(): void {
         nameForm.validate();
-        contactForm.validate();
-        addressForm.validate();
+        // contactForm.validate();
+        // addressForm.validate();
     }
 }
