@@ -30,7 +30,7 @@ public:
     void setErrorString(const QString &newErrorString);
 
 public slots:
-    void readBySalespersonId(SalespersonId salespersonId) override;
+    void readBySalespersonId(SalespersonId salespersonId) override final;
 
 signals:
     void dataChanged();
