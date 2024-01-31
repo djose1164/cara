@@ -7,7 +7,6 @@ qt_add_qml_module(UserLib
     VERSION 1.0
     QML_FILES
         PerfilPage.qml
-        Refresh.qml
         UserCredentialsForm.qml
         UserSettings.qml
     SOURCES
