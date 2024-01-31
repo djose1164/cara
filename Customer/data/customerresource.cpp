@@ -41,7 +41,7 @@ void CustomerResource::readBySalespersonId(SalespersonId salespersonId)
         if (!reply->isSuccess())
         {
             setErrorString(reply->errorString());
-            qWarning() << "RestCustomerRepository::readBySalespersonId: "
+            qWarning() << "CustomerResource::readBySalespersonId: "
                        << errorString() << "\n"
                        << "HttpStatus: " << reply->httpStatus();
             emit errorOccurred();

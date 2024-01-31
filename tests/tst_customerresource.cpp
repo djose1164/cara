@@ -6,11 +6,11 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 
-class TestRestCustomerRepository : public QObject
+class TestCustomerResource : public QObject
 {
     Q_OBJECT
 public:
-    explicit TestRestCustomerRepository(QObject *parent = nullptr);
+    explicit TestCustomerResource(QObject *parent = nullptr);
 
 private slots:
     void initTestCase();
@@ -22,20 +22,20 @@ private slots:
 
 
 
-TestRestCustomerRepository::TestRestCustomerRepository(QObject *parent)
+TestCustomerResource::TestCustomerResource(QObject *parent)
     : QObject{parent}
 {
 
 }
 
-void TestRestCustomerRepository::initTestCase()
+void TestCustomerResource::initTestCase()
 {
     QCoreApplication::setOrganizationDomain("cara.com");
     QCoreApplication::setOrganizationName("Cara");
     QCoreApplication::setApplicationName("CaraTesting");
 }
 
-void TestRestCustomerRepository::init()
+void TestCustomerResource::init()
 {
     Business::Login login{};
     login.setUsername("josevictoriano");
@@ -49,7 +49,7 @@ void TestRestCustomerRepository::init()
     QVERIFY(spy.wait());
 }
 
-void TestRestCustomerRepository::test_shouldReturnCustomersByTheirSalespersonId() const
+void TestCustomerResource::test_shouldReturnCustomersByTheirSalespersonId() const
 {
     Data::CustomerResource repository{};
     QSignalSpy spy{&repository, &Data::CustomerResource::fetched};
@@ -67,7 +67,7 @@ void TestRestCustomerRepository::test_shouldReturnCustomersByTheirSalespersonId(
     QVERIFY2(errorString.isEmpty(), QString("An error has occurred: %1").arg(errorString).toUtf8());
 }
 
-void TestRestCustomerRepository::test_shouldEmitErrorOccurredIfSalespersonidIsNotValid() const
+void TestCustomerResource::test_shouldEmitErrorOccurredIfSalespersonidIsNotValid() const
 {
     Data::CustomerResource repository{};
     QSignalSpy spy{&repository, SIGNAL(errorOccurred(void))};
@@ -85,6 +85,6 @@ void TestRestCustomerRepository::test_shouldEmitErrorOccurredIfSalespersonidIsNo
     QVERIFY(errorString.isEmpty() == false);
 }
 
-QTEST_MAIN(TestRestCustomerRepository)
+QTEST_MAIN(TestCustomerResource)
 
 #include "tst_restcustomerrepository.moc"
