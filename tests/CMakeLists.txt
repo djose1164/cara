@@ -15,7 +15,7 @@ SETUP_TESTS(
    salespersoncontroller
    salespersonmanager
    localuserstore
-   restcustomerrepository
+   customerresource
    productmodel
    inventoryrepository
    pay
