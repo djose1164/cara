@@ -6,24 +6,16 @@
 
 namespace Business
 {
-class CustomerRepository : public QObject
+class CustomerRepository
 {
-    Q_OBJECT
-    QML_INTERFACE
 public:
     using SalespersonId = Entity::Salesperson::SalespersonId;
-    using QObject::QObject;
 
     virtual ~CustomerRepository();
 
     virtual void readBySalespersonId(SalespersonId salespersonId) = 0;
-
-signals:
-    void errorOccurred();
-    void fetched(const QByteArray &data);
 };
 }
-
 Q_DECLARE_INTERFACE(Business::CustomerRepository, "com.cara.CustomerRepository")
 
 #endif // CUSTOMERREPOSITORY_H

@@ -2,16 +2,19 @@
 #define CUSTOMERRESOURCE_H
 
 #include "abstractresource.h"
+#include "customerrepository.h"
 #include <QObject>
 #include <QQmlEngine>
 #include <QNetworkAccessManager>
 
 namespace Data
 {
-class CustomerResource : public AbstractResource
+class CustomerResource
+    : public AbstractResource, public Business::CustomerRepository
 {
     Q_OBJECT
     QML_ELEMENT
+    Q_INTERFACES(Business::CustomerRepository)
     Q_PROPERTY(QByteArray data READ data WRITE setData NOTIFY dataChanged FINAL)
     Q_PROPERTY(QString errorString READ errorString WRITE setErrorString NOTIFY errorStringChanged FINAL)
     Q_PROPERTY(QString path MEMBER path_ REQUIRED FINAL)
@@ -27,7 +30,7 @@ public:
     void setErrorString(const QString &newErrorString);
 
 public slots:
-    void readBySalespersonId(SalespersonId salespersonId);
+    void readBySalespersonId(SalespersonId salespersonId) override;
 
 signals:
     void dataChanged();
