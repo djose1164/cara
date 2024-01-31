@@ -26,7 +26,7 @@ qt_add_qml_module(CustomerLib
     SOURCES
         customermodel.h customermodel.cpp
         customerrepository.h customerrepository.cpp
-        data/restcustomerrepository.h data/restcustomerrepository.cpp
+        data/customerresource.h data/customerresource.cpp
         entity/customer.h entity/customer.cpp
         model/customerproxymodel.h model/customerproxymodel.cpp
         business/customercontroller.h business/customercontroller.cpp
