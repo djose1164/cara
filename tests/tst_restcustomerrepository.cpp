@@ -1,6 +1,6 @@
 #include "localuserstore.h"
 #include "login.h"
-#include "data/restcustomerrepository.h"
+#include "data/customerresource.h"
 #include <QTest>
 #include <QSignalSpy>
 #include <QJsonDocument>
@@ -51,8 +51,8 @@ void TestRestCustomerRepository::init()
 
 void TestRestCustomerRepository::test_shouldReturnCustomersByTheirSalespersonId() const
 {
-    Data::RestCustomerRepository repository{};
-    QSignalSpy spy{&repository, &Data::RestCustomerRepository::fetched};
+    Data::CustomerResource repository{};
+    QSignalSpy spy{&repository, &Data::CustomerResource::fetched};
 
     QVERIFY(spy.isValid());
 
@@ -69,7 +69,7 @@ void TestRestCustomerRepository::test_shouldReturnCustomersByTheirSalespersonId(
 
 void TestRestCustomerRepository::test_shouldEmitErrorOccurredIfSalespersonidIsNotValid() const
 {
-    Data::RestCustomerRepository repository{};
+    Data::CustomerResource repository{};
     QSignalSpy spy{&repository, SIGNAL(errorOccurred(void))};
 
     QVERIFY(spy.isValid());
