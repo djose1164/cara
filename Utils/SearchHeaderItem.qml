@@ -31,13 +31,19 @@ Item {
                 target: leadingBtn
                 icon.source: "qrc:/left_arrow"
             }
+        },
+        State {
+            name: "disabled"
+            PropertyChanges {
+                target: searchBtn
+                enabled: false
+            }
         }
     ]
 
     implicitWidth: header.childrenRect.width
     implicitHeight: 50
     onCloseClicked: searchField.text = ''
-    onSearchClosed: searchField.text = ''
 
     Rectangle {
         id: header
@@ -94,8 +100,13 @@ Item {
         if (root.state !== "searching") {
             root.closeClicked();
         } else {
-            root.state = "";
-            searchClosed();
+            endSearch();
         }
+    }
+
+    function endSearch() {
+        root.state = "";
+        searchField.text = "";
+        searchClosed();
     }
 }
