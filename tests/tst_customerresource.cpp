@@ -87,4 +87,4 @@ void TestCustomerResource::test_shouldEmitErrorOccurredIfSalespersonidIsNotValid
 
 QTEST_MAIN(TestCustomerResource)
 
-#include "tst_restcustomerrepository.moc"
+#include "tst_customerresource.moc"
