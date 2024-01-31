@@ -17,14 +17,18 @@ Page {
             }
             PropertyChanges {
                 target: busyIndicator
-                visible: true
+                running: true
             }
         },
         State {
-            name: "errorOccurred"
+            name: "contentNotFound"
             PropertyChanges {
                 target: errorPane
                 visible: true
+            }
+            PropertyChanges {
+                target: busyIndicator
+                running: false
             }
         }
     ]
@@ -32,14 +36,6 @@ Page {
     ListView {
         id: listView
         anchors.fill: parent
-
-        Label {
-            width: listView.width * .8
-            visible: listView.count === 0
-            text: noDataMessage
-            font.pointSize: 14
-            wrapMode: Label.Wrap
-        }
     }
 
     Pane {
@@ -54,11 +50,15 @@ Page {
             anchors.fill: parent
             spacing: 14
             IconImage {
+                anchors.horizontalCenter: parent.horizontalCenter
                 source: "qrc:/icons/warning.svg"
+                sourceSize: "96x96"
             }
             Label {
                 width: errorPane.width * .8
-                text: "Error al intentar obtener los datos."
+                anchors.horizontalCenter: parent.horizontalCenter
+                wrapMode: Label.Wrap
+                text: noDataMessage
                 font.pointSize: 14
                 font.bold: true
             }
@@ -67,7 +67,7 @@ Page {
 
     BusyIndicator {
         id: busyIndicator
-        visible: false
+        running: false
         anchors.centerIn: parent
     }
 }
