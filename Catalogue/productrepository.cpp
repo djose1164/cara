@@ -1,55 +1,68 @@
 #include "productrepository.h"
-#include "constants.h"
-#include "tokenmanager.h"
+#include "networkrequestsingleton.h"
 #include <QHttpMultiPart>
+#include <QJsonDocument>
+#include <QFile>
+#include <QFileInfo>
+
+using namespace Qt::Literals::StringLiterals;
+
+namespace
+{
+constexpr auto resourceID{"%1"_L1};
+}
 
 namespace Catalogue {
 ProductRepository::ProductRepository(QObject *parent)
     : QObject{parent}
     , manager_{new QNetworkAccessManager(this)}
     , reply_{nullptr}
-    , base_{}
     , multiPart_{nullptr}
+    , path_{"products"_L1}
+    , errorString_{}
+    , api_{Utils::NetworkRequestSingleton::instance().api()}
 {
-    QQmlEngine engine;
-    const auto constants{engine.singletonInstance<DataLayer::Constants *>("data", "Constants")};
-    base_ = constants->base() + "/products";
 }
 
 void ProductRepository::add(const QVariantMap &product)
 {
-    multiPart_ = new QHttpMultiPart(QHttpMultiPart::FormDataType);
-    prepareImagePart(product.value("image_url").toUrl());
-    prepareJsonPart(product);
+    try
+    {
+        multiPart_ = new QHttpMultiPart(QHttpMultiPart::FormDataType, this);
+        const auto tmp{product};
+        prepareImagePart(tmp.value("image_url").toUrl());
+        prepareJsonPart(tmp);
 
-    const QUrl url{base_ + "/"};
-    QNetworkRequest request{url};
-    request.setRawHeader("Authorization", DataLayer::TokenManager::instance()->accessToken().toUtf8());
+        QNetworkRequest request{api_->createRequest("products/"_L1)};
+        const auto headerValue{"multipart/form-data; boundary=\"%1\""_L1.arg(multiPart_->boundary())};
+        request.setHeader(QNetworkRequest::ContentTypeHeader, headerValue);
 
-    reply_ = manager_->post(request, multiPart_);
-    multiPart_->setParent(reply_);
+        reply_ = manager_->post(request, multiPart_);
+        multiPart_->setParent(reply_);
 
-    connect(reply_, &QNetworkReply::finished, this, [&] {
-        const auto content{reply_->readAll()};
-        if (reply_->error() == QNetworkReply::NoError)
-            emit added(content);
-        else
-            emit errorOccurred(content);
+        connect(reply_, &QNetworkReply::finished, this, [&] {
+            const auto content{reply_->readAll()};
+            if (reply_->error() == QNetworkReply::NoError)
+                emit added(content);
+            else
+                emit errorOccurred(content);
 
-        reply_->deleteLater();
-    });
+            reply_->deleteLater();
+        });
+    }
+    catch(const std::runtime_error &err)
+    {
+        emit errorOccurred(err.what());
+    }
 }
 
 void ProductRepository::update(const QVariantMap &product)
 {
     QVariantMap productTmp{product};
-    const QUrl url{base_ + "/" + productTmp["id"].toString()};
+    const int productId{productTmp["id"].toInt()};
     productTmp.remove("id");
 
-    const QString token{DataLayer::TokenManager::instance()->accessToken()};
-    QNetworkRequest request{url};
-    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
-    request.setRawHeader("Authorization", token.toUtf8());
+    const auto request{api_->createRequest(path_ + resourceID.arg(QString::number(productId)))};
 
     const auto payload = QJsonDocument::fromVariant(productTmp)
         .toJson(QJsonDocument::Compact);
@@ -65,8 +78,7 @@ void ProductRepository::update(const QVariantMap &product)
 
 void ProductRepository::fetchAll()
 {
-    QNetworkRequest request{QUrl(base_ + "/")};
-    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
+    const auto request{api_->createRequest(path_ + "/"_L1)};
 
     reply_ = manager_->get(request);
 
@@ -80,7 +92,7 @@ void ProductRepository::fetchAll()
 void ProductRepository::prepareImagePart(const QUrl imageUrl)
 {
     QHttpPart imagePart;
-    imagePart.setHeader(QNetworkRequest::ContentTypeHeader, "image/jpeg");
+    imagePart.setHeader(QNetworkRequest::ContentTypeHeader, "image/jpeg"_L1);
 
 #ifdef Q_OS_ANDROID
     auto img{ new QFile(imageUrl.toString()) };
@@ -89,15 +101,16 @@ void ProductRepository::prepareImagePart(const QUrl imageUrl)
 #endif
     imagePart.setHeader(
         QNetworkRequest::ContentDispositionHeader,
-        QString("form-data; name=\"image\"; filename=\"%1\"")
+        "form-data; name=\"image\"; filename=\"%1\""_L1
             .arg(QFileInfo(*img).fileName())
     );
 
     if (!img->open(QIODevice::ReadOnly))
     {
-        qDebug() << "Failed to open file for reading";
-        emit errorOccurred("El archivo no existe.");
-        return;
+        qCritical() << "Failed to open file for reading";
+        setErrorString("El archivo no existe."_L1);
+        emit errorOccurred(errorString_.toUtf8());
+        throw std::runtime_error(errorString_);
     }
 
     imagePart.setBodyDevice(img);
@@ -109,12 +122,32 @@ void ProductRepository::prepareImagePart(const QUrl imageUrl)
 void ProductRepository::prepareJsonPart(const QVariantMap &product)
 {
     QHttpPart jsonPart;
-    jsonPart.setHeader(QNetworkRequest::ContentDispositionHeader, "form-data; name=\"jsonData\"");
+    jsonPart.setHeader(QNetworkRequest::ContentDispositionHeader, "form-data; name=\"jsonData\""_L1);
     jsonPart.setBody(
         QJsonDocument::fromVariant(product)
             .toJson(QJsonDocument::Compact)
     );
 
     multiPart_->append(jsonPart);
+}
+
+QString ProductRepository::errorString() const
+{
+    return errorString_;
+}
+
+void ProductRepository::setErrorString(const QString &newErrorString)
+{
+    errorString_ = newErrorString;
+}
+
+QString ProductRepository::path() const
+{
+    return path_;
+}
+
+void ProductRepository::setPath(const QString &newPath)
+{
+    path_ = newPath;
 }
 }

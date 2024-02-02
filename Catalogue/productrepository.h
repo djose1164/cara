@@ -7,6 +7,7 @@
 #include <QObject>
 #include <QQmlEngine>
 #include <QHttpPart>
+#include <QNetworkRequestFactory>
 
 namespace Catalogue {
 class ProductRepository : public QObject, public IProductRepository
@@ -15,6 +16,12 @@ class ProductRepository : public QObject, public IProductRepository
 
 public:
     explicit ProductRepository(QObject *parent = nullptr);
+
+    QString path() const;
+    void setPath(const QString &newPath);
+
+    QString errorString() const;
+    void setErrorString(const QString &newErrorString);
 
 public slots:
     void add(const QVariantMap &product) override;
@@ -37,9 +44,11 @@ private:
     QNetworkAccessManager *manager_;
     QNetworkReply *reply_;
 
-    QString base_;
-
     QHttpMultiPart *multiPart_;
+
+    QString path_;
+    QString errorString_;
+    std::shared_ptr<QNetworkRequestFactory> api_;
 };
 }
 
