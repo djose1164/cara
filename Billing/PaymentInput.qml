@@ -106,7 +106,7 @@ Item {
             throw "Debes selecionar la condicion de pago de la orden";
         else if(selectedStatus === PaymentEntity.Credited && root.value < 1)
             throw "Debes digitar un monto valido mayor a 0";
-        else if (!amountField.acceptableInput)
+        else if (selectedStatus === PaymentEntity.Credited && !amountField.acceptableInput)
             throw "El monto digitado excede el total de la orden.";
     }
 }
