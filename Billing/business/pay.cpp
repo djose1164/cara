@@ -3,6 +3,7 @@
 #include <QRestReply>
 #include <QSettings>
 #include <QJsonObject>
+#include <QJsonDocument>
 
 namespace Business
 {
@@ -10,6 +11,7 @@ Pay::Pay(QObject *parent)
     : AbstractResource{parent}
     , errorString_{}
     , paymentId_{}
+    , path_{"/payments"}
 {
 }
 
@@ -32,24 +34,8 @@ void Pay::pay(const QVariantMap &data)
         return;
     }
 
-    manager_->post(api_->request(QString("/%1").arg(p.paymentId())), p.toJsonObject(), this, [&](QRestReply * reply) {
-        if (!reply->isSuccess())
-        {
-            setErrorString(reply->errorString());
-            emit errorOccurred();
-            return;
-        }
-
-        const auto json{reply->json()};
-        if (!json)
-        {
-            qWarning() << "Pay::pay: json not valid.";
-            emit paid({});
-            return;
-        }
-        qDebug() << "Pay::pay: payment was successful.";
-        emit paid(json.value());
-    });
+    manager_->post(api_->createRequest(path_ + QString("/%1").arg(p.paymentId())),
+                   p.toJsonObject(), this, &Pay::paymentFinished);
 }
 
 void Pay::pay(int amount)
@@ -73,24 +59,41 @@ void Pay::pay(int amount)
         return;
     }
 
-    manager_->post(api_->request(QString("/%1").arg(p.paymentId())), p.toJsonObject(), this, [&](QRestReply * reply) {
-        if (!reply->isSuccess())
-        {
-            setErrorString(reply->errorString());
-            emit errorOccurred();
-            return;
-        }
+    manager_->post(api_->createRequest(QString("/%1").arg(p.paymentId())),
+                   p.toJsonObject(), this, &Pay::paymentFinished);
+}
 
-        const auto json{reply->json()};
-        if (!json)
-        {
-            qWarning() << "Pay::pay: json not valid.";
-            emit paid({});
-            return;
-        }
-        qDebug() << "Pay::pay: payment was successful.";
-        emit paid(json.value());
-    });
+void Pay::paymentFinished(QRestReply *reply)
+{
+    if (!reply->isSuccess())
+    {
+        setErrorString(reply->errorString());
+        emit errorOccurred();
+        return;
+    }
+
+    const auto json{reply->json()};
+    if (!json)
+    {
+        qWarning() << "Pay::pay: json not valid.";
+        emit paid({});
+        return;
+    }
+    qDebug() << "Pay::pay: payment was successful.";
+    emit paid(json.value().object());
+}
+
+QString Pay::path() const
+{
+    return path_;
+}
+
+void Pay::setPath(const QString &newPath)
+{
+    if (path_ == newPath)
+        return;
+    path_ = newPath;
+    emit pathChanged();
 }
 
 int Pay::paymentId() const
