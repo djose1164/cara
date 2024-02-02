@@ -17,6 +17,9 @@ public:
     QByteArray buffer() const;
     void setBuffer(const QByteArray &newBuffer);
 
+    QString refreshToken() const;
+    void setRefreshToken(const QString &newRefreshToken);
+
 public slots:
     void authenticate() override;
 

@@ -1,5 +1,6 @@
 #include "localuserauthentication.h"
 #include "localuserstore.h"
+#include "networkrequestsingleton.h"
 #include <QSettings>
 #include <QNetworkReply>
 
@@ -11,19 +12,21 @@ LocalUserAuthentication::LocalUserAuthentication(QObject *parent)
     , manager_{new QNetworkAccessManager(this)}
     , reply_{}
 {
-
+    const QString token{Business::LocalUserStore().user().refreshToken()};
+    setRefreshToken(token);
 }
 
 void LocalUserAuthentication::authenticate()
 {
-    QSettings settings;
-    const QString base{settings.value("base").toString() + "/users/refresh/"};
+    if (refreshToken_.isEmpty())
+    {
+        qCritical() << "LocalUserAuthentication::authenticate: refreshToken is empty.";
+        return;
+    }
+    const auto api{Utils::NetworkRequestSingleton::instance().api()};
 
-    QNetworkRequest request{QUrl(base)};
-    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
-
-    const QString token{Business::LocalUserStore().user().refreshToken()};
-    request.setRawHeader("Authorization", token.toUtf8());
+    QNetworkRequest request{api->createRequest("/users/refresh/")};
+    request.setRawHeader("Authorization", refreshToken_.toUtf8());
 
     reply_ = manager_->get(request);
 
@@ -37,6 +40,16 @@ void LocalUserAuthentication::authenticate()
 
         reply_->deleteLater();
     });
+}
+
+QString LocalUserAuthentication::refreshToken() const
+{
+    return refreshToken_;
+}
+
+void LocalUserAuthentication::setRefreshToken(const QString &newRefreshToken)
+{
+    refreshToken_ = newRefreshToken;
 }
 
 QByteArray LocalUserAuthentication::buffer() const
