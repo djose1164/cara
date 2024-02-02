@@ -1,3 +1,4 @@
+#include "networkrequestsingleton.h"
 #include "restservice.h"
 #include <QSettings>
 
@@ -8,7 +9,7 @@ RestService::RestService(QObject *parent)
     , url_{}
     , resources_{}
     , manager_{std::make_shared<QRestAccessManager>()}
-    , api_{std::make_shared<QNetworkRequestFactory>(QSettings().value("base").toString())}
+    , api_{NetworkRequestSingleton::instance().api()}
 {
     const QString token{QSettings().value("User/accessTokenNoLeading").toString()};
     api_->setBearerToken(token.toUtf8());
@@ -32,6 +33,11 @@ QRestAccessManager *RestService::manager() const
     return manager_.get();
 }
 
+QNetworkRequestFactory *RestService::api() const
+{
+    return api_.get();
+}
+
 QQmlListProperty<AbstractResource> RestService::resources()
 {
     return {this, &resources_};
@@ -44,9 +50,18 @@ void RestService::classBegin()
 void RestService::componentComplete()
 {
     for (const auto resource : std::as_const(resources_))
-    {
-        resource->setManager(manager_);
-        resource->setApi(api_);
-    }
+        setupResource(*resource);
+}
+
+void RestService::append(AbstractResource *resource)
+{
+    setupResource(*resource);
+    resources_.append(resource);
+}
+
+void RestService::setupResource(AbstractResource &r)
+{
+    r.setManager(manager_);
+    r.setApi(api_);
 }
 }

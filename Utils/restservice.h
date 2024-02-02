@@ -26,14 +26,20 @@ public:
     void setUrl(const QUrl &newUrl);
 
     QRestAccessManager *manager() const;
+    QNetworkRequestFactory *api() const;
 
     QQmlListProperty<AbstractResource> resources();
 
     void classBegin() override;
     void componentComplete() override;
 
+    void append(AbstractResource *resource);
+
 signals:
     void urlChanged();
+
+private:
+    void setupResource(AbstractResource &r);
 
 private:
     QUrl url_;
