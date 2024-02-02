@@ -1,8 +1,10 @@
 #include "restorderrepository.h"
-#include "localuserstore.h"
+#include "networkrequestsingleton.h"
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QSettings>
+
+using namespace Qt::StringLiterals;
 
 namespace Data
 {
@@ -24,19 +26,11 @@ void RestOrderRepository::setErrorString(const QString &newErrorString)
     errorString_ = newErrorString;
 }
 
-QNetworkRequest RestOrderRepository::prepareRequest(const QString &endpoint)
-{
-    const QUrl url{base_ + endpoint};
-    QNetworkRequest req{url};
-    req.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
-    const QString token{Business::LocalUserStore().user().accessToken()};
-    req.setRawHeader("Authorization", token.toUtf8());
-    return req;
-}
-
 void RestOrderRepository::add(const QVariantMap &payload)
 {
-    const auto req{prepareRequest()};
+    const auto api{Utils::NetworkRequestSingleton::instance().api()};
+    const auto req{api->createRequest("orders/"_L1)};
+
     const auto jsonPayload{QJsonDocument::fromVariant(payload)};
     reply_ = manager_->post(req, jsonPayload.toJson(QJsonDocument::Compact));
 

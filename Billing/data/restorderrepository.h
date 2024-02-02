@@ -1,7 +1,7 @@
 #ifndef RESTORDERREPOSITORY_H
 #define RESTORDERREPOSITORY_H
 
-#include "orderrepository.h"
+#include "business/orderrepository.h"
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
 
@@ -18,9 +18,6 @@ public:
 
 public slots:
     void add(const QVariantMap &payload) override;
-
-private:
-    QNetworkRequest prepareRequest(const QString &endpoint = "/");
 
 private:
     QNetworkAccessManager *manager_;
