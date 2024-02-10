@@ -53,6 +53,7 @@ Item {
         Pay {
             id: payService
             paymentId: payment_.paymentId
+            path: "payments"
             onPaid: resp => {
                 root.success(paymentController.fromJsonObject(resp.payment));
             }

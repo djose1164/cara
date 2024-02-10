@@ -210,6 +210,7 @@ Item {
         Pay {
             id: payService
             paymentId: payment_.paymentId
+            path: "payments"
             onPaid: resp => {
                 const newPayment = paymentController.fromJsonObject(resp.payment);
                 root.refresh(newPayment);
