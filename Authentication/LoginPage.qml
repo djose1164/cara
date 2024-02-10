@@ -2,16 +2,16 @@
 import QtQuick.Controls
 import QtQuick.Layouts
 import QtQuick.Dialogs
+import QtQuick.Templates as T
 import User
-import core
 import Authentication
+import Salesperson
 import "qrc:/main"
-import "qrc:/singleton"
 
 Item {
     id: root
-    readonly property bool areInputsValid: usernameInput.text !== ""
-                                           && passwordInput.text !== ""
+
+    readonly property T.StackView stackView: StackView.view
 
     Image {
         id:loginLbl
@@ -64,8 +64,8 @@ Item {
             id: loginBtn
 
             onClicked: {
-                if (areInputsValid) {
-                    requestAuthentication();
+                if (internal.areInputsValid) {
+                    internal.requestAuthentication();
                 } else {
                     usernameInput.focus = true;
                 }
@@ -118,22 +118,64 @@ Item {
 
     Login {
         id: login
-        username: usernameInput.text
-        password: passwordInput.text
-        userStore: LocalUserStore {}
-        onAuthenticated: {
-            appStack.pop();
-            LoginManager.authenticated();
-            // TODO: Pass the created user to MainPage while showing the busyIndicator
-        }
+        stores: [
+            LocalUserStore {
+                id: localUserStore
+            },
+            TokenStore {
+                id: myTokenStore
+            }
+        ]
+        authenticator: auth
         onErrorOccurred: {
             busyIndicator.close();
             popup.open();
         }
     }
 
-    function requestAuthentication() {
-        busyIndicator.open();
-        login.authenticateCredentials();
+    RestUserAuthentication {
+        id: auth
+        credentials {
+            username: internal.username
+            password: internal.password
+        }
+        onSucceeded: data => {
+            internal.saveSalespersonSettings(data);
+            const user = userController.create(data);
+            busyIndicator.close();
+            stackView.replace(internal.mainPage, {user});
+        }
+    }
+
+    UserController {
+        id: userController
+    }
+
+    SalespersonController {
+        id: spController
+    }
+
+    QtObject {
+        id: internal
+        readonly property url mainPage: "qrc:/main/MainPage.qml"
+        readonly property string username: usernameInput.text
+        readonly property string password: passwordInput.text
+        readonly property bool areInputsValid: usernameInput.text !== ""
+                                               && passwordInput.text !== ""
+
+        function requestAuthentication() {
+            busyIndicator.open();
+            login.authenticate();
+        }
+
+        function saveSalespersonSettings(data) {
+            const salespersonJson = JSON.parse(data).user.salesperson;
+            const salesperson = spController.fromJsonObject(salespersonJson);
+            print("salesperson: ", salesperson)
+            SalespersonSettings.salespersonId = salesperson.salespersonId;
+            SalespersonSettings.salespersonTypeId = salesperson.salespersonType;
+            SalespersonSettings.creditLimit = salesperson.creditLimit;
+            SalespersonSettings.creditAvailable = salesperson.creditAvailable;
+        }
     }
 }
