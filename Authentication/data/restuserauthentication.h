@@ -1,38 +1,49 @@
 #ifndef RESTUSERAUTHENTICATION_H
 #define RESTUSERAUTHENTICATION_H
 
-#include "../business/authentication.h"
-#include "entity/usercredential.h"
+#include "business/authentication.h"
+#include "entity/credential.h"
 #include <QObject>
 #include <QNetworkAccessManager>
+#include <QNetworkRequestFactory>
 
-namespace Data {
-class RestUserAuthentication : public QObject, public Business::Authentication
+namespace Authentication::Data
+{
+class RestUserAuthentication : public Business::Authentication
 {
     Q_OBJECT
+    QML_ELEMENT
+    Q_PROPERTY(Entity::Credential credentials READ credentials WRITE setCredentials NOTIFY credentialsChanged FINAL REQUIRED)
+    Q_PROPERTY(QString errorString READ errorString WRITE setErrorString NOTIFY errorStringChanged FINAL)
 public:
-    explicit RestUserAuthentication(User::Entity::UserCredential userCredential, QObject *parent = nullptr);
+    explicit RestUserAuthentication(QObject *parent = nullptr);
 
     QByteArray data() const;
 
-    QString base() const;
+    Entity::Credential credentials() const;
+    void setCredentials(const Entity::Credential &newCredentials);
 
-public slots:
     void authenticate() override;
 
+    QString errorString() const;
+    void setErrorString(const QString &newErrorString);
+
 signals:
-    void finished();
-    void succeeded();
-    void failed();
+    void userCredentialChanged();
+
+    void credentialsChanged();
+
+    void errorStringChanged();
 
 private:
-    const User::Entity::UserCredential userCredential_;
-    const QString base_;
+    Entity::Credential credentials_;
+    QString errorString_;
 
     QByteArray data_;
 
     QNetworkAccessManager *manager_;
     QNetworkReply *reply_;
+    const std::shared_ptr<QNetworkRequestFactory> api_;
 };
 }
 
