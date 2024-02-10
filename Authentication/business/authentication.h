@@ -1,13 +1,28 @@
 #ifndef AUTHENTICATION_H
 #define AUTHENTICATION_H
 
-namespace Business {
-class Authentication
+#include <QQmlEngine>
+
+namespace Authentication::Business
 {
+class Authentication : public QObject
+{
+    Q_OBJECT
+    QML_ELEMENT
+    QML_UNCREATABLE("This' an abstract class. Use an implementation instead.")
 public:
+    using QObject::QObject;
+
     virtual ~Authentication();
 
+public slots:
     virtual void authenticate() = 0;
+
+signals:
+    void finished();
+    void succeeded(const QByteArray &data);
+    void errorOccurred();
+    void tokenReady(const QString &token);
 };
 }
 

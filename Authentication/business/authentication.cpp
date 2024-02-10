@@ -1,6 +1,6 @@
 #include "authentication.h"
 
-namespace Business {
+namespace Authentication::Business {
 Authentication::~Authentication()
 {
 
