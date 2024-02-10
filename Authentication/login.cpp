@@ -1,137 +1,72 @@
 #include "login.h"
-#include "../data/tokenmanager.h"
-#include "data/restuserauthentication.h"
-#include "entity/usercredential.h"
-#include "localuserstore.h"
-#include "service/localuserauthentication.h"
+#include "tokenmanager.h"
+#include "networkrequestsingleton.h"
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QSettings>
 
-namespace Business {
-using User::Entity::UserCredential;
+using namespace Qt::StringLiterals;
 
+namespace Authentication::Business
+{
 Login::Login(QObject *parent)
     : QObject{parent}
     , status_{Status::UnAuthenticated}
     , mode_{AuthenticationMode::Undefined}
-    , data_{}
     , authenticator_{}
-    , userStore_{}
-    , refreshToken_{}
-    , username_{}
-    , password_{}
+    , stores_{}
 {
-    const auto user{LocalUserStore().user()};
-
-    refreshToken_ = user.refreshToken();
-    setHasPreviousLogin(!user.refreshToken().isEmpty());
+    connect(this, &Login::authenticated, this, &Login::userAuthenticated);
 }
 
-void Login::authenticateCredentials()
+void Login::authenticate()
 {
-    UserCredential credentials{};
-    credentials.setUsername(username_);
-    credentials.setPassword(password_);
-    if (!credentials.isValid())
-    {
-        emit errorOccurred();
-        return;
-    }
-
-    // TODO: Think whether ResetUserAuthentication should be a QML_ELEMENT
-    authenticator_ = new Data::RestUserAuthentication(credentials, this);
     authenticator_->authenticate();
-    setMode(AuthenticationMode::LoginCredentials);
+}
 
-    const auto restAuth{static_cast<Data::RestUserAuthentication *>(authenticator_)};
-    connect(restAuth, &Data::RestUserAuthentication::finished, this, [=, this] {
-        setData(restAuth->data());
-        const auto obj{QJsonDocument::fromJson(data_).object()};
-        const QString codeString{obj.value("code").toString()};
+void Login::userAuthenticated(const QByteArray &data)
+{
+    qDebug() << "Login::userAuthenticated: Saving...";
 
-        if (codeString == "success")
-        {
-            save();
-            setStatus(Status::Authenticated);
-            emit authenticated();
-        }
-        else if (codeString == "invalidCredentials" || codeString == "notFound")
-        {
-            setStatus(Status::InvalidCredentials);
-            emit errorOccurred();
-        }
-        else
-        {
-            setStatus(Status::Error);
-            emit errorOccurred();
-        }
+    for (const auto &store : std::as_const(stores_))
+        store->save(data);
+}
 
-        restAuth->deleteLater();
+void Login::authConnections() const
+{
+    connect(authenticator_, &Authentication::errorOccurred,
+            this, &Login::errorOccurred);
+    connect(authenticator_, &Authentication::succeeded,
+            this, &Login::authenticated);
+    connect(authenticator_, &Business::Authentication::tokenReady, this, [&](const QString &token) {
+        TokenManager::instance()->setAccessToken("Bearer "_L1 + token);
+        Utils::NetworkRequestSingleton::instance().api()->setBearerToken(token.toUtf8());
     });
 }
 
-void Login::authenticateRefreshToken()
+void Login::storeConnections(const Store::IStore *store) const
 {
-    if (refreshToken_.isEmpty())
-    {
-        emit errorOccurred();
-        return;
-    }
-
-    qDebug() << "Authenticationg user through LocalUserAuthentication...";
-    authenticator_ = new Service::LocalUserAuthentication(this);
-    authenticator_->authenticate();
-    setMode(AuthenticationMode::RefreshToken);
-
-    const auto localAuth{static_cast<Service::LocalUserAuthentication *>(authenticator_)};
-    connect(localAuth, &Service::LocalUserAuthentication::finished, this, [=, this] {
-        data_ = localAuth->buffer();
-        qDebug() << "localAuth->isAuthenticated(): " << localAuth->isAuthenticated();
-        if (localAuth->isAuthenticated())
-        {
-            restoreUser();
-            const auto resp{QJsonDocument::fromJson(data_).object()};
-            const QString newToken{resp["access_token"].toString()};
-            QSettings().setValue("User/accessTokenNoLeading", newToken);
-
-            DataLayer::TokenManager::instance()->setAccessToken("Bearer " + newToken);
-            qDebug() << "User authenticated successfully through LocalUserAuthentication.";
-            emit authenticated();
-        }
-        else
-            emit errorOccurred();
-
-        localAuth->deleteLater();
-    });
+    connect(store, &Store::IStore::saved,
+            this, &Login::dataSaved);
 }
 
-void Login::save()
+QQmlListProperty<Store::IStore> Login::stores()
 {
-    if (!userStore_)
-    {
-        qInfo() << "None userStore was provided. User won't be stored.";
-        return;
-    }
-
-    userStore_->save(data_);
+    return {this, &stores_};
 }
 
-void Login::setHasPreviousLogin(bool newHasPreviousLogin)
+Authentication *Login::authenticator() const
 {
-    if (hasPreviousLogin_ == newHasPreviousLogin)
-        return;
-
-    hasPreviousLogin_ = newHasPreviousLogin;
-    emit hasPreviousLoginChanged();
+    return authenticator_;
 }
 
-void Login::restoreUser() const
+void Login::setAuthenticator(Authentication *newAuthenticator)
 {
-    if (userStore_)
-        userStore_->restore();
-    else
-        qDebug() << "Login::restoreUser: userStore is not set, the user cannot be restored.";
+    if (authenticator_ == newAuthenticator)
+        return;
+    authenticator_ = newAuthenticator;
+    authConnections();
+    emit authenticatorChanged();
 }
 
 Login::AuthenticationMode Login::mode() const
@@ -147,63 +82,6 @@ void Login::setMode(AuthenticationMode newMode)
     emit modeChanged();
 }
 
-QString Login::password() const
-{
-    return password_;
-}
-
-void Login::setPassword(const QString &newPassword)
-{
-    if (password_ == newPassword)
-        return;
-    password_ = newPassword;
-    emit passwordChanged();
-}
-
-QString Login::username() const
-{
-    return username_;
-}
-
-void Login::setUsername(const QString &newUsername)
-{
-    if (username_ == newUsername)
-        return;
-    username_ = newUsername;
-    emit usernameChanged();
-}
-
-bool Login::hasPreviousLogin() const
-{
-    return hasPreviousLogin_;
-}
-
-UserStore *Login::userStore() const
-{
-    return userStore_;
-}
-
-void Login::setUserStore(UserStore *newUserStore)
-{
-    if (userStore_ == newUserStore)
-        return;
-    userStore_ = newUserStore;
-    emit userStoreChanged();
-}
-
-QByteArray Login::data() const
-{
-    return data_;
-}
-
-void Login::setData(const QByteArray &newData)
-{
-    if (data_ == newData)
-        return;
-    data_ = newData;
-    emit dataChanged();
-}
-
 Login::Status Login::status() const
 {
     return status_;
@@ -215,5 +93,16 @@ void Login::setStatus(Status newStatus)
         return;
     status_ = newStatus;
     emit statusChanged();
+}
+
+void Login::classBegin()
+{
+}
+
+void Login::componentComplete()
+{
+    authConnections();
+    for (const auto &store : std::as_const(stores_))
+        storeConnections(store);
 }
 }

@@ -1,25 +1,24 @@
 #ifndef BUSINESS_LOGIN_H
 #define BUSINESS_LOGIN_H
 
-#include "userstore.h"
+#include "istore.h"
 #include "business/authentication.h"
 #include <QObject>
 #include <QQmlEngine>
 #include <QByteArray>
 
-namespace Business {
-class Login : public QObject
+namespace Authentication::Data { class TokenStore; }
+namespace Authentication::Business
+{
+class Login : public QObject, public QQmlParserStatus
 {
     Q_OBJECT
     QML_ELEMENT
 
     Q_PROPERTY(Status status READ status WRITE setStatus NOTIFY statusChanged FINAL)
-    Q_PROPERTY(QByteArray data READ data WRITE setData NOTIFY dataChanged FINAL)
-    Q_PROPERTY(UserStore *userStore READ userStore WRITE setUserStore NOTIFY userStoreChanged FINAL)
-    Q_PROPERTY(bool hasPreviousLogin READ hasPreviousLogin NOTIFY hasPreviousLoginChanged FINAL)
-    Q_PROPERTY(QString username READ username WRITE setUsername NOTIFY usernameChanged FINAL)
-    Q_PROPERTY(QString password READ password WRITE setPassword NOTIFY passwordChanged FINAL)
     Q_PROPERTY(AuthenticationMode mode READ mode WRITE setMode NOTIFY modeChanged FINAL)
+    Q_PROPERTY(Authentication *authenticator READ authenticator WRITE setAuthenticator NOTIFY authenticatorChanged FINAL REQUIRED)
+    Q_PROPERTY(QQmlListProperty<Store::IStore> stores READ stores CONSTANT FINAL)
 public:
     enum class Status
     {
@@ -42,63 +41,56 @@ public:
 
     Status status() const;
     void setStatus(Status newStatus);
-
-    QByteArray data() const;
-    void setData(const QByteArray &newData);
-
-    UserStore *userStore() const;
-    void setUserStore(UserStore *newUserStore);
-
-    bool hasPreviousLogin() const;
-
-    QString username() const;
-    void setUsername(const QString &newUsername);
-
-    QString password() const;
-    void setPassword(const QString &newPassword);
+    
+    Store::IStore *store() const;
+    void setStore(Store::IStore *newUserStore);
 
     AuthenticationMode mode() const;
     void setMode(AuthenticationMode newMode);
 
+    void classBegin() override;
+    void componentComplete() override;
+
+    Authentication *authenticator() const;
+    void setAuthenticator(Authentication *newAuthenticator);
+
+    Data::TokenStore *tokenStore() const;
+
+    void setTokenStore(Data::TokenStore *newTokenStore);
+
+    QQmlListProperty<Store::IStore> stores();
+
 signals:
-    void authenticated();
+    void authenticated(const QByteArray &data);
     void errorOccurred();
 
     void statusChanged();
 
-    void dataChanged();
+    void dataSaved();
 
-    void userStoreChanged();
-
-    void hasPreviousLoginChanged();
-
-    void usernameChanged();
-
-    void passwordChanged();
+    void storeChanged();
 
     void modeChanged();
 
+    void authenticatorChanged();
+
+    void tokenStoreChanged();
+
 public slots:
-    void authenticateCredentials();
-    void authenticateRefreshToken();
+    void authenticate();
+
+private slots:
+    void userAuthenticated(const QByteArray &data);
 
 private:
-    void save();
-    void setHasPreviousLogin(bool newHasPreviousLogin);
-    void restoreUser() const;
+    void authConnections() const;
+    void storeConnections(const Store::IStore *store) const;
 
 private:
     Status status_;
     AuthenticationMode mode_;
-    QByteArray data_;
     Authentication *authenticator_;
-    UserStore *userStore_;
-
-    bool hasPreviousLogin_;
-    QString refreshToken_;
-
-    QString username_;
-    QString password_;
+    QList<Store::IStore *> stores_;
 };
 }
 
