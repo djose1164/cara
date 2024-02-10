@@ -2,7 +2,6 @@ import QtQuick
 import QtQuick.Controls
 import "qrc:/utils"
 import Customer
-import core 1.0
 
 Rectangle {
     id: root

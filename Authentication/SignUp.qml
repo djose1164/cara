@@ -1,7 +1,6 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
-import core 1.0
 import "qrc:/main"
 import "qrc:/utils"
 

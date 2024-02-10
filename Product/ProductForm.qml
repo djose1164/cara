@@ -3,9 +3,7 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 import QtQuick.Dialogs
-import core as Core
 import catalogue as Catalogue
-import User
 import "qrc:/utils"
 import "qrc:/main"
 import "qrc:/singleton"
@@ -15,7 +13,6 @@ Page {
     id: root
 
     readonly property var myStack: StackView.view
-    readonly property var user: UserSession.user
     property int productId
     property int categoryId
     property int sellPrice
@@ -141,6 +138,11 @@ Page {
         }
     }
 
+    Settings {
+        id: settings
+        category: "User"
+    }
+
     function openBusyPopup() {
         popup.state = "busy";
         popup.open();
@@ -158,6 +160,7 @@ Page {
             description: descriptionField.text,
             buy_price: priceBuy.text,
             sell_price: priceSell.text,
+            image_url: imgPicker.imagePath,
             category_id: categoryCB.currentValue
         };
         print(JSON.stringify(productJson, null, 2));
@@ -187,7 +190,7 @@ Page {
     }
 
     function openProductInInventory() {
-        const adminId = user.userId;
+        const adminId = settings.value("userId");
         inventoryAPI.fetchByAdminIdAndProductId(adminId, productId);
     }
 }

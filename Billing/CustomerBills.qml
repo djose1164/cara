@@ -2,8 +2,6 @@ import QtQuick
 import QtQuick.Layouts
 import QtQuick.Controls
 import Qt.labs.qmlmodels
-import core 1.0
-import models
 import "qrc:/utils"
 import "qrc:/orders"
 

@@ -1,7 +1,7 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Dialogs
-import core
+
 import "qrc:/utils"
 import "qrc:/singleton"
 

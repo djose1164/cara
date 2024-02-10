@@ -1,7 +1,7 @@
 import QtQuick
 import QtQuick.Controls
 import Billing
-import core
+
 import "qrc:/utils"
 import "qrc:/filters"
 import "qrc:/singleton"
