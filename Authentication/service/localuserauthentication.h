@@ -5,10 +5,12 @@
 #include <QObject>
 #include <QNetworkAccessManager>
 
-namespace Service {
-class LocalUserAuthentication : public QObject, public Business::Authentication
+namespace Authentication::Service {
+class LocalUserAuthentication : public Business::Authentication
 {
     Q_OBJECT
+    QML_ELEMENT
+    Q_PROPERTY(QString refreshToken READ refreshToken WRITE setRefreshToken NOTIFY refreshTokenChanged FINAL REQUIRED)
 public:
     explicit LocalUserAuthentication(QObject *parent = nullptr);
 
@@ -24,8 +26,8 @@ public slots:
     void authenticate() override;
 
 signals:
-    void finished();
-    void errorOccurred();
+    void refreshTokenChanged();
+    void tokenExpired();
 
 private:
     QString refreshToken_;
