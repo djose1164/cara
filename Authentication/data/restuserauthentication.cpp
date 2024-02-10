@@ -41,7 +41,7 @@ void RestUserAuthentication::authenticate()
 
     connect(reply_, &QNetworkReply::finished, this, [&] {
         data_ = reply_->readAll();
-        emit finished();
+
         if (reply_->error() != QNetworkReply::NoError)
         {
             emit errorOccurred();

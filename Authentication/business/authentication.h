@@ -19,7 +19,6 @@ public slots:
     virtual void authenticate() = 0;
 
 signals:
-    void finished();
     void succeeded(const QByteArray &data);
     void errorOccurred();
     void tokenReady(const QString &token);
