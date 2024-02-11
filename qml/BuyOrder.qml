@@ -2,6 +2,7 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 import QtQuick.Dialogs
+import QtQuick.Templates as T
 import Salesperson
 import User
 import Billing
@@ -12,8 +13,8 @@ import "qrc:/singleton"
 Page {
     id: root
 
-    readonly property var myStack: StackView.view
-    readonly property alias salesperson: userStore.user.salesperson
+    readonly property T.StackView myStack: StackView.view
+    readonly property var salesperson: SalespersonSettings.entity()
 
     title: "Ordenes de Compra"
     header: TitleHeader {
@@ -22,7 +23,6 @@ Page {
     }
 
     Component.onCompleted: {
-        const spId = userStore.user.salespersonId;
         spController.readSalesperson();
         api.fetchBuyOrders();
     }
@@ -78,7 +78,7 @@ Page {
 
     BuyOrderAPI {
         id: api
-        salespersonId: userStore.user.salespersonId
+        salespersonId: SalespersonSettings.salespersonId
         onBuyOrdersFetched: orders => orders.forEach(e => listModel.append(e))
         onBuyOrderCreated: function(resp) {
             listModel.append(resp.buy_order);
@@ -108,7 +108,7 @@ Page {
     SalespersonController {
         id: spController
         adminId: userStore.user.userId
-        salespersonId: userStore.user.salespersonId
+        salespersonId: SalespersonSettings.salespersonId
     }
 
     MessageDialog {

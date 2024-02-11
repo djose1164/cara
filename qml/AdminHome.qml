@@ -3,6 +3,7 @@ import QtQuick.Controls
 import QtQuick.Layouts
 import catalogue
 import User
+import Salesperson
 import "qrc:/orders" as Order
 import "qrc:/singleton"
 
@@ -96,7 +97,7 @@ Home {
                         if (needUser)
                             homeStack.push(path, {user: userStore.user});
                         else if (showCustomers)
-                            homeStack.push(path, {salespersonId: userStore.user.salespersonId});
+                            homeStack.push(path, {salespersonId: SalespersonSettings.salespersonId});
                         else if (admin)
                             homeStack.push(path, {adminId: userStore.user.userId});
                         else
