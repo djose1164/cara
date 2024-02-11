@@ -4,43 +4,54 @@ qt_add_qml_module(BillingLib
     URI Billing
     VERSION 1.0
     QML_FILES
-        NewPurchaseOrder.qml
-        PaymentStatus.qml
-        PaymentInput.qml
-        PaymentStatusFilter.qml
         AdminBillDelegate.qml
         BillDetailsPage.qml
+        BillFilterPopup.qml
         BillHomePage.qml
         BillMessage.qml
         BillPage.qml
         BillPageHeader.qml
         BillViewChooser.qml
+        CreditedView.qml
         CustomerBillDelegate.qml
         CustomerBills.qml
         CustomerBillsHome.qml
-        BillFilterPopup.qml
+        NewPurchaseOrder.qml
         PayItem.qml
-        CreditedView.qml
         PaySuccess.qml
         PaymentDetails.qml
         PaymentDetailsPage.qml
-    RESOURCES
-        
+        PaymentInput.qml
+        PaymentStatus.qml
+        PaymentStatusFilter.qml
     SOURCES
-        entity/payment.h entity/payment.cpp
-        business/orderrepository.h business/orderrepository.cpp
+        billrepository.h billrepository.cpp
+        business/billbusiness.h business/billbusiness.cpp
+        business/cartbusiness.h	business/cartbusiness.cpp
         business/ordercontroller.h business/ordercontroller.cpp
-        data/restorderrepository.h data/restorderrepository.cpp
+        business/orderrepository.h business/orderrepository.cpp
         business/pay.h business/pay.cpp
+        business/paymentcontroller.h business/paymentcontroller.cpp
+        data/paymentresource.h data/paymentresource.cpp
+        data/restorderrepository.h data/restorderrepository.cpp
+        entity/bill.h entity/bill.cpp
+        entity/orderentity.h entity/orderentity.cpp
+        entity/payment.h entity/payment.cpp
+        ibillrepository.h ibillrepository.cpp
         model/billmodel.h model/billmodel.cpp
         model/billproxymodel.h model/billproxymodel.cpp
         model/ordermodel.h model/ordermodel.cpp
-        data/paymentresource.h data/paymentresource.cpp
-        business/paymentcontroller.h business/paymentcontroller.cpp
     DEPENDENCIES
-        QtQuick
+        QtQuick UtilsLib Entities
 )
 
 target_include_directories(BillingLib
-    PRIVATE business entity model data ../user ../data ../Utils ../entities
+    PRIVATE
+        business entity model data
+        ../user ../data ../entities ../authentication ../utils ../
 )
+
+
+
+
+target_link_libraries(BillingLib PRIVATE Entities)

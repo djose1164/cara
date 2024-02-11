@@ -1,7 +1,5 @@
 qt_add_library(UserLib STATIC)
 
-set_target_properties(UserLib PROPERTIES AUTOMOC ON)
-
 qt_add_qml_module(UserLib
     URI User
     VERSION 1.0
@@ -10,24 +8,28 @@ qt_add_qml_module(UserLib
         UserCredentialsForm.qml
         UserSettings.qml
     SOURCES
-        user.h user.cpp
-        service/userservice.h service/userservice.cpp
-        entity/usercredential.h entity/usercredential.cpp
-        userstore.h userstore.cpp
-        localuserstore.h localuserstore.cpp
-        service/userserviceimpl.h service/userserviceimpl.cpp
-        usersession.h usersession.cpp
-        session.h session.cpp
-        contact.h contact.cpp
         address.h address.cpp
+        contact.h contact.cpp
         contactrepository.h contactrepository.cpp
         data/contactrespositoryimpl.h data/contactrespositoryimpl.cpp
+        data/localuserstore.h data/localuserstore.cpp
+        data/userrepositoryimpl.h data/userrepositoryimpl.cpp
+        service/userservice.h service/userservice.cpp
+        session.h session.cpp
+        usercontroller.h usercontroller.cpp
         userentity.h userentity.cpp
         usermodel.h usermodel.cpp
         userrepository.h userrepository.cpp
-        data/userrepositoryimpl.h data/userrepositoryimpl.cpp
-        usercontroller.h usercontroller.cpp
+        usersession.h usersession.cpp
+        loginmanager.h loginmanager.cpp
+    DEPENDENCIES
+        UtilsLib
+        AuthenticationLib
+        StoreLib
 )
 
-target_include_directories(UserLib PRIVATE ../salesperson)
+target_include_directories(UserLib
+    PRIVATE {CMAKE_CURRENT_SOURCE_DIR} data service ../utils ../authentication ../store)
 
+target_link_libraries(UserLib
+    PRIVATE StoreLib)

@@ -4,13 +4,12 @@ qt_add_qml_module(Data
     VERSION 1.0
     SOURCES
         rest.h rest.cpp
-        refresher.h refresher.cpp
-        irefreshable.h irefreshable.cpp
         constants.h constants.cpp
         restconfig.h.in restconfig.h
-        ibillrepository.h ibillrepository.cpp
-        billrepository.h billrepository.cpp
-        tokenmanager.h tokenmanager.cpp
+)
+
+target_include_directories(Data
+    PRIVATE ../utils
 )
 
 set(REMOTE_API_URL https://cara-rd.live)

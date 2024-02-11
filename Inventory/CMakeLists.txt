@@ -15,4 +15,4 @@ qt_add_qml_module(InventoryLib
 )
 
 target_include_directories(InventoryLib
-    PRIVATE model ../user ../entities)
+    PRIVATE model ../user ../entities ../utils)

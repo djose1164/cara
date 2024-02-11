@@ -1,7 +1,5 @@
 qt_add_library(CustomerLib STATIC)
 
-set_target_properties(CustomerLib PROPERTIES AUTOMOC ON)
-
 set_source_files_properties(CustomerManager.qml PROPERTIES
     QT_QML_SINGLETON_TYPE TRUE
 )

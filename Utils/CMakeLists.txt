@@ -10,6 +10,8 @@ qt_add_qml_module(UtilsLib
         utils.h utils.cpp
         abstractresource.h abstractresource.cpp
         restservice.h restservice.cpp
+        networkrequestsingleton.h networkrequestsingleton.cpp
+        notimplementated.h
     QML_FILES
         ListViewPage.qml
         DrawerHeader.qml
@@ -25,4 +27,3 @@ qt_add_qml_module(UtilsLib
         SearchField.qml
         SearchPage.qml
 )
-

@@ -16,6 +16,8 @@ qt_add_qml_module(Catalogue
         iproductcategoryrepository.h iproductcategoryrepository.cpp
 )
 
-include_directories(../entities)
-include_directories(../core)
-include_directories(../data)
+target_include_directories(Catalogue PRIVATE
+    ../entities
+    ../data
+    ../utils
+)

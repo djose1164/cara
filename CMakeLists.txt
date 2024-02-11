@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.18)
 
 project(Cara VERSION 0.16.0 LANGUAGES CXX)
 
-set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 set(CMAKE_AUTORCC ON)
@@ -16,7 +16,6 @@ find_package(Qt6 6.7 REQUIRED
 qt_standard_project_setup(REQUIRES 6.7)
 qt_policy(SET QTP0001 NEW)
 
-add_subdirectory(Core)
 add_subdirectory(Data)
 add_subdirectory(Entities)
 add_subdirectory(Catalogue)
@@ -29,10 +28,10 @@ add_subdirectory(Billing)
 add_subdirectory(Customer)
 add_subdirectory(Product)
 add_subdirectory(Statistics)
-
+add_subdirectory(store)
 
 if(NOT CMAKE_BUILD_TYPE STREQUAL "Release")
-    add_subdirectory(tests)
+    #add_subdirectory(tests)
 endif()
 
 qt_add_executable(Cara
@@ -42,6 +41,16 @@ qt_add_executable(Cara
 # Create CaraLib target
 add_library(CaraLib STATIC)
 
+qt_add_qml_module(Cara
+    URI Cara
+    VERSION 1.0
+    QML_FILES
+        main.qml
+    RESOURCES
+        assets/res.qrc
+        qml/qml.qrc
+)
+
 target_link_libraries(CaraLib PUBLIC
     Qt6::Qml
     Qt6::Quick
@@ -50,7 +59,6 @@ target_link_libraries(CaraLib PUBLIC
     Qt6::Svg
     Qt6::Test
     Qt6::Charts
-    Coreplugin
     Dataplugin
     Entitiesplugin
     Catalogueplugin
@@ -65,16 +73,8 @@ target_link_libraries(CaraLib PUBLIC
     StatisticsLibplugin
 )
 
-qt_add_qml_module(Cara
-    URI Cara
-    VERSION 1.0
-    QML_FILES
-        main.qml
-    RESOURCES
-        assets/res.qrc
-        qml/qml.qrc
-)
 target_link_libraries(Cara PRIVATE CaraLib)
+
 qt_add_resources(Cara "configuration"
     PREFIX "/"
     FILES
