@@ -2,11 +2,11 @@
 #define PRODUCTMODEL_H
 
 #include "../Entities/productentity.h"
-#include "iinventoryrepository.h"
 #include <QAbstractListModel>
 #include <QObject>
 #include <QQmlEngine>
 
+namespace Business { class IInventoryRepository; }
 namespace Model
 {
 class ProductModel : public QAbstractListModel
@@ -16,7 +16,8 @@ class ProductModel : public QAbstractListModel
     Q_PROPERTY(Business::IInventoryRepository *repository READ repository WRITE setRepository NOTIFY repositoryChanged FINAL)
     Q_PROPERTY(int count READ count NOTIFY countChanged FINAL)
 public:
-    using SalespersonId = Business::IInventoryRepository::SalespersonId;
+    using SalespersonId = int;
+
     enum class RoleNames
     {
         ProductIdRole = Qt::UserRole,

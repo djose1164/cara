@@ -1,4 +1,5 @@
 #include "productmodel.h"
+#include "iinventoryrepository.h"
 
 namespace Model
 {
