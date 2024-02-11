@@ -19,7 +19,7 @@ Item {
     RestService {
         CustomerResource {
             id: customerRepository
-            path: "/customers"
+            path: "customers"
             onFetched: resp => model.set(JSON.parse(resp).customers)
         }
     }

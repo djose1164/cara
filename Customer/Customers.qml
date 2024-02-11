@@ -87,7 +87,7 @@ ListViewPage {
     RestService {
         CustomerResource {
             id: customerRepository
-            path: "/customers"
+            path: "customers"
             onFetched: resp => customerModel.set(JSON.parse(resp).customers)
             onErrorStringChanged: print(errorString)
             onContentNotFound: root.state = "contentNotFound"
