@@ -6,7 +6,8 @@
 
 using namespace Qt::StringLiterals;
 
-namespace {
+namespace
+{
 constexpr auto resourceIdentification = "/%1"_L1;
 }
 
@@ -14,6 +15,7 @@ namespace Data
 {
 CustomerResource::CustomerResource(QObject *parent)
     : AbstractResource{parent}
+    , Business::CustomerRepository{}
     , data_{}
     , errorString_{}
     , path_{}
@@ -34,25 +36,38 @@ void CustomerResource::setData(const QByteArray &newData)
 
 void CustomerResource::readBySalespersonId(SalespersonId salespersonId)
 {
-    const auto req{api_->request(path_
+    const auto req{api_->createRequest(path_
         + QString("/?salesperson_id=%1").arg(salespersonId))};
 
     manager_->get(req, this, [&](QRestReply *reply) {
         if (!reply->isSuccess())
         {
             setErrorString(reply->errorString());
-            qWarning() << "CustomerResource::readBySalespersonId: "
-                       << errorString() << "\n"
-                       << "HttpStatus: " << reply->httpStatus();
             emit errorOccurred();
             if (reply->httpStatus() == 404)
+            {
+                setErrorString("El recurso solicitado no existe.");
                 emit contentNotFound();
+            }
             return;
         }
         setData(reply->body());
 
         emit fetched(data());
     });
+}
+
+QString CustomerResource::path() const
+{
+    return path_;
+}
+
+void CustomerResource::setPath(const QString &newPath)
+{
+    if (path_ == newPath)
+        return;
+    path_ = newPath;
+    emit pathChanged();
 }
 
 QString CustomerResource::errorString() const

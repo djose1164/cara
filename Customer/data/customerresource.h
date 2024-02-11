@@ -17,7 +17,7 @@ class CustomerResource
     Q_INTERFACES(Business::CustomerRepository)
     Q_PROPERTY(QByteArray data READ data WRITE setData NOTIFY dataChanged FINAL)
     Q_PROPERTY(QString errorString READ errorString WRITE setErrorString NOTIFY errorStringChanged FINAL)
-    Q_PROPERTY(QString path MEMBER path_ REQUIRED FINAL)
+    Q_PROPERTY(QString path READ path WRITE setPath NOTIFY pathChanged FINAL REQUIRED)
 public:
     using SalespersonId = int;
 
@@ -29,6 +29,9 @@ public:
     QString errorString() const;
     void setErrorString(const QString &newErrorString);
 
+    QString path() const;
+    void setPath(const QString &newPath);
+
 public slots:
     void readBySalespersonId(SalespersonId salespersonId) override final;
 
@@ -39,6 +42,8 @@ signals:
     void fetched(const QByteArray &data);
 
     void contentNotFound();
+
+    void pathChanged();
 
 private:
     QByteArray data_;
