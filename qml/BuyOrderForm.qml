@@ -1,4 +1,5 @@
 import QtQuick
+import QtCore
 import QtQuick.Controls
 import QtQuick.Layouts
 import User
@@ -12,8 +13,8 @@ import Product
 Drawer {
     id: root
 
-    readonly property var user: UserSession.user
-    readonly property var salesperson: UserSession.salesperson
+    readonly property var user: userStore.user
+    readonly property var salesperson: SalespersonSettings.entity()
     readonly property var buyOrder: {
         "date": datePicker.toShortDate(),
         "description": descriptionArea.text,
@@ -66,7 +67,7 @@ Drawer {
 
             ProviderComboBox {
                 id: providerComboBox
-                visible: user.userType === UserEntity.Salesperson
+                visible: root.user.userType === UserEntity.Salesperson
                 Layout.fillWidth: true
             }
 
@@ -145,5 +146,10 @@ Drawer {
                 }
             }
         }
+    }
+
+    LocalUserStore {
+        id: userStore
+        Component.onCompleted: restore()
     }
 }
