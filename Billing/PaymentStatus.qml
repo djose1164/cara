@@ -59,18 +59,10 @@ Item {
         }
     }
 
-    function getButtonByText(text: string): AbstractButton {
+    function getButtonByText(text: string): RadioButton {
         for (let btn of group.buttons)
             if (btn.text === text)
                 return btn;
-        return null;
-    }
-
-    function getButton(text: string) {
-        for (let btn of group.buttons)
-            if (btn.text === text)
-                return btn;
-
         return null;
     }
 }

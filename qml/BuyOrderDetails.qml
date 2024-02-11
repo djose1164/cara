@@ -18,10 +18,12 @@ Page {
     property string date
 
     onPaymentChanged: {
+        let button;
         if (payment.amount_to_pay === payment.paid_amount)
-            paymentStatus.getButton("Pago").checked = true;
+            button = paymentStatus.getButtonByText("Pago");
         else
-            paymentStatus.getButton("Credito").checked = true;
+            button = paymentStatus.getButtonByText("Credito");
+        button.checked = true;
     }
 
     title: "Detalles de Orden"
