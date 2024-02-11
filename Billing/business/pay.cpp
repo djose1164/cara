@@ -11,7 +11,7 @@ Pay::Pay(QObject *parent)
     : AbstractResource{parent}
     , errorString_{}
     , paymentId_{}
-    , path_{"/payments"}
+    , path_{}
 {
 }
 
@@ -59,7 +59,7 @@ void Pay::pay(int amount)
         return;
     }
 
-    manager_->post(api_->createRequest(QString("/%1").arg(p.paymentId())),
+    manager_->post(api_->createRequest(path_ + QString("/%1").arg(p.paymentId())),
                    p.toJsonObject(), this, &Pay::paymentFinished);
 }
 
