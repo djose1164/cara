@@ -2,7 +2,7 @@ import QtQuick
 import QtQuick.Controls
 
 Item {
-    readonly property alias validator: intValidator
+    readonly property alias intValidator: intValidator
     property alias placeholderText: textField.placeholderText
     property alias text: textField.text
     property alias inputMethodHints: textField.inputMethodHints
