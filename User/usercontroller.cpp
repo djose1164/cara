@@ -10,6 +10,9 @@ UserController::UserController(QObject *parent)
     , repository_{new Data::UserRepositoryImpl(this)}
     , errorString_{}
 {
+    const auto repo{qobject_cast<Data::UserRepositoryImpl *>(repository_)};
+    repo->setPath("users");
+
     connect(repository_, &Data::UserRepository::updated, this, &UserController::updated);
     connect(repository_, &Data::UserRepository::errorOccurred, this, [&] {
         setErrorString(repository_->errorString());
