@@ -10,7 +10,7 @@ import Inventory
 import Product
 import entities
 import Billing
-import "qrc:/utils"
+import Salesperson
 
 Page {
     id: root
@@ -30,14 +30,18 @@ Page {
         State {
             name: "creating"
             PropertyChanges {
-                target: busyIndicator
+                target: busyPopup
                 visible: true
+            }
+            PropertyChanges {
+                target: acceptBtn
+                enabled: false
             }
         },
         State {
             name: "orderCreated"
             PropertyChanges {
-                target: busyIndicator
+                target: busyPopup
                 visible: false
             }
         }
@@ -130,6 +134,7 @@ Page {
             }
 
             Button {
+                id: acceptBtn
                 text: "Aceptar"
                 Layout.fillWidth: true
                 Layout.bottomMargin: 10
@@ -149,7 +154,7 @@ Page {
         id: productSelector
         width: app.width
         height: app.height
-        salespersonId: userStore.user.salespersonId
+        salespersonId: SalespersonSettings.salespersonId
         selectedProducts: thisSelectedProducts
     }
 
@@ -178,9 +183,22 @@ Page {
         }
     }
 
-    BusyIndicator {
-        id: busyIndicator
-        visible: false
+    Popup {
+        id: busyPopup
+        width: root.width * .8
+        anchors.centerIn: Overlay.overlay
+        RowLayout {
+            anchors.fill: parent
+
+            BusyIndicator {
+                running: busyPopup.visible
+            }
+
+            Label {
+                text: "Procesando..."
+                font.pointSize: 12
+            }
+        }
     }
 
     function acceptHandle() {
@@ -190,7 +208,7 @@ Page {
             for (let i = 0; i < thisSelectedProducts.count; ++i)
                 print(thisSelectedProducts.get(i));
             const orderJson = {
-                salesperson: { id: userStore.user.salespersonId },
+                salesperson: { id: SalespersonSettings.salespersonId },
                 customer: customerItem.toJson(),
                 products: selectedProductsView.toJson(),
                 pay: paymentInput.toJson(),
@@ -198,6 +216,7 @@ Page {
             };
             print(`orderJson: ${JSON.stringify(orderJson, null, 2)}`);
             orderController.createOrder(orderJson);
+            root.state = "creating";
         } catch (err) {
             print("NewPurchaseOrder: "+err);
             message.title = "Error al crear orden"
