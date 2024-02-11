@@ -1,7 +1,6 @@
 #ifndef CUSTOMERREPOSITORY_H
 #define CUSTOMERREPOSITORY_H
 
-#include "salesperson.h"
 #include <QQmlEngine>
 
 namespace Business
@@ -9,7 +8,7 @@ namespace Business
 class CustomerRepository
 {
 public:
-    using SalespersonId = Entity::Salesperson::SalespersonId;
+    using SalespersonId = int;
 
     virtual ~CustomerRepository();
 
