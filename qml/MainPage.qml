@@ -1,7 +1,7 @@
 import QtQuick
+import QtCore
 import QtQuick.Controls
 import QtQuick.Layouts
-import core
 import User
 import Salesperson
 import "qrc:/orders" as Orders
@@ -98,7 +98,6 @@ Page {
         }
     }
 
-
     BusyIndicator {
         id: busyIndicator
         anchors.centerIn: parent
@@ -116,7 +115,6 @@ Page {
 
         function onLoggedIn() {
             userStore.update();
-            userController.getUserById(userStore.user.userId);
             root.state = "fetching";
         }
 
@@ -135,7 +133,7 @@ Page {
     UserController {
         id: userController
         onFetched: function(data) {
-            root.user = create(
+            root.user = userController.create(
                 JSON.stringify(
                     JSON.parse(data).user
             ));
@@ -146,7 +144,7 @@ Page {
 
     AssociateSalespersonService {
         id: spService
-        salespersonId: user.salespersonId
+        salespersonId: SalespersonSettings.salespersonId
         onFetched: CustomerManager.addCustomer(JSON.parse(data).customers)
     }
 
@@ -154,7 +152,7 @@ Page {
         switch (userType) {
         case UserEntity.Admin:
         case UserEntity.Salesperson:
-            CustomerManager.populate(user.salespersonId);
+            CustomerManager.populate(SalespersonSettings.salespersonId);
 
             if (CustomerManager.isEmpty) spService.fetchCustomers();
             homeStack.replace(adminHomePath);
