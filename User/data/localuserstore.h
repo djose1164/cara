@@ -1,22 +1,22 @@
 #ifndef LOCALUSERSTORE_H
 #define LOCALUSERSTORE_H
 
+#include "istore.h"
 #include "userentity.h"
-#include "userstore.h"
+#include "entity/credential.h"
 #include <QObject>
 #include <QQmlEngine>
 
-namespace Business {
+namespace User::Data
+{
 /**
  * @brief The LocalUserStore class can save an user entity & create, if available,
  * the saved user entity in settings.
  */
-class LocalUserStore : public QObject, public UserStore
+class LocalUserStore : public Store::IStore
 {
     Q_OBJECT
     QML_ELEMENT
-    QML_IMPLEMENTS_INTERFACES(Business::UserStore)
-
     Q_PROPERTY(Entity::UserEntity user READ user WRITE setUser NOTIFY userChanged FINAL)
 public:
     LocalUserStore(QObject *parent = nullptr);
@@ -24,21 +24,28 @@ public:
     Entity::UserEntity user() const;
     void setUser(const Entity::UserEntity &newUser);
 
-    std::optional<Entity::UserEntity> restore() override;
+    void clear() override;
 
     bool hasUser() const;
 
-public slots:
-    void save(const QByteArray &data) override;
+    void setPreviousLogin(bool newPreviousLogin);
 
-    void createFromStore();
+    Authentication::Entity::Credential credentials() const;
+    void setCredentials(const Authentication::Entity::Credential &newCredentials);
+
+public slots:
+    void restore() override;
+    void save(const QByteArray &data) override;
 
     void update();
 
 signals:
-    void saved();
-
     void userChanged();
+
+    void credentialsChanged();
+
+private:
+    void clearSettings() const;
 
 private:
     Entity::UserEntity user_;

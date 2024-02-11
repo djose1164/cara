@@ -1,34 +1,34 @@
 #include "localuserstore.h"
-#include "salesperson.h"
 #include "userentity.h"
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QSettings>
 
-namespace Business {
+using namespace Qt::StringLiterals;
+
+namespace User::Data
+{
 LocalUserStore::LocalUserStore(QObject *parent)
-    : QObject{parent}
+    : Store::IStore{parent}
     , user_{}
 {
-    createFromStore();
 }
 
 void LocalUserStore::save(const QByteArray &data)
 {
+    qDebug() << "LocalUserStore::save: saving...";
     const auto obj{QJsonDocument::fromJson(data).object()};
-    const auto map{obj.toVariantMap()};
     const auto userJson{QJsonDocument::fromVariant(obj["user"].toVariant()).toJson()};
     const auto salespersonObj{obj["user"]["salesperson"]};
-    
-    setUser(Entity::UserEntity::fromJson(userJson));
+
+    setUser(Entity::UserEntity::fromJson(data));
 
     QSettings settings;
+
     settings.beginGroup("User");
     settings.setValue("userTypeId", int(user_.userType()));
     settings.setValue("userId", user_.userId());
     settings.setValue("username", user_.username());
-    settings.setValue("accessToken", "Bearer " + map["access_token"].toString());
-    settings.setValue("refreshToken", "Bearer " + map["refresh_token"].toString());
     settings.endGroup();
 
     settings.beginGroup("Contact");
@@ -39,21 +39,11 @@ void LocalUserStore::save(const QByteArray &data)
     settings.setValue("email", contactData["email"].toString());
     settings.endGroup();
 
-    settings.beginGroup("Salesperson");
-    settings.setValue("salespersonId", salespersonObj["id"].toInt());
-    settings.setValue("creditLimit", salespersonObj["credit_limit"].toInt());
-    settings.setValue("creditAvailable",
-                      salespersonObj["credit_available"].toInt());
-    settings.setValue("creditConsumed",
-                      salespersonObj["credit_consumed"].toInt());
-    settings.setValue("salespersonTypeId",
-                      salespersonObj["salesperson_type"]["id"].toInt());
-    settings.setValue("salespersonTypeName",
-                      salespersonObj["salesperson_type"]["name"].toString());
-    settings.endGroup();
+    qDebug() << "LocalUserStore::save: saving... Done";
+    emit saved();
 }
 
-void LocalUserStore::createFromStore()
+void LocalUserStore::restore()
 {
     using UserTypes = Entity::UserEntity::UserTypes;
     QSettings settings;
@@ -72,32 +62,32 @@ void LocalUserStore::createFromStore()
     user_.setUsername(settings.value("username").toString());
     user_.setCustomerId(settings.value("customerId").toInt());
     user_.setUserId(settings.value("userId").toInt());
-    user_.setRefreshToken(settings.value("refreshToken").toString());
-    user_.setAccessToken(settings.value("accessToken").toString());
     settings.endGroup();
 
-    using SalespersonTypes = Entity::Salesperson::SalespersonTypes;
-    settings.beginGroup("Salesperson");
-    Entity::Salesperson sp{};
-    sp.setSalespersonId(settings.value("salespersonId").toInt());
-    sp.setCreditAvailable(settings.value("creditAvailable").toInt());
-    sp.setCreditLimit(settings.value("creditLimit").toInt());
-    sp.setCreditConsumed(settings.value("creditConsumed").toInt());
-    const int sptypeId{settings.value("salespersonTypeId").toInt()};
-    sp.setSalespersonType(
-        static_cast<SalespersonTypes>(
-            sptypeId
-    ));
-    settings.endGroup();
-
-    user_.setSalesperson(sp);
-    user_.setSalespersonId(sp.salespersonId());
+    // TODO: Should User entity contain salespersonId?
+    const int spId{settings.value("salespersonId").toInt()};
+    user_.setSalespersonId(spId);
     emit userChanged();
+}
+
+void LocalUserStore::clear()
+{
+    clearSettings();
+    user_.clear();
 }
 
 void LocalUserStore::update()
 {
-    createFromStore();
+    restore();
+}
+
+void LocalUserStore::clearSettings() const
+{
+    QSettings settings;
+    settings.remove("User");
+    settings.remove("Contact");
+    settings.remove("Salesperson");
+    settings.remove("Credentials");
 }
 
 Entity::UserEntity LocalUserStore::user() const
@@ -111,13 +101,6 @@ void LocalUserStore::setUser(const Entity::UserEntity &newUser)
         return;
     user_ = newUser;
     emit userChanged();
-}
-
-std::optional<Entity::UserEntity> LocalUserStore::restore()
-{
-    if (user_.username().isEmpty())
-        return std::nullopt;
-    return user_;
 }
 
 bool LocalUserStore::hasUser() const
