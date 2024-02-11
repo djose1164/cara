@@ -12,35 +12,35 @@ class Inventory : public QObject
     Q_OBJECT
     QML_ELEMENT
 
-    Q_PROPERTY(unsigned int inventoryId READ inventoryId WRITE setInventoryId NOTIFY inventoryIdChanged FINAL)
-    Q_PROPERTY(unsigned int quantityAvailable READ quantityAvailable WRITE setQuantityAvailable NOTIFY quantityAvailableChanged FINAL)
-    Q_PROPERTY(unsigned int minimunStockLevel READ minimunStockLevel WRITE setMinimunStockLevel NOTIFY minimunStockLevelChanged FINAL)
-    Q_PROPERTY(unsigned int maximunStockLevel READ maximunStockLevel WRITE setMaximunStockLevel NOTIFY maximunStockLevelChanged FINAL)
-    Q_PROPERTY(unsigned int reorderPoint READ reorderPoint WRITE setReorderPoint NOTIFY reorderPointChanged FINAL)
-    Q_PROPERTY(unsigned int warehouseId READ warehouseId WRITE setWarehouseId NOTIFY warehouseIdChanged FINAL)
+    Q_PROPERTY(int inventoryId READ inventoryId WRITE setInventoryId NOTIFY inventoryIdChanged FINAL)
+    Q_PROPERTY(int quantityAvailable READ quantityAvailable WRITE setQuantityAvailable NOTIFY quantityAvailableChanged FINAL)
+    Q_PROPERTY(int minimunStockLevel READ minimunStockLevel WRITE setMinimunStockLevel NOTIFY minimunStockLevelChanged FINAL)
+    Q_PROPERTY(int maximunStockLevel READ maximunStockLevel WRITE setMaximunStockLevel NOTIFY maximunStockLevelChanged FINAL)
+    Q_PROPERTY(int reorderPoint READ reorderPoint WRITE setReorderPoint NOTIFY reorderPointChanged FINAL)
+    Q_PROPERTY(int warehouseId READ warehouseId WRITE setWarehouseId NOTIFY warehouseIdChanged FINAL)
     Q_PROPERTY(AdminId *adminId READ adminId WRITE setAdminId NOTIFY adminIdChanged FINAL)
 public:
     using AdminId = int;
 
     explicit Inventory(QObject *parent = nullptr);
 
-    unsigned int inventoryId() const;
-    void setInventoryId(unsigned int newInventoryId);
+    int inventoryId() const;
+    void setInventoryId(int newInventoryId);
 
-    unsigned int quantityAvailable() const;
-    void setQuantityAvailable(unsigned int newQuantityAvailable);
+    int quantityAvailable() const;
+    void setQuantityAvailable(int newQuantityAvailable);
 
-    unsigned int minimunStockLevel() const;
-    void setMinimunStockLevel(unsigned int newMinimunStockLevel);
+    int minimunStockLevel() const;
+    void setMinimunStockLevel(int newMinimunStockLevel);
 
-    unsigned int maximunStockLevel() const;
-    void setMaximunStockLevel(unsigned int newMaximunStockLevel);
+    int maximunStockLevel() const;
+    void setMaximunStockLevel(int newMaximunStockLevel);
 
-    unsigned int reorderPoint() const;
-    void setReorderPoint(unsigned int newReorderPoint);
+    int reorderPoint() const;
+    void setReorderPoint(int newReorderPoint);
 
-    unsigned int warehouseId() const;
-    void setWarehouseId(unsigned int newWarehouseId);
+    int warehouseId() const;
+    void setWarehouseId(int newWarehouseId);
     
     Product *product() const;
     void setProduct(Product *newProduct);

@@ -15,12 +15,12 @@ Inventory::Inventory(QObject *parent)
 
 }
 
-unsigned int Inventory::inventoryId() const
+int Inventory::inventoryId() const
 {
     return inventoryId_;
 }
 
-void Inventory::setInventoryId(unsigned int newInventoryId)
+void Inventory::setInventoryId(int newInventoryId)
 {
     if (inventoryId_ == newInventoryId)
         return;
@@ -28,12 +28,12 @@ void Inventory::setInventoryId(unsigned int newInventoryId)
     emit inventoryIdChanged();
 }
 
-unsigned int Inventory::quantityAvailable() const
+int Inventory::quantityAvailable() const
 {
     return quantityAvailable_;
 }
 
-void Inventory::setQuantityAvailable(unsigned int newQuantityAvailable)
+void Inventory::setQuantityAvailable(int newQuantityAvailable)
 {
     if (quantityAvailable_ == newQuantityAvailable)
         return;
@@ -41,12 +41,12 @@ void Inventory::setQuantityAvailable(unsigned int newQuantityAvailable)
     emit quantityAvailableChanged();
 }
 
-unsigned int Inventory::minimunStockLevel() const
+int Inventory::minimunStockLevel() const
 {
     return minimunStockLevel_;
 }
 
-void Inventory::setMinimunStockLevel(unsigned int newMinimunStockLevel)
+void Inventory::setMinimunStockLevel(int newMinimunStockLevel)
 {
     if (minimunStockLevel_ == newMinimunStockLevel)
         return;
@@ -54,12 +54,12 @@ void Inventory::setMinimunStockLevel(unsigned int newMinimunStockLevel)
     emit minimunStockLevelChanged();
 }
 
-unsigned int Inventory::maximunStockLevel() const
+int Inventory::maximunStockLevel() const
 {
     return maximunStockLevel_;
 }
 
-void Inventory::setMaximunStockLevel(unsigned int newMaximunStockLevel)
+void Inventory::setMaximunStockLevel(int newMaximunStockLevel)
 {
     if (maximunStockLevel_ == newMaximunStockLevel)
         return;
@@ -67,12 +67,12 @@ void Inventory::setMaximunStockLevel(unsigned int newMaximunStockLevel)
     emit maximunStockLevelChanged();
 }
 
-unsigned int Inventory::reorderPoint() const
+int Inventory::reorderPoint() const
 {
     return reorderPoint_;
 }
 
-void Inventory::setReorderPoint(unsigned int newReorderPoint)
+void Inventory::setReorderPoint(int newReorderPoint)
 {
     if (reorderPoint_ == newReorderPoint)
         return;
@@ -80,12 +80,12 @@ void Inventory::setReorderPoint(unsigned int newReorderPoint)
     emit reorderPointChanged();
 }
 
-unsigned int Inventory::warehouseId() const
+int Inventory::warehouseId() const
 {
     return warehouseId_;
 }
 
-void Inventory::setWarehouseId(unsigned int newWarehouseId)
+void Inventory::setWarehouseId(int newWarehouseId)
 {
     if (warehouseId_ == newWarehouseId)
         return;
