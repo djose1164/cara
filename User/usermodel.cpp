@@ -42,7 +42,7 @@ QVariant UserModel::data(const QModelIndex &index, int role) const
     case Roles::SurnameRole:
         return data_.at(row).surname();
     case Roles::SalespersonRole:
-        return QVariant::fromValue(data_.at(row).salesperson());
+        return QVariant{};
     default:
         break;
     }
@@ -97,12 +97,8 @@ bool UserModel::setData(const QModelIndex &index, const QVariant &value, int rol
         return true;
     case Roles::SalespersonRole:
     {
-        const auto &sp{value.value<Entity::Salesperson>()};
-        qDebug() << "UserModel::setData: Setting new value for salesperson:"
-                 << "ca: " << sp.creditAvailable();
-        userEntry.setSalesperson(sp);
-        emit dataChanged(index, index, {role});
-        return true;
+
+        return false;
     }
     default:
         break;
