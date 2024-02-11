@@ -53,7 +53,7 @@ Item {
                 enabled: paymentStatus.selectedStatus === PaymentEntity.Credited
                          && calculator.total > 0
                 inputMethodHints: Qt.ImhDigitsOnly
-                validator.top: calculator.total
+                intValidator.top: calculator.total
                 Layout.alignment: Qt.AlignLeading
                 Layout.fillWidth: true
             }
@@ -73,6 +73,11 @@ Item {
         }
     }
 
+    QtObject {
+        id: internal
+        readonly property int debt: calculator.total - value
+    }
+
     function getPlaceholderText() : string {
         const total = calculator.total;
         if (total === 0)
@@ -89,16 +94,14 @@ Item {
         const isPaid = selectedStatus === PaymentEntity.Paid;
         const calcTotal = calculator.total;
         const paidAmount = isPaid ? calcTotal : value;
-        return {
-            payment_details: [
-                {
-                    amount: paidAmount
-                }
-            ],
+        const payment = {
             paid_amount: paidAmount,
             amount_to_pay: calcTotal,
             payment_status_id: selectedStatus
         };
+        if (selectedStatus !== PaymentEntity.Unpaid)
+            payment.payment_details = [{amount: paidAmount}];
+        return payment;
     }
 
     function validate() {
@@ -106,7 +109,7 @@ Item {
             throw "Debes selecionar la condicion de pago de la orden";
         else if(selectedStatus === PaymentEntity.Credited && root.value < 1)
             throw "Debes digitar un monto valido mayor a 0";
-        else if (selectedStatus === PaymentEntity.Credited && !amountField.acceptableInput)
+        else if (selectedStatus === PaymentEntity.Credited && internal.debt < 0)
             throw "El monto digitado excede el total de la orden.";
     }
 }
