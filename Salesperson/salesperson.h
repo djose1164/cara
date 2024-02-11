@@ -3,23 +3,19 @@
 
 #include <QObject>
 #include <QQmlEngine>
+#include <QJsonObject>
 
 namespace Entity {
 class Salesperson
 {
     Q_GADGET
     QML_VALUE_TYPE(salesperson)
-
-    Q_PROPERTY(QString username READ username WRITE setUsername FINAL)
-    Q_PROPERTY(QString password READ password WRITE setPassword FINAL)
-    Q_PROPERTY(QString email READ email WRITE setEmail FINAL)
-    Q_PROPERTY(QString forename READ forename WRITE setForename FINAL)
-    Q_PROPERTY(QString surname READ surname WRITE setSurname FINAL)
+    QML_STRUCTURED_VALUE
+    Q_PROPERTY(int salespersonId READ salespersonId WRITE setSalespersonId FINAL)
+    Q_PROPERTY(SalespersonTypes salespersonType READ salespersonType WRITE setSalespersonType FINAL)
     Q_PROPERTY(int creditLimit READ creditLimit WRITE setCreditLimit FINAL)
     Q_PROPERTY(int creditConsumed READ creditConsumed WRITE setCreditConsumed  FINAL)
     Q_PROPERTY(int creditAvailable READ creditAvailable WRITE setCreditAvailable FINAL)
-    Q_PROPERTY(SalespersonTypes salespersonType READ salespersonType WRITE setSalespersonType FINAL)
-    Q_PROPERTY(int salespersonId READ salespersonId WRITE setSalespersonId FINAL)
 public:
     using SalespersonId = int;
     using UserId = int;

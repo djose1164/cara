@@ -1,6 +1,5 @@
 #include "salesperson.h"
 #include <QVariantMap>
-#include <QJsonObject>
 #include <QJsonDocument>
 
 namespace Entity {
