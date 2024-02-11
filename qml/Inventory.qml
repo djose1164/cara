@@ -39,7 +39,7 @@ Page {
 
                 onClicked: {
                     stackView.push(
-                        "qrc:/qt/qml/inventory/InventoryForm.qml",
+                        "qrc:/qt/qml/Inventory/InventoryForm.qml",
                         {
                             inventoryId: id,
                             product,
