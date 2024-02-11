@@ -1,6 +1,6 @@
 import QtQuick
+import Authentication
 import data
-import core
 
 Rest {
     property string endpoint: ""
