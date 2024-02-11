@@ -10,7 +10,7 @@ Inventory::Inventory(QObject *parent)
     , reorderPoint_{}
     , warehouseId_{}
     , product_{}
-    , admin_{}
+    , adminId_{}
 {
 
 }
@@ -106,16 +106,16 @@ void Inventory::setProduct(Product *newProduct)
     emit productChanged();
 }
 
-Entity::UserEntity *Inventory::admin() const
+Inventory::AdminId *Inventory::adminId() const
 {
-    return admin_;
+    return adminId_;
 }
 
-void Inventory::setAdmin(Entity::UserEntity *newAdmin)
+void Inventory::setAdminId(AdminId *newAdminId)
 {
-    if (admin_ == newAdmin)
+    if (adminId_ == newAdminId)
         return;
-    admin_ = newAdmin;
-    emit adminChanged();
+    adminId_ = newAdminId;
+    emit adminIdChanged();
 }
 }

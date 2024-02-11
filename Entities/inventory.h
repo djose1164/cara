@@ -5,7 +5,6 @@
 #include <QQmlEngine>
 
 #include "productentity.h"
-#include "userentity.h"
 
 namespace EntityLayer {
 class Inventory : public QObject
@@ -19,8 +18,10 @@ class Inventory : public QObject
     Q_PROPERTY(unsigned int maximunStockLevel READ maximunStockLevel WRITE setMaximunStockLevel NOTIFY maximunStockLevelChanged FINAL)
     Q_PROPERTY(unsigned int reorderPoint READ reorderPoint WRITE setReorderPoint NOTIFY reorderPointChanged FINAL)
     Q_PROPERTY(unsigned int warehouseId READ warehouseId WRITE setWarehouseId NOTIFY warehouseIdChanged FINAL)
-
+    Q_PROPERTY(AdminId *adminId READ adminId WRITE setAdminId NOTIFY adminIdChanged FINAL)
 public:
+    using AdminId = int;
+
     explicit Inventory(QObject *parent = nullptr);
 
     unsigned int inventoryId() const;
@@ -43,9 +44,9 @@ public:
     
     Product *product() const;
     void setProduct(Product *newProduct);
-    
-    Entity::UserEntity *admin() const;
-    void setAdmin(Entity::UserEntity *newAdmin);
+
+    AdminId *adminId() const;
+    void setAdminId(AdminId *newAdminId);
 
 signals:
     void inventoryIdChanged();
@@ -64,6 +65,8 @@ signals:
 
     void adminChanged();
 
+    void adminIdChanged();
+
 private:
     unsigned inventoryId_;
     unsigned quantityAvailable_;
@@ -73,7 +76,7 @@ private:
     unsigned warehouseId_;
     
     Product *product_;
-    Entity::UserEntity *admin_;
+    AdminId *adminId_;
 };
 }
 
