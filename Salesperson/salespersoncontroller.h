@@ -16,7 +16,7 @@ class SalespersonController : public QObject
 {
     Q_OBJECT
     QML_ELEMENT
-    Q_PROPERTY(int adminId READ adminId WRITE setAdminId NOTIFY adminIdChanged FINAL REQUIRED)
+    Q_PROPERTY(int adminId READ adminId WRITE setAdminId NOTIFY adminIdChanged FINAL)
     Q_PROPERTY(int salespersonId READ salespersonId WRITE setSalespersonId NOTIFY salespersonIdChanged FINAL)
     Q_PROPERTY(QByteArray buffer READ buffer WRITE setBuffer NOTIFY bufferChanged FINAL)
 public:
@@ -32,6 +32,8 @@ public:
 
     int salespersonId() const;
     void setSalespersonId(SalespersonId newSalespersonId);
+
+    Q_INVOKABLE Entity::Salesperson fromJsonObject(const QJsonObject &data);
 
 public slots:
     /**

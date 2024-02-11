@@ -1,5 +1,7 @@
 #include "salespersoncontroller.h"
 #include "data/salespersonmanager.h"
+#include <QJsonDocument>
+#include <QJsonObject>
 
 namespace Controller
 {
@@ -62,6 +64,13 @@ void SalespersonController::setSalespersonId(SalespersonId newSalespersonId)
         return;
     salespersonId_ = newSalespersonId;
     emit salespersonIdChanged();
+}
+
+Entity::Salesperson SalespersonController::fromJsonObject(const QJsonObject &data)
+{
+    return Entity::Salesperson::fromJson(
+        QJsonDocument{data}.toJson()
+    );
 }
 
 QByteArray SalespersonController::buffer() const
