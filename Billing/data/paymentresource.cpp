@@ -5,7 +5,8 @@
 
 using namespace Qt::StringLiterals;
 
-namespace {
+namespace
+{
 constexpr auto resourceIdentification = "/%1"_L1;
 }
 
@@ -26,7 +27,7 @@ QList<QJsonObject> PaymentResource::data() const
 void PaymentResource::refresh()
 {
     const QNetworkRequest req{
-        api_->request(
+        api_->createRequest(
             path_ + resourceIdentification.arg(QString::number(paymentId_))
         )
     };
