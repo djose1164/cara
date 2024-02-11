@@ -1,9 +1,13 @@
+#include "Authentication/login.h"
+#include "Authentication/data/restuserauthentication.h"
+#include "Authentication/service/localuserauthentication.h"
+#include "User/data/localuserstore.h"
+#include "authentication/entity/credential.h"
 #include <QtTest>
 #include <QSignalSpy>
-#include "login.h"
-#include "localuserstore.h"
+#include <QSettings>
 
-// add necessary includes here
+using namespace Qt::StringLiterals;
 
 class TestLogin : public QObject
 {
@@ -17,11 +21,9 @@ private slots:
     void initTestCase();
     void cleanupTestCase();
 
-    void init();
-
     void test_shouldEmitAuthenticatedOnceUsingValidCredentials() const;
-    void test_shouldSwitchToLoginCredentialsModeUponAuthenticateCredentials() const;
-    void test_shouldSwitchToRefreshTokenModeUponAuthenticateRefreshToken() const;
+    void test_shouldEmitAuthenticatedOnceUponRefreshingToken() const;
+
     void test_shouldEmitErrorOccurredOnceIfCredentialsAreInvalid() const;
 };
 
@@ -34,6 +36,27 @@ void TestLogin::initTestCase()
     QCoreApplication::setOrganizationDomain("cara.com");
     QCoreApplication::setOrganizationName("Cara");
     QCoreApplication::setApplicationName("CaraTesting");
+
+    Authentication::Entity::Credential c{};
+    c.setUsername("cara");
+    c.setPassword("1234");
+
+    Authentication::Data::RestUserAuthentication auth{};
+    auth.setCredentials(c);
+
+    User::Data::LocalUserStore us{};
+    Authentication::Business::Login login{};
+    login.setAuthenticator(&auth);
+    login.setStore(&us);
+
+    QSignalSpy spy{&login, &Authentication::Business::Login::dataSaved};
+    QVERIFY(spy.isValid());
+
+    login.authenticate();
+
+    QVERIFY(spy.wait());
+
+    QCOMPARE(spy.count(), 1);
 }
 
 void TestLogin::cleanupTestCase()
@@ -41,71 +64,65 @@ void TestLogin::cleanupTestCase()
 
 }
 
-void TestLogin::init()
-{
-    Business::Login login{};
-    Business::LocalUserStore userStore{};
-    login.setUserStore(&userStore);
-    login.setUsername("cara");
-    login.setPassword("1234");
-
-    QSignalSpy spy(&login, SIGNAL(authenticated(void)));
-
-    QVERIFY(spy.isValid());
-
-    login.authenticateCredentials();
-    QVERIFY(spy.wait());
-}
 
 void TestLogin::test_shouldEmitAuthenticatedOnceUsingValidCredentials() const
 {
-    Business::Login login{};
-    login.setUsername("cara");
-    login.setPassword("1234");
+    auto login = std::make_unique<Authentication::Business::Login>();
+    Authentication::Data::RestUserAuthentication auth{};
+    Authentication::Entity::Credential c{};
+    c.setUsername("cara");
+    c.setPassword("1234");
+    auth.setCredentials(c);
+    login->setAuthenticator(&auth);
 
-    QSignalSpy spy(&login, SIGNAL(authenticated(void)));
-
+    QSignalSpy spy{login.get(), &Authentication::Business::Login::authenticated};
     QVERIFY(spy.isValid());
 
-    login.authenticateCredentials();
+    login->authenticate();
+
     QVERIFY(spy.wait());
-    // Check what IP address is being in used
 
     QCOMPARE(spy.count(), 1);
 }
 
-void TestLogin::test_shouldSwitchToLoginCredentialsModeUponAuthenticateCredentials() const
+void TestLogin::test_shouldEmitAuthenticatedOnceUponRefreshingToken() const
 {
-    auto login = std::make_unique<Business::Login>();
-    login->setUsername("cara");
-    login->setPassword("1234");
+    auto login = std::make_unique<Authentication::Business::Login>();
+    Authentication::Service::LocalUserAuthentication auth{};
+    const auto token{QSettings{}.value("Credentials/refreshToken"_L1).toString()};
 
-    login->authenticateCredentials();
+    QVERIFY(!token.isEmpty());
 
-    using AuthenticationMode = Business::Login::AuthenticationMode;
-    QCOMPARE(login->mode(), AuthenticationMode::LoginCredentials);
+    auth.setRefreshToken(token);
+    login->setAuthenticator(&auth);
+
+    QSignalSpy spy{login.get(), &Authentication::Business::Login::authenticated};
+
+    login->authenticate();
+
+    QVERIFY(spy.wait());
+
+    QCOMPARE(spy.count(), 1);
 }
 
-void TestLogin::test_shouldSwitchToRefreshTokenModeUponAuthenticateRefreshToken() const
-{
-    auto login = std::make_unique<Business::Login>();
-
-    login->authenticateRefreshToken();
-
-    using AuthenticationMode = Business::Login::AuthenticationMode;
-    QCOMPARE(login->mode(), AuthenticationMode::RefreshToken);
-}
 
 void TestLogin::test_shouldEmitErrorOccurredOnceIfCredentialsAreInvalid() const
 {
-    Business::Login login{};
-    login.setUsername("");
-    login.setPassword("123");
-    QSignalSpy spy{&login, SIGNAL(errorOccurred(void))};
+    auto login = std::make_unique<Authentication::Business::Login>();
+    Authentication::Data::RestUserAuthentication auth{};
+    Authentication::Entity::Credential c{};
+    c.setUsername("cara");
+    c.setPassword("12349");
+    auth.setCredentials(c);
+    login->setAuthenticator(&auth);
+
+    QSignalSpy spy{login.get(), SIGNAL(errorOccurred(void))};
 
     QVERIFY(spy.isValid());
 
-    login.authenticateCredentials();
+    login->authenticate();
+
+    QVERIFY(spy.wait());
 
     QCOMPARE(spy.count(), 1);
 }

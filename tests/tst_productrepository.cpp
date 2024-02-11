@@ -1,6 +1,8 @@
-#include "localuserstore.h"
-#include "login.h"
-#include "productrepository.h"
+#include "Authentication/data/restuserauthentication.h"
+#include "Authentication/entity/credential.h"
+#include "Authentication/login.h"
+#include "Catalogue/productrepository.h"
+#include "User/data/localuserstore.h"
 #include <QTest>
 #include <QSignalSpy>
 #include <QJsonDocument>
@@ -37,22 +39,28 @@ void TestProductRepository::initTestCase()
     QCoreApplication::setOrganizationDomain("cara.com");
     QCoreApplication::setOrganizationName("Cara");
     QCoreApplication::setApplicationName("CaraTesting");
-
-    Business::Login login{};
-    login.setUsername("josevictoriano");
-    login.setPassword("2077120");
-
-    Business::LocalUserStore userStore{};
-    QSignalSpy spy{&login, SIGNAL(authenticated(void))};
-    login.setUserStore(&userStore);
-
-    login.authenticateCredentials();
-    QVERIFY(spy.wait());
 }
 
 void TestProductRepository::init()
 {
+    Authentication::Business::Login login{};
+    QSignalSpy spy{&login, &Authentication::Business::Login::authenticated};
 
+    QVERIFY(spy.isValid());
+
+    Authentication::Data::RestUserAuthentication restAuthenticator{};
+    Authentication::Entity::Credential credentials{};
+    credentials.setUsername("cara");
+    credentials.setPassword("1234");
+    restAuthenticator.setCredentials(credentials);
+    login.setAuthenticator(&restAuthenticator);
+    User::Data::LocalUserStore lus{};
+    login.setStore(&lus);
+
+    login.authenticate();
+    QVERIFY(spy.wait());
+
+    QCOMPARE(spy.count(), 1);
 }
 
 void TestProductRepository::test_shouldEmitAddedIfAddingSuccess() const

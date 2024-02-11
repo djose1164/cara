@@ -1,4 +1,4 @@
-#include "entity/payment.h"
+#include "Billing/entity/payment.h"
 #include <QTest>
 #include <QSignalSpy>
 #include <QJsonDocument>

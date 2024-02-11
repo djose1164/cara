@@ -1,10 +1,20 @@
-#include "localuserstore.h"
-#include "login.h"
-#include "data/customerresource.h"
+#include "Authentication/login.h"
+#include "Customer/data/customerresource.h"
+#include "Authentication/entity/credential.h"
+#include "Authentication/data/restuserauthentication.h"
+#include "User/data/localuserstore.h"
+#include "Utils/restservice.h"
 #include <QTest>
 #include <QSignalSpy>
 #include <QJsonDocument>
 #include <QJsonObject>
+
+using namespace Qt::StringLiterals;
+
+namespace
+{
+constexpr auto customerPath{"customers"_L1};
+}
 
 class TestCustomerResource : public QObject
 {
@@ -14,10 +24,9 @@ public:
 
 private slots:
     void initTestCase();
-    void init();
 
     void test_shouldReturnCustomersByTheirSalespersonId() const;
-    void test_shouldEmitErrorOccurredIfSalespersonidIsNotValid() const;
+    void test_shouldEmitContentNotFoundIfSalespersonidIsNotValid() const;
 };
 
 
@@ -33,25 +42,36 @@ void TestCustomerResource::initTestCase()
     QCoreApplication::setOrganizationDomain("cara.com");
     QCoreApplication::setOrganizationName("Cara");
     QCoreApplication::setApplicationName("CaraTesting");
-}
 
-void TestCustomerResource::init()
-{
-    Business::Login login{};
-    login.setUsername("josevictoriano");
-    login.setPassword("2077120");
+    Authentication::Business::Login login{};
+    QSignalSpy spy{&login, &Authentication::Business::Login::authenticated};
 
-    Business::LocalUserStore userStore{};
-    QSignalSpy spy{&login, SIGNAL(authenticated(void))};
-    login.setUserStore(&userStore);
+    QVERIFY(spy.isValid());
 
-    login.authenticateCredentials();
+    Authentication::Data::RestUserAuthentication restAuthenticator{};
+    Authentication::Entity::Credential credentials{};
+    credentials.setUsername("josevictoriano");
+    credentials.setPassword("2077120");
+    restAuthenticator.setCredentials(credentials);
+    login.setAuthenticator(&restAuthenticator);
+    User::Data::LocalUserStore lus{};
+    login.setStore(&lus);
+
+    login.authenticate();
     QVERIFY(spy.wait());
+
+    QCOMPARE(spy.count(), 1);
 }
+
 
 void TestCustomerResource::test_shouldReturnCustomersByTheirSalespersonId() const
 {
+    Utils::RestService rs{};
     Data::CustomerResource repository{};
+    repository.setPath(customerPath);
+
+    rs.append(&repository);
+
     QSignalSpy spy{&repository, &Data::CustomerResource::fetched};
 
     QVERIFY(spy.isValid());
@@ -67,10 +87,15 @@ void TestCustomerResource::test_shouldReturnCustomersByTheirSalespersonId() cons
     QVERIFY2(errorString.isEmpty(), QString("An error has occurred: %1").arg(errorString).toUtf8());
 }
 
-void TestCustomerResource::test_shouldEmitErrorOccurredIfSalespersonidIsNotValid() const
+void TestCustomerResource::test_shouldEmitContentNotFoundIfSalespersonidIsNotValid() const
 {
+    Utils::RestService rs{};
     Data::CustomerResource repository{};
-    QSignalSpy spy{&repository, SIGNAL(errorOccurred(void))};
+    repository.setPath(customerPath);
+
+    rs.append(&repository);
+
+    QSignalSpy spy{&repository, &Data::CustomerResource::contentNotFound};
 
     QVERIFY(spy.isValid());
 

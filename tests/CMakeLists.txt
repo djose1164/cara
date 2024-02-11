@@ -9,33 +9,38 @@ function(SETUP_TESTS)
 endfunction()
 
 SETUP_TESTS(
-   login
-   restuserauthentication
-   usercredential
-   salespersoncontroller
-   salespersonmanager
-   localuserstore
    customerresource
-   productmodel
    inventoryrepository
+   localuserauthentication
+   localuserstore
+   login
    pay
    payment
+   productmodel
+   productrepository
+   restorderrepository
+   restuserauthentication
+   salespersoncontroller
+   salespersonmanager
+   salespersonrepositoryimp
+   usercredential
+)
+
+qt_add_resources(restorderrepository "sample_data"
+    FILES good_order.json bad_order.json
+)
+
+target_compile_definitions(productrepository
+    PRIVATE CURRENT_SOURCE_DIR=${CMAKE_CURRENT_SOURCE_DIR}
 )
 
 include_directories(
-    ../Core
-    ../Models
-    ../Data
-    ../Entities
-    ../Catalogue
-    ../Inventory
-    ../Salesperson
-    ../User
-    ../Authentication
-    ../Utils
-    ../Billing
-    ../Customer
-    ../Product
-    ../Statistics
+    ../
+    ../authentication
+    ../billing
+    ../customer
+    ../store
+    ../user
+    ../utils
 )
 
