@@ -1,10 +1,12 @@
-#include "billentity.h"
+#include "bill.h"
 #include "userentity.h"
 
-namespace EntityLayer {
+using namespace EntityLayer;
+
+namespace Entity {
 using Model::OrderModel;
 
-BillEntity::BillEntity(QObject *parent)
+Bill::Bill(QObject *parent)
     : QObject{parent}
     , orderId_{}
     , user_{}
@@ -16,30 +18,30 @@ BillEntity::BillEntity(QObject *parent)
 {
 }
 
-Entity::UserEntity BillEntity::user() const
+Entity::UserEntity Bill::user() const
 {
     return user_;
 }
 
-QDateTime BillEntity::date() const
+QDateTime Bill::date() const
 {
     return date_.value();
 }
 
-void BillEntity::setDate(QDateTime date)
+void Bill::setDate(QDateTime date)
 {
     date_ = date;
 }
 
-QBindable<QDateTime> BillEntity::bindableDate()
+QBindable<QDateTime> Bill::bindableDate()
 {
     return &date_;
 }
 
-BillEntity *BillEntity::fromMap(const QVariantMap &billMap)
+Bill *Bill::fromMap(const QVariantMap &billMap)
 {
     Q_ASSERT(!billMap.isEmpty());
-    auto bill{new BillEntity};
+    auto bill{new Bill};
 
     const auto strDate{billMap["date"].toString()};
 
@@ -74,47 +76,47 @@ BillEntity *BillEntity::fromMap(const QVariantMap &billMap)
     return bill;
 }
 
-int BillEntity::orderId() const
+int Bill::orderId() const
 {
     return orderId_.value();
 }
 
-void BillEntity::setOrderId(int orderId)
+void Bill::setOrderId(int orderId)
 {
     orderId_ = orderId;
 }
 
-QBindable<int> BillEntity::bindableOrderId()
+QBindable<int> Bill::bindableOrderId()
 {
     return &orderId_;
 }
 
-void BillEntity::setDetailsModel(OrderModel * const model)
+void Bill::setDetailsModel(OrderModel * const model)
 {
     details_ = model;
 }
 
-Entity::Payment BillEntity::payment() const
+Entity::Payment Bill::payment() const
 {
     return payment_;
 }
 
-void BillEntity::setPayment(const Entity::Payment &payment)
+void Bill::setPayment(const Entity::Payment &payment)
 {
     payment_ = payment;
 }
 
-void BillEntity::setUser(Entity::UserEntity user)
+void Bill::setUser(Entity::UserEntity user)
 {
     user_ = user;
 }
 
-OrderModel *BillEntity::details() const
+OrderModel *Bill::details() const
 {
     return details_;
 }
 
-QByteArray BillEntity::toJson() const
+QByteArray Bill::toJson() const
 {
     QJsonObject object{};
     object["user_id"] = user_.userId();
@@ -139,29 +141,29 @@ QByteArray BillEntity::toJson() const
     return doc.toJson(QJsonDocument::Compact);
 }
 
-void BillEntity::appendDetail(DetailsEntity * const detail)
+void Bill::appendDetail(DetailsEntity * const detail)
 {
     Q_ASSERT(detail);
 
     details_->append(detail);
 }
 
-Entity::Customer BillEntity::customer() const
+Entity::Customer Bill::customer() const
 {
     return customer_;
 }
 
-void BillEntity::setCustomer(const Entity::Customer &newCustomer)
+void Bill::setCustomer(const Entity::Customer &newCustomer)
 {
     customer_ = newCustomer;
 }
 
-OrderStatus *BillEntity::orderStatus() const
+OrderStatus *Bill::orderStatus() const
 {
     return orderStatus_;
 }
 
-void BillEntity::setOrderStatus(OrderStatus *newOrderStatus)
+void Bill::setOrderStatus(OrderStatus *newOrderStatus)
 {
     orderStatus_ = newOrderStatus;
     orderStatus_->setParent(this);

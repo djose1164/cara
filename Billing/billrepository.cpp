@@ -1,7 +1,8 @@
 #include "billrepository.h"
+#include "notimplementated.h"
 #include "constants.h"
-#include "tokenmanager.h"
-#include "tokenmanager.h"
+#include "business/tokenmanager.h"
+
 
 namespace DataLayer {
 BillRepository::BillRepository(QObject *parent)
@@ -22,7 +23,7 @@ void BillRepository::fetchByCustomerId(int customerId)
     QNetworkRequest request{url};
     request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
 
-    const auto tokenManager{TokenManager::instance()};
+    const auto tokenManager{Authentication::Business::TokenManager::instance()};
     const QString token{tokenManager->accessToken()};
 
     request.setRawHeader("Authorization", token.toUtf8());
@@ -40,7 +41,7 @@ void BillRepository::fetchByCustomerId(int customerId)
 
 void BillRepository::fetchById(int orderId)
 {
-
+    throw Utils::NotImplementated();
 }
 
 void BillRepository::fetchByAdminId(int adminId)
@@ -53,7 +54,7 @@ void BillRepository::fetchByAdminId(int adminId)
     QNetworkRequest request{url};
     request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
 
-    const auto tokenManager{TokenManager::instance()};
+    const auto tokenManager{Authentication::Business::TokenManager::instance()};
     const QString token{tokenManager->accessToken()};
 
     Q_ASSERT(!token.isEmpty());
@@ -81,9 +82,9 @@ void BillRepository::fetchBy(const QString &param, int id)
     QNetworkRequest request{url};
     request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
 
-    const auto tokenManager{TokenManager::instance()};
+    const auto tokenManager{Authentication::Business::TokenManager::instance()};
     const QString token{tokenManager->accessToken()};
-    qDebug() << "TokenManager: " << token;
+
     Q_ASSERT(!token.isEmpty());
 
     request.setRawHeader("Authorization", token.toUtf8());

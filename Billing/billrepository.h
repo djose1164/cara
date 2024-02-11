@@ -2,7 +2,6 @@
 #define BILLREPOSITORY_H
 
 #include "ibillrepository.h"
-
 #include <QObject>
 #include <QQmlEngine>
 #include <QNetworkAccessManager>

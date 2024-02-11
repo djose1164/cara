@@ -9,17 +9,17 @@
 #include <QObject>
 #include <QtQml>
 
-namespace EntityLayer {
+namespace Entity {
 using Model::OrderModel;
-class BillEntity : public QObject, public JsonExportable
+class Bill : public QObject, public EntityLayer::JsonExportable
 {
     Q_OBJECT
     QML_ELEMENT
 
 public:
-    explicit BillEntity(QObject *parent = nullptr);
+    explicit Bill(QObject *parent = nullptr);
 
-    static BillEntity *fromMap(const QVariantMap &billMap);
+    static Bill *fromMap(const QVariantMap &billMap);
 
     int orderId() const;
     void setOrderId(int orderId);
@@ -47,7 +47,7 @@ public:
     void setCustomer(const Entity::Customer &newCustomer);
 
 public slots:
-    void appendDetail(DetailsEntity *const detail);
+    void appendDetail(EntityLayer::DetailsEntity *const detail);
 
 private:
     QProperty<int> orderId_;
