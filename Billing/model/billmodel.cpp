@@ -1,6 +1,6 @@
 #include "billmodel.h"
 #include "ordermodel.h"
-
+#include "entity/bill.h"
 
 namespace Model
 {
@@ -57,7 +57,7 @@ int BillModel::count() const
     return data_.count();
 }
 
-EntityLayer::BillEntity *BillModel::get(int index) const
+Entity::Bill *BillModel::get(int index) const
 {
     if (index < 0 || index >= count())
         return nullptr;
@@ -96,7 +96,7 @@ QHash<int, QByteArray> BillModel::roleNames() const
     return roleNames_;
 }
 
-void BillModel::insert(int index, BillEntity *const bill)
+void BillModel::insert(int index, Entity::Bill *const bill)
 {
     if (index < 0 || index > count())
         return;
@@ -109,7 +109,7 @@ void BillModel::insert(int index, BillEntity *const bill)
     emit countChanged();
 }
 
-void BillModel::append(BillEntity * const bill)
+void BillModel::append(Entity::Bill * const bill)
 {
     insert(count(), bill);
 }

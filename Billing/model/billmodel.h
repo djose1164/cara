@@ -1,12 +1,11 @@
 #ifndef BILLMODEL_H
 #define BILLMODEL_H
 
-#include "../entities/billentity.h"
+#include "entity/bill.h"
 #include <QAbstractListModel>
 #include <QtQml>
 
 namespace Model {
-using EntityLayer::BillEntity;
 class BillModel : public QAbstractListModel
 {
     Q_OBJECT
@@ -39,19 +38,19 @@ public:
 
     int count() const;
 
-    Q_INVOKABLE BillEntity *get(int index) const;
+    Q_INVOKABLE Entity::Bill *get(int index) const;
 
 signals:
     void countChanged();
 
 public slots:
-    void insert(int index, BillEntity *const bill);
-    void append(BillEntity *const bill);
+    void insert(int index, Entity::Bill *const bill);
+    void append(Entity::Bill *const bill);
     void remove(int index);
     void clear();
 
 private:
-    QList<BillEntity *> data_;
+    QList<Entity::Bill *> data_;
     QHash<int, QByteArray> roleNames_;
 };
 }
