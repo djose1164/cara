@@ -1,12 +1,19 @@
 #ifndef TOKENMANAGER_H
 #define TOKENMANAGER_H
 
+#include <QNetworkReply>
 #include <QObject>
 #include <QQmlEngine>
 #include <QSettings>
-#include "irefreshable.h"
+#include <QTimer>
 
-namespace DataLayer {
+
+namespace Authentication::Data { class TokenStore; }
+
+namespace Authentication::Business {
+class IRefreshable;
+class IToken;
+
 class TokenManager : public QObject
 {
     Q_OBJECT
@@ -25,8 +32,18 @@ public:
     static TokenManager *create(QQmlEngine *qmlEngine, QJSEngine *jsEngine);
     static TokenManager *instance();
 
+    IRefreshable *refresher() const;
+    void setRefresher(IRefreshable *newRefresher);
+
+    QString errorString() const;
+    void setErrorString(const QString &newErrorString);
+
 public slots:
     void clear();
+
+private slots:
+    void replyReady();
+    void timeout();
 
 signals:
     void accessTokenChanged();
@@ -34,15 +51,20 @@ signals:
     void refreshTokenChanged();
 
     void accessTokenAvailable();
+    void errorOccurred();
 
 private:
     explicit TokenManager(QObject *parent = nullptr);
 
     QString accessToken_;
     QString refreshToken_;
-    QSettings settings_;
+    QTimer *timer_;
+    QNetworkReply *reply_;
+    QString errorString_;
+    Data::TokenStore *tokenStore_;
 
-    DataLayer::IRefreshable *refresher_;
+    IRefreshable *refresher_;
+    IToken *token_;
 
     static TokenManager *instance_;
 };

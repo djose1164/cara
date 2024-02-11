@@ -1,6 +1,6 @@
 #include "irefreshable.h"
 
-namespace DataLayer {
+namespace Authentication::Business {
 IRefreshable::~IRefreshable()
 {
 

@@ -1,30 +1,28 @@
 #ifndef REFRESHER_H
 #define REFRESHER_H
 
-#include "irefreshable.h"
+#include "business/irefreshable.h"
 #include <QObject>
 #include <QNetworkAccessManager>
 #include <QTimer>
-#include <QSettings>
 
-namespace DataLayer {
-class Refresher : public QObject, public IRefreshable
+class QNetworkRequestFactory;
+
+namespace Authentication::Data{
+class Refresher : public QObject, public Business::IRefreshable
 {
     Q_OBJECT
-
 public:
     explicit Refresher(QObject *parent = nullptr);
 
     QString refreshToken() const;
-    void setRefreshToken(const QString &newRefreshToken);
+    void setRefreshToken(const QString &newRefreshToken) override;
 
 public slots:
-    void refresh() override;
+    QNetworkReply *refresh() override;
 
 signals:
-    void accessTokenRefreshed(const QString &token);
     void errorOccurred(const QByteArray &data);
-
     void refreshTokenChanged();
 
 private:
@@ -34,7 +32,7 @@ private:
     QString refreshToken_;
 
     QTimer *timer_;
-    QSettings settings_;
+    const std::shared_ptr<QNetworkRequestFactory> api_;
 };
 }
 
