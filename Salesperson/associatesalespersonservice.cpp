@@ -47,7 +47,11 @@ void AssociateSalespersonService::fetchAssociateSalespersonById(int id)
 
 void AssociateSalespersonService::fetchCustomers()
 {
-    Q_ASSERT(salespersonId_);
+    if (salespersonId_ < 1)
+    {
+        emit errorOccurred();
+        return;
+    }
     salespersonRepository_->getCustomers(salespersonId_);
 }
 
