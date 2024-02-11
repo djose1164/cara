@@ -110,7 +110,7 @@ void ProductRepository::prepareImagePart(const QUrl imageUrl)
         qCritical() << "Failed to open file for reading";
         setErrorString("El archivo no existe."_L1);
         emit errorOccurred(errorString_.toUtf8());
-        throw std::runtime_error(errorString_);
+        throw std::runtime_error(errorString_.toUtf8());
     }
 
     imagePart.setBodyDevice(img);
