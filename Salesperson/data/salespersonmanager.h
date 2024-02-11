@@ -3,6 +3,7 @@
 
 #include "../business/manageable.h"
 #include <QNetworkAccessManager>
+#include <QNetworkRequestFactory>
 
 namespace Data
 {
@@ -23,11 +24,10 @@ public:
     void remove(int id) override;
 
 private:
-    QNetworkRequest prepareRequest(const QString &endpoint = {});
-
-private:
     QNetworkAccessManager *manager_;
     QNetworkReply *reply_;
+    QString path_;
+    const std::shared_ptr<QNetworkRequestFactory> api_;
 };
 }
 

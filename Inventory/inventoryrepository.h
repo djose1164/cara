@@ -29,13 +29,12 @@ public slots:
 signals:
 
 private:
-    QNetworkRequest prepareRequest(const QString &endpoint);
-
-private:
     QNetworkAccessManager *manager_;
     QPointer<QNetworkReply> reply_;
     QByteArray data_;
     QString errorString_;
+    QString path_;
+    const std::shared_ptr<QNetworkRequestFactory> api_;
 };
 }
 

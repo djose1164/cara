@@ -1,10 +1,17 @@
 #include "inventoryrepository.h"
-#include "localuserstore.h"
+#include "networkrequestsingleton.h"
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QJsonArray>
+
+using namespace Qt::StringLiterals;
+
+namespace
+{
+constexpr auto resourceIdentification{"/%1"_L1};
+}
 
 namespace Data
 {
@@ -12,13 +19,16 @@ InventoryRepository::InventoryRepository(QObject *parent)
     : Business::IInventoryRepository{parent}
     , manager_{new QNetworkAccessManager(this)}
     , reply_{}
+    , path_{"inventory"_L1}
+    , api_{Utils::NetworkRequestSingleton::instance().api()}
 {
 
 }
 
 void InventoryRepository::fetchAll(SalespersonId spId)
 {
-    const auto req{prepareRequest(QString("/?salesperson_id=%1").arg(spId))};
+    const QUrlQuery query{ {"salesperson_id"_L1, QString::number(spId)} };
+    const auto req{api_->createRequest(path_, query)};
 
     reply_ = manager_->get(req);
 
@@ -54,17 +64,6 @@ void InventoryRepository::fetchAll(SalespersonId spId)
 void InventoryRepository::update(const QVariantMap &stocks)
 {
 
-}
-
-QNetworkRequest InventoryRepository::prepareRequest(const QString &endpoint)
-{
-    const QUrl url{QSettings().value("base").toString() + "/inventory" + endpoint};
-    QNetworkRequest req{url};
-    req.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
-
-    const QString token{Business::LocalUserStore().user().accessToken()};
-    req.setRawHeader("Authorization", token.toUtf8());
-    return req;
 }
 
 QString InventoryRepository::errorString() const

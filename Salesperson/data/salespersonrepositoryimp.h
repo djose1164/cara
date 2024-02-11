@@ -5,6 +5,7 @@
 
 #include <QObject>
 #include <QNetworkAccessManager>
+#include <QNetworkRequestFactory>
 
 namespace Data {
 class SalespersonRepositoryImpl : public QObject, public SalespersonRepository
@@ -17,6 +18,9 @@ public:
 
     int salespersonId() const;
 
+    QString path() const;
+    void setPath(const QString &newPath);
+
 public slots:
     void getSalespersonById(int id) override;
 
@@ -26,7 +30,11 @@ public slots:
 
     void patch(int id, const QByteArray &payload) override;
 
-    void getCustomers(int id) override;
+    void getCustomers(int salespersonId) override;
+
+private slots:
+    void requestFinished();
+
 signals:
     void finished();
     void errorOccurred();
@@ -35,14 +43,12 @@ signals:
     void patched();
 
 private:
-    QNetworkRequest prepareRequest(const QString &endpoint = {}) const;
-
-private:
     QNetworkAccessManager *manager_;
     QNetworkReply *reply_;
 
-    QUrl base_;
+    QString path_;
     QByteArray buffer_;
+    const std::shared_ptr<QNetworkRequestFactory> api_;
 };
 }
 

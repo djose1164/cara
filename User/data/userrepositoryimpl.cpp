@@ -1,4 +1,5 @@
 #include "userrepositoryimpl.h"
+#include "networkrequestsingleton.h"
 #include <QSettings>
 #include <QNetworkReply>
 
@@ -8,13 +9,14 @@ UserRepositoryImpl::UserRepositoryImpl(QObject *parent)
     : UserRepository{parent}
     , manager_{new QNetworkAccessManager(this)}
     , reply_{}
+    , api_{Utils::NetworkRequestSingleton::instance().api()}
 {
 
 }
 
 void UserRepositoryImpl::read(int id)
 {
-    const auto request{createRequest(QString("/%1").arg(id))};
+    const auto request{api_->createRequest(path_ + QString("/%1").arg(id))};
 
     reply_ = manager_->get(request);
 
@@ -37,16 +39,13 @@ void UserRepositoryImpl::update(const Entity::UserEntity &user)
 
 }
 
-QNetworkRequest UserRepositoryImpl::createRequest(const QString &endpoint)
+QString UserRepositoryImpl::path() const
 {
-    const QUrl url{base() + endpoint};
-    QNetworkRequest request{url};
+    return path_;
+}
 
-    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
-    QSettings settings;
-    const QString token{settings.value("User/accessToken").toString()};
-    request.setRawHeader("Authorization", token.toUtf8());
-
-    return request;
+void UserRepositoryImpl::setPath(const QString &newPath)
+{
+    path_ = newPath;
 }
 }

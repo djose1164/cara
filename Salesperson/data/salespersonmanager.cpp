@@ -1,7 +1,13 @@
 #include "salespersonmanager.h"
-#include "localuserstore.h"
-#include "tokenmanager.h"
+#include "networkrequestsingleton.h"
 #include <QNetworkReply>
+
+using namespace Qt::StringLiterals;
+
+namespace
+{
+constexpr auto resourceIdentification{"/%1"_L1};
+}
 
 namespace Data
 {
@@ -9,11 +15,16 @@ SalespersonManager::SalespersonManager(QObject *parent)
     : Business::Manageable{parent}
     , manager_{new QNetworkAccessManager(this)}
     , reply_{}
+    , path_{"salespersons"_L1}
+    , api_{Utils::NetworkRequestSingleton::instance().api()}
 {}
 
 void SalespersonManager::read(int id)
 {
-    const auto req{prepareRequest(QString("/%1").arg(id))};
+    const auto req{
+        api_->createRequest(path_
+                            + resourceIdentification.arg(QString::number(id)))
+    };
 
     reply_ = manager_->get(req);
 
@@ -33,7 +44,9 @@ void SalespersonManager::read(int id)
 
 void SalespersonManager::readAll(int adminId)
 {
-    const auto req{prepareRequest(QString("/?admin_id=%1").arg(adminId))};
+    const QUrlQuery query{ {"admin_id"_L1, QString::number(adminId)} };
+
+    const auto req{api_->createRequest(path_, query)};
 
     reply_ = manager_->get(req);
 
@@ -53,9 +66,7 @@ void SalespersonManager::readAll(int adminId)
 
 void SalespersonManager::add(const QByteArray &data)
 {
-    Q_ASSERT(data.contains("admin_id"));
-
-    const auto req{prepareRequest("/")};
+    const auto req{api_->createRequest(path_ + "/"_L1)};
 
     reply_ = manager_->post(req, data);
 
@@ -81,15 +92,5 @@ void SalespersonManager::edit(int id, const QByteArray &data)
 void SalespersonManager::remove(int id)
 {
 
-}
-
-QNetworkRequest SalespersonManager::prepareRequest(const QString &endpoint)
-{
-    QNetworkRequest req{QUrl(base() + endpoint)};
-    req.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
-    const QString token{Business::LocalUserStore().user().accessToken()};
-    req.setRawHeader("Authorization", token.toUtf8());
-
-    return req;
 }
 }

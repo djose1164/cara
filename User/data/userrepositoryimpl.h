@@ -3,6 +3,7 @@
 
 #include "userrepository.h"
 #include <QNetworkAccessManager>
+#include <QNetworkRequestFactory>
 
 namespace Data
 {
@@ -17,12 +18,14 @@ public:
 
     void update(const Entity::UserEntity &user) override;
 
-private:
-    QNetworkRequest createRequest(const QString &endpoint);
+    QString path() const;
+    void setPath(const QString &newPath);
 
 private:
     QNetworkAccessManager *manager_;
     QNetworkReply *reply_;
+    QString path_;
+    const std::shared_ptr<QNetworkRequestFactory> api_;
 };
 }
 
