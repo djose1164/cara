@@ -2,6 +2,8 @@
 #include "restservice.h"
 #include <QSettings>
 
+using namespace Qt::StringLiterals;
+
 namespace Utils
 {
 RestService::RestService(QObject *parent)
@@ -11,8 +13,6 @@ RestService::RestService(QObject *parent)
     , manager_{std::make_shared<QRestAccessManager>()}
     , api_{NetworkRequestSingleton::instance().api()}
 {
-    const QString token{QSettings().value("User/accessTokenNoLeading").toString()};
-    api_->setBearerToken(token.toUtf8());
 }
 
 QUrl RestService::url() const
