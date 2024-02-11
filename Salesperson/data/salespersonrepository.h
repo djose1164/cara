@@ -1,7 +1,9 @@
 #ifndef SALESPERSONREPOSITORY_H
 #define SALESPERSONREPOSITORY_H
 
-#include "salesperson.h"
+#include <QByteArray>
+
+namespace Entity { class Salesperson; }
 
 namespace Data {
 class SalespersonRepository
