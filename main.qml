@@ -3,7 +3,6 @@ import QtQuick.Controls
 import "qrc:/errors"
 import "qrc:/singleton"
 import "qrc:/utils"
-import core
 import data
 import Authentication as Auth
 import User
@@ -22,7 +21,7 @@ ApplicationWindow {
     readonly property string mainPage: "qrc:/main/MainPage.qml"
 
     onClosing: function(close) {
-        //Manages Android Back-button
+        // Manages Android Back-button
         if(Qt.platform.os === "android") {
             if (appStack.depth > 1) {
                 close.accepted = false;
@@ -35,7 +34,8 @@ ApplicationWindow {
 
     Component.onCompleted: {
         LoginManager.session = UserSession.session;
-        internetStatus.checkInternetConnection();
+        myTokenStore.restore();
+        caraApi.checkStatus();
     }
 
     StackView {
@@ -52,9 +52,7 @@ ApplicationWindow {
     UserController {
         id: userController
         onFetched: function(resp) {
-            const user = userController.create(
-                JSON.stringify(JSON.parse(resp).user)
-            );
+            const user = userController.create(resp);
             print("Replacing appStack with MainPage");
             stackView.replace(mainPage, {user});
         }
@@ -73,16 +71,6 @@ ApplicationWindow {
         onActivated: Qt.quit()
     }
 
-    InternetStatus {
-        id: internetStatus
-        onStatusChanged: {
-            print("InternetStatus: "+statusString);
-            if (status === internetStatus.InternetNotAvailable)
-                userModel.append({});
-            else
-                caraApi.checkStatus();
-        }
-    }
 
     CaraApi {
         id: caraApi
@@ -108,19 +96,36 @@ ApplicationWindow {
     // This' not supposod to handle authentication from credentials, only from refresh token.
     Auth.Login {
         id: login
-        userStore: LocalUserStore { id: localUserStore }
-        onAuthenticated: {
-            print("onLoggedIn: "+localUserStore.user.userId)
-            userController.getUserById(localUserStore.user.userId);
+        authenticator: localAuthenticator
+        stores: [
+            Auth.TokenStore {
+                id: myTokenStore
+                onSaved: {
+                    userStore.restore();
+                    userController.getUserById(userStore.user.userId);
+                }
+            }
+        ]
+    }
+
+    Auth.LocalUserAuthentication {
+        id: localAuthenticator
+        refreshToken: myTokenStore.refresh
+        onTokenExpired: {
+            print("Token is expired");
+            stackView.replace(mainPage, {user: userController.create({})});
         }
     }
 
+    LocalUserStore {
+        id: userStore
+    }
+
     function loginSetup() {
-        print("user has previoues login: "+login.hasPreviousLogin);
-        if (login.hasPreviousLogin) {
+        if (myTokenStore.refresh) {
             print("Previous login found.")
             print("Authentication refresh token.")
-            login.authenticateRefreshToken();
+            login.authenticate();
         } else {
             stackView.replace(mainPage, {user: userController.create({})});
         }
