@@ -1,7 +1,6 @@
 #ifndef USERENTITY_H
 #define USERENTITY_H
 
-#include "../salesperson/salesperson.h"
 #include <QObject>
 #include <QQmlEngine>
 
@@ -21,12 +20,11 @@ class UserEntity
     Q_PROPERTY(bool isSalesperson READ isSalesperson)
     Q_PROPERTY(bool isAdmin READ isAdmin)
     Q_PROPERTY(bool isCustomer READ isCustomer)
-    Q_PROPERTY(Entity::Salesperson salesperson READ salesperson WRITE setSalesperson FINAL)
     Q_PROPERTY(int salespersonId READ salespersonId WRITE setSalespersonId FINAL)
 
 public:
     using UserId = int;
-    using SalespersonId = Entity::Salesperson::SalespersonId;
+    using SalespersonId = int;
 
     enum class UserTypes
     {
@@ -74,14 +72,11 @@ public:
     QString refreshToken() const;
     void setRefreshToken(const QString &newRefreshToken);
 
-    Entity::Salesperson salesperson() const;
-    void setSalesperson(const Entity::Salesperson &newSalesperson);
+    QString accessToken() const;
+    void setAccessToken(const QString &newAccessToken);
 
     SalespersonId salespersonId() const;
     void setSalespersonId(SalespersonId newSalespersonId);
-
-    QString accessToken() const;
-    void setAccessToken(const QString &newAccessToken);
 
 private:
     QString username_;
@@ -95,10 +90,6 @@ private:
     SalespersonId salespersonId_;
 
     UserTypes userType_;
-
-    QString refreshToken_;
-    QString accessToken_;
-    Entity::Salesperson salesperson_;
 };
 }
 

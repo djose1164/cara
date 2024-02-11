@@ -5,23 +5,23 @@
 namespace Entity {
 UserEntity UserEntity::fromJson(const QByteArray &data)
 {
-//    const auto contact{Contact::fromMap(contactDoc.toJson())};
-    const auto map{QJsonDocument::fromJson(data).object()};
-    UserEntity user{};
-    const auto contactDoc{map["contact"].toObject()};
+    const auto dataJson{QJsonDocument::fromJson(data)};
+    const auto dataObj{dataJson.object()};
+    const auto userObj{dataObj["user"].toObject()};
+    const auto contactDoc{userObj["contact"].toObject()};
 
+    UserEntity user{};
     user.setForename(contactDoc["forename"].toString());
     user.setSurname(contactDoc["surname"].toString());
-    user.setCustomerId(map["customer_id"].toInt());
-    user.setUserType(static_cast<UserTypes>(map["user_type_id"].toInt()));
-    user.setUserId(map["id"].toInt());
-    user.setUsername(map["username"].toString());
-    user.setCustomerId(map["customer_id"].toInt());
+    user.setCustomerId(userObj["customer_id"].toInt());
+    user.setUserType(static_cast<UserTypes>(userObj["user_type_id"].toInt()));
+    user.setUserId(userObj["id"].toInt());
+    user.setUsername(userObj["username"].toString());
+    user.setCustomerId(userObj["customer_id"].toInt());
 
-    const auto salespersonData{QJsonDocument(map["salesperson"].toObject())};
+    const auto salespersonData{QJsonDocument(userObj["salesperson"].toObject())};
     user.setSalespersonId(salespersonData["id"].toInt());
 
-    user.setSalesperson(Salesperson::fromJson(salespersonData.toJson()));
     return user;
 }
 
@@ -33,9 +33,6 @@ UserEntity::UserEntity()
     , customerId_{}
     , userId_{}
     , userType_{UserTypes::Guest}
-    , refreshToken_{}
-    , accessToken_{}
-    , salesperson_{}
 {
 
 }
@@ -162,26 +159,6 @@ void UserEntity::clear()
     setUserType(UserTypes::Guest);
 }
 
-QString UserEntity::refreshToken() const
-{
-    return refreshToken_;
-}
-
-void UserEntity::setRefreshToken(const QString &newRefreshToken)
-{
-    refreshToken_ = newRefreshToken;
-}
-
-Salesperson UserEntity::salesperson() const
-{
-    return salesperson_;
-}
-
-void UserEntity::setSalesperson(const Salesperson &newSalesperson)
-{
-    salesperson_ = newSalesperson;
-}
-
 int UserEntity::salespersonId() const
 {
     return salespersonId_;
@@ -192,15 +169,5 @@ void UserEntity::setSalespersonId(int newSalespersonId)
     if (salespersonId_ == newSalespersonId)
         return;
     salespersonId_ = newSalespersonId;
-}
-
-QString UserEntity::accessToken() const
-{
-    return accessToken_;
-}
-
-void UserEntity::setAccessToken(const QString &newAccessToken)
-{
-    accessToken_ = newAccessToken;
 }
 }
