@@ -1,5 +1,4 @@
 #include "usersession.h"
-#include "associatesalespersonservice.h"
 #include "localuserstore.h"
 #include <QJsonDocument>
 #include <QJsonObject>
@@ -34,23 +33,8 @@ void UserSession::buildUser(const QByteArray &data)
 void UserSession::update()
 {
     qDebug() << "UserSession::update: updating...";
-    const Business::LocalUserStore userStore{};
-    Q_ASSERT(int(userStore.user().userType()));
-    qDebug() << "  " << userStore.user().userType() << " " << userStore.user().username();
+    const User::Data::LocalUserStore userStore{};
 
-    setUser(userStore.user());
-    if (user_.isSalesperson())
-    {
-        const auto salespersonService{new Salesperson::AssociateSalespersonService};
-        salespersonService->fetchAssociateSalespersonById(user_.userId());
-        connect(salespersonService, &Salesperson::AssociateSalespersonService::fetched, this, [=, this] {
-            const QJsonDocument doc{QJsonDocument::fromJson(salespersonService->data())};
-            Entity::Salesperson::fromMap(doc.object().toVariantMap());
-
-            salespersonService->deleteLater();
-        });
-    }
-    qDebug() << "UserSession::update: " << user_.userType();
 }
 
 void UserSession::clear()
