@@ -20,7 +20,7 @@ Page {
             text: "Guardar"
         }
     }
-    Component.onCompleted: spController.getSalespersonById(userStore.user.salespersonId)
+    Component.onCompleted: spController.getSalespersonById(SalespersonSettings.salespersonId)
 
     ScrollView {
         anchors.fill: parent

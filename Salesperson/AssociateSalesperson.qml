@@ -9,7 +9,7 @@ Page {
     required property var user
 
     readonly property int adminId: user.userId
-    readonly property int salespersonId: user.salespersonId
+    readonly property int salespersonId: SalespersonSettings.salespersonId
 
     readonly property StackView stackView: StackView.view
 

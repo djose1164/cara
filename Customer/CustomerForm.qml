@@ -3,6 +3,7 @@ import QtQuick.Controls
 import QtQuick.Layouts
 import QtQuick.Dialogs
 import User
+import Salesperson
 import "qrc:/utils"
 import Customer
 import "qrc:/main"
@@ -90,7 +91,7 @@ Page {
             Object.assign(contact, contactForm.contact);
             const client = {
                 "contact": contact,
-                "salesperson_id": userStore.user.salespersonId
+                "salesperson_id": SalespersonSettings.salespersonId
             };
 
             clientRequest.create(client);
