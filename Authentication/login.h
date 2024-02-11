@@ -66,25 +66,15 @@ signals:
 
     void statusChanged();
 
-    void dataSaved();
-
-    void storeChanged();
-
     void modeChanged();
 
     void authenticatorChanged();
-
-    void tokenStoreChanged();
 
 public slots:
     void authenticate();
 
 private slots:
     void userAuthenticated(const QByteArray &data);
-
-private:
-    void authConnections() const;
-    void storeConnections(const Store::IStore *store) const;
 
 private:
     Status status_;

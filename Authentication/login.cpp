@@ -16,7 +16,7 @@ Login::Login(QObject *parent)
     , authenticator_{}
     , stores_{}
 {
-    connect(this, &Login::authenticated, this, &Login::userAuthenticated);
+    // connect(this, &Login::authenticated, this, &Login::userAuthenticated);
 }
 
 void Login::authenticate()
@@ -26,28 +26,10 @@ void Login::authenticate()
 
 void Login::userAuthenticated(const QByteArray &data)
 {
-    qDebug() << "Login::userAuthenticated: Saving...";
+    qDebug() << "\nLogin::userAuthenticated: Saving...";
 
     for (const auto &store : std::as_const(stores_))
         store->save(data);
-}
-
-void Login::authConnections() const
-{
-    connect(authenticator_, &Authentication::errorOccurred,
-            this, &Login::errorOccurred);
-    connect(authenticator_, &Authentication::succeeded,
-            this, &Login::authenticated);
-    connect(authenticator_, &Business::Authentication::tokenReady, this, [&](const QString &token) {
-        TokenManager::instance()->setAccessToken("Bearer "_L1 + token);
-        Utils::NetworkRequestSingleton::instance().api()->setBearerToken(token.toUtf8());
-    });
-}
-
-void Login::storeConnections(const Store::IStore *store) const
-{
-    connect(store, &Store::IStore::saved,
-            this, &Login::dataSaved);
 }
 
 QQmlListProperty<Store::IStore> Login::stores()
@@ -65,7 +47,6 @@ void Login::setAuthenticator(Authentication *newAuthenticator)
     if (authenticator_ == newAuthenticator)
         return;
     authenticator_ = newAuthenticator;
-    authConnections();
     emit authenticatorChanged();
 }
 
@@ -101,8 +82,13 @@ void Login::classBegin()
 
 void Login::componentComplete()
 {
-    authConnections();
-    for (const auto &store : std::as_const(stores_))
-        storeConnections(store);
+    connect(authenticator_, &Authentication::errorOccurred,
+            this, &Login::errorOccurred);
+    connect(authenticator_, &Authentication::succeeded,
+            this, &Login::userAuthenticated);
+    connect(authenticator_, &Business::Authentication::tokenReady, this, [&](const QString &token) {
+        TokenManager::instance()->setAccessToken("Bearer "_L1 + token);
+        Utils::NetworkRequestSingleton::instance().api()->setBearerToken(token.toUtf8());
+    });
 }
 }
