@@ -3,7 +3,7 @@ import QtQuick.Controls
 import QtQuick.Layouts
 import "qrc:/utils"
 import "qrc:/singleton"
-
+import Salesperson
 import User
 
 Drawer {
@@ -78,6 +78,8 @@ Drawer {
             visible: !isGuest
             onClicked: {
                 close();
+                UserSettings.clear();
+                SalespersonSettings.clear();
                 LoginManager.logOut();
             }
         }

@@ -93,6 +93,8 @@ void TokenManager::clear()
 {
     accessToken_.clear();
     refreshToken_.clear();
+    QSettings settings{};
+    settings.remove("Credentails");
 }
 
 void TokenManager::replyReady()

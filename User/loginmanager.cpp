@@ -44,8 +44,6 @@ void LoginManager::logOut()
     emit loggingOut();
     setStatus(Status::LoggedOut);
 
-    userService_->clear();
-
     const auto manager{Authentication::Business::TokenManager::instance()};
     manager->clear();
     emit loggedOut();
