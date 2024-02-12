@@ -43,6 +43,7 @@ signals:
 public slots:
     void insert(int index, const QJsonObject &data);
     void append(const QJsonObject &data);
+    void clear();
 
     /**
      * @brief set Clear the model & set the data.

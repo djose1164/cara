@@ -70,6 +70,13 @@ void CustomerModel::append(const QJsonObject &data)
     insert(count(), data);
 }
 
+void CustomerModel::clear()
+{
+    beginResetModel();
+    data_.clear();
+    endResetModel();
+}
+
 void CustomerModel::set(const QJsonArray &data)
 {
     beginResetModel();
