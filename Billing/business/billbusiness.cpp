@@ -43,19 +43,23 @@ void BillBusiness::fetchBillsByCustomerId(int customerId)
 
     connect(repository, &DataLayer::BillRepository::billsFetched, this, [&](const QByteArray &data) {
         const auto resp{QJsonDocument::fromJson(data).object()};
-        const auto orders{resp["orders"].toArray()};
-
-        if (orders.isEmpty())
+        const auto ordersValue{resp["orders"]};
+        if (!ordersValue.isArray())
         {
             emit ordersNotFound();
             return;
         }
+
         const auto ordersArr = resp["orders"].toArray();
-        for (const auto &order : ordersArr)
+        if (ordersArr.isEmpty())
+        {
+            emit ordersNotFound();
+            return;
+        }
+
+        for (const auto &order : std::as_const(ordersArr))
         {
             const auto orderMap{order.toVariant().toMap()};
-            Q_ASSERT(!orderMap.isEmpty());
-
             model_->append(Entity::Bill::fromMap(orderMap));
         }
         emit populated();

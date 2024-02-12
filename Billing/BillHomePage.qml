@@ -43,7 +43,6 @@ Page {
         },
         State {
             name: "noOrders"
-            when: listView.count === 0
             PropertyChanges {
                 target: busyIndicator
                 visible: false
@@ -116,6 +115,7 @@ Page {
     BillBusiness {
         id: billBusiness
         model: billModel
+        onOrdersNotFound: root.state = "noOrders"
     }
 
     BillFilterPopup {
