@@ -143,6 +143,7 @@ Item {
             internal.saveSalespersonSettings(data);
             const user = userController.create(data);
             busyIndicator.close();
+            UserSettings.setEntity(user);
             stackView.replace(internal.mainPage, {user});
         }
     }

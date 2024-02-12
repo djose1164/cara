@@ -1,25 +1,45 @@
+pragma Singleton
+
 import QtCore
-import QtQuick
+import User
 
-QtObject {
-    readonly property string forename: _.fromContact("forename")
-    readonly property string surname: _.fromContact("surname")
-    readonly property string email: _.fromContact("email")
+Settings {
+    id: root
 
-    readonly property string username: _.fromCredentials("username")
-    readonly property string accessToken: _.fromCredentials("accessToken")
-    readonly property int userId: _.fromCredentials("userId")
-    readonly property int userTypeId: _.fromCredentials("userTypeId")
+    property string forename
+    property string surname
+    property string email
+    property string username
+    property int userId
+    property int userTypeId
 
-    readonly property QtObject _: QtObject {
-        readonly property Settings settings: Settings {}
+    category: "User"
 
-        function fromCredentials(key: string): string {
-            return settings.value("Credentials/"+key);
+    function entity(): user {
+        return {
+            username,
+            forename,
+            surname,
+            userId,
+            userType: userTypeId
         }
+    }
 
-        function fromContact(key: string): string {
-            return settings.value("Contact/"+key);
-        }
+    function setEntity(newUser: user) {
+        root.forename = newUser.forename;
+        root.surname = newUser.surname;
+        root.email = newUser.email;
+        root.username = newUser.username;
+        root.userId = newUser.userId;
+        root.userTypeId = newUser.userType;
+    }
+
+    function clear() {
+        root.forename = "";
+        root.surname = "";
+        root.username = "";
+        root.email = "";
+        root.userId = 0;
+        root.userTypeId = 0;
     }
 }
