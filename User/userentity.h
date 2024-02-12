@@ -10,8 +10,10 @@ class UserEntity
 {
     Q_GADGET
     QML_VALUE_TYPE(user)
+    QML_STRUCTURED_VALUE
     Q_PROPERTY(QString username READ username WRITE setUsername FINAL)
     Q_PROPERTY(QString password READ password WRITE setPassword FINAL)
+    Q_PROPERTY(QString email READ email WRITE setEmail FINAL)
     Q_PROPERTY(QString forename READ forename WRITE setForename FINAL)
     Q_PROPERTY(QString surname READ surname WRITE setSurname FINAL)
     Q_PROPERTY(int customerId READ customerId WRITE setCustomerId FINAL)
@@ -29,7 +31,7 @@ public:
     enum class UserTypes
     {
         Guest,
-        Admin = 1,
+        Admin,
         Customer,
         Salesperson,
     };
@@ -78,9 +80,13 @@ public:
     SalespersonId salespersonId() const;
     void setSalespersonId(SalespersonId newSalespersonId);
 
+    QString email() const;
+    void setEmail(const QString &newEmail);
+
 private:
     QString username_;
     QString password_;
+    QString email_;
 
     QString forename_;
     QString surname_;

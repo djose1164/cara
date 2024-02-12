@@ -13,10 +13,13 @@ UserEntity UserEntity::fromJson(const QByteArray &data)
     UserEntity user{};
     user.setForename(contactDoc["forename"].toString());
     user.setSurname(contactDoc["surname"].toString());
+    user.setEmail(contactDoc["email"].toString());
     user.setCustomerId(userObj["customer_id"].toInt());
     user.setUserType(static_cast<UserTypes>(userObj["user_type_id"].toInt()));
     user.setUserId(userObj["id"].toInt());
     user.setUsername(userObj["username"].toString());
+    qDebug() << "UserEntity::fromJson: " << user.username();
+    Q_ASSERT(user.username().isEmpty() == false);
     user.setCustomerId(userObj["customer_id"].toInt());
 
     const auto salespersonData{QJsonDocument(userObj["salesperson"].toObject())};
@@ -169,5 +172,17 @@ void UserEntity::setSalespersonId(int newSalespersonId)
     if (salespersonId_ == newSalespersonId)
         return;
     salespersonId_ = newSalespersonId;
+}
+
+QString UserEntity::email() const
+{
+    return email_;
+}
+
+void UserEntity::setEmail(const QString &newEmail)
+{
+    if (email_ == newEmail)
+        return;
+    email_ = newEmail;
 }
 }
