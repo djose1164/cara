@@ -10,10 +10,8 @@ import "qrc:/singleton"
 Home {
     id: root
 
-    readonly property LocalUserStore userStore: LocalUserStore {}
-
     Component.onCompleted: {
-        if (userStore.user.userType !== UserEntity.Admin) {
+        if (UserSettings.userTypeId !== UserEntity.Admin) {
             for (let i = 0; i < model.count; ++i)
                 if (model.get(i).name === "Vendedor Asociado")
                     model.remove(i);
@@ -95,11 +93,11 @@ Home {
                 TapHandler {
                     onTapped: {
                         if (needUser)
-                            homeStack.push(path, {user: userStore.user});
+                            homeStack.push(path, {user: UserSettings.entity()});
                         else if (showCustomers)
                             homeStack.push(path, {salespersonId: SalespersonSettings.salespersonId});
                         else if (admin)
-                            homeStack.push(path, {adminId: userStore.user.userId});
+                            homeStack.push(path, {adminId: UserSettings.userId});
                         else
                             homeStack.push(path);
                     }
@@ -115,10 +113,6 @@ Home {
             }
         }
         }
-    }
-
-    LocalUserStore {
-        id: userStore
     }
 
     ListModel {
