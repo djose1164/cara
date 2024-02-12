@@ -23,6 +23,7 @@ qt_add_qml_module(ProductLib
         ProductView.qml
         StockPopup.qml
         ProductForm.qml
+        ProductManager.qml
     SOURCES
         business/costcalculator.h business/costcalculator.cpp
 )
