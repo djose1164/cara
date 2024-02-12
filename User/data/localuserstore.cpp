@@ -18,7 +18,6 @@ void LocalUserStore::save(const QByteArray &data)
 {
     qDebug() << "LocalUserStore::save: saving...";
     const auto obj{QJsonDocument::fromJson(data).object()};
-    const auto userJson{QJsonDocument::fromVariant(obj["user"].toVariant()).toJson()};
     const auto salespersonObj{obj["user"]["salesperson"]};
 
     setUser(Entity::UserEntity::fromJson(data));
