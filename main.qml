@@ -54,6 +54,7 @@ ApplicationWindow {
         onFetched: function(resp) {
             const user = userController.create(resp);
             print("Replacing appStack with MainPage");
+            UserSettings.setEntity(user);
             stackView.replace(mainPage, {user});
         }
     }
@@ -102,7 +103,13 @@ ApplicationWindow {
                 id: myTokenStore
                 onSaved: {
                     userStore.restore();
-                    userController.getUserById(userStore.user.userId);
+                    const userId = userStore.user.userId;
+                    if (userId === 0) {
+                        stackView.replace(mainPage, {user: userController.create({})});
+                        return;
+                    }
+
+                    userController.getUserById(userId);
                 }
             }
         ]
