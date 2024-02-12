@@ -9,8 +9,6 @@ Page {
     id: root
 
     readonly property StackView stackView: StackView.view
-    readonly property var user: userStore.user
-    property var salesperson
 
     title: "Perfil"
     header: TitleHeader {
@@ -20,7 +18,6 @@ Page {
             text: "Guardar"
         }
     }
-    Component.onCompleted: spController.getSalespersonById(SalespersonSettings.salespersonId)
 
     ScrollView {
         anchors.fill: parent
@@ -36,7 +33,7 @@ Page {
 
             TextField {
                 id: nameField
-                text: user.forename
+                text: UserSettings.forename
                 Layout.fillWidth: true
             }
 
@@ -46,7 +43,7 @@ Page {
 
             TextField {
                 id: lastNameField
-                text: user.surname
+                text: UserSettings.surname
                 Layout.fillWidth: true
             }
 
@@ -56,7 +53,7 @@ Page {
 
             TextField {
                 id: emailField
-                text: user.email
+                text: UserSettings.email
                 Layout.fillWidth: true
             }
 
@@ -84,29 +81,20 @@ Page {
 
                     TextField {
                         placeholderText: "Disponible"
-                        text: salesperson.creditAvailable
+                        text: SalespersonSettings.creditAvailable
                     }
 
                     TextField {
                         placeholderText: "Consumido"
-                        text: salesperson.creditConsumed
+                        text: SalespersonSettings.creditConsumed
                     }
 
                     TextField {
                         placeholderText: "Limite"
-                        text: salesperson.creditLimit
+                        text: SalespersonSettings.creditLimit
                     }
                 }
             }
         }
-    }
-
-    LocalUserStore {
-        id: userStore
-    }
-
-    SalespersonController {
-        id: spController
-        onFetched: sp => root.salesperson = sp
     }
 }
