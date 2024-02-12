@@ -29,7 +29,7 @@ QNetworkReply *Refresher::refresh()
     }
 
     QNetworkRequest request(api_->createRequest("users/refresh/"_L1));
-    request.setRawHeader("Authorization", refreshToken_.toUtf8());
+    request.setRawHeader("Authorization", "Bearer "_ba + refreshToken_.toUtf8());
 
     return manager_->get(request);
 }

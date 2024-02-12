@@ -24,7 +24,7 @@ TokenManager::TokenManager(QObject *parent)
     , tokenStore_{new Data::TokenStore(this)}
     , refresher_{new Data::Refresher(this)}
     , token_{&Utils::NetworkRequestSingleton::instance()}
-{    
+{
     timer_->start(840'000);
     connect(timer_, &QTimer::timeout, this, &TokenManager::timeout);
 }
@@ -122,7 +122,11 @@ void TokenManager::timeout()
 {
     try
     {
+        Data::TokenStore ts{};
+        ts.restore();
+        setRefreshToken(ts.refresh());
         refresher_->setRefreshToken(refreshToken_);
+
         reply_ = refresher_->refresh();
 
         connect(reply_, &QNetworkReply::finished, this, &TokenManager::replyReady);
