@@ -27,9 +27,11 @@ RowLayout {
     onEntryValueChanged: updated(index, entryValue)
 
     width: ListView.view.width
+    Component.onCompleted: if (ProductManager.modelIsEmpty()) productRequest.addSuggetionsToModel()
 
     ProductComboBox {
         id: productField
+        model: ProductManager.model
         Layout.fillWidth: true
         Layout.preferredHeight: 50
     }
@@ -51,6 +53,11 @@ RowLayout {
             source: "qrc:/icons/trash-can-outline.svg"
         }
         flat: true
+    }
+
+    ProductRequest {
+        id: productRequest
+        onSucceeded: products => products.forEach(e => ProductManager.modelAppend(e))
     }
 
     function find(criteria) {

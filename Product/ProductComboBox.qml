@@ -11,18 +11,11 @@ ComboBox {
     }
 
     property int valueRoleType: ProductComboBox.SellPrice
-    Component.onCompleted: if (ProductManager.modelIsEmpty()) productRequest.addSuggetionsToModel()
 
-    model: ProductManager.model
     textRole: "name"
     valueRole: getValueRole()
     currentIndex: -1
     displayText: currentIndex === -1 ? "Seleccionar Producto" : currentText
-
-    ProductRequest {
-        id: productRequest
-        onSucceeded: products => products.forEach(e => ProductManager.modelAppend(e))
-    }
 
     function getValueRole(): string {
         switch (valueRoleType) {
