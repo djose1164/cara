@@ -19,7 +19,7 @@ InventoryRepository::InventoryRepository(QObject *parent)
     : Business::IInventoryRepository{parent}
     , manager_{new QNetworkAccessManager(this)}
     , reply_{}
-    , path_{"inventory"_L1}
+    , path_{"inventory/"_L1}
     , api_{Utils::NetworkRequestSingleton::instance().api()}
 {
 
