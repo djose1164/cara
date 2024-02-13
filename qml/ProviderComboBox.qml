@@ -15,6 +15,6 @@ ComboBox {
 
     ProviderAPI {
         id: providerApi
-        onProvidersFetched: providers => providersModel.append(providers)
+        onProvidersFetched: providers => providers.forEach(e => providersModel.append(e))
     }
 }
