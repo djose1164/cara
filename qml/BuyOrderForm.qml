@@ -67,7 +67,6 @@ Drawer {
 
             ProviderComboBox {
                 id: providerComboBox
-                visible: root.user.userType === UserEntity.Salesperson
                 Layout.fillWidth: true
             }
 
