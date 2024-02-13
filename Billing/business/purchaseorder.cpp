@@ -5,7 +5,7 @@
 
 #define checkError(reply)                                                      \
     do {                                                                       \
-        if (!(reply)->isSuccess())                                              \
+        if (!(reply)->isSuccess())                                             \
         {                                                                      \
             emit errorOccurred((reply)->errorString());                        \
             return;                                                            \
