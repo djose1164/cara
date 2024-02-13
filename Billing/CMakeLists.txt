@@ -32,6 +32,7 @@ qt_add_qml_module(BillingLib
         business/orderrepository.h business/orderrepository.cpp
         business/pay.h business/pay.cpp
         business/paymentcontroller.h business/paymentcontroller.cpp
+        business/purchaseorder.h business/purchaseorder.cpp
         data/paymentresource.h data/paymentresource.cpp
         data/restorderrepository.h data/restorderrepository.cpp
         entity/bill.h entity/bill.cpp
@@ -43,7 +44,6 @@ qt_add_qml_module(BillingLib
         model/ordermodel.h model/ordermodel.cpp
     DEPENDENCIES
         QtQuick UtilsLib Entities
-        SOURCES business/purchaseorder.h business/purchaseorder.cpp
 )
 
 target_include_directories(BillingLib
