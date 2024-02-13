@@ -145,7 +145,6 @@ Page {
     AssociateSalespersonService {
         id: spService
         salespersonId: SalespersonSettings.salespersonId
-        onFetched: CustomerManager.addCustomer(JSON.parse(data).customers)
     }
 
     function updateViews(): void {
