@@ -32,11 +32,7 @@ ApplicationWindow {
         }
     }
 
-    Component.onCompleted: {
-        LoginManager.session = UserSession.session;
-        myTokenStore.restore();
-        caraApi.checkStatus();
-    }
+    Component.onCompleted: setup()
 
     StackView {
         id: stackView
@@ -56,14 +52,6 @@ ApplicationWindow {
             print("Replacing appStack with MainPage");
             UserSettings.setEntity(user);
             stackView.replace(mainPage, {user});
-        }
-    }
-
-    Connections {
-        target: LoginManager
-
-        function onAuthenticationDone() {
-            stackView.replace(mainPage, {user: userController.createEmpty()});
         }
     }
 
@@ -102,8 +90,7 @@ ApplicationWindow {
             Auth.TokenStore {
                 id: myTokenStore
                 onSaved: {
-                    userStore.restore();
-                    const userId = userStore.user.userId;
+                    const userId = UserSettings.userId;
                     if (userId === 0) {
                         stackView.replace(mainPage, {user: userController.create({})});
                         return;
@@ -124,8 +111,10 @@ ApplicationWindow {
         }
     }
 
-    LocalUserStore {
-        id: userStore
+    function setup() {
+        LoginManager.session = UserSession.session;
+        myTokenStore.restore();
+        caraApi.checkStatus();
     }
 
     function loginSetup() {
