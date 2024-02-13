@@ -6,12 +6,12 @@ ToolBar {
     id: root
     required property StackView stackView
 
+    signal acceptedText(text: string)
+
     background: Rectangle {
         anchors.fill: parent
         color: "floralwhite"
     }
-
-    signal acceptedText(text: string)
 
     RowLayout {
         anchors.fill: parent
@@ -19,11 +19,8 @@ ToolBar {
 
         ToolButton {
             id: settingBtn
-            background: Image {
-                source: "qrc:/icons/menu-burger.svg"
-                antialiasing: false
-                sourceSize: iconSize
-            }
+            icon.source: "qrc:/icons/menu-burger.svg"
+            icon.color: "black"
             onClicked: sideMenu.open()
             Layout.alignment: Qt.AlignLeft
             Layout.leftMargin: 5
