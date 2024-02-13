@@ -25,7 +25,16 @@ Item {
                 target: headerItem
                 state: "disabled"
             }
+        },
+        State {
+            name: "contentNotFound"
+            when: CustomerManager.state === "contentNotFound"
+            PropertyChanges {
+                target: errorPane
+                visible: true
+            }
         }
+
     ]
 
     //customerModel.onUpdated: busyIndicator.visible = false;
@@ -53,14 +62,15 @@ Item {
             anchors.centerIn: parent
             running: CustomerManager.state === "fetching"
         }
+    }
 
-        Label {
-            width: listView.width
-            anchors.verticalCenter: parent.verticalCenter
-            horizontalAlignment: Label.AlignHCenter
-            visible: listView.count === 0 && busyIndicator.visible === false
-            text: "Aun no tienes ningun cliente registrado"
-        }
+    MessagePane {
+        id: errorPane
+        visible: false
+        width: root.width * .8
+        height: root.height/2
+        anchors.centerIn: parent
+        text: "Aun no tienes ningun cliente registrado"
     }
 
     CustomerProxyModel {

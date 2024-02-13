@@ -21,6 +21,7 @@ Item {
             id: customerRepository
             path: "customers"
             onFetched: resp => model.set(JSON.parse(resp).customers)
+            onContentNotFound: root.state = "contentNotFound"
         }
     }
 
