@@ -7,6 +7,7 @@ qt_add_qml_module(InventoryLib
         ProductSelector.qml
         ProductSelectorDelegate.qml
         SelectedProducts.qml
+        ProductViewItem.qml
     SOURCES
         iinventoryrepository.h iinventoryrepository.cpp
         inventoryrepository.h inventoryrepository.cpp
