@@ -26,4 +26,5 @@ qt_add_qml_module(UtilsLib
         SearchButton.qml
         SearchField.qml
         SearchPage.qml
+        MessagePane.qml
 )

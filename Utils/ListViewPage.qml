@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Templates as T
+import Utils
 
 Page {
     id: root
@@ -38,31 +39,13 @@ Page {
         anchors.fill: parent
     }
 
-    Pane {
+    MessagePane {
         id: errorPane
+        visible: false
         width: root.width * .8
         height: root.height/2
         anchors.centerIn: parent
-        visible: false
-        Material.elevation: 6
-
-        Column {
-            anchors.fill: parent
-            spacing: 14
-            IconImage {
-                anchors.horizontalCenter: parent.horizontalCenter
-                source: "qrc:/icons/warning.svg"
-                sourceSize: "96x96"
-            }
-            Label {
-                width: errorPane.width * .8
-                anchors.horizontalCenter: parent.horizontalCenter
-                wrapMode: Label.Wrap
-                text: noDataMessage
-                font.pointSize: 14
-                font.bold: true
-            }
-        }
+        text: noDataMessage
     }
 
     BusyIndicator {
