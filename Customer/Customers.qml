@@ -94,8 +94,6 @@ ListViewPage {
         }
     }
 
-    LocalUserStore { id: userStore }
-
     RoundButton {
         anchors {
             right: parent.right
@@ -103,11 +101,10 @@ ListViewPage {
             bottom: parent.bottom
             bottomMargin: 15
         }
-        visible: userStore.user.isSalesperson || userStore.user.isAdmin
         icon.source: "qrc:/icons/person_add.svg"
         icon.width: 30
         icon.height: 30
-        onClicked: stackView.push("qrc:qt/qml/Customers/CustomerForm.qml")
+        onClicked: stackView.push("qrc:qt/qml/Customer/CustomerForm.qml")
     }
 
     CustomerEdit {
