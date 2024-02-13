@@ -12,6 +12,7 @@ Settings {
     property string username
     property int userId
     property int userTypeId
+    property int customerId
 
     category: "User"
 
@@ -21,7 +22,8 @@ Settings {
             forename,
             surname,
             userId,
-            userType: userTypeId
+            userType: userTypeId,
+            customerId
         }
     }
 
@@ -32,6 +34,7 @@ Settings {
         root.username = newUser.username;
         root.userId = newUser.userId;
         root.userTypeId = newUser.userType;
+        root.customerId = newUser.customerId;
     }
 
     function clear() {
