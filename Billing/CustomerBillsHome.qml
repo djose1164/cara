@@ -4,9 +4,6 @@ import User
 
 BillHomePage {
     header: null
-    customerId: userStore.user.customerId
+    customerId: UserSettings.customerId
     stackView: billStack
-    Component.onCompleted: print("customerId "+customerId)
-
-    LocalUserStore { id: userStore }
 }
