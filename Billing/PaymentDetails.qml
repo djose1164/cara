@@ -36,7 +36,7 @@ Item {
             when: payment_.status === Payment.Unpaid
             PropertyChanges {
                 target: label
-                title: "Deduda"
+                title: "Deuda"
                 content: `RD$${internal.debt}`
             }
             PropertyChanges {
