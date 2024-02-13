@@ -6,6 +6,7 @@ import QtQuick.Templates as T
 import Salesperson
 import User
 import Billing
+import Utils
 import "qrc:/utils"
 import "qrc:/orders"
 import "qrc:/singleton"
@@ -24,7 +25,7 @@ Page {
 
     Component.onCompleted: {
         spController.readSalesperson();
-        api.fetchBuyOrders();
+        purchaseOrder.fetchOrders();
     }
 
     BuyOrderView {
@@ -61,7 +62,7 @@ Page {
         onAccepted: {
             if (root.salesperson.salespersonType === Salesperson.Administrator)
             {
-                api.createBuyOrder(buyOrder);
+                purchaseOrder.placeOrder(buyOrder);
                 return;
             }
 
@@ -76,38 +77,19 @@ Page {
         }
     }
 
-    BuyOrderAPI {
-        id: api
-        salespersonId: SalespersonSettings.salespersonId
-        onBuyOrdersFetched: orders => orders.forEach(e => listModel.append(e))
-        onBuyOrderCreated: function(resp) {
-            listModel.append(resp.buy_order);
-            if (root.salesperson.salespersonType === Salesperson.Administrator) {
-                dialog.text = "Orden de compra creada con exito!";
-                dialog.open();
-                return;
-            }
-
-            const totalAmount = buyOrderForm.totalAmount;
-            root.salesperson.creditAvailable -= totalAmount;
-            root.salesperson.creditConsumed += totalAmount;
-
-            dialog.text = "Orden de compra creada con exito!";
-            dialog.informativeText = `En esta compra has consumido RD$${totalAmount} creditos. Ahora cuentas con RD$${salesperson.creditAvailable} creditos disponibles.`;
-            dialog.open();
-
-            buyOrderForm.close();
-        }
-        onFailed: function(resp) {
-            dialog.text = "Error al realizar Orden de Compra";
-            dialog.informativeText = resp.message;
-            dialog.open();
+    RestService {
+        PurchaseOrder {
+            id: purchaseOrder
+            path: `salespersons/${SalespersonSettings.salespersonId}/buy_orders`
+            onOrdersFetched: resp => ordersReady(resp)
+            onOrderPlaced: resp => orderPlacedHandler(resp)
+            onErrorOccurred: err => errorOccurredHandler(err)
         }
     }
 
     SalespersonController {
         id: spController
-        adminId: userStore.user.userId
+        adminId: UserSettings.userId
         salespersonId: SalespersonSettings.salespersonId
     }
 
@@ -116,5 +98,38 @@ Page {
         onButtonClicked: close()
     }
 
-    LocalUserStore { id: userStore }
+    function ordersReady(resp) {
+        print("ordersReady: ", typeof resp);
+        const buyOrders = JSON.parse(resp).buy_orders;
+        listModel.append(buyOrders);
+    }
+
+    function orderPlacedHandler(resp) {
+        const buyOrder = JSON.parse(resp).buy_order;
+        listModel.append(buyOrder);
+
+        if (root.salesperson.salespersonType === Salesperson.Administrator) {
+            dialog.text = "Orden de compra creada con exito!";
+            dialog.open();
+            return;
+        }
+
+        const totalAmount = buyOrderForm.totalAmount;
+        root.salesperson.creditAvailable -= totalAmount;
+        root.salesperson.creditConsumed += totalAmount;
+
+        dialog.text = "Orden de compra creada con exito!";
+        dialog.informativeText = `En esta compra has consumido RD$${totalAmount} creditos. Ahora cuentas con RD$${salesperson.creditAvailable} creditos disponibles.`;
+        dialog.open();
+
+        buyOrderForm.close();
+    }
+
+    function errorOccurredHandler(err) {
+        print("err: ", err);
+        print("err: ", JSON.stringify(err));
+        dialog.text = "Error al realizar Orden de Compra";
+        dialog.informativeText = err;
+        dialog.open();
+    }
 }
