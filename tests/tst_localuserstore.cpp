@@ -1,6 +1,7 @@
-#include "user/localuserstore.h"
-#include "authentication/login.h"
-#include "user/service/userserviceimpl.h"
+#include "Authentication/data/restuserauthentication.h"
+#include "Authentication/entity/credential.h"
+#include "Authentication/login.h"
+#include "User/data/localuserstore.h"
 #include <QTest>
 #include <QSignalSpy>
 #include <QJsonDocument>
@@ -14,7 +15,7 @@ public:
 
 private slots:
     void initTestCase();
-    void init();
+    void init() const;
 
     void test_shouldReturnTrueIfHasUser() const;
     void test_shouldReturnFalseIfDoesntHaveUser() const;
@@ -35,23 +36,31 @@ void TestLocalUserStore::initTestCase()
     QCoreApplication::setApplicationName("CaraTesting");
 }
 
-void TestLocalUserStore::init()
+void TestLocalUserStore::init() const
 {
-    Business::Login login{};
-    login.setUsername("josevictoriano");
-    login.setPassword("2077120");
+    Authentication::Business::Login login{};
+    QSignalSpy spy{&login, &Authentication::Business::Login::authenticated};
 
-    Business::LocalUserStore userStore{};
-    QSignalSpy spy{&login, SIGNAL(authenticated(void))};
-    login.setUserStore(&userStore);
+    QVERIFY(spy.isValid());
 
-    login.authenticateCredentials();
+    Authentication::Data::RestUserAuthentication restAuthenticator{};
+    Authentication::Entity::Credential credentials{};
+    credentials.setUsername("josevictoriano");
+    credentials.setPassword("2077120");
+    restAuthenticator.setCredentials(credentials);
+    login.setAuthenticator(&restAuthenticator);
+
+    login.authenticate();
     QVERIFY(spy.wait());
+
+    QCOMPARE(spy.count(), 1);
 }
+
 
 void TestLocalUserStore::test_shouldReturnTrueIfHasUser() const
 {
-    Business::LocalUserStore userStore{};
+    User::Data::LocalUserStore userStore{};
+    userStore.restore();
 
     const bool result{userStore.hasUser()};
 
@@ -60,9 +69,8 @@ void TestLocalUserStore::test_shouldReturnTrueIfHasUser() const
 
 void TestLocalUserStore::test_shouldReturnFalseIfDoesntHaveUser() const
 {
-    Service::UserServiceImpl userService{};
-    userService.clear();
-    Business::LocalUserStore userStore{};
+    User::Data::LocalUserStore userStore{};
+    userStore.clear();
 
     const bool result{userStore.hasUser()};
 

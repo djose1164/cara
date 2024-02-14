@@ -1,7 +1,7 @@
+#include "Authentication/data/restuserauthentication.h"
+#include "authentication/entity/credential.h"
+#include "Authentication/login.h"
 #include <QtTest>
-
-#include "authentication/data/restuserauthentication.h"
-#include "user/entity/usercredential.h"
 
 class TestRestUserAuthentication : public QObject
 {
@@ -19,9 +19,6 @@ private slots:
 
     void test_shouldEmitSucceededUponSuccessfulAuthentication() const;
     void test_shouldEmitFailedUponUnsuccessfulAuthentication() const;
-    void test_shouldReturnTrueIfBaseContainsApiUsersLogin() const;
-
-private:
 };
 
 TestRestUserAuthentication::TestRestUserAuthentication() {}
@@ -47,11 +44,15 @@ void TestRestUserAuthentication::cleanup()
 
 void TestRestUserAuthentication::test_shouldEmitSucceededUponSuccessfulAuthentication() const
 {
-    User::Entity::UserCredential credentials;
+    Authentication::Business::Login login{};
+    Authentication::Entity::Credential credentials;
     credentials.setUsername("cara");
     credentials.setPassword("1234");
-    Data::RestUserAuthentication auth{credentials};
-    QSignalSpy spy{&auth, SIGNAL(succeeded(void))};
+    Authentication::Data::RestUserAuthentication auth{};
+    auth.setCredentials(credentials);
+    login.setAuthenticator(&auth);
+
+    QSignalSpy spy{&auth, SIGNAL(succeeded(const QByteArray &))};
 
     QVERIFY(spy.isValid());
 
@@ -63,11 +64,12 @@ void TestRestUserAuthentication::test_shouldEmitSucceededUponSuccessfulAuthentic
 
 void TestRestUserAuthentication::test_shouldEmitFailedUponUnsuccessfulAuthentication() const
 {
-    User::Entity::UserCredential credentials;
+    Authentication::Entity::Credential credentials;
     credentials.setUsername("cara");
     credentials.setPassword("12346");
-    Data::RestUserAuthentication auth{credentials};
-    QSignalSpy spy{&auth, SIGNAL(failed(void))};
+    Authentication::Data::RestUserAuthentication auth{};
+    auth.setCredentials(credentials);
+    QSignalSpy spy{&auth, SIGNAL(errorOccurred(void))};
 
     QVERIFY(spy.isValid());
 
@@ -75,16 +77,6 @@ void TestRestUserAuthentication::test_shouldEmitFailedUponUnsuccessfulAuthentica
     QVERIFY(spy.wait());
 
     QCOMPARE(spy.count(), 1);
-}
-
-void TestRestUserAuthentication::test_shouldReturnTrueIfBaseContainsApiUsersLogin() const
-{
-    User::Entity::UserCredential credentials{};
-    Data::RestUserAuthentication auth{credentials};
-
-    const bool result{auth.base().contains("/api/users/login")};
-
-    QCOMPARE(result, true);
 }
 
 QTEST_MAIN(TestRestUserAuthentication)

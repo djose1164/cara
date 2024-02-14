@@ -1,7 +1,9 @@
-#include "inventory/inventoryrepository.h"
-#include "user/localuserstore.h"
-#include "authentication/login.h"
-#include "inventory/model/productmodel.h"
+#include "Authentication/data/restuserauthentication.h"
+#include "Authentication/login.h"
+#include "Authentication/entity/credential.h"
+#include "Inventory/inventoryrepository.h"
+#include "User/data/localuserstore.h"
+#include "Inventory/model/productmodel.h"
 #include <QTest>
 #include <QSignalSpy>
 #include <QJsonDocument>
@@ -35,15 +37,19 @@ void TestProductModel::initTestCase()
     QCoreApplication::setOrganizationName("Cara");
     QCoreApplication::setApplicationName("CaraTesting");
 
-    Business::Login login{};
-    login.setUsername("josevictoriano");
-    login.setPassword("2077120");
+    Authentication::Business::Login login{};
+    Authentication::Entity::Credential c{};
+    c.setUsername("cara");
+    c.setPassword("1234");
+    Authentication::Data::RestUserAuthentication auth{};
+    auth.setCredentials(c);
+    login.setAuthenticator(&auth);
 
-    Business::LocalUserStore userStore{};
-    QSignalSpy spy{&login, SIGNAL(authenticated(void))};
-    login.setUserStore(&userStore);
+    User::Data::LocalUserStore userStore{};
+    QSignalSpy spy{&login, SIGNAL(authenticated(const QByteArray &))};
+    login.setStore(&userStore);
 
-    login.authenticateCredentials();
+    login.authenticate();
     QVERIFY(spy.wait());
 }
 

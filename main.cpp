@@ -1,4 +1,3 @@
-#include "src/user/localuserstore.h"
 #include <QApplication>
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
@@ -11,11 +10,10 @@ int main(int argc, char *argv[])
     app.setOrganizationDomain("cara.com");
     app.setOrganizationName("Cara");
     app.setApplicationName("Cara");
-    app.setApplicationVersion("0.14.0");
+    app.setApplicationVersion("0.16.0");
 
     QQmlApplicationEngine engine;
-    qmlRegisterInterface<Business::UserStore>("Business", 1);
-    const QUrl url(u"qrc:/main/main.qml"_qs);
+    const QUrl url(u"qrc:/qt/qml/Cara/main.qml"_qs);
     QObject::connect(
         &engine,
         &QQmlApplicationEngine::objectCreationFailed,

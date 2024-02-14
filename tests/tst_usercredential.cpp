@@ -1,4 +1,4 @@
-#include "user/entity/usercredential.h"
+#include "Authentication/entity/credential.h"
 #include <QtTest>
 #include <QSignalSpy>
 
@@ -13,9 +13,6 @@ public:
     ~TestUserCredential();
 
 private slots:
-    void initTestCase();
-    void cleanupTestCase();
-
     void test_shouldReturnTrueIfCredentailsAreValid() const;
     void test_shouldReturnFalseIfPasswordIsEmpty() const;
     void test_shouldReturnFalseIfUsernameIsEmpty() const;
@@ -26,21 +23,10 @@ TestUserCredential::TestUserCredential() {}
 
 TestUserCredential::~TestUserCredential() {}
 
-void TestUserCredential::initTestCase()
-{
-    QCoreApplication::setOrganizationDomain("cara.com");
-    QCoreApplication::setOrganizationName("Cara");
-    QCoreApplication::setApplicationName("CaraTesting");
-}
-
-void TestUserCredential::cleanupTestCase()
-{
-
-}
 
 void TestUserCredential::test_shouldReturnTrueIfCredentailsAreValid() const
 {
-    User::Entity::UserCredential credentials{};
+    Authentication::Entity::Credential credentials{};
     credentials.setUsername("cara");
     credentials.setPassword("1234");
 
@@ -49,7 +35,7 @@ void TestUserCredential::test_shouldReturnTrueIfCredentailsAreValid() const
 
 void TestUserCredential::test_shouldReturnFalseIfPasswordIsEmpty() const
 {
-    User::Entity::UserCredential credentials{};
+    Authentication::Entity::Credential credentials{};
     credentials.setUsername("cara");
     credentials.setPassword("");
 
@@ -58,7 +44,7 @@ void TestUserCredential::test_shouldReturnFalseIfPasswordIsEmpty() const
 
 void TestUserCredential::test_shouldReturnFalseIfUsernameIsEmpty() const
 {
-    User::Entity::UserCredential credentials{};
+    Authentication::Entity::Credential credentials{};
     credentials.setUsername("");
     credentials.setPassword("1234");
 
@@ -67,7 +53,7 @@ void TestUserCredential::test_shouldReturnFalseIfUsernameIsEmpty() const
 
 void TestUserCredential::test_shouldReturnFalseIfPasswordAndUsernameAreEmpty() const
 {
-    User::Entity::UserCredential credentials{};
+    Authentication::Entity::Credential credentials{};
     credentials.setUsername("");
     credentials.setPassword("");
 
