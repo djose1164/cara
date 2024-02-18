@@ -1,6 +1,7 @@
 #include "networkrequestsingleton.h"
 #include "restservice.h"
 #include <QSettings>
+#include <QRestAccessManager>
 
 using namespace Qt::StringLiterals;
 
@@ -10,7 +11,7 @@ RestService::RestService(QObject *parent)
     : QObject{parent}
     , url_{}
     , resources_{}
-    , manager_{std::make_shared<QRestAccessManager>()}
+    , manager_{std::make_shared<QRestAccessManager>(NetworkRequestSingleton::instance().manager())}
     , api_{NetworkRequestSingleton::instance().api()}
 {
 }

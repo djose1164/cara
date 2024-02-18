@@ -31,14 +31,14 @@ void PaymentResource::refresh()
             path_ + resourceIdentification.arg(QString::number(paymentId_))
         )
     };
-    manager_->get(req, this, [&](QRestReply *reply) {
-        if (!reply->isSuccess())
+    manager_->get(req, this, [&](QRestReply &reply) {
+        if (!reply.isSuccess())
         {
-            qWarning() << "PaymentResource::refresh: " << reply->errorString();
+            qWarning() << "PaymentResource::refresh: " << reply.errorString();
             return;
         }
 
-        const auto json{reply->json()};
+        const auto json{reply.readJson()};
         if (!json)
         {
             qWarning() << "PaymentResource::refresh: json no valid.";

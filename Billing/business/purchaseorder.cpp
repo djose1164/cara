@@ -5,9 +5,9 @@
 
 #define checkError(reply)                                                      \
     do {                                                                       \
-        if (!(reply)->isSuccess())                                             \
+        if (!(reply).isSuccess())                                              \
         {                                                                      \
-            emit errorOccurred((reply)->errorString());                        \
+            emit errorOccurred((reply).errorString());                         \
             return;                                                            \
         }                                                                      \
     } while (false)
@@ -22,9 +22,9 @@ void PurchaseOrder::placeOrder(const QVariantMap &data)
 {
     const auto req{api_->createRequest(path_)};
 
-    manager_->post(req, data, this, [&](QRestReply *reply) {
+    manager_->post(req, data, this, [&](QRestReply &reply) {
         checkError(reply);
-        emit orderPlaced(reply->json()->toJson());
+        emit orderPlaced(reply.readJson()->toJson());
     });
 }
 
@@ -32,9 +32,9 @@ void PurchaseOrder::fetchOrders()
 {
     const auto req{api_->createRequest(path_)};
 
-    manager_->get(req, this, [&](QRestReply *reply) {
+    manager_->get(req, this, [&](QRestReply &reply) {
         checkError(reply);
-        emit ordersFetched(reply->json()->toJson());
+        emit ordersFetched(reply.readJson()->toJson());
     });
 }
 }
