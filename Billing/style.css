@@ -1,0 +1,79 @@
+body {
+    font-family: 'Times New Roman', Times, serif;
+}
+table {
+    table-layout: fixed;
+    border-collapse: collapse;
+    width: 100%;
+    border: 3px solid purple;
+}
+
+th,
+td {
+    padding: 20px;
+}
+
+tbody td {
+    text-align: center;
+}
+
+thead,
+tfoot {
+    color: white;
+    text-shadow: 1px 1px 1px black;
+}
+
+thead th,
+tfoot th,
+tfoot td {
+    background: red;
+}
+
+tbody tr:nth-child(odd) {
+    background-color: #fff;
+
+}
+
+tbody tr:nth-child(even) {
+    background-color: #E0E0E0;
+}
+
+hr {
+    background-color: red;
+    height: 2px;
+    margin: 50px 0 50px 0;
+}
+
+#horizontal-bar {
+    height: 1em;
+}
+
+.title-box {
+    display: flex;
+    justify-content: space-between;
+    height: 50%;
+}
+
+#total-box {
+    float: right;
+    width: 35%;
+}
+
+#total-p {
+    font-weight: bold;
+}
+
+#business-name {
+    background-color: red;
+    color: white;
+}
+
+.title-box {
+    display: flex;
+    justify-content: space-between;
+    
+}
+
+.business-info {
+    width: 200px;
+}

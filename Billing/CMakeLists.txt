@@ -44,6 +44,8 @@ qt_add_qml_module(BillingLib
         model/ordermodel.h model/ordermodel.cpp
     DEPENDENCIES
         QtQuick UtilsLib Entities
+    RESOURCES
+    order-model.html style.css
 )
 
 target_include_directories(BillingLib
