@@ -1,7 +1,8 @@
 body {
     font-family: 'Times New Roman', Times, serif;
 }
-table {
+
+#details-table {
     table-layout: fixed;
     border-collapse: collapse;
     width: 100%;
@@ -10,10 +11,10 @@ table {
 
 th,
 td {
-    padding: 20px;
+    padding: 5px;
 }
 
-tbody td {
+#details-table  tr  td {
     text-align: center;
 }
 
@@ -29,15 +30,6 @@ tfoot td {
     background: red;
 }
 
-tbody tr:nth-child(odd) {
-    background-color: #fff;
-
-}
-
-tbody tr:nth-child(even) {
-    background-color: #E0E0E0;
-}
-
 hr {
     background-color: red;
     height: 2px;
@@ -48,10 +40,12 @@ hr {
     height: 1em;
 }
 
-.title-box {
-    display: flex;
-    justify-content: space-between;
-    height: 50%;
+#header-table {
+    border-collapse: separate;
+}
+
+.align-right {
+    text-align: right;
 }
 
 #total-box {
@@ -59,21 +53,13 @@ hr {
     width: 35%;
 }
 
-#total-p {
-    font-weight: bold;
-}
-
 #business-name {
     background-color: red;
     color: white;
+    height: 10px;
 }
 
-.title-box {
-    display: flex;
-    justify-content: space-between;
-    
-}
-
-.business-info {
-    width: 200px;
+#factura-consumo {
+    text-align: center;
+    vertical-align: middle;
 }
