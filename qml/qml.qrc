@@ -18,8 +18,6 @@
     </qresource>
     <qresource prefix="/orders">
         <file>Entry.qml</file>
-        <file>OrderState.qml</file>
-        <file>OrderStatusCB.qml</file>
         <file>BuyOrder.qml</file>
         <file>BuyOrderForm.qml</file>
         <file>BuyOrderAPI.qml</file>
