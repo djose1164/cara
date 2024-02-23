@@ -6,25 +6,26 @@ qt_add_qml_module(UtilsLib
     URI Utils
     VERSION 1.0
     SOURCES
-        internetstatus.h internetstatus.cpp
-        utils.h utils.cpp
         abstractresource.h abstractresource.cpp
-        restservice.h restservice.cpp
+        internetstatus.h internetstatus.cpp
         networkrequestsingleton.h networkrequestsingleton.cpp
         notimplementated.h
+        restservice.h restservice.cpp
+        utils.h utils.cpp
     QML_FILES
-        ListViewPage.qml
+        Card.qml
+        DateDelegate.qml
+        DatePicker.qml
         DrawerHeader.qml
+        ListViewPage.qml
+        MessagePane.qml
+        ProcessingIndicator.qml
+        RedirectGroupBox.qml
         RedirectLabel.qml
         ScrollablePage.qml
-        DatePicker.qml
-        DateDelegate.qml
-        RedirectGroupBox.qml
-        Card.qml
-        SearchHeaderItem.qml
         SearchBar.qml
         SearchButton.qml
         SearchField.qml
+        SearchHeaderItem.qml
         SearchPage.qml
-        MessagePane.qml
 )

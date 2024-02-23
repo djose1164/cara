@@ -17,6 +17,8 @@ qt_add_qml_module(BillingLib
         CustomerBills.qml
         CustomerBillsHome.qml
         NewPurchaseOrder.qml
+        OrderState.qml
+        OrderStatusCB.qml
         PayItem.qml
         PaySuccess.qml
         PaymentDetails.qml
@@ -26,12 +28,15 @@ qt_add_qml_module(BillingLib
         PaymentStatusFilter.qml
     SOURCES
         billrepository.h billrepository.cpp
+        business/abstractdocument.h business/abstractdocument.cpp
         business/billbusiness.h business/billbusiness.cpp
         business/cartbusiness.h	business/cartbusiness.cpp
         business/ordercontroller.h business/ordercontroller.cpp
         business/orderrepository.h business/orderrepository.cpp
+        business/orderresource.h business/orderresource.cpp
         business/pay.h business/pay.cpp
         business/paymentcontroller.h business/paymentcontroller.cpp
+        business/pdforderprinter.h business/pdforderprinter.cpp
         business/purchaseorder.h business/purchaseorder.cpp
         data/paymentresource.h data/paymentresource.cpp
         data/restorderrepository.h data/restorderrepository.cpp
@@ -42,10 +47,11 @@ qt_add_qml_module(BillingLib
         model/billmodel.h model/billmodel.cpp
         model/billproxymodel.h model/billproxymodel.cpp
         model/ordermodel.h model/ordermodel.cpp
+        ordertemplate.h ordertemplate.cpp
     DEPENDENCIES
         QtQuick UtilsLib Entities
     RESOURCES
-    order-model.html style.css
+        order-model.html style.css
 )
 
 target_include_directories(BillingLib
@@ -57,4 +63,5 @@ target_include_directories(BillingLib
 
 
 
-target_link_libraries(BillingLib PRIVATE Entities)
+target_link_libraries(BillingLib
+    PRIVATE Qt6::Concurrent Qt6::PrintSupport Entities)
