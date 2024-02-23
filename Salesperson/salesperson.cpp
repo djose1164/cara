@@ -140,6 +140,30 @@ QJsonObject Salesperson::prepareContact() const
     return contact;
 }
 
+QString Salesperson::salespersonTypeName() const
+{
+    return salespersonTypeName_;
+}
+
+void Salesperson::setSalespersonTypeName(const QString &newSalespersonTypeName)
+{
+    if (salespersonTypeName_ == newSalespersonTypeName)
+        return;
+    salespersonTypeName_ = newSalespersonTypeName;
+}
+
+QString Salesperson::warehouseAddress() const
+{
+    return warehouseAddress_;
+}
+
+void Salesperson::setWarehouseAddress(const QString &newWarehouseAddress)
+{
+    if (warehouseAddress_ == newWarehouseAddress)
+        return;
+    warehouseAddress_ = newWarehouseAddress;
+}
+
 Salesperson::UserId Salesperson::adminId() const
 {
     return adminId_;
@@ -253,7 +277,11 @@ Salesperson Salesperson::fromJson(const QByteArray &data)
     sp.setSalespersonId(spObj.value("id").toInt());
 
     const auto typesMap{spObj.value("salesperson_type").toObject()};
+    sp.setSalespersonTypeName(typesMap["name"].toString());
     sp.setSalespersonType(static_cast<SalespersonTypes>(typesMap["id"].toInt()));
+
+    const auto warehouse{spObj["warehouse"].toObject()};
+    sp.setWarehouseAddress(warehouse["address_name"].toString());
 
     return sp;
 }
