@@ -7,6 +7,7 @@ import data
 import Authentication as Auth
 import User
 import Utils
+import Salesperson
 
 ApplicationWindow {
     id: app
@@ -48,11 +49,17 @@ ApplicationWindow {
     UserController {
         id: userController
         onFetched: function(resp) {
+            const salesperson = JSON.parse(resp).user.salesperson;
             const user = userController.create(resp);
             print("Replacing appStack with MainPage");
             UserSettings.setEntity(user);
+            SalespersonSettings.setEntity(spController.fromJsonObject(salesperson));
             stackView.replace(mainPage, {user});
         }
+    }
+
+    SalespersonController {
+        id: spController
     }
 
     Shortcut {
