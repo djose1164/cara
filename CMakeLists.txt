@@ -1,6 +1,6 @@
-cmake_minimum_required(VERSION 3.18)
+cmake_minimum_required(VERSION 3.20)
 
-project(Cara VERSION 0.16.0 LANGUAGES CXX)
+project(Cara VERSION 0.17.0 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -11,7 +11,7 @@ set(CMAKE_AUTOUIC ON)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 find_package(Qt6 6.7 REQUIRED
-    COMPONENTS Qml Quick Core Network Svg Test Charts REQUIRED)
+    COMPONENTS Qml Quick Core Network Svg Test Charts Concurrent PrintSupport REQUIRED)
 
 qt_standard_project_setup(REQUIRES 6.7)
 qt_policy(SET QTP0001 NEW)
@@ -83,7 +83,7 @@ qt_add_resources(Cara "configuration"
 
 set_target_properties(Cara PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin"
-    QT_ANDROID_PACKAGE_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/android
+    QT_ANDROID_PACKAGE_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/android"
 )
 
 include(GNUInstallDirs)
