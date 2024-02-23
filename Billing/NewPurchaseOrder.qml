@@ -169,36 +169,39 @@ Page {
 
     MessageDialog {
         id: message
-        onButtonClicked: close()
+        buttons: MessageDialog.Ok | MessageDialog.Cancel
+        // onButtonClicked: close()
+        onAccepted: {
+            pdfPrinter.print();
+            root.state = "creating";
+        }
     }
 
     OrderController {
         id: orderController
-        onOrderCreated: {
+        onOrderCreated: newOrder => {
             root.state = "orderCreated";
             message.title = "Exito al crear orden";
-            message.informativeText = "La orden ha sido adjuntada al cliente "
-                    + "exitosamente. Puedes verla en el area de 'Clientes'";
+            message.informativeText = "¿Deseas exportar la factura en PDF?";
             message.open();
+            orderTemplate.order = newOrder.order;
         }
     }
 
-    Popup {
+    PdfOrderPrinter {
+        id: pdfPrinter
+        document: OrderTemplate {
+            id: orderTemplate
+        }
+        onOrderPrinted: path => {
+            root.state = "";
+            Qt.openUrlExternally(path);
+        }
+    }
+
+    ProcessingIndicator {
         id: busyPopup
         width: root.width * .8
-        anchors.centerIn: Overlay.overlay
-        RowLayout {
-            anchors.fill: parent
-
-            BusyIndicator {
-                running: busyPopup.visible
-            }
-
-            Label {
-                text: "Procesando..."
-                font.pointSize: 12
-            }
-        }
     }
 
     function acceptHandle() {
@@ -219,9 +222,7 @@ Page {
             root.state = "creating";
         } catch (err) {
             print("NewPurchaseOrder: "+err);
-            message.title = "Error al crear orden"
-            message.informativeText = err;
-            message.open();
+            errorDialog(err);
         }
     }
 
@@ -231,5 +232,11 @@ Page {
         else if (costCalculator.total === 0)
             throw "Debes agregar al menos un producto a la orden";
         paymentInput.validate();
+    }
+
+    function errorDialog(err: string) {
+        message.title = "Error al crear orden"
+        message.informativeText = err;
+        message.open();
     }
 }
