@@ -26,7 +26,7 @@ ColumnLayout {
     states: [
         State {
             name: "customerView"
-            when: userStore.user.isCustomer
+            when: UserSettings.userTypeId === UserEntity.Customer
             PropertyChanges {
                 target: orderStatusCB
                 enabled: false

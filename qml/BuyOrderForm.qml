@@ -1,5 +1,4 @@
 import QtQuick
-import QtCore
 import QtQuick.Controls
 import QtQuick.Layouts
 import User
@@ -7,13 +6,12 @@ import Salesperson
 import Utils
 import "qrc:/provider"
 import Billing
-import "qrc:/utils"
 import Product
 
 Drawer {
     id: root
 
-    readonly property var user: userStore.user
+    readonly property var user: UserSettings.entity()
     readonly property var salesperson: SalespersonSettings.entity()
     readonly property var buyOrder: {
         "date": datePicker.toShortDate(),
@@ -145,10 +143,5 @@ Drawer {
                 }
             }
         }
-    }
-
-    LocalUserStore {
-        id: userStore
-        Component.onCompleted: restore()
     }
 }

@@ -165,8 +165,6 @@ Page {
         model: thisSelectedProducts
     }
 
-    LocalUserStore { id: userStore }
-
     MessageDialog {
         id: message
         buttons: MessageDialog.Ok | MessageDialog.Cancel

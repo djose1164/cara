@@ -23,8 +23,9 @@ ListViewPage {
         }
         onBackClicked: stackView.pop()
     }
-    noDataMessage: userStore.user.isAdmin ? "Este vendedor no cuenta con ningun cliente."
-                                          : "La lista de clientes esta vacia. Inteta agregar uno nuevo."
+    noDataMessage: UserSettings.userTypeId === UserEntity.Admin
+                   ? "Este vendedor no cuenta con ningun cliente."
+                   : "La lista de clientes esta vacia. Inteta agregar uno nuevo."
 
     states: State {
         name: "searching"
