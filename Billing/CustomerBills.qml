@@ -3,7 +3,6 @@ import QtQuick.Layouts
 import QtQuick.Controls
 import Qt.labs.qmlmodels
 import "qrc:/utils"
-import "qrc:/orders"
 
 ListView {
     id: root

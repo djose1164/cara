@@ -38,7 +38,7 @@ void CustomerResource::readBySalespersonId(SalespersonId salespersonId)
 {
     const auto req{api_->createRequest(path_
         + QString("/?salesperson_id=%1").arg(salespersonId))};
-    manager_->get(req);
+
     manager_->get(req, this, [&](QRestReply &reply) {
         if (!reply.isSuccess())
         {
