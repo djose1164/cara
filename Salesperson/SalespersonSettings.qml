@@ -12,6 +12,7 @@ Settings {
     property int creditAvailable
     property int creditConsumed
     property int creditLimit
+    property string warehouseAddress
 
     category: "Salesperson"
 
@@ -21,8 +22,19 @@ Settings {
             salespersonType: salespersonTypeId,
             creditLimit,
             creditConsumed,
-            creditAvailable
+            creditAvailable,
+            warehouseAddress
         }
+    }
+
+    function setEntity(sp: salesperson) {
+        root.salespersonId = sp.salespersonId;
+        root.salespersonTypeId = sp.salespersonType;
+        root.salespersonTypeName = sp.salespersonTypeName;
+        root.creditAvailable = sp.creditAvailable;
+        root.creditConsumed = sp.creditConsumed;
+        root.creditLimit = sp.creditLimit;
+        root.warehouseAddress = sp.warehouseAddress;
     }
 
     function clear() {
@@ -32,5 +44,6 @@ Settings {
         root.creditAvailable = 0;
         root.creditConsumed = 0;
         root.creditLimit = 0;
+        root.warehouseAddress = "";
     }
 }
