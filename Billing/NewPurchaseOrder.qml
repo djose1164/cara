@@ -113,9 +113,8 @@ Page {
                     id: selectedProductsView
                     model: thisSelectedProducts
                     onRedirectClicked: productSelector.open()
-                    onDeleteClicked: (index, productId) => {
+                    onDeleteClicked: (_, productId) => {
                         productSelector.removeSelectionOf(productId);
-                        thisSelectedProducts.remove(index);
                     }
                 }
             }
