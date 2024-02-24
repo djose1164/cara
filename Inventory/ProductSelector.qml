@@ -39,4 +39,8 @@ Drawer {
         selectedProducts: root.selectedProducts
         header: headerItem
     }
+
+    function removeSelectionOf(productId) {
+        productView.removeSelectionOf(productId);
+    }
 }

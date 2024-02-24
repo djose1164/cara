@@ -17,6 +17,7 @@ class ProductModel : public QAbstractListModel
     Q_PROPERTY(int count READ count NOTIFY countChanged FINAL)
 public:
     using SalespersonId = int;
+    using ProductId = int;
 
     enum class RoleNames
     {
@@ -56,6 +57,7 @@ public slots:
     void append(QObject * product);
     void clear();
     void remove(int index);
+    void removeByProductId(ProductId id);
 
 signals:
     void repositoryChanged();

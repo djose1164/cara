@@ -8,6 +8,7 @@ import Billing
 import Product
 import "qrc:/utils"
 
+// FIXME:
 Item {
     id: root
 
@@ -61,6 +62,31 @@ Item {
         model: productModel
         onSelectedIndexesChanged: {
             internal.isAcceptBtnEnabled = selectedIndexes.length > 0;
+        }
+    }
+
+    Connections {
+        target: selectionModel
+
+        function onSelectionChanged(selectedList, deselectedList) {
+            const forEachSelection = (selection, func) => {
+                const topLeft = selection.topLeft;
+                const row = topLeft.row;
+                const product = topLeft.model.get(row);
+                func(product)
+            }
+
+            if (selectedList.length > 0) {
+                for (let selected of selectedList)
+                    forEachSelection(selected, p => selectedProducts.append(p));
+            }
+
+            if (deselectedList.length > 0) {
+                for (let deselected of deselectedList)
+                    forEachSelection(deselected, p => (
+                        selectedProducts.removeByProductId(p.productId)
+                    ));
+            }
         }
     }
 
@@ -141,13 +167,11 @@ Item {
         return -1;
     }
 
+    /**
+     * Keep in sync the current selection of products with the selected products.
+     */
     function closeHandle() {
-        for (let selected of selectionModel.selectedIndexes) {
-            const selectedAt = selected.model.get(selected.row);
-            if (selectedProducts.contains(selectedAt))
-                continue;
-            selectedProducts.append(selectedAt);
-        }
+
     }
 
     function updateModel(salespersonId: int) {
