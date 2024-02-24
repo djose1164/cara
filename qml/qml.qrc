@@ -48,7 +48,6 @@
         <file>BackButton.qml</file>
         <file>AddressForm.qml</file>
         <file>ContactForm.qml</file>
-        <file>CloseButton.qml</file>
         <file>Header.qml</file>
         <file>RefreshIndicator.qml</file>
         <file>MoreVertButton.qml</file>

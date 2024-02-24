@@ -14,6 +14,7 @@ qt_add_qml_module(UtilsLib
         utils.h utils.cpp
     QML_FILES
         Card.qml
+        CloseButton.qml
         DateDelegate.qml
         DatePicker.qml
         DrawerHeader.qml
