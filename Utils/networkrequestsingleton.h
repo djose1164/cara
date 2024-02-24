@@ -1,9 +1,9 @@
 #ifndef NETWORKREQUESTSINGLETON_H
 #define NETWORKREQUESTSINGLETON_H
 
+#include "../authentication/business/itoken.h"
 #include <QNetworkAccessManager>
 #include <QNetworkRequestFactory>
-#include "../authentication/business/itoken.h"
 
 namespace Utils
 {

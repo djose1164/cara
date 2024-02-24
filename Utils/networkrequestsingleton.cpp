@@ -1,5 +1,7 @@
 #include "networkrequestsingleton.h"
 #include <QSettings>
+#include <QNetworkAccessManager>
+#include <QNetworkRequestFactory>
 
 using namespace Qt::StringLiterals;
 
