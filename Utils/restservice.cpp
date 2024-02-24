@@ -1,5 +1,5 @@
-#include "networkrequestsingleton.h"
 #include "restservice.h"
+#include "networkrequestsingleton.h"
 #include <QSettings>
 #include <QRestAccessManager>
 
