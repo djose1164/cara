@@ -167,13 +167,6 @@ Item {
         return -1;
     }
 
-    /**
-     * Keep in sync the current selection of products with the selected products.
-     */
-    function closeHandle() {
-
-    }
-
     function updateModel(salespersonId: int) {
         productModel.update(salespersonId);
     }

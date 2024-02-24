@@ -17,7 +17,7 @@ Drawer {
     signal productSelected(products: ProductModel)
 
     interactive: false
-    onAboutToHide: productView.closeHandle()
+
     Component.onCompleted: {
         productView.updateModel(salespersonId);
     }
