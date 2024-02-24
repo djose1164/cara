@@ -5,6 +5,7 @@
 #include <QQmlEngine>
 #include "Utils/abstractresource.h"
 
+class QRestReply;
 namespace Business
 {
 class Pay : public AbstractResource

@@ -4,6 +4,7 @@
 #include <QSettings>
 #include <QJsonObject>
 #include <QJsonDocument>
+#include <QRestAccessManager>
 
 namespace Business
 {
