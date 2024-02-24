@@ -10,6 +10,7 @@ namespace Billing
 class OrderTemplate : public AbstractDocument, public QQmlParserStatus
 {
     Q_OBJECT
+    Q_INTERFACES(QQmlParserStatus)
     QML_ELEMENT
     Q_PROPERTY(QJsonObject order READ order WRITE setOrder NOTIFY orderChanged FINAL)
 public:
