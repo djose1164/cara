@@ -6,12 +6,12 @@ AbstractResource::AbstractResource(QObject *parent)
     , api_{}
 {}
 
-void AbstractResource::setManager(const std::shared_ptr<QRestAccessManager> &newManager)
+void AbstractResource::setManager(const Manager &newManager)
 {
     manager_ = newManager;
 }
 
-void AbstractResource::setApi(const std::shared_ptr<QNetworkRequestFactory> &newApi)
+void AbstractResource::setApi(const Api &newApi)
 {
     api_ = newApi;
 }
