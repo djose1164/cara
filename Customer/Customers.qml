@@ -5,7 +5,7 @@ import User
 import Utils
 import Customer
 import "qrc:/utils"
-import "qrc:/singleton"
+
 
 ListViewPage {
     id: root

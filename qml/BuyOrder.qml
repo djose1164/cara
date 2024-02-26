@@ -9,7 +9,7 @@ import Billing
 import Utils
 import "qrc:/utils"
 import "qrc:/orders"
-import "qrc:/singleton"
+
 
 Page {
     id: root

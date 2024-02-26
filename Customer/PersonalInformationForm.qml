@@ -5,7 +5,7 @@ import QtQuick.Dialogs
 
 import "qrc:/utils"
 import Customer
-import "qrc:/singleton"
+
 import "qrc:/main"
 import "qrc:/utils/utils.js" as JS
 

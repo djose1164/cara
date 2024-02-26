@@ -5,7 +5,7 @@ import catalogue
 import User
 import Salesperson
 import "qrc:/orders" as Order
-import "qrc:/singleton"
+
 
 Home {
     id: root

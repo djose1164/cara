@@ -6,7 +6,7 @@ import QtQuick.Dialogs
 import catalogue as Catalogue
 import "qrc:/utils"
 import "qrc:/main"
-import "qrc:/singleton"
+
 import "qrc:/inventory"
 
 Page {

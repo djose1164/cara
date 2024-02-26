@@ -1,7 +1,7 @@
 import QtQuick
 import QtQuick.Controls
 import "qrc:/utils"
-import "qrc:/singleton"
+
 
 @Deprecated { reason: "Use AssociateSalespersonService or SalespersonController." }
 QtObject {

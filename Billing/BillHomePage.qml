@@ -1,10 +1,8 @@
 import QtQuick
 import QtQuick.Controls
 import Billing
-
 import "qrc:/utils"
 import "qrc:/filters"
-import "qrc:/singleton"
 
 Page {
     id: root

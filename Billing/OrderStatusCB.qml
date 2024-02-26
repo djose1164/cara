@@ -3,7 +3,7 @@ import QtQuick.Controls
 import QtQuick.Dialogs
 
 import "qrc:/utils"
-import "qrc:/singleton"
+
 
 // TODO: This component need to be reviewed
 

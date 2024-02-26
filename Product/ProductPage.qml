@@ -4,7 +4,7 @@ import QtQuick.Layouts
 import QtQuick.Dialogs
 
 import entities as Entity
-import "qrc:/singleton"
+
 import "qrc:/utils"
 import "qrc:/reviews"
 import "qrc:/inventory"

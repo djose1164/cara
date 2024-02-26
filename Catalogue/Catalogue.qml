@@ -4,7 +4,6 @@ import QtQuick.Layouts
 import catalogue as Catalogue
 import "qrc:/utils"
 import Product
-import "qrc:/singleton"
 
 Page {
     id: root

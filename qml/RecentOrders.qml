@@ -1,9 +1,7 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
-
 import Billing
-import "qrc:/singleton"
 
 Item {
     id: root

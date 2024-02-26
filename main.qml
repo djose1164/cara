@@ -1,7 +1,6 @@
 import QtQuick
 import QtQuick.Controls
 import "qrc:/errors"
-import "qrc:/singleton"
 import "qrc:/utils"
 import data
 import Authentication as Auth

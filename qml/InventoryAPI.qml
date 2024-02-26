@@ -1,7 +1,6 @@
 import QtQuick
 import User
 import "qrc:/utils"
-import "qrc:/singleton"
 
 QtObject {
     id: root
