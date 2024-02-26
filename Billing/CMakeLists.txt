@@ -1,5 +1,10 @@
 qt_add_library(BillingLib STATIC)
 
+set_source_files_properties(BillingSettings.qml
+    PROPERTIES
+        QT_QML_SINGLETON_TYPE TRUE
+)
+
 qt_add_qml_module(BillingLib
     URI Billing
     VERSION 1.0
@@ -12,6 +17,8 @@ qt_add_qml_module(BillingLib
         BillPage.qml
         BillPageHeader.qml
         BillViewChooser.qml
+        BillingSettings.qml
+        BillingSettingsItem.qml
         CreditedView.qml
         CustomerBillDelegate.qml
         CustomerBills.qml
@@ -26,6 +33,7 @@ qt_add_qml_module(BillingLib
         PaymentInput.qml
         PaymentStatus.qml
         PaymentStatusFilter.qml
+        PdfBillListing.qml
     SOURCES
         billrepository.h billrepository.cpp
         business/abstractdocument.h business/abstractdocument.cpp
@@ -48,10 +56,11 @@ qt_add_qml_module(BillingLib
         model/billproxymodel.h model/billproxymodel.cpp
         model/ordermodel.h model/ordermodel.cpp
         ordertemplate.h ordertemplate.cpp
-    DEPENDENCIES
-        QtQuick UtilsLib Entities
     RESOURCES
-        order-model.html style.css
+        order-model.html style.css pdf.svg
+    DEPENDENCIES
+        QtQuick Utils Entities
+
 )
 
 target_include_directories(BillingLib
@@ -64,4 +73,4 @@ target_include_directories(BillingLib
 
 
 target_link_libraries(BillingLib
-    PRIVATE Qt6::Concurrent Qt6::PrintSupport Entities)
+    PRIVATE Qt6::Concurrent Qt6::PrintSupport Entities UtilsLib)

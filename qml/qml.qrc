@@ -32,32 +32,6 @@
         <file>ProviderForm.qml</file>
         <file>ProviderComboBox.qml</file>
     </qresource>
-    <qresource prefix="/utils">
-        <file>RequestModel.qml</file>
-        <file>Request.qml</file>
-        <file>Filter.qml</file>
-        <file>CaDrawer.qml</file>
-        <file>TitleHeader.qml</file>
-        <file>CaraApi.qml</file>
-        <file>Star.qml</file>
-        <file>StarRating.qml</file>
-        <file>CenterBusyIndicator.qml</file>
-        <file>Message.qml</file>
-        <file>BackPage.qml</file>
-        <file>BusyStackLayout.qml</file>
-        <file>BackButton.qml</file>
-        <file>AddressForm.qml</file>
-        <file>ContactForm.qml</file>
-        <file>Header.qml</file>
-        <file>RefreshIndicator.qml</file>
-        <file>MoreVertButton.qml</file>
-        <file>ImagePicker.qml</file>
-        <file>utils.js</file>
-        <file>NumberTextField.qml</file>
-    </qresource>
-    <qresource lang="qml" prefix="/qr">
-        <file>QR.qml</file>
-    </qresource>
     <qresource lang="qml" prefix="/errors">
         <file>ErrorPage.qml</file>
     </qresource>
@@ -81,10 +55,6 @@
         <file>CartContent.qml</file>
         <file>Checkout.qml</file>
         <file>EmptyCart.qml</file>
-    </qresource>
-    <qresource prefix="/singleton">
-        <file>qmldir</file>
-        <file>ViewManager.qml</file>
     </qresource>
     <qresource lang="qml" prefix="/filters">
         <file>FilterButton.qml</file>

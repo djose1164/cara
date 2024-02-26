@@ -19,7 +19,7 @@ qt_add_qml_module(AuthenticationLib
         login.h login.cpp
         service/localuserauthentication.h service/localuserauthentication.cpp
     DEPENDENCIES
-        UtilsLib
+        Utils
     IMPORTS
         Store
         SOURCES data/tokenstore.h data/tokenstore.cpp

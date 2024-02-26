@@ -9,6 +9,8 @@ qt_add_qml_module(UserLib
     URI User
     VERSION 1.0
     QML_FILES
+        AddressForm.qml
+        ContactForm.qml
         PerfilPage.qml
         UserCredentialsForm.qml
         UserSettings.qml
@@ -28,9 +30,9 @@ qt_add_qml_module(UserLib
         usersession.h usersession.cpp
         loginmanager.h loginmanager.cpp
     DEPENDENCIES
-        UtilsLib
-        AuthenticationLib
-        StoreLib
+        Utils
+        Authentication
+        Store
 )
 
 target_include_directories(UserLib
