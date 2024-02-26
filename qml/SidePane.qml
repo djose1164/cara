@@ -1,10 +1,9 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
-import "qrc:/utils"
-import "qrc:/singleton"
 import Salesperson
 import User
+import Billing
 
 Drawer {
     id: root
@@ -83,12 +82,18 @@ Drawer {
                 LoginManager.logOut();
             }
         }
+
+        Label {
+            id: version
+            text: `Version: <b>${Qt.application.version}</b>`
+            Layout.alignment: Qt.AlignBottom | Qt.AlignHCenter
+        }
     }
 
     Component {
         id: guest
         ColumnLayout {
-            Layout.fillWidth: true
+            width: root.width
 
             Button {
                 onClicked: {
@@ -114,7 +119,7 @@ Drawer {
         id: logged
 
         ColumnLayout {
-            Layout.fillWidth: true
+            width: root.width
             spacing: 20
 
             Label {
@@ -135,6 +140,10 @@ Drawer {
                     close();
                     appStack.push("qrc:/qt/qml/User/PerfilPage.qml");
                 }
+            }
+
+            BillingSettingsItem {
+                Layout.fillWidth: true
             }
         }
     }
