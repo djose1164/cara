@@ -1,9 +1,10 @@
 #include "pdforderprinter.h"
+#include "utils.h"
+#include "abstractdocument.h"
 #include <QPrinter>
 #include <QStandardPaths>
 #include <QTextDocument>
 #include <QtConcurrent>
-#include "abstractdocument.h"
 
 using namespace Qt::StringLiterals;
 
@@ -58,7 +59,10 @@ void PdfOrderPrinter::printToPdf()
 
     setStatus(Idle);
 
-    emit orderPrinted(QUrl::fromLocalFile(filename));
+    if (Utils::runningOnAndroid())
+        emit orderPrinted(filename);
+    else
+        emit orderPrinted(QUrl::fromLocalFile(filename).toString());
 }
 
 std::unique_ptr<QPrinter> PdfOrderPrinter::preparePrinter(QAnyStringView filename) const
@@ -66,7 +70,6 @@ std::unique_ptr<QPrinter> PdfOrderPrinter::preparePrinter(QAnyStringView filenam
     auto printer{std::make_unique<QPrinter>(QPrinter::HighResolution)};
     printer->setPageSize(QPageSize::A4);
 
-    qDebug() << "PdfOrderPrinter::preparePrinter: " << filename;
     printer->setOutputFileName(filename.toString());
 
     if (!printer->isValid())
@@ -87,7 +90,7 @@ std::unique_ptr<QTextDocument> PdfOrderPrinter::prepareDocument(const QSizeF &pa
 QString PdfOrderPrinter::getUniqueFilename() const
 {
     constexpr auto format{"ddMMyyyy-hhmmss"_L1};
-    QDateTime currentTime{QDateTime::currentDateTime()};
+    const QDateTime currentTime{QDateTime::currentDateTime()};
 
     return path_ + prefix.arg(currentTime.toString(format));
 }

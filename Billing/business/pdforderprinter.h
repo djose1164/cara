@@ -51,7 +51,7 @@ signals:
 
     void orderChanged();
 
-    void orderPrinted(const QUrl &path);
+    void orderPrinted(const QString &path);
 
     void documentChanged();
 
