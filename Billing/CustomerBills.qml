@@ -28,10 +28,6 @@ ListView {
 
     model: billProxyModel
 
-    RefreshIndicator {
-        id: refreshIcon
-    }
-
     BusyIndicator {
         id: busyIndicator
         anchors.centerIn: parent
