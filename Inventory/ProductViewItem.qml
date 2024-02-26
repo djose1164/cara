@@ -8,7 +8,6 @@ import Billing
 import Product
 import "qrc:/utils"
 
-// FIXME:
 Item {
     id: root
 
