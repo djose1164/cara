@@ -6,7 +6,7 @@ import QtQuick.Controls.Material
 import Customer
 import "qrc:/orders"
 
-import "qrc:/utils"
+import Utils
 
 // TODO: Update implementation to use the new types.
 Column {

@@ -2,7 +2,7 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 import Utils
-import "qrc:/utils"
+import Utils
 
 Drawer {
     id: root

@@ -4,7 +4,7 @@ import Salesperson
 import User
 import Utils
 import Customer
-import "qrc:/utils"
+import Utils
 
 
 ListViewPage {

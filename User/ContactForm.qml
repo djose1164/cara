@@ -1,7 +1,7 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
-import "qrc:/utils"
+import Utils
 import "qrc:/utils/utils.js" as JS
 
 ColumnLayout {

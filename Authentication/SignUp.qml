@@ -2,7 +2,7 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 import "qrc:/main"
-import "qrc:/utils"
+import Utils
 
 Item {
     id: signUp

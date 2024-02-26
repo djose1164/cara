@@ -3,7 +3,7 @@ import QtQuick.Controls
 import QtQuick.Layouts
 import QtQuick.Templates as T
 import QtCharts
-import "qrc:/utils"
+import Utils
 
 Page {
     id: root

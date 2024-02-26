@@ -1,6 +1,6 @@
 import QtQuick
 import User
-import "qrc:/utils"
+import Utils
 
 QtObject {
     id: root

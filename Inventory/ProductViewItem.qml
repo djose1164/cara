@@ -6,7 +6,7 @@ import Utils
 import Inventory
 import Billing
 import Product
-import "qrc:/utils"
+import Utils
 
 Item {
     id: root

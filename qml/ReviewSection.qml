@@ -1,6 +1,6 @@
 import QtQuick
 import QtQuick.Controls
-import "qrc:/utils"
+import Utils
 
 Column {
     property alias reviewModel: reviews.model

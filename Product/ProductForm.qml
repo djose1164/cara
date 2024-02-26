@@ -4,7 +4,7 @@ import QtQuick.Controls
 import QtQuick.Layouts
 import QtQuick.Dialogs
 import catalogue as Catalogue
-import "qrc:/utils"
+import Utils
 import "qrc:/main"
 
 import "qrc:/inventory"

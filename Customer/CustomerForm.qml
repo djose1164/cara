@@ -4,7 +4,7 @@ import QtQuick.Layouts
 import QtQuick.Dialogs
 import User
 import Salesperson
-import "qrc:/utils"
+import Utils
 import Customer
 import "qrc:/main"
 

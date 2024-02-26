@@ -1,5 +1,5 @@
 import QtQuick
-import "qrc:/utils"
+import Utils
 
 
 CaraApi {

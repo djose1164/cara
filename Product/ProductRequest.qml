@@ -1,6 +1,6 @@
 import QtQuick
 import QtQml
-import "qrc:/utils"
+import Utils
 
 
 Item {

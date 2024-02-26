@@ -4,7 +4,7 @@ import QtQuick.Layouts
 import QtQuick.Dialogs
 import Customer
 import Product
-import "qrc:/utils"
+import Utils
 
 // TODO: Update implementation to use the new types.
 CaraApi {

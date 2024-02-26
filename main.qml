@@ -1,7 +1,7 @@
 import QtQuick
 import QtQuick.Controls
 import "qrc:/errors"
-import "qrc:/utils"
+import Utils
 import data
 import Authentication as Auth
 import User

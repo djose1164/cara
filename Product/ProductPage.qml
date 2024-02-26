@@ -5,7 +5,7 @@ import QtQuick.Dialogs
 
 import entities as Entity
 
-import "qrc:/utils"
+import Utils
 import "qrc:/reviews"
 import "qrc:/inventory"
 

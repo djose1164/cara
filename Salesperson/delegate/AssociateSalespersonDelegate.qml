@@ -3,7 +3,7 @@ import QtQuick.Controls
 import QtQuick.Layouts
 import QtQuick.Dialogs
 import Salesperson
-import "qrc:/utils"
+import Utils
 
 Page {
     id: root

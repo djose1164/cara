@@ -3,7 +3,7 @@ import QtQuick.Controls
 import QtQuick.Layouts
 import QtQuick.Dialogs
 
-import "qrc:/utils"
+import Utils
 import Customer
 
 import "qrc:/main"

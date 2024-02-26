@@ -1,7 +1,7 @@
 import QtQuick
 import QtQuick.Controls
 import Salesperson
-import "qrc:/utils"
+import Utils
 
 Page {
     id: root

@@ -2,7 +2,7 @@ import QtQuick
 import QtQuick.Layouts
 import QtQuick.Controls
 import Qt.labs.qmlmodels
-import "qrc:/utils"
+import Utils
 
 ListView {
     id: root

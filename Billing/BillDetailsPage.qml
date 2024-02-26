@@ -2,7 +2,7 @@ import QtQuick
 import QtQuick.Controls
 import Utils
 import Billing
-import "qrc:/utils"
+import Utils
 import "qrc:/orders"
 
 BackPage {

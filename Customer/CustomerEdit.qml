@@ -4,7 +4,7 @@ import QtQuick.Layouts
 import QtQuick.Dialogs
 
 import Utils
-import "qrc:/utils"
+import Utils
 
 Drawer {
     id: root

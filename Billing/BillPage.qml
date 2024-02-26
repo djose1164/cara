@@ -2,7 +2,7 @@ import QtQuick
 import QtQuick.Controls
 import Customer
 import Utils
-import "qrc:/utils"
+import Utils
 
 Page {
     id: root

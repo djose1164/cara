@@ -1,7 +1,7 @@
 import QtQuick
 import QtQuick.Controls
 import Billing
-import "qrc:/utils"
+import Utils
 import "qrc:/filters"
 
 Page {

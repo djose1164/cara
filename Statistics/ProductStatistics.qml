@@ -1,6 +1,6 @@
 import QtQuick
 import QtQuick.Controls
-import "qrc:/utils"
+import Utils
 import Product
 
 Item {
