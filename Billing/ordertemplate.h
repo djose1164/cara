@@ -43,6 +43,8 @@ private:
 
     std::optional<QStringList> htmlDetails();
 
+    void resetCalculatedTotal();
+
 private:
     QString html_;
     QString style_;

@@ -94,6 +94,7 @@ void OrderTemplate::setup()
 
 std::optional<QStringList> OrderTemplate::htmlDetails()
 {
+    resetCalculatedTotal();
     const auto orderDetails = order_["order_details"].toArray();
     QStringList detailsHtml{};
     for (const auto &detail : std::as_const(orderDetails))
@@ -130,6 +131,11 @@ std::optional<QStringList> OrderTemplate::htmlDetails()
     return detailsHtml;
 }
 
+void OrderTemplate::resetCalculatedTotal()
+{
+    calculatedTotal_ = 0;
+}
+
 QString OrderTemplate::style() const
 {
     return style_;
@@ -157,4 +163,3 @@ void OrderTemplate::componentComplete()
     setup();
 }
 }
-
