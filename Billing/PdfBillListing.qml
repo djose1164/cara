@@ -53,6 +53,7 @@ Page {
         id: fileDelegate
         Item {
             required property string fileName
+            readonly property string path: `${internal.documentsPath}/${fileName}`
             width: root.width
             height: 50
 
@@ -65,10 +66,17 @@ Page {
                 }
 
                 TapHandler {
-                    onTapped: print(`${internal.documentsPath}/${fileName}`)
+                    onTapped: {
+                        print(path);
+                        shareUtils.share(path);
+                    }
                 }
             }
         }
+    }
+
+    ShareUtils {
+        id: shareUtils
     }
 
     QtObject {
