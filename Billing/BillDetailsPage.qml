@@ -2,7 +2,6 @@ import QtQuick
 import QtQuick.Controls
 import Utils
 import Billing
-import Utils
 import "qrc:/orders"
 
 BackPage {
@@ -74,20 +73,23 @@ BackPage {
             path: "orders"
             onFetched: resp => {
                 orderTemplate.order = JSON.parse(resp).order;
-                printer.print();
+                printer.printBill();
             }
         }
     }
 
-    PdfOrderPrinter {
+    BillPrinter {
         id: printer
         document: OrderTemplate {
             id: orderTemplate
         }
-
-        onOrderPrinted: url => {
+        onBillPrinted: path => {
             processingIndicator.close();
-            Qt.openUrlExternally(url);
+            shareUtils.share("file://" + path);
         }
+    }
+
+    ShareUtils {
+        id: shareUtils
     }
 }

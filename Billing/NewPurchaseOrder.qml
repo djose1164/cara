@@ -169,7 +169,7 @@ Page {
         buttons: MessageDialog.Ok | MessageDialog.Cancel
         // onButtonClicked: close()
         onAccepted: {
-            pdfPrinter.print();
+            pdfPrinter.printBill();
             root.state = "creating";
         }
     }
@@ -185,15 +185,20 @@ Page {
         }
     }
 
-    PdfOrderPrinter {
+    BillPrinter {
         id: pdfPrinter
         document: OrderTemplate {
             id: orderTemplate
         }
-        onOrderPrinted: path => {
+        onBillPrinted: path => {
             root.state = "";
-            Qt.openUrlExternally(path);
+            console.log("path: "+path);
+            shareUtils.share("file://" + path);
         }
+    }
+
+    ShareUtils {
+        id: shareUtils
     }
 
     ProcessingIndicator {
