@@ -12,6 +12,8 @@ qt_add_qml_module(UtilsLib
         networkrequestsingleton.h networkrequestsingleton.cpp
         notimplementated.h
         restservice.h restservice.cpp
+        shareplataform.h shareplataform.cpp
+        shareutils.h shareutils.cpp
         utils.h utils.cpp
     QML_FILES
         BackButton.qml
@@ -46,3 +48,11 @@ qt_add_qml_module(UtilsLib
     RESOURCES
         utils.js
 )
+
+if(ANDROID)
+    target_sources(UtilsLib PRIVATE
+        androidshareplataform.h androidshareplataform.cpp
+    )
+endif()
+
+target_link_libraries(UtilsLib PRIVATE Qt6::Core)
