@@ -4,7 +4,6 @@ import QtQuick.Controls
 import QtQuick.Templates as T
 import Qt.labs.folderlistmodel
 import Utils
-import Utils
 
 Page {
     id: root

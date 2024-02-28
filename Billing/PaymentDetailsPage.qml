@@ -3,7 +3,6 @@ import QtQuick.Controls
 import QtQuick.Templates as T
 import Utils
 import Billing
-import Utils
 
 Page {
     id: root

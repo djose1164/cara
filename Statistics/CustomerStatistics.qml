@@ -3,7 +3,6 @@ import QtQuick.Controls
 import QtQuick.Templates as T
 import Customer
 import Utils
-import Utils
 
 Page {
     id: root

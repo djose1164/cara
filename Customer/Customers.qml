@@ -4,8 +4,6 @@ import Salesperson
 import User
 import Utils
 import Customer
-import Utils
-
 
 ListViewPage {
     id: root
