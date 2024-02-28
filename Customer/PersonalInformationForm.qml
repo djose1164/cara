@@ -7,7 +7,7 @@ import Utils
 import Customer
 
 import "qrc:/main"
-import "qrc:/utils/utils.js" as JS
+import "qrc:/qt/qml/Utils/utils.js" as JS
 
 GroupBox {
     id: root
