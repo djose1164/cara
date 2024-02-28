@@ -6,7 +6,6 @@ import User
 import Salesperson
 import Utils
 import Customer
-import "qrc:/main"
 
 Page {
     id: root

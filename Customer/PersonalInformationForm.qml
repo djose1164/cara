@@ -2,11 +2,8 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 import QtQuick.Dialogs
-
 import Utils
 import Customer
-
-import "qrc:/main"
 import "qrc:/qt/qml/Utils/utils.js" as JS
 
 GroupBox {

@@ -5,8 +5,6 @@ import QtQuick.Layouts
 import QtQuick.Dialogs
 import catalogue as Catalogue
 import Utils
-import "qrc:/main"
-
 import "qrc:/inventory"
 
 Page {
