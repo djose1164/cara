@@ -3,7 +3,9 @@
 
 #include <QJsonObject>
 #include <QObject>
+#include <QPrinter>
 #include <QQmlEngine>
+#include "filenamegenerator.h"
 
 class QPrinter;
 class QTextDocument;
@@ -23,7 +25,8 @@ public:
     enum class Status
     {
         Printing,
-        Idle
+        Idle,
+        Error
     };
     Q_ENUM(Status);
 
@@ -51,23 +54,19 @@ signals:
 
     void orderChanged();
 
-    void orderPrinted(const QString &path);
-
     void documentChanged();
 
+    void orderPrinted(const QString &path);
+
 private:
-    void printToPdf();
-
-    std::unique_ptr<QPrinter> preparePrinter(QAnyStringView filename) const;
-
-    std::unique_ptr<QTextDocument> prepareDocument(const QSizeF &pageSize) const;
-
-    QString getUniqueFilename() const;
+    void printBill();
 
 private:
     QString path_;
     Status status_;
     AbstractDocument *document_;
+    std::unique_ptr<FilenameGenerator> filenameGenerator_;
+    std::unique_ptr<QPrinter> printer_;
 };
 }
 

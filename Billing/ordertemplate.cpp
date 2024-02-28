@@ -3,6 +3,7 @@
 #include <QFile>
 #include <QSettings>
 #include <QJsonArray>
+#include <QTextDocument>
 
 using namespace Qt::StringLiterals;
 
@@ -139,6 +140,15 @@ void OrderTemplate::resetCalculatedTotal()
 QString OrderTemplate::style() const
 {
     return style_;
+}
+
+void OrderTemplate::print(QPagedPaintDevice *printer)
+{
+    QTextDocument doc{};
+    doc.setPageSize(pageSize());
+    doc.setDefaultStyleSheet(style_);
+    doc.setHtml(getFormattedOrder());
+    doc.print(printer);
 }
 
 QJsonObject OrderTemplate::order() const

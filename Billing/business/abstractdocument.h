@@ -2,7 +2,9 @@
 #define ABSTRACTDOCUMENT_H
 
 #include <QObject>
+#include <QPagedPaintDevice>
 #include <QQmlEngine>
+#include <QSizeF>
 
 namespace Billing
 {
@@ -14,14 +16,13 @@ public:
     explicit AbstractDocument(QObject *parent = nullptr);
     virtual ~AbstractDocument();
 
-    virtual void loadHtml() = 0;
+    QSizeF pageSize() const;
+    void setPageSize(const QSizeF &newPageSize);
 
-    virtual void loadStyle() = 0;
+    virtual void print(QPagedPaintDevice *printer) = 0;
 
-    virtual QString getFormattedOrder() = 0;
-    virtual QString style() const = 0;
-
-    virtual void setOrder(const QJsonObject &newOrder) = 0;
+private:
+    QSizeF pageSize_;
 };
 }
 #endif // ABSTRACTDOCUMENT_H

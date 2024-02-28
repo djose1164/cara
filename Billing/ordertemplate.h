@@ -17,20 +17,22 @@ public:
     explicit OrderTemplate(QObject *parent = nullptr);
 
     QJsonObject order() const;
-    void setOrder(const QJsonObject &newOrder) override;
+    void setOrder(const QJsonObject &newOrder);
 
-    QString style() const override;
+    QString style() const;
+
+    void print(QPagedPaintDevice *printer) override;
 
 signals:
     void orderChanged();
 
 private:
     // IOrderTemplate interface
-    void loadHtml() override;
+    void loadHtml();
 
-    void loadStyle() override;
+    void loadStyle();
 
-    QString getFormattedOrder() override;
+    QString getFormattedOrder();
 
     // QQmlParserStatus interface
     void classBegin() override;

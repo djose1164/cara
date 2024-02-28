@@ -13,10 +13,12 @@ class FileUtils : public QObject
 public:
     explicit FileUtils(QObject *parent = nullptr);
 
-    Q_INVOKABLE bool removeFile(const QString &filename);
+    Q_INVOKABLE bool removeFile(const QUrl &filename);
 
 public slots:
     void removeMatchingFiles(const QUrl &path, const QString &nameFilter);
+
+    void removeOldestFiles(int upTo, const QUrl &path, const QString &nameFilter);
 
 signals:
 };

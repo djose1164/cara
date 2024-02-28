@@ -37,6 +37,7 @@ Page {
 
     ListView {
         anchors.fill: parent
+        anchors.topMargin: 10
         model: folderModel
         delegate: fileDelegate
         spacing: 10
@@ -51,27 +52,52 @@ Page {
 
     Component {
         id: fileDelegate
-        Item {
+        SwipeDelegate {
+            id: control
             required property string fileName
             readonly property string path: `${internal.documentsPath}/${fileName}`
+
             width: root.width
             height: 50
+            text: fileName
+            contentItem: Item {
+                Row {
+                    spacing: 10
+                    Image {
+                        id: img
+                        source: "pdf-icon.svg"
+                        sourceSize: "32x32"
+                    }
 
-            Frame {
-                width: root.width * .9
-                anchors.centerIn: parent
-
-                Label {
-                    text: fileName
-                }
-
-                TapHandler {
-                    onTapped: {
-                        print(path);
-                        shareUtils.share(path);
+                    Label {
+                        height: parent.height
+                        text: control.text
+                        verticalAlignment: Label.AlignVCenter
+                        font.pointSize: 12
                     }
                 }
             }
+
+            swipe.right: Label {
+                id: deleteLabel
+                height: parent.height
+                anchors.right: parent.right
+                verticalAlignment: Label.AlignVCenter
+                text: "Eliminar"
+                color: "white"
+                padding: 12
+                background: Rectangle {
+                    color: deleteLabel.SwipeDelegate.pressed ? Qt.darker("tomato", 1.1) : "tomato"
+                }
+
+                SwipeDelegate.onClicked: {
+                    print(path);
+                    if (!fileUtils.removeFile(path))
+                        print("Couldn't remove file.");
+                }
+            }
+
+            onClicked: shareUtils.share(path)
         }
     }
 
