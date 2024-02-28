@@ -18,6 +18,7 @@ qt_add_qml_module(UtilsLib
     QML_FILES
         BackButton.qml
         BackPage.qml
+        BusyPopup.qml
         BusyStackLayout.qml
         CaraApi.qml
         Card.qml
@@ -33,6 +34,7 @@ qt_add_qml_module(UtilsLib
         MessagePane.qml
         MoreVertButton.qml
         NumberTextField.qml
+        PasswordInput.qml
         ProcessingIndicator.qml
         RedirectGroupBox.qml
         RedirectLabel.qml

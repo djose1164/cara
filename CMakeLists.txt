@@ -46,9 +46,17 @@ qt_add_qml_module(Cara
     VERSION 1.0
     QML_FILES
         main.qml
+        MainFooter.qml
+        MainPage.qml
+        SidePane.qml
+        SettingsPage.qml
+        ContactUs.qml
     RESOURCES
         assets/res.qrc
         qml/qml.qrc
+        twitter.svg
+        mail.svg
+        logout.svg
 )
 
 target_link_libraries(CaraLib PUBLIC

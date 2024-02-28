@@ -1,12 +1,4 @@
 <RCC>
-    <qresource prefix="/main">
-        <file>MainFooter.qml</file>
-        <file>BusyPopup.qml</file>
-        <file>CameraPage.qml</file>
-        <file>PasswordInput.qml</file>
-        <file>SidePane.qml</file>
-        <file>MainPage.qml</file>
-    </qresource>
     <qresource prefix="/home">
         <file>Home.qml</file>
         <file>UserHome.qml</file>
