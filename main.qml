@@ -18,7 +18,7 @@ ApplicationWindow {
     property string iconSize: "24x24"
     property bool authenticatedUser
     readonly property alias appStack: stackView
-    readonly property string mainPage: "qrc:/main/MainPage.qml"
+    readonly property string mainPage: "qrc:/qt/qml/Cara/MainPage.qml"
 
     onClosing: function(close) {
         // Manages Android Back-button
