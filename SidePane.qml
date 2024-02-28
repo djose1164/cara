@@ -3,7 +3,6 @@ import QtQuick.Controls
 import QtQuick.Layouts
 import Salesperson
 import User
-import Billing
 
 Drawer {
     id: root
@@ -28,6 +27,7 @@ Drawer {
         anchors.fill: parent
         anchors.leftMargin: 10
         anchors.rightMargin: 10
+        spacing: 10
 
         Label {
             text: "Menu"
@@ -36,50 +36,39 @@ Drawer {
             Layout.alignment: Qt.AlignHCenter
         }
 
-        Loader { sourceComponent: isGuest ? guest : logged }
+        Loader {
+            sourceComponent: isGuest ? guest : logged
+            Layout.fillWidth: true
+        }
 
         ToolSeparator {
             orientation: Qt.Horizontal
             Layout.fillWidth: true
         }
 
-        Label {
-            text: "Contactanos"
-            font.pointSize: 12
-            font.bold: true
-        }
-
-        Label {
-            text: "[Twitter](https://twitter.com/carardoficial)"
-            font.pointSize: 11
-            textFormat: Label.MarkdownText
-            onLinkActivated: url => Qt.openUrlExternally(url)
-        }
-
-        Label {
-            text: "[Correo electronico](mailto:djsoe1164@gmail.com)"
-            font.pointSize: 11
-            textFormat: Label.MarkdownText
-            onLinkActivated: url => Qt.openUrlExternally(url)
+        ContactUs {
+            Layout.fillWidth: true
         }
 
         ToolSeparator {
+            visible: logoutBtn.visible
             orientation: Qt.Horizontal
-            visible: LoginManager.status == LoginManager.LoggedIn
             Layout.fillWidth: true
         }
 
         Button {
-            Layout.alignment: Qt.AlignBottom
-            Layout.bottomMargin: 15
+            id: logoutBtn
+            visible: !isGuest
             text: "Cerrar sesion"
             flat: true
-            visible: !isGuest
+            icon.source: "logout.svg"
+            Layout.alignment: Qt.AlignBottom
+            Layout.bottomMargin: 15
             onClicked: {
-                close();
                 UserSettings.clear();
                 SalespersonSettings.clear();
                 LoginManager.logOut();
+                close();
             }
         }
 
@@ -93,8 +82,6 @@ Drawer {
     Component {
         id: guest
         ColumnLayout {
-            width: root.width
-
             Button {
                 onClicked: {
                     close();
@@ -117,24 +104,13 @@ Drawer {
 
     Component {
         id: logged
-
         ColumnLayout {
-            width: root.width
-            spacing: 20
-
-            Label {
-                text: "Informacion Personal"
-                font.pointSize: 12
-                font.bold: true
-            }
-
-            Label {
-                text: user.forename + " " + user.surname
-                font.pointSize: 11
-            }
+            implicitHeight: 150
+            spacing: 10
 
             Button {
                 text: "Ver perfil"
+                icon.source: "qrc:/qt/qml/Customer/person.svg"
                 flat: true
                 onClicked: {
                     close();
@@ -142,8 +118,14 @@ Drawer {
                 }
             }
 
-            BillingSettingsItem {
+            ItemDelegate {
+                text: "Configuraciones"
+                icon.source: "qrc:/icons/settings.svg"
                 Layout.fillWidth: true
+                onClicked: {
+                    close();
+                    stackView.pushItem("qrc:/qt/qml/Cara/SettingsPage.qml");
+                }
             }
         }
     }
