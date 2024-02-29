@@ -18,16 +18,16 @@ Item {
             font.bold: true
         }
 
-        ItemDelegate {
-            width: root.width
+        Button {
+            flat: true
             text: "Twitter"
             font.pointSize: 11
             icon.source: "twitter.svg"
             onClicked: url => Qt.openUrlExternally("https://twitter.com/carardoficial")
         }
 
-        ItemDelegate {
-            width: root.width
+        Button {
+            flat: true
             text: "Correo electrónico"
             font.pointSize: 11
             icon.source: "mail.svg"

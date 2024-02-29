@@ -118,10 +118,10 @@ Drawer {
                 }
             }
 
-            ItemDelegate {
+            Button {
                 text: "Configuraciones"
                 icon.source: "qrc:/icons/settings.svg"
-                Layout.fillWidth: true
+                flat: true
                 onClicked: {
                     close();
                     stackView.pushItem("qrc:/qt/qml/Cara/SettingsPage.qml");
