@@ -110,6 +110,5 @@ ListViewPage {
         id: customerEdit
         width: root.width
         height: root.height
-        stackView: root.stackView
     }
 }
