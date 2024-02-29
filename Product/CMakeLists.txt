@@ -24,8 +24,6 @@ qt_add_qml_module(ProductLib
         StockPopup.qml
         ProductForm.qml
         ProductManager.qml
-    SOURCES
-        business/costcalculator.h business/costcalculator.cpp
 )
 
 target_include_directories(ProductLib PRIVATE business ../inventory)

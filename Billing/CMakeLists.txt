@@ -16,6 +16,7 @@ qt_add_qml_module(BillingLib
         BillMessage.qml
         BillPage.qml
         BillPageHeader.qml
+        BillPrinter.qml
         BillViewChooser.qml
         BillingSettings.qml
         BillingSettingsItem.qml
@@ -34,6 +35,7 @@ qt_add_qml_module(BillingLib
         PaymentStatus.qml
         PaymentStatusFilter.qml
         PdfBillListing.qml
+        ProductSale.qml
     SOURCES
         billrepository.h billrepository.cpp
         business/abstractdocument.h business/abstractdocument.cpp
@@ -47,6 +49,7 @@ qt_add_qml_module(BillingLib
         business/paymentcontroller.h business/paymentcontroller.cpp
         business/pdforderprinter.h business/pdforderprinter.cpp
         business/purchaseorder.h business/purchaseorder.cpp
+        costcalculator.h costcalculator.cpp
         data/paymentresource.h data/paymentresource.cpp
         data/restorderrepository.h data/restorderrepository.cpp
         document.h document.cpp
@@ -63,7 +66,6 @@ qt_add_qml_module(BillingLib
     order-model.html style.css pdf.svg pdf-icon.svg
     DEPENDENCIES
         QtQuick Utils Entities
-        QML_FILES BillPrinter.qml
 )
 
 target_include_directories(BillingLib
@@ -73,4 +75,4 @@ target_include_directories(BillingLib
 )
 
 target_link_libraries(BillingLib
-    PRIVATE Qt6::Concurrent Qt6::PrintSupport Entities UtilsLib)
+    PRIVATE Qt6::Concurrent Qt6::PrintSupport Entities UtilsLib InventoryLib)

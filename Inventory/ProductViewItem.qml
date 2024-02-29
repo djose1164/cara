@@ -155,6 +155,10 @@ Item {
         selectionModel.select(idx, ItemSelectionModel.Deselect);
     }
 
+    function deselectAll() {
+        selectionModel.clear();
+    }
+
     function indexOf(productId: int): int {
         for (let i = 0; i < productModel.count; ++i)
             if (productModel.get(i).productId === productId)

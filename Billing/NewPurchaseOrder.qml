@@ -102,6 +102,8 @@ Page {
         id: message
         buttons: MessageDialog.Ok | MessageDialog.Cancel
         onAccepted: {
+            if (!internal.canPrint)
+                return;
             pdfPrinter.printBill();
             root.state = "creating";
         }
@@ -115,6 +117,7 @@ Page {
             message.informativeText = "¿Deseas exportar la factura en PDF?";
             message.open();
             orderTemplate.order = newOrder.order;
+            productSale.refreshSelector();
         }
     }
 
@@ -136,6 +139,11 @@ Page {
     ProcessingIndicator {
         id: busyPopup
         width: root.width * .8
+    }
+
+    QtObject {
+        id: internal
+        readonly property bool canPrint: root.state == "orderCreated"
     }
 
     function acceptHandle() {

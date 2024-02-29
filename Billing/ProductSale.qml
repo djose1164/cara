@@ -75,9 +75,30 @@ Item {
     function validate() {
         if (costCalculator.total === 0)
             throw "Debes agregar al menos un producto a la orden";
+
+        for (let i = 0; i < choosenProducts.count; ++i)
+            enoughStocksFor(choosenProducts.get(i));
+    }
+
+    function enoughStocksFor(product) {
+        const model = productSelector.productModel;
+        const foundIndex = model.find(product.productId);
+
+        if (!foundIndex.valid)
+            throw `Producto '${product.name}' no encontrado en la lista de seleccion.`;
+
+        const foundProduct = model.get(foundIndex.row);
+        print(`${foundProduct.quantityAvailable} < ${product.selectedQty}`)
+        if (foundProduct.quantityAvailable < product.selectedQty)
+            throw `No hay suficiente ${product.name} disponible en inventario.`;
     }
 
     function toJson() {
         return selectedProductsView.toJson();
+    }
+
+    function refreshSelector() {
+        productSelector.deselectAll();
+        productSelector.refresh();
     }
 }

@@ -19,7 +19,7 @@ Drawer {
     interactive: false
 
     Component.onCompleted: {
-        productView.updateModel(salespersonId);
+        refresh();
     }
 
     SearchHeaderItem {
@@ -42,5 +42,13 @@ Drawer {
 
     function removeSelectionOf(productId) {
         productView.removeSelectionOf(productId);
+    }
+
+    function deselectAll() {
+        productView.deselectAll();
+    }
+
+    function refresh() {
+        productView.updateModel(salespersonId);
     }
 }
