@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
+import QtQuick.Templates as T
 import Utils
 import User
 import Salesperson
@@ -8,7 +9,7 @@ import Salesperson
 Page {
     id: root
 
-    readonly property StackView stackView: StackView.view
+    readonly property T.StackView stackView: StackView.view
 
     title: "Perfil"
     header: TitleHeader {

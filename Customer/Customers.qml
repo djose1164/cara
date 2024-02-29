@@ -1,5 +1,6 @@
 import QtQuick
 import QtQuick.Controls
+import QtQuick.Templates as T
 import Salesperson
 import User
 import Utils
@@ -11,7 +12,7 @@ ListViewPage {
     required property int salespersonId
 
     readonly property int fontSize: 12
-    readonly property StackView stackView: StackView.view
+    readonly property T.StackView stackView: StackView.view
 
     title: "Clientes"
     header: TitleHeader {

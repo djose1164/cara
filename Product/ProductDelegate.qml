@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
+import QtQuick.Templates as T
 
 Item {
     id: root
@@ -10,7 +11,7 @@ Item {
     required property string image_url
     required property string description
     required property int sell_price
-    readonly property StackView stackView: ListView.view.stackView
+    readonly property T.StackView stackView: ListView.view.stackView
 
     width: ListView.view.width
     height: 200

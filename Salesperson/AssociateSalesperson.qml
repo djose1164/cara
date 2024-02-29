@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Controls
 import Salesperson
+import QtQuick.Templates as T
 import Utils
 
 Page {
@@ -11,7 +12,7 @@ Page {
     readonly property int adminId: user.userId
     readonly property int salespersonId: SalespersonSettings.salespersonId
 
-    readonly property StackView stackView: StackView.view
+    readonly property T.StackView stackView: StackView.view
 
     title: "Vendedor Asociado"
     header: TitleHeader {

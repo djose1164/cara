@@ -1,5 +1,6 @@
 import QtQuick
 import QtQuick.Controls
+import QtQuick.Templates as T
 import Customer
 import Utils
 
@@ -7,7 +8,7 @@ Page {
     id: root
 
     required property var user
-    readonly property StackView stackView: StackView.view
+    readonly property T.StackView stackView: StackView.view
     readonly property string adminViewPath: "qrc:/qt/qml/Customer/CustomerViewItem.qml"
     readonly property string customerViewPath: "qrc:/qt/qml/Billing/CustomerBillsHome.qml"
     readonly property string messagePath: "qrc:/qt/qml/Billing/BillMessage.qml"

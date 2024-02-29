@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
+import QtQuick.Templates as T
 import Utils
 import Product
 
@@ -8,7 +9,7 @@ Page {
     id: root
 
     required property int salespersonId
-    readonly property StackView stackView: StackView.view
+    readonly property T.StackView stackView: StackView.view
 
     title: "Inventario"
     header: TitleHeader {

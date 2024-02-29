@@ -2,6 +2,7 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 import QtQuick.Dialogs
+import QtQuick.Templates as T
 import User
 import Salesperson
 import Utils
@@ -11,7 +12,7 @@ Page {
     id: root
 
     property string imgURL: "qrc:/icons/done.svg"
-    readonly property StackView stackView_: StackView.view
+    readonly property T.StackView stackView_: StackView.view
     readonly property LocalUserStore userStore: LocalUserStore {}
 
     signal clientAdded
