@@ -7,11 +7,11 @@ import Customer
 Item {
     id: root
 
-    required property CustomerSelector customerSelector
-    required property T.StackView stackView
-    required property int customerId
+    property int customerId
 
     property alias fullname: customerDelegate.fullname
+
+    signal changeCustomerClicked
 
     implicitHeight: 125
 
@@ -20,7 +20,7 @@ Item {
         anchors.fill: parent
         title: "Cliente seleccionado"
         redirectText: "Editar cliente"
-        onRedirectClicked: customerSelector.open()
+        onRedirectClicked: root.changeCustomerClicked()
 
         CustomerCard {
             id: customerDelegate
@@ -34,7 +34,6 @@ Item {
         id: customerEdit
         width: app.width
         height: app.height
-        stackView: root.stackView
         customerId: root.customerId
     }
 

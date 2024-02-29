@@ -15,7 +15,6 @@ Drawer {
     };
 
     property int customerId
-    required property StackView stackView
 
     onAboutToShow: {
         if (customerId < 0)
