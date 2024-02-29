@@ -19,17 +19,7 @@ ApplicationWindow {
     readonly property alias appStack: stackView
     readonly property string mainPage: "qrc:/qt/qml/Cara/MainPage.qml"
 
-    onClosing: function(close) {
-        // Manages Android Back-button
-        if(Qt.platform.os === "android") {
-            if (appStack.depth > 1) {
-                close.accepted = false;
-                appStack.pop();
-            }
-            else
-                close.accepted = true;
-        }
-    }
+    onClosing: close => closingHandler(close)
 
     Component.onCompleted: setup()
 
@@ -64,7 +54,6 @@ ApplicationWindow {
         sequence: StandardKey.Quit
         onActivated: Qt.quit()
     }
-
 
     CaraApi {
         id: caraApi
@@ -129,6 +118,24 @@ ApplicationWindow {
             login.authenticate();
         } else {
             stackView.replace(mainPage, {user: userController.create({})});
+        }
+    }
+
+    function closingHandler(close: CloseEvent) {
+        // Manages Android Back-button
+        if(Qt.platform.os === "android") {
+            if (appStack.depth > 1) {
+                close.accepted = false;
+                appStack.pop();
+                return;
+            }
+
+            const currentSV = appStack.currentItem.currentStackView;
+            if (currentSV instanceof StackView && currentSV.depth > 1) {
+                close.accepted = false;
+                currentSV.pop()
+                return;
+            }
         }
     }
 }

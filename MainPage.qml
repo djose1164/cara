@@ -2,6 +2,7 @@ import QtQuick
 import QtCore
 import QtQuick.Controls
 import QtQuick.Layouts
+import QtQuick.Templates as T
 import User
 import Salesperson
 import "qrc:/orders" as Orders
@@ -16,8 +17,8 @@ Page {
     required property var user
 
     readonly property alias billStack: billStack
-    // readonly property alias homeStack: homeStack
 
+    readonly property T.StackView currentStackView: stackLayout.children[stackLayout.currentIndex]
     readonly property StackView stackView: StackView.view
     readonly property string userHomePath: "qrc:/home/UserHome.qml"
     readonly property url adminHomePath: "qrc:/home/AdminHome.qml"
