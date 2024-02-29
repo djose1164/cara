@@ -2,7 +2,6 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 import Utils
-import Utils
 
 Drawer {
     id: root

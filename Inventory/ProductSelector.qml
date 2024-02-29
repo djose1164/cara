@@ -6,13 +6,13 @@ import Utils
 import Inventory
 import Billing
 import Product
-import Utils
 
 Drawer {
     id: root
 
     required property int salespersonId
     required property ProductModel selectedProducts
+    property alias productModel: productView.productModel
 
     signal productSelected(products: ProductModel)
 

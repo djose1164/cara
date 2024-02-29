@@ -6,13 +6,13 @@ import Utils
 import Inventory
 import Billing
 import Product
-import Utils
 
 Item {
     id: root
 
     required property ProductModel selectedProducts
     required property SearchHeaderItem header
+    property alias productModel: productModel
 
     states: [
         State {
@@ -45,7 +45,6 @@ Item {
         anchors.centerIn: parent
         running: false
     }
-
 
     MessagePane {
         id: errorPane
@@ -122,11 +121,8 @@ Item {
             required reorderPoint
             required imageUrl
 
-            readonly property var modelIndex: productModel.index(index, 0)
-
             enabled: quantityAvailable > 0
             background: Rectangle {
-                id: backRec
                 color: {
                     if (!selectionModel.hasSelection)
                         return "transparent";
