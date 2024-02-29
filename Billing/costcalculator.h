@@ -1,10 +1,10 @@
 #ifndef COSTCALCULATOR_H
 #define COSTCALCULATOR_H
 
-#include "model/productmodel.h"
 #include <QObject>
 #include <QQmlEngine>
 #include <QQmlParserStatus>
+#include "Inventory/model/productmodel.h"
 
 namespace Business
 {
@@ -32,7 +32,6 @@ private slots:
     void calculateTotal();
 
 signals:
-
     void modelChanged();
 
     void totalChanged();
