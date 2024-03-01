@@ -101,6 +101,8 @@ ApplicationWindow {
         refreshToken: myTokenStore.refresh
         onTokenExpired: {
             print("Token is expired");
+            UserSettings.clear();
+            SalespersonSettings.clear();
             stackView.replace(mainPage, {user: userController.create({})});
         }
     }
