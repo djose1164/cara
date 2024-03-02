@@ -1,6 +1,6 @@
 import QtQuick
 import QtQuick.Controls
-import "qrc:/singleton"
+
 
 Item {
     id: root

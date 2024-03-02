@@ -2,11 +2,12 @@ import QtQuick
 import QtQuick.Controls
 import Utils
 import Product
+import Inventory
 
 Item {
     id: root
 
-    property alias model: listView.model
+    property alias model: productModel
 
     signal redirectClicked
     signal deleteClicked(index: int, productId: int)
@@ -23,6 +24,7 @@ Item {
             anchors.fill: parent
             spacing: 5
             clip: true
+            model: productModel
             delegate: ProductCard {
                 required productName
                 required productId
@@ -39,6 +41,8 @@ Item {
             }
         }
     }
+
+    ProductModel { id: productModel }
 
     function toJson() {
         const products = [];

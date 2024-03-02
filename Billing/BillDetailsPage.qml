@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Controls
-import "qrc:/utils"
+import Utils
+import Billing
 import "qrc:/orders"
 
 BackPage {
@@ -15,6 +16,7 @@ BackPage {
     property alias customer: orderState.buyer
 
     title: "Detalles de orden"
+    btnLoader.sourceComponent: menuBtn
 
     ScrollView {
         anchors.fill: parent
@@ -33,12 +35,61 @@ BackPage {
                     return root.width *.75
             }
             anchors.horizontalCenter: parent.horizontalCenter
-            //payment: root.payment
             orderId: root.orderId
             details: root.details
             date: root.date
             status: root.status
             model: root.model
         }
+    }
+
+    ProcessingIndicator {
+        id: processingIndicator
+        width: root.width * .8
+    }
+
+    Component {
+        id: menuBtn
+        MoreVertButton {
+            onClicked: menu.open()
+
+            Menu {
+                id: menu
+
+                MenuItem {
+                    text: "Exportar como PDF"
+                    onTriggered: {
+                        processingIndicator.open();
+                        orderResource.getOrderById(root.orderId);
+                    }
+                }
+            }
+        }
+    }
+
+    RestService {
+        OrderResource {
+            id: orderResource
+            path: "orders"
+            onFetched: resp => {
+                orderTemplate.order = JSON.parse(resp).order;
+                printer.printBill();
+            }
+        }
+    }
+
+    BillPrinter {
+        id: printer
+        document: OrderTemplate {
+            id: orderTemplate
+        }
+        onBillPrinted: path => {
+            processingIndicator.close();
+            shareUtils.share("file://" + path);
+        }
+    }
+
+    ShareUtils {
+        id: shareUtils
     }
 }

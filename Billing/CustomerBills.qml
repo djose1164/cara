@@ -2,8 +2,7 @@ import QtQuick
 import QtQuick.Layouts
 import QtQuick.Controls
 import Qt.labs.qmlmodels
-import "qrc:/utils"
-import "qrc:/orders"
+import Utils
 
 ListView {
     id: root
@@ -28,10 +27,6 @@ ListView {
     }
 
     model: billProxyModel
-
-    RefreshIndicator {
-        id: refreshIcon
-    }
 
     BusyIndicator {
         id: busyIndicator

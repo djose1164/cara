@@ -2,8 +2,8 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 
-import "qrc:/singleton"
-import "qrc:/utils"
+
+import Utils
 
 Page {
     id: root

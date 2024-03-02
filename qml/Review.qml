@@ -2,8 +2,7 @@ import QtQuick
 import QtQuick.Dialogs
 import QtQuick.Controls
 import QtQuick.Layouts
-import "qrc:/utils"
-import "qrc:/singleton"
+import Utils
 import "qrc:/reviews"
 
 

@@ -11,7 +11,7 @@ Home {
         Welcome {
             id: welcome
             width: root.width
-            fullName: userStore.user.forename ?? "Invitado"
+            fullName: UserSettings.forename ?? "Invitado"
         }
 
         Offers {
@@ -20,9 +20,5 @@ Home {
             height: root.height - welcome.height - 40
             stackView: root.stackView
         }
-    }
-
-    LocalUserStore {
-        id: userStore
     }
 }

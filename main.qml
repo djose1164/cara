@@ -1,12 +1,11 @@
 import QtQuick
 import QtQuick.Controls
 import "qrc:/errors"
-import "qrc:/singleton"
-import "qrc:/utils"
 import data
 import Authentication as Auth
 import User
 import Utils
+import Salesperson
 
 ApplicationWindow {
     id: app
@@ -18,19 +17,9 @@ ApplicationWindow {
     property string iconSize: "24x24"
     property bool authenticatedUser
     readonly property alias appStack: stackView
-    readonly property string mainPage: "qrc:/main/MainPage.qml"
+    readonly property string mainPage: "qrc:/qt/qml/Cara/MainPage.qml"
 
-    onClosing: function(close) {
-        // Manages Android Back-button
-        if(Qt.platform.os === "android") {
-            if (appStack.depth > 1) {
-                close.accepted = false;
-                appStack.pop();
-            }
-            else
-                close.accepted = true;
-        }
-    }
+    onClosing: close => closingHandler(close)
 
     Component.onCompleted: setup()
 
@@ -48,18 +37,23 @@ ApplicationWindow {
     UserController {
         id: userController
         onFetched: function(resp) {
+            const salesperson = JSON.parse(resp).user.salesperson;
             const user = userController.create(resp);
             print("Replacing appStack with MainPage");
             UserSettings.setEntity(user);
+            SalespersonSettings.setEntity(spController.fromJsonObject(salesperson));
             stackView.replace(mainPage, {user});
         }
+    }
+
+    SalespersonController {
+        id: spController
     }
 
     Shortcut {
         sequence: StandardKey.Quit
         onActivated: Qt.quit()
     }
-
 
     CaraApi {
         id: caraApi
@@ -107,6 +101,8 @@ ApplicationWindow {
         refreshToken: myTokenStore.refresh
         onTokenExpired: {
             print("Token is expired");
+            UserSettings.clear();
+            SalespersonSettings.clear();
             stackView.replace(mainPage, {user: userController.create({})});
         }
     }
@@ -124,6 +120,24 @@ ApplicationWindow {
             login.authenticate();
         } else {
             stackView.replace(mainPage, {user: userController.create({})});
+        }
+    }
+
+    function closingHandler(close: CloseEvent) {
+        // Manages Android Back-button
+        if(Qt.platform.os === "android") {
+            if (appStack.depth > 1) {
+                close.accepted = false;
+                appStack.pop();
+                return;
+            }
+
+            const currentSV = appStack.currentItem.currentStackView;
+            if (currentSV instanceof StackView && currentSV.depth > 1) {
+                close.accepted = false;
+                currentSV.pop()
+                return;
+            }
         }
     }
 }

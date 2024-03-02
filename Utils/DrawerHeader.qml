@@ -2,8 +2,7 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 import QtQuick.Dialogs
-
-import "qrc:/utils"
+import Utils
 
 Rectangle {
     id: root

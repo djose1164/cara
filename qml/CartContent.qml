@@ -1,10 +1,8 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
-
 import entities as Entity
 import Product
-import "qrc:/singleton"
 
 ListView {
     id: root

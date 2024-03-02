@@ -2,6 +2,7 @@
 #define NETWORKREQUESTSINGLETON_H
 
 #include "../authentication/business/itoken.h"
+#include <QNetworkAccessManager>
 #include <QNetworkRequestFactory>
 
 namespace Utils
@@ -18,6 +19,7 @@ public:
     void setAccessToken(const QString &newAccessToken) override;
 
     std::shared_ptr<QNetworkRequestFactory> api() const;
+    QNetworkAccessManager *manager() const;
 
 private:
     NetworkRequestSingleton();
@@ -25,6 +27,7 @@ private:
 
 private:
     std::shared_ptr<QNetworkRequestFactory> api_;
+    std::shared_ptr<QNetworkAccessManager> manager_;
 };
 }
 

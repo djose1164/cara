@@ -1,14 +1,15 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
-import "qrc:/utils"
+import QtQuick.Templates as T
+import Utils
 import Product
 import Billing
 
 Page {
     id: root
 
-    readonly property StackView stackView: StackView.view
+    readonly property T.StackView stackView: StackView.view
     property int orderId
     property var payment
     property var orderDetails

@@ -1,14 +1,16 @@
-#include "customerresource.h"
+﻿#include "customerresource.h"
 #include <QSettings>
 #include <QNetworkReply>
 #include <QRestReply>
 #include <QJsonObject>
+#include <QRestAccessManager>
 
 using namespace Qt::StringLiterals;
 
 namespace
 {
 constexpr auto resourceIdentification = "/%1"_L1;
+constexpr auto summaryPath{"/summary"_L1};
 }
 
 namespace Data
@@ -39,20 +41,39 @@ void CustomerResource::readBySalespersonId(SalespersonId salespersonId)
     const auto req{api_->createRequest(path_
         + QString("/?salesperson_id=%1").arg(salespersonId))};
 
-    manager_->get(req, this, [&](QRestReply *reply) {
-        if (!reply->isSuccess())
+    manager_->get(req, this, [&](QRestReply &reply) {
+        if (!reply.isSuccess())
         {
-            setErrorString(reply->errorString());
+            setErrorString(reply.errorString());
             emit errorOccurred();
-            if (reply->httpStatus() == 404)
+            if (reply.httpStatus() == 404)
             {
-                setErrorString("El recurso solicitado no existe.");
+                setErrorString("El recurso solicitado no existe."_L1);
                 emit contentNotFound();
             }
             return;
         }
-        setData(reply->body());
 
+        setData(reply.readBody());
+
+        emit fetched(data());
+    });
+}
+
+void CustomerResource::readSummary(CustomerId id)
+{
+    const auto resourceId{resourceIdentification.arg(QString::number(id))};
+    const auto req{api_->createRequest(path_ + resourceId + summaryPath)};
+
+    manager_->get(req, this, [&](QRestReply &reply) {
+        if (!reply.isSuccess())
+        {
+            setErrorString(reply.errorString());
+            emit errorOccurred();
+            return;
+        }
+
+        setData(reply.readBody());
         emit fetched(data());
     });
 }

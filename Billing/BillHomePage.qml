@@ -1,15 +1,14 @@
 import QtQuick
 import QtQuick.Controls
+import QtQuick.Templates as T
 import Billing
-
-import "qrc:/utils"
+import Utils
 import "qrc:/filters"
-import "qrc:/singleton"
 
 Page {
     id: root
 
-    readonly property StackView stackView: StackView.view
+    readonly property T.StackView stackView: StackView.view
     required property int customerId
 
     title: "Todas las cuentas"

@@ -15,13 +15,6 @@ OrderController::OrderController(QObject *parent)
 
 void OrderController::createOrder(const QVariantMap &order)
 {
-    if (!validateOrder(order))
-    {
-        qCritical() << "OrderController::createOrder: " << errorString();
-        setError(Error::ValidationError);
-        emit errorOccurred();
-        return;
-    }
     repository_->add(order);
 }
 

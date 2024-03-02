@@ -1,0 +1,65 @@
+body {
+    font-family: 'Times New Roman', Times, serif;
+}
+
+#details-table {
+    table-layout: fixed;
+    border-collapse: collapse;
+    width: 100%;
+    border: 3px solid purple;
+}
+
+th,
+td {
+    padding: 5px;
+}
+
+#details-table  tr  td {
+    text-align: center;
+}
+
+thead,
+tfoot {
+    color: white;
+    text-shadow: 1px 1px 1px black;
+}
+
+thead th,
+tfoot th,
+tfoot td {
+    background: red;
+}
+
+hr {
+    background-color: red;
+    height: 2px;
+    margin: 50px 0 50px 0;
+}
+
+#horizontal-bar {
+    height: 1em;
+}
+
+#header-table {
+    border-collapse: separate;
+}
+
+.align-right {
+    text-align: right;
+}
+
+#total-box {
+    float: right;
+    width: 35%;
+}
+
+#business-name {
+    background-color: red;
+    color: white;
+    height: 10px;
+}
+
+#factura-consumo {
+    text-align: center;
+    vertical-align: middle;
+}

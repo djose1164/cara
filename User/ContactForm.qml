@@ -1,8 +1,8 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
-import "qrc:/utils"
-import "qrc:/utils/utils.js" as JS
+import Utils
+import "qrc:/qt/qml/Utils/utils.js" as JS
 
 ColumnLayout {
     id: root

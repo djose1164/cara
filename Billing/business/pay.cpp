@@ -4,6 +4,7 @@
 #include <QSettings>
 #include <QJsonObject>
 #include <QJsonDocument>
+#include <QRestAccessManager>
 
 namespace Business
 {
@@ -35,7 +36,9 @@ void Pay::pay(const QVariantMap &data)
     }
 
     manager_->post(api_->createRequest(path_ + QString("/%1").arg(p.paymentId())),
-                   p.toJsonObject(), this, &Pay::paymentFinished);
+                   QJsonDocument{p.toJsonObject()},
+                   this,
+                   [&](QRestReply &r) { paymentFinished(&r); });
 }
 
 void Pay::pay(int amount)
@@ -60,7 +63,9 @@ void Pay::pay(int amount)
     }
 
     manager_->post(api_->createRequest(path_ + QString("/%1").arg(p.paymentId())),
-                   p.toJsonObject(), this, &Pay::paymentFinished);
+                   QJsonDocument{p.toJsonObject()},
+                   this,
+                   [&](QRestReply &r) { paymentFinished(&r); });
 }
 
 void Pay::paymentFinished(QRestReply *reply)
@@ -72,7 +77,7 @@ void Pay::paymentFinished(QRestReply *reply)
         return;
     }
 
-    const auto json{reply->json()};
+    const auto json{reply->readJson()};
     if (!json)
     {
         qWarning() << "Pay::pay: json not valid.";

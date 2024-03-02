@@ -1,5 +1,7 @@
 #include "networkrequestsingleton.h"
 #include <QSettings>
+#include <QNetworkAccessManager>
+#include <QNetworkRequestFactory>
 
 using namespace Qt::StringLiterals;
 
@@ -13,6 +15,7 @@ NetworkRequestSingleton &NetworkRequestSingleton::instance()
 
 NetworkRequestSingleton::NetworkRequestSingleton()
     : api_{std::make_shared<QNetworkRequestFactory>(QSettings().value("base").toString())}
+    , manager_{std::make_shared<QNetworkAccessManager>()}
 {
     const QString token{QSettings().value("Credentials/accessToken"_L1).toString()};
     api_->setBearerToken(token.toUtf8());
@@ -36,5 +39,10 @@ void NetworkRequestSingleton::setAccessToken(const QString &newAccessToken)
 std::shared_ptr<QNetworkRequestFactory> NetworkRequestSingleton::api() const
 {
     return api_;
+}
+
+QNetworkAccessManager *NetworkRequestSingleton::manager() const
+{
+    return manager_.get();
 }
 }

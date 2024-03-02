@@ -2,16 +2,17 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 import QtQuick.Dialogs
+import QtQuick.Templates as T
 import Salesperson
 import User
-import "qrc:/utils"
+import Utils
 import Customer
 
 Page {
     id: root
 
     required property int adminId
-    readonly property StackView stackView: StackView.view
+    readonly property T.StackView stackView: StackView.view
 
     header: TitleHeader {
         title: root.title

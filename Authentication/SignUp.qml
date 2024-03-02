@@ -1,13 +1,13 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
-import "qrc:/main"
-import "qrc:/utils"
+import QtQuick.Templates as T
+import Utils
 
 Item {
     id: signUp
 
-    readonly property StackView stackView: StackView.view
+    readonly property T.StackView stackView: StackView.view
     property int fontSize: 14
 
     Image {

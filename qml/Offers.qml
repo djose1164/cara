@@ -1,12 +1,13 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
+import QtQuick.Templates as T
 import Product
 
 Item {
     id: root
 
-    property StackView stackView
+    property T.StackView stackView
 
     Component.onCompleted: productRequest.addSuggetionsToModel()
 
@@ -19,7 +20,7 @@ Item {
 
         ListView {
             id: listView
-            readonly property StackView stackView: root.stackView
+            readonly property T.StackView stackView: root.stackView
 
             spacing: 10
             model: model

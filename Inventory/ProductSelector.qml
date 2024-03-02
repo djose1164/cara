@@ -6,20 +6,20 @@ import Utils
 import Inventory
 import Billing
 import Product
-import "qrc:/utils"
 
 Drawer {
     id: root
 
     required property int salespersonId
     required property ProductModel selectedProducts
+    property alias productModel: productView.productModel
 
     signal productSelected(products: ProductModel)
 
     interactive: false
-    onAboutToHide: productView.closeHandle()
+
     Component.onCompleted: {
-        productView.updateModel(salespersonId);
+        refresh();
     }
 
     SearchHeaderItem {
@@ -38,5 +38,17 @@ Drawer {
         anchors.bottom: parent.bottom
         selectedProducts: root.selectedProducts
         header: headerItem
+    }
+
+    function removeSelectionOf(productId) {
+        productView.removeSelectionOf(productId);
+    }
+
+    function deselectAll() {
+        productView.deselectAll();
+    }
+
+    function refresh() {
+        productView.updateModel(salespersonId);
     }
 }

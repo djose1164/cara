@@ -1,12 +1,4 @@
 <RCC>
-    <qresource prefix="/main">
-        <file>MainFooter.qml</file>
-        <file>BusyPopup.qml</file>
-        <file>CameraPage.qml</file>
-        <file>PasswordInput.qml</file>
-        <file>SidePane.qml</file>
-        <file>MainPage.qml</file>
-    </qresource>
     <qresource prefix="/home">
         <file>Home.qml</file>
         <file>UserHome.qml</file>
@@ -18,8 +10,6 @@
     </qresource>
     <qresource prefix="/orders">
         <file>Entry.qml</file>
-        <file>OrderState.qml</file>
-        <file>OrderStatusCB.qml</file>
         <file>BuyOrder.qml</file>
         <file>BuyOrderForm.qml</file>
         <file>BuyOrderAPI.qml</file>
@@ -33,33 +23,6 @@
         <file>ProviderAPI.qml</file>
         <file>ProviderForm.qml</file>
         <file>ProviderComboBox.qml</file>
-    </qresource>
-    <qresource prefix="/utils">
-        <file>RequestModel.qml</file>
-        <file>Request.qml</file>
-        <file>Filter.qml</file>
-        <file>CaDrawer.qml</file>
-        <file>TitleHeader.qml</file>
-        <file>CaraApi.qml</file>
-        <file>Star.qml</file>
-        <file>StarRating.qml</file>
-        <file>CenterBusyIndicator.qml</file>
-        <file>Message.qml</file>
-        <file>BackPage.qml</file>
-        <file>BusyStackLayout.qml</file>
-        <file>BackButton.qml</file>
-        <file>AddressForm.qml</file>
-        <file>ContactForm.qml</file>
-        <file>CloseButton.qml</file>
-        <file>Header.qml</file>
-        <file>RefreshIndicator.qml</file>
-        <file>MoreVertButton.qml</file>
-        <file>ImagePicker.qml</file>
-        <file>utils.js</file>
-        <file>NumberTextField.qml</file>
-    </qresource>
-    <qresource lang="qml" prefix="/qr">
-        <file>QR.qml</file>
     </qresource>
     <qresource lang="qml" prefix="/errors">
         <file>ErrorPage.qml</file>
@@ -84,10 +47,6 @@
         <file>CartContent.qml</file>
         <file>Checkout.qml</file>
         <file>EmptyCart.qml</file>
-    </qresource>
-    <qresource prefix="/singleton">
-        <file>qmldir</file>
-        <file>ViewManager.qml</file>
     </qresource>
     <qresource lang="qml" prefix="/filters">
         <file>FilterButton.qml</file>

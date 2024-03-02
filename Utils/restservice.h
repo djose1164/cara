@@ -44,9 +44,11 @@ private:
 private:
     QUrl url_;
     QList<AbstractResource *> resources_;
-    std::shared_ptr<QRestAccessManager> manager_;
-    std::shared_ptr<QNetworkRequestFactory> api_;
+    const AbstractResource::Manager manager_;
+    const AbstractResource::Api api_;
 };
 }
+
+Q_DECLARE_OPAQUE_POINTER(QRestAccessManager *)
 
 #endif // RESTSERVICE_H

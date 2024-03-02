@@ -2,8 +2,8 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Dialogs
 
-import "qrc:/utils"
-import "qrc:/singleton"
+import Utils
+
 
 // TODO: This component need to be reviewed
 

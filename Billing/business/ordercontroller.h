@@ -30,11 +30,10 @@ public:
     Error error() const;
     void setError(Error newError);
 
+    Q_INVOKABLE bool validateOrder(const QVariantMap &order);
+
 public slots:
     void createOrder(const QVariantMap &order);
-
-private:
-    bool validateOrder(const QVariantMap &order);
 
 signals:
     void orderCreated(const QJsonObject &json);

@@ -1,15 +1,15 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
+import QtQuick.Templates as T
 import catalogue as Catalogue
-import "qrc:/utils"
+import Utils
 import Product
-import "qrc:/singleton"
 
 Page {
     id: root
 
-    readonly property StackView stackView: StackView.view
+    readonly property T.StackView stackView: StackView.view
 
     title: "Catalogo"
     header: TitleHeader {

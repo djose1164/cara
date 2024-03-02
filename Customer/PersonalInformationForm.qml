@@ -2,12 +2,9 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 import QtQuick.Dialogs
-
-import "qrc:/utils"
+import Utils
 import Customer
-import "qrc:/singleton"
-import "qrc:/main"
-import "qrc:/utils/utils.js" as JS
+import "qrc:/qt/qml/Utils/utils.js" as JS
 
 GroupBox {
     id: root

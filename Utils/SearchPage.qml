@@ -1,12 +1,13 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
+import QtQuick.Templates as T
 import Product as Products
 
 Page {
     id: root
     property string placeholderText: ""
-    readonly property StackView stackView: StackView.view
+    readonly property T.StackView stackView: StackView.view
 
     signal acceptedText(text: string)
 
@@ -39,7 +40,7 @@ Page {
 
     ListView {
         id: listView
-        readonly property StackView stackView: root.stackView
+        readonly property T.StackView stackView: root.stackView
         height: parent.height - gridLayout.height
         width: parent.width
         anchors.top: gridLayout.bottom

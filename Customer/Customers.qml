@@ -1,11 +1,10 @@
 import QtQuick
 import QtQuick.Controls
+import QtQuick.Templates as T
 import Salesperson
 import User
 import Utils
 import Customer
-import "qrc:/utils"
-import "qrc:/singleton"
 
 ListViewPage {
     id: root
@@ -13,7 +12,7 @@ ListViewPage {
     required property int salespersonId
 
     readonly property int fontSize: 12
-    readonly property StackView stackView: StackView.view
+    readonly property T.StackView stackView: StackView.view
 
     title: "Clientes"
     header: TitleHeader {
@@ -23,8 +22,9 @@ ListViewPage {
         }
         onBackClicked: stackView.pop()
     }
-    noDataMessage: userStore.user.isAdmin ? "Este vendedor no cuenta con ningun cliente."
-                                          : "La lista de clientes esta vacia. Inteta agregar uno nuevo."
+    noDataMessage: UserSettings.userTypeId === UserEntity.Admin
+                   ? "Este vendedor no cuenta con ningun cliente."
+                   : "La lista de clientes esta vacia. Inteta agregar uno nuevo."
 
     states: State {
         name: "searching"
@@ -50,11 +50,11 @@ ListViewPage {
         delegate: CustomerCard {
             required fullname
             required customerId
+            required property var model
 
             width: listView.width
             onClicked: {
-                customerEdit.customerId = customerId;
-                customerEdit.open();
+                stackView.pushItem("qrc:/qt/qml/Customer/CustomerPage.qml", {customerId, model});
             }
         }
     }
@@ -105,12 +105,5 @@ ListViewPage {
         icon.width: 30
         icon.height: 30
         onClicked: stackView.push("qrc:qt/qml/Customer/CustomerForm.qml")
-    }
-
-    CustomerEdit {
-        id: customerEdit
-        width: root.width
-        height: root.height
-        stackView: root.stackView
     }
 }

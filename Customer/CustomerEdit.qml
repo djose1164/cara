@@ -2,9 +2,8 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 import QtQuick.Dialogs
-
 import Utils
-import "qrc:/utils"
+import User
 
 Drawer {
     id: root
@@ -16,8 +15,8 @@ Drawer {
     };
 
     property int customerId
-    required property StackView stackView
 
+    clip: true
     onAboutToShow: {
         if (customerId < 0)
             return;

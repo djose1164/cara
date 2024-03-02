@@ -20,6 +20,7 @@ class CustomerResource
     Q_PROPERTY(QString path READ path WRITE setPath NOTIFY pathChanged FINAL REQUIRED)
 public:
     using SalespersonId = int;
+    using CustomerId = int;
 
     explicit CustomerResource(QObject *parent = nullptr);
 
@@ -34,6 +35,7 @@ public:
 
 public slots:
     void readBySalespersonId(SalespersonId salespersonId) override final;
+    void readSummary(CustomerId id);
 
 signals:
     void dataChanged();

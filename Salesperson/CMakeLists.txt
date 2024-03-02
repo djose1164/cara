@@ -31,7 +31,7 @@ qt_add_qml_module(salesperson
         salespersoncontroller.h salespersoncontroller.cpp
         salespersonmodel.h salespersonmodel.cpp
     DEPENDENCIES
-        UserLib
+        User
 )
 
 target_include_directories(salesperson

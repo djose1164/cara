@@ -1,13 +1,14 @@
 import QtQuick
 import QtQuick.Controls
-import "qrc:/utils"
+import QtQuick.Templates as T
+import Utils
 import Product
 
 Item {
     id: root
 
     required property int salespersonId
-    readonly property StackView stackView: StackView.view
+    readonly property T.StackView stackView: StackView.view
     property string headerTitle
 
     Component.onCompleted: statisticsApi.fetchMostSellingProducts()

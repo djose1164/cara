@@ -8,19 +8,20 @@ qt_add_qml_module(CustomerLib
     URI Customer
     VERSION 1.0
     QML_FILES
-        CustomerSelector.qml
-        CustomerCard.qml
-        SelectedCustomer.qml
-        CustomerInfoBox.qml
-        CustomerViewItem.qml
+        ChooseCustomer.qml
         ClientComboBox.qml
         ClientView.qml
         CustomerAPI.qml
+        CustomerCard.qml
         CustomerEdit.qml
         CustomerForm.qml
+        CustomerInfoBox.qml
+        CustomerManager.qml
+        CustomerSelector.qml
+        CustomerViewItem.qml
         Customers.qml
         PersonalInformationForm.qml
-        CustomerManager.qml
+        SelectedCustomer.qml
     SOURCES
         customermodel.h customermodel.cpp
         customerrepository.h customerrepository.cpp
@@ -33,6 +34,7 @@ qt_add_qml_module(CustomerLib
         person-add.svg
         person-search.svg
         supervisor-account.svg
+        QML_FILES CustomerPage.qml
 )
 
 target_include_directories(CustomerLib PRIVATE

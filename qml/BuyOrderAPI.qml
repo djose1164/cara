@@ -1,6 +1,6 @@
 import QtQuick
-import "qrc:/utils"
-import "qrc:/singleton"
+import Utils
+
 
 CaraApi {
     id: api

@@ -7,9 +7,9 @@ import Salesperson
 import User
 import Billing
 import Utils
-import "qrc:/utils"
+import Utils
 import "qrc:/orders"
-import "qrc:/singleton"
+
 
 Page {
     id: root

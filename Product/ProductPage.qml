@@ -2,17 +2,17 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 import QtQuick.Dialogs
-
+import QtQuick.Templates as T
 import entities as Entity
-import "qrc:/singleton"
-import "qrc:/utils"
+
+import Utils
 import "qrc:/reviews"
 import "qrc:/inventory"
 
 Page {
     id: root
 
-    readonly property StackView stackView: StackView.view
+    readonly property T.StackView stackView: StackView.view
     readonly property TabBar bar: stackView ? stackView.bar : null
     readonly property bool userIsAdmin: CurrentUser.isAdmin
     readonly property int customerId: TheCurrentUser.customerId

@@ -6,13 +6,13 @@ import Utils
 import Inventory
 import Billing
 import Product
-import "qrc:/utils"
 
 Item {
     id: root
 
     required property ProductModel selectedProducts
     required property SearchHeaderItem header
+    property alias productModel: productModel
 
     states: [
         State {
@@ -46,7 +46,6 @@ Item {
         running: false
     }
 
-
     MessagePane {
         id: errorPane
         visible: false
@@ -61,6 +60,31 @@ Item {
         model: productModel
         onSelectedIndexesChanged: {
             internal.isAcceptBtnEnabled = selectedIndexes.length > 0;
+        }
+    }
+
+    Connections {
+        target: selectionModel
+
+        function onSelectionChanged(selectedList, deselectedList) {
+            const forEachSelection = (selection, func) => {
+                const topLeft = selection.topLeft;
+                const row = topLeft.row;
+                const product = topLeft.model.get(row);
+                func(product)
+            }
+
+            if (selectedList.length > 0) {
+                for (let selected of selectedList)
+                    forEachSelection(selected, p => selectedProducts.append(p));
+            }
+
+            if (deselectedList.length > 0) {
+                for (let deselected of deselectedList)
+                    forEachSelection(deselected, p => (
+                        selectedProducts.removeByProductId(p.productId)
+                    ));
+            }
         }
     }
 
@@ -97,11 +121,8 @@ Item {
             required reorderPoint
             required imageUrl
 
-            readonly property var modelIndex: productModel.index(index, 0)
-
             enabled: quantityAvailable > 0
             background: Rectangle {
-                id: backRec
                 color: {
                     if (!selectionModel.hasSelection)
                         return "transparent";
@@ -134,20 +155,15 @@ Item {
         selectionModel.select(idx, ItemSelectionModel.Deselect);
     }
 
+    function deselectAll() {
+        selectionModel.clear();
+    }
+
     function indexOf(productId: int): int {
         for (let i = 0; i < productModel.count; ++i)
             if (productModel.get(i).productId === productId)
                 return i;
         return -1;
-    }
-
-    function closeHandle() {
-        for (let selected of selectionModel.selectedIndexes) {
-            const selectedAt = selected.model.get(selected.row);
-            if (selectedProducts.contains(selectedAt))
-                continue;
-            selectedProducts.append(selectedAt);
-        }
     }
 
     function updateModel(salespersonId: int) {

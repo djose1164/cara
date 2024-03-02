@@ -3,7 +3,8 @@ import QtQuick.Controls
 import QtQuick.Layouts
 import QtQuick.Dialogs
 import Salesperson
-import "qrc:/utils"
+import Utils
+import QtQuick.Templates as T
 
 Page {
     id: root
@@ -14,7 +15,7 @@ Page {
     required property int creditConsumed
     required property var user
 
-    readonly property StackView stackView: StackView.view
+    readonly property T.StackView stackView: StackView.view
 
     title: "Detalles de vendedor"
     header: TitleHeader {

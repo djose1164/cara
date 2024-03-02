@@ -166,6 +166,12 @@ void ProductModel::remove(int index)
     emit countChanged();
 }
 
+void ProductModel::removeByProductId(ProductId id)
+{
+    if (const auto foundIdx{find(id)}; foundIdx.isValid())
+        remove(foundIdx.row());
+}
+
 QHash<int, QByteArray> ProductModel::roleNames() const
 {
     static const QHash<int, QByteArray> hash{

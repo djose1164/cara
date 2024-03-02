@@ -3,7 +3,7 @@ import QtQuick.Controls
 import QtQuick.Layouts
 import entities
 import Product
-import "qrc:/utils"
+import Utils
 
 Item {
     id: root

@@ -6,7 +6,7 @@ import QtQuick.Templates as T
 import User
 import Authentication
 import Salesperson
-import "qrc:/main"
+import Utils
 
 Item {
     id: root
@@ -47,7 +47,7 @@ Item {
             Layout.alignment: Qt.AlignCenter
             Layout.topMargin: 5
             font.pointSize: 15
-            Keys.onReturnPressed: requestAuthentication()
+            Keys.onReturnPressed: internal.requestAuthentication()
         }
     }
 
@@ -87,7 +87,7 @@ Item {
         }
 
         Label {
-            text: '[Continuar sin registrarte](qrc:/main/MainPage.qml)'
+            text: '[Continuar sin registrarte](qrc:/qt/qml/Cara/MainPage.qml)'
             onLinkActivated: link => appStack.pop()
             textFormat: Label.MarkdownText
             Layout.alignment: Qt.AlignCenter
@@ -124,6 +124,9 @@ Item {
             },
             TokenStore {
                 id: myTokenStore
+                onSaved: {
+                    stackView.replace(internal.mainPage, {user: UserSettings.entity()});
+                }
             }
         ]
         authenticator: auth
@@ -144,7 +147,6 @@ Item {
             const user = userController.create(data);
             busyIndicator.close();
             UserSettings.setEntity(user);
-            stackView.replace(internal.mainPage, {user});
         }
     }
 
@@ -158,7 +160,7 @@ Item {
 
     QtObject {
         id: internal
-        readonly property url mainPage: "qrc:/main/MainPage.qml"
+        readonly property url mainPage: "qrc:/qt/qml/Cara/MainPage.qml"
         readonly property string username: usernameInput.text
         readonly property string password: passwordInput.text
         readonly property bool areInputsValid: usernameInput.text !== ""
@@ -172,11 +174,7 @@ Item {
         function saveSalespersonSettings(data) {
             const salespersonJson = JSON.parse(data).user.salesperson;
             const salesperson = spController.fromJsonObject(salespersonJson);
-            print("salesperson: ", salesperson)
-            SalespersonSettings.salespersonId = salesperson.salespersonId;
-            SalespersonSettings.salespersonTypeId = salesperson.salespersonType;
-            SalespersonSettings.creditLimit = salesperson.creditLimit;
-            SalespersonSettings.creditAvailable = salesperson.creditAvailable;
+            SalespersonSettings.setEntity(salesperson);
         }
     }
 }

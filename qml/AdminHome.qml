@@ -5,7 +5,7 @@ import catalogue
 import User
 import Salesperson
 import "qrc:/orders" as Order
-import "qrc:/singleton"
+
 
 Home {
     id: root
@@ -169,6 +169,12 @@ Home {
             path: "qrc:/qt/qml/Salesperson/AssociateSalesperson.qml"
             name: "Vendedor Asociado"
             needUser: true
+        }
+
+        ListElement {
+            source: "qrc:/qt/qml/Billing/pdf-icon.svg"
+            path: "qrc:/qt/qml/Billing/PdfBillListing.qml"
+            name: "Facturas exportadas"
         }
     }
 }

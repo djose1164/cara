@@ -1,10 +1,11 @@
 import QtQuick
 import QtQuick.Controls
+import QtQuick.Templates as T
 import Utils
 
 Page {
     id: root
-    readonly property StackView stackView: StackView.view
+    readonly property T.StackView stackView: StackView.view
 
     header: HomeHeader { stackView: root.stackView }
     Component.onCompleted: {

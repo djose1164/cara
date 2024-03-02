@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modelo Factura</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <hr id="horizontal-bar">
+
+    <table id="header-table" width="100%" height="30%">
+        <tr>
+            <th align="left" width="35%">
+                <h3 id="business-name">PRODUCTOS DE LIMPIEZA V&G</h3>
+            </th>
+            <th align="right" id="factura-consumo">
+                <h3 class="align-right">Factura de Consumo</h3>
+            </th>
+        </tr>
+        <tr>
+            <td id="business-details">
+                <p>%1</p>
+                <p>Fecha: %2</p>
+            </td>
+            <td>
+                <h4 class="align-right">Cliente: %3</h4>
+                <h4 class="align-right"># de orden: %4</h4>
+            </td>
+        </tr>
+    </table>
+
+    <hr>
+    <table id="details-table" width="100%">
+        <thead>
+            <tr>
+                <th scope="col">CANT.</th>
+                <th scope="col">DESCRIPCIÓN</th>
+                <th scope="col">VALOR</th>
+            </tr>
+        </thead>
+        <tbody>
+            %5
+        </tbody>
+    </table>
+    <hr>
+    <table id="total-box">
+        <tr>
+            <td>SUBTOTAL</td>
+            <td class="value">%6</td>
+        </tr>
+        <tr>
+            <td>DESC.</td>
+            <td>%7</td>
+        </tr>
+        <tr>
+            <td>TOTAL</td>
+            <td>%8</td>
+        </tr>
+    </table>
+</body>
+
+</html>

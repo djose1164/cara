@@ -5,7 +5,6 @@ import QtQml.Models
 import Utils
 import Inventory
 import Product
-import "qrc:/utils"
 
 ItemDelegate {
     id: productThumbnail

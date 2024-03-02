@@ -16,6 +16,9 @@ class Salesperson
     Q_PROPERTY(int creditLimit READ creditLimit WRITE setCreditLimit FINAL)
     Q_PROPERTY(int creditConsumed READ creditConsumed WRITE setCreditConsumed  FINAL)
     Q_PROPERTY(int creditAvailable READ creditAvailable WRITE setCreditAvailable FINAL)
+    Q_PROPERTY(int adminId READ adminId WRITE setAdminId NOTIFY adminIdChanged FINAL)
+    Q_PROPERTY(QString warehouseAddress READ warehouseAddress WRITE setWarehouseAddress FINAL)
+    Q_PROPERTY(QString salespersonTypeName READ salespersonTypeName WRITE setSalespersonTypeName FINAL)
 public:
     using SalespersonId = int;
     using UserId = int;
@@ -79,6 +82,12 @@ public:
     bool isAssociate() const;
     bool isAdministrator() const;
 
+    QString warehouseAddress() const;
+    void setWarehouseAddress(const QString &newWarehouseAddress);
+
+    QString salespersonTypeName() const;
+    void setSalespersonTypeName(const QString &newSalespersonTypeName);
+
 private:
     QJsonObject prepareUser() const;
 
@@ -96,13 +105,14 @@ private:
 
     QString forename_;
     QString surname_;
+    QString warehouseAddress_;
+    QString salespersonTypeName_;
 
     int creditLimit_;
     int creditConsumed_;
     int creditAvailable_;
 
     SalespersonTypes salespersonType_;
-    Q_PROPERTY(int adminId READ adminId WRITE setAdminId NOTIFY adminIdChanged FINAL)
 };
 }
 

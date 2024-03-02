@@ -1,14 +1,13 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
-
+import QtQuick.Templates as T
 import Billing
-import "qrc:/singleton"
 
 Item {
     id: root
 
-    property StackView stackView
+    property T.StackView stackView
     property TabBar bar
     readonly property bool isUser: CurrentUser.user.userType === UserEntity.USER
 
@@ -44,7 +43,7 @@ Item {
 
         ListView {
             id: recentOrders
-            readonly property StackView stackView: root.stackView
+            readonly property T.StackView stackView: root.stackView
             model: billModel
             delegate: BillDelegate {
                 required details

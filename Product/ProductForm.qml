@@ -4,9 +4,7 @@ import QtQuick.Controls
 import QtQuick.Layouts
 import QtQuick.Dialogs
 import catalogue as Catalogue
-import "qrc:/utils"
-import "qrc:/main"
-import "qrc:/singleton"
+import Utils
 import "qrc:/inventory"
 
 Page {

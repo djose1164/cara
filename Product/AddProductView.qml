@@ -5,8 +5,8 @@ import QtQuick.Dialogs
 import QtQuick.Controls.Material
 import Customer
 import "qrc:/orders"
-import "qrc:/singleton"
-import "qrc:/utils"
+
+import Utils
 
 // TODO: Update implementation to use the new types.
 Column {

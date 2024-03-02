@@ -7,11 +7,10 @@ import Customer
 Item {
     id: root
 
-    required property CustomerSelector customerSelector
-    required property T.StackView stackView
-    required property int customerId
+    property var customer
 
-    property alias fullname: customerDelegate.fullname
+    signal changeCustomerClicked
+    signal customerClicked(customer: var)
 
     implicitHeight: 125
 
@@ -20,25 +19,26 @@ Item {
         anchors.fill: parent
         title: "Cliente seleccionado"
         redirectText: "Editar cliente"
-        onRedirectClicked: customerSelector.open()
+        onRedirectClicked: root.changeCustomerClicked()
 
         CustomerCard {
             id: customerDelegate
             anchors.fill: parent
-            customerId: root.customerId
-            onClicked: customerEdit.open()
+            customerId: internal.customerId
+            fullname: internal.fullname
+            onClicked: root.customerClicked(root.customer)
         }
     }
 
-    CustomerEdit {
-        id: customerEdit
-        width: app.width
-        height: app.height
-        stackView: root.stackView
-        customerId: root.customerId
+    QtObject {
+        id: internal
+        readonly property string fullname: root.customer ? root.customer.fullname : ""
+        readonly property int customerId: root.customer ? root.customer.customerId : -1
     }
 
     function toJson() {
-        return {fullname, id: customerId};
+        const fullname = root.customer.fullname;
+        const id = root.customer.customerId;
+        return { fullname, id };
     }
 }

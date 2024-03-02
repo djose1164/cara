@@ -1,7 +1,7 @@
 import QtQuick
 import QtQml
-import "qrc:/utils"
-import "qrc:/singleton"
+import Utils
+
 
 Item {
     id: root
