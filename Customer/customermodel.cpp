@@ -25,6 +25,7 @@ QVariant CustomerModel::data(const QModelIndex &index, int role) const
 
     const int idx{index.row()};
     const auto object{data_.at(idx)};
+    const auto contactObject{object["contact"].toObject()};
 
     switch (static_cast<RoleNames>(role))
     {
@@ -34,6 +35,10 @@ QVariant CustomerModel::data(const QModelIndex &index, int role) const
         return object.value("contact").toObject();
     case RoleNames::FullnameRole:
         return object.value("name").toString();
+    case RoleNames::ForenameRole:
+        return contactObject["forename"].toString();
+    case RoleNames::SurnameRole:
+        return contactObject["surname"].toString();
     default:
         break;
     }
@@ -48,7 +53,9 @@ QHash<int, QByteArray> Model::CustomerModel::roleNames() const
         {int(RoleNames::AddressRole), "address"},
         {int(RoleNames::ContactRole), "contact"},
         {int(RoleNames::SalespersonRole), "salesperson"},
-        {int(RoleNames::FullnameRole), "fullname"}
+        {int(RoleNames::FullnameRole), "fullname"},
+        {int(RoleNames::ForenameRole), "forename"},
+        {int(RoleNames::SurnameRole), "surname"}
     };
     return hash;
 }

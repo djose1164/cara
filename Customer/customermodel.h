@@ -23,7 +23,9 @@ public:
         AddressRole,
         SalespersonRole,
         ContactRole,
-        FullnameRole
+        FullnameRole,
+        ForenameRole,
+        SurnameRole
     };
 
     explicit CustomerModel(QObject *parent = nullptr);
