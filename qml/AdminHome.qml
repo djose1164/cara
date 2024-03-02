@@ -172,7 +172,7 @@ Home {
         }
 
         ListElement {
-            source: "qrc:/qt/qml/Billing/pdf.svg"
+            source: "qrc:/qt/qml/Billing/pdf-icon.svg"
             path: "qrc:/qt/qml/Billing/PdfBillListing.qml"
             name: "Facturas exportadas"
         }
