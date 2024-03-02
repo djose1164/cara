@@ -63,7 +63,7 @@ qt_add_qml_module(BillingLib
         ordertemplate.h ordertemplate.cpp
         uniquefilenamegenerator.h uniquefilenamegenerator.cpp
     RESOURCES
-    order-model.html style.css pdf.svg pdf-icon.svg
+    order-model.html style.css pdf-icon.svg
     DEPENDENCIES
         QtQuick Utils Entities
 )

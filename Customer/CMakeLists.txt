@@ -34,6 +34,7 @@ qt_add_qml_module(CustomerLib
         person-add.svg
         person-search.svg
         supervisor-account.svg
+        QML_FILES CustomerPage.qml
 )
 
 target_include_directories(CustomerLib PRIVATE
