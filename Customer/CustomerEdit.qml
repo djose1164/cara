@@ -16,6 +16,7 @@ Drawer {
 
     property int customerId
 
+    clip: true
     onAboutToShow: {
         if (customerId < 0)
             return;
