@@ -61,6 +61,9 @@ Page {
             ChooseCustomer {
                 id: chooseCustomer
                 Layout.fillWidth: true
+                onSelectedCustomerClicked: c => stackView.pushItem("qrc:/qt/qml/Customer/CustomerPage.qml",
+                                                                   {customerId: c.customerId,
+                                                                    model: c})
             }
 
             ProductSale {
@@ -119,6 +122,9 @@ Page {
             orderTemplate.order = newOrder.order;
             productSale.refreshSelector();
         }
+        onErrorOccurred: {
+            errorDialog(errorString);
+        }
     }
 
     BillPrinter {
@@ -143,7 +149,7 @@ Page {
 
     QtObject {
         id: internal
-        readonly property bool canPrint: root.state == "orderCreated"
+        readonly property bool canPrint: root.state === "orderCreated"
     }
 
     function acceptHandle() {
@@ -157,6 +163,9 @@ Page {
                 orderDate: datePicker.toShortDate()
             };
             print(`orderJson: ${JSON.stringify(orderJson, null, 2)}`);
+            if (!orderController.validateOrder(orderJson))
+                throw orderController.errorString;
+
             orderController.createOrder(orderJson);
             root.state = "creating";
         } catch (err) {
