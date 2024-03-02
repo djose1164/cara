@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
+import QtQuick.Templates as T
 import Utils
 
 Item {
@@ -10,6 +11,8 @@ Item {
         Empty,
         Selected
     }
+
+    signal selectedCustomerClicked(customer: var)
 
     implicitWidth: stackLayout.implicitWidth
     implicitHeight: internal.hasSelection ? stackLayout.implicitHeight
@@ -29,6 +32,7 @@ Item {
         SelectedCustomer {
             id: selectedCustomer
             onChangeCustomerClicked: customerSelector.open()
+            onCustomerClicked: c => root.selectedCustomerClicked(c)
         }
     }
 
@@ -37,8 +41,7 @@ Item {
         width: app.width
         height: app.height
         onCustomerSelected: customer => {
-            selectedCustomer.customerId = customer.customerId;
-            selectedCustomer.fullname = customer.fullname;
+            selectedCustomer.customer = customer;
             internal.hasSelection = true;
         }
     }

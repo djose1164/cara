@@ -7,11 +7,10 @@ import Customer
 Item {
     id: root
 
-    property int customerId
-
-    property alias fullname: customerDelegate.fullname
+    property var customer
 
     signal changeCustomerClicked
+    signal customerClicked(customer: var)
 
     implicitHeight: 125
 
@@ -25,19 +24,21 @@ Item {
         CustomerCard {
             id: customerDelegate
             anchors.fill: parent
-            customerId: root.customerId
-            onClicked: customerEdit.open()
+            customerId: internal.customerId
+            fullname: internal.fullname
+            onClicked: root.customerClicked(root.customer)
         }
     }
 
-    CustomerEdit {
-        id: customerEdit
-        width: app.width
-        height: app.height
-        customerId: root.customerId
+    QtObject {
+        id: internal
+        readonly property string fullname: root.customer ? root.customer.fullname : ""
+        readonly property int customerId: root.customer ? root.customer.customerId : -1
     }
 
     function toJson() {
-        return {fullname, id: customerId};
+        const fullname = root.customer.fullname;
+        const id = root.customer.customerId;
+        return { fullname, id };
     }
 }
