@@ -10,6 +10,7 @@ using namespace Qt::StringLiterals;
 namespace
 {
 constexpr auto resourceIdentification = "/%1"_L1;
+constexpr auto summaryPath{"/summary"_L1};
 }
 
 namespace Data
@@ -47,7 +48,7 @@ void CustomerResource::readBySalespersonId(SalespersonId salespersonId)
             emit errorOccurred();
             if (reply.httpStatus() == 404)
             {
-                setErrorString("El recurso solicitado no existe.");
+                setErrorString("El recurso solicitado no existe."_L1);
                 emit contentNotFound();
             }
             return;
@@ -55,6 +56,24 @@ void CustomerResource::readBySalespersonId(SalespersonId salespersonId)
 
         setData(reply.readBody());
 
+        emit fetched(data());
+    });
+}
+
+void CustomerResource::readSummary(CustomerId id)
+{
+    const auto resourceId{resourceIdentification.arg(QString::number(id))};
+    const auto req{api_->createRequest(path_ + resourceId + summaryPath)};
+
+    manager_->get(req, this, [&](QRestReply &reply) {
+        if (!reply.isSuccess())
+        {
+            setErrorString(reply.errorString());
+            emit errorOccurred();
+            return;
+        }
+
+        setData(reply.readBody());
         emit fetched(data());
     });
 }
