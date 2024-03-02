@@ -50,11 +50,11 @@ ListViewPage {
         delegate: CustomerCard {
             required fullname
             required customerId
+            required property var model
 
             width: listView.width
             onClicked: {
-                customerEdit.customerId = customerId;
-                customerEdit.open();
+                stackView.pushItem("qrc:/qt/qml/Customer/CustomerPage.qml", {customerId, model});
             }
         }
     }
@@ -105,11 +105,5 @@ ListViewPage {
         icon.width: 30
         icon.height: 30
         onClicked: stackView.push("qrc:qt/qml/Customer/CustomerForm.qml")
-    }
-
-    CustomerEdit {
-        id: customerEdit
-        width: root.width
-        height: root.height
     }
 }
