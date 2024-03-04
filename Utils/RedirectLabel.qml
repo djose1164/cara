@@ -1,7 +1,8 @@
 import QtQuick
 import QtQuick.Controls
+import QtQuick.Layouts
 
-Row {
+Item {
     id: root
 
     property alias title: customerLbl.text
@@ -9,21 +10,28 @@ Row {
 
     signal clicked
 
-    spacing: 14
+    implicitWidth: customerLbl.implicitWidth + icon.implicitWidth
+    implicitHeight: Math.max(customerLbl.implicitHeight, icon.implicitHeight)
 
-    Label {
-        id: customerLbl
-        anchors.verticalCenter: parent.verticalCenter
-        font.pointSize: 11
-    }
+    RowLayout {
+        anchors.fill: parent
 
-    IconImage {
-        anchors.verticalCenter: parent.verticalCenter
-        source: "qrc:/icons/arrow_forward.svg"
-        sourceSize: "24x24"
-    }
+        Label {
+            id: customerLbl
+            wrapMode: Label.Wrap
+            elide: Label.ElideRight
+            font.pointSize: 12
+        }
 
-    TapHandler {
-        onTapped: clicked()
+        IconImage {
+            id: icon
+            source: "qrc:/icons/arrow_forward.svg"
+            sourceSize: "24x24"
+            Layout.alignment: Qt.AlignRight
+        }
+
+        TapHandler {
+            onTapped: clicked()
+        }
     }
 }
