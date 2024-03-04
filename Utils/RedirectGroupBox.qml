@@ -18,6 +18,8 @@ Item {
             x: groupBox.leftPadding
             width: groupBox.availableWidth
             text: root.title
+            rightPadding: redirectLbl.width
+            elide: Label.ElideRight
             font.pointSize: 14
 
             RedirectLabel {
