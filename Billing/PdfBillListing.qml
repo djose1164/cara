@@ -96,12 +96,8 @@ Page {
                 }
             }
 
-            onClicked: shareUtils.share(path)
+            onClicked: ShareUtils.share(path)
         }
-    }
-
-    ShareUtils {
-        id: shareUtils
     }
 
     QtObject {

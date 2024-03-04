@@ -134,12 +134,8 @@ Page {
         }
         onBillPrinted: path => {
             root.state = "";
-            shareUtils.share("file://" + path);
+            ShareUtils.share("file://" + path);
         }
-    }
-
-    ShareUtils {
-        id: shareUtils
     }
 
     ProcessingIndicator {

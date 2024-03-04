@@ -12,12 +12,13 @@ class ShareUtils : public QObject
 {
     Q_OBJECT
     QML_ELEMENT
+    QML_SINGLETON
 public:
     explicit ShareUtils(QObject *parent = nullptr);
 
 public slots:
     void share(const QUrl &path);
-signals:
+
 private:
     std::unique_ptr<SharePlataform> sharePlataform_;
 };

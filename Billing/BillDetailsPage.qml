@@ -85,11 +85,7 @@ BackPage {
         }
         onBillPrinted: path => {
             processingIndicator.close();
-            shareUtils.share("file://" + path);
+            ShareUtils.share("file://" + path);
         }
-    }
-
-    ShareUtils {
-        id: shareUtils
     }
 }
