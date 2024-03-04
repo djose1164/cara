@@ -64,6 +64,7 @@ Page {
                 onSelectedCustomerClicked: c => stackView.pushItem("qrc:/qt/qml/Customer/CustomerPage.qml",
                                                                    {customerId: c.customerId,
                                                                     model: c})
+                Layout.topMargin: columnLayout.spacing
             }
 
             ProductSale {
