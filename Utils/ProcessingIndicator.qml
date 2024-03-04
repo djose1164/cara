@@ -12,9 +12,7 @@ Popup {
     RowLayout {
         anchors.fill: parent
 
-        BusyIndicator {
-            running: root.visible
-        }
+        BusyIndicator {}
 
         Label {
             id: label
