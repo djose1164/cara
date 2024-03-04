@@ -32,7 +32,7 @@ Item {
             font.pointSize: 14
         }
 
-        TextField {
+        NumberTextField {
             id: newPayment
             placeholderText: "Ingrese monto a abonar"
             Layout.fillWidth: true
