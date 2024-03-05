@@ -45,7 +45,7 @@ qt_add_qml_module(Cara
     URI Cara
     VERSION 1.0
     QML_FILES
-        main.qml
+        Main.qml
         MainFooter.qml
         MainPage.qml
         SidePane.qml
