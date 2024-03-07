@@ -1,6 +1,6 @@
-qt_add_library(Catalogue STATIC)
-qt_add_qml_module(Catalogue
-    URI catalogue
+qt_add_library(ShoppingLib STATIC)
+qt_add_qml_module(ShoppingLib
+    URI Shopping
     VERSION 1.0
     QML_FILES
         Catalogue.qml
@@ -16,7 +16,7 @@ qt_add_qml_module(Catalogue
         iproductcategoryrepository.h iproductcategoryrepository.cpp
 )
 
-target_include_directories(Catalogue PRIVATE
+target_include_directories(ShoppingLib PRIVATE
     ../entities
     ../data
     ../utils

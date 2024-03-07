@@ -18,7 +18,7 @@ qt_policy(SET QTP0001 NEW)
 
 add_subdirectory(Data)
 add_subdirectory(Entities)
-add_subdirectory(Catalogue)
+add_subdirectory(Shopping)
 add_subdirectory(Inventory)
 add_subdirectory(Salesperson)
 add_subdirectory(User)
@@ -57,6 +57,7 @@ qt_add_qml_module(Cara
         twitter.svg
         mail.svg
         logout.svg
+        SOURCES healthresource.h healthresource.cpp
 )
 
 target_link_libraries(CaraLib PUBLIC
@@ -69,7 +70,7 @@ target_link_libraries(CaraLib PUBLIC
     Qt6::Charts
     Dataplugin
     Entitiesplugin
-    Catalogueplugin
+    ShoppingLibplugin
     InventoryLibplugin
     salespersonplugin
     UserLibplugin
