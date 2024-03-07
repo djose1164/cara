@@ -34,9 +34,15 @@ if(NOT CMAKE_BUILD_TYPE STREQUAL "Release")
     #add_subdirectory(tests)
 endif()
 
-qt_add_executable(Cara
-    main.cpp
-)
+if (WIN32)
+    qt_add_executable(Cara
+        main.cpp cara.rc
+    )
+else()
+    qt_add_executable(Cara
+        main.cpp
+    )
+endif()
 
 # Create CaraLib target
 add_library(CaraLib STATIC)
