@@ -19,7 +19,7 @@ public:
     void setRefreshToken(const QString &newRefreshToken) override;
 
 public slots:
-    QNetworkReply *refresh() override;
+    std::optional<QNetworkReply *> refresh() override;
 
 signals:
     void errorOccurred(const QByteArray &data);

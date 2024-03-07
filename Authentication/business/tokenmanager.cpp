@@ -11,22 +11,58 @@
 
 using namespace Qt::StringLiterals;
 
+static constexpr auto ACCESS_TOKEN_LIFESPAN{840'000};
+
 namespace Authentication::Business
 {
 TokenManager *TokenManager::instance_{nullptr};
 
 TokenManager::TokenManager(QObject *parent)
     : QObject{parent}
-    , accessToken_{}
     , refreshToken_{}
     , timer_{new QTimer(this)}
     , errorString_{}
     , tokenStore_{new Data::TokenStore(this)}
     , refresher_{new Data::Refresher(this)}
     , token_{&Utils::NetworkRequestSingleton::instance()}
+    , refreshing_{true}
 {
-    timer_->start(840'000);
+    timer_->setInterval(ACCESS_TOKEN_LIFESPAN);
+    timer_->start();
     connect(timer_, &QTimer::timeout, this, &TokenManager::timeout);
+}
+
+void TokenManager::refreshAccessToken()
+{
+    Data::TokenStore ts{};
+    ts.restore();
+    setRefreshToken(ts.refresh());
+    refresher_->setRefreshToken(refreshToken_);
+
+    const auto optionalReply{refresher_->refresh()};
+    if (!optionalReply)
+    {
+        setErrorString("The refresh token is not present."_L1);
+        emit errorOccurred();
+        return;
+    }
+
+    reply_ = *optionalReply;
+
+    connect(reply_, &QNetworkReply::finished, this, &TokenManager::replyReady);
+}
+
+bool TokenManager::refreshing() const
+{
+    return refreshing_;
+}
+
+void TokenManager::setRefreshing(bool newRefreshing)
+{
+    if (refreshing_ == newRefreshing)
+        return;
+    refreshing_ = newRefreshing;
+    emit refreshingChanged();
 }
 
 QString TokenManager::errorString() const
@@ -47,19 +83,6 @@ IRefreshable *TokenManager::refresher() const
 void TokenManager::setRefresher(IRefreshable *newRefresher)
 {
     refresher_ = newRefresher;
-}
-
-QString TokenManager::accessToken() const
-{
-    return accessToken_;
-}
-
-void TokenManager::setAccessToken(const QString &newAccessToken)
-{
-    if (accessToken_ == newAccessToken)
-        return;
-    accessToken_ = newAccessToken;
-    emit accessTokenChanged();
 }
 
 QString TokenManager::refreshToken() const
@@ -91,10 +114,33 @@ TokenManager *TokenManager::instance()
 
 void TokenManager::clear()
 {
-    accessToken_.clear();
     refreshToken_.clear();
     QSettings settings{};
     settings.remove("Credentails");
+}
+
+void TokenManager::stopRefreshing()
+{
+    qDebug() << "TokenManager::stopRefreshing: stopping...";
+    if (!timer_->isActive())
+        return;
+
+    timer_->stop();
+    setRefreshing(false);
+    qDebug() << "TokenManager::stopRefreshing: stopping...Done";
+}
+
+void TokenManager::resumeRefreshing()
+{
+    qDebug() << "TokenManager::resumeRefreshing: resuming...";
+    if (timer_->isActive())
+        return;
+
+    refreshAccessToken();
+    timer_->start();
+    setRefreshing(true);
+    qDebug() << "TokenManager::resumeRefreshing: remainingTime: "<< timer_->remainingTime();
+    qDebug() << "TokenManager::resumeRefreshing: resuming...Done";
 }
 
 void TokenManager::replyReady()
@@ -111,7 +157,6 @@ void TokenManager::replyReady()
     const QString newToken{obj["access_token"_L1].toString()};
     // tokenStore_->save(data); // FIXME: It's causing a double dispatch of onSaved handler in main.qml
     token_->setAccessToken(newToken);
-    setAccessToken("Bearer "_L1 + newToken);
 
     qDebug() << "TokenManager: access token has refresh";
 
@@ -120,22 +165,7 @@ void TokenManager::replyReady()
 
 void TokenManager::timeout()
 {
-    try
-    {
-        Data::TokenStore ts{};
-        ts.restore();
-        setRefreshToken(ts.refresh());
-        refresher_->setRefreshToken(refreshToken_);
+    refreshAccessToken();
 
-        reply_ = refresher_->refresh();
-
-        connect(reply_, &QNetworkReply::finished, this, &TokenManager::replyReady);
-    }
-    catch(const Business::TokenNotPresent &err)
-    {
-        // TODO: The LoginManager should be aware of this to ask the user to log in again.
-        setErrorString(err.what());
-        emit errorOccurred();
-    }
 }
 }

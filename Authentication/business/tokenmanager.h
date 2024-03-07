@@ -20,12 +20,8 @@ class TokenManager : public QObject
     QML_ELEMENT
     QML_SINGLETON
 
-    Q_PROPERTY(QString accessToken READ accessToken WRITE setAccessToken NOTIFY accessTokenChanged FINAL)
-
+    Q_PROPERTY(bool refreshing READ refreshing WRITE setRefreshing NOTIFY refreshingChanged FINAL)
 public:
-    QString accessToken() const;
-    void setAccessToken(const QString &newAccessToken);
-
     QString refreshToken() const;
     void setRefreshToken(const QString &newRefreshToken);
 
@@ -38,8 +34,14 @@ public:
     QString errorString() const;
     void setErrorString(const QString &newErrorString);
 
+    bool refreshing() const;
+    void setRefreshing(bool newRefreshing);
+
 public slots:
     void clear();
+
+    void stopRefreshing();
+    void resumeRefreshing();
 
 private slots:
     void replyReady();
@@ -53,10 +55,12 @@ signals:
     void accessTokenAvailable();
     void errorOccurred();
 
+    void refreshingChanged();
+
 private:
     explicit TokenManager(QObject *parent = nullptr);
+    void refreshAccessToken();
 
-    QString accessToken_;
     QString refreshToken_;
     QTimer *timer_;
     QNetworkReply *reply_;
@@ -65,6 +69,8 @@ private:
 
     IRefreshable *refresher_;
     IToken *token_;
+
+    bool refreshing_;
 
     static TokenManager *instance_;
 };

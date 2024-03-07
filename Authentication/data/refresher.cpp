@@ -1,6 +1,5 @@
 #include "refresher.h"
 #include "networkrequestsingleton.h"
-#include "tokennotpresent.h"
 #include <QJsonDocument>
 #include <QNetworkReply>
 #include <QJsonObject>
@@ -19,13 +18,13 @@ Refresher::Refresher(QObject *parent)
 {
 }
 
-QNetworkReply *Refresher::refresh()
+std::optional<QNetworkReply *> Refresher::refresh()
 {
     if (refreshToken_.isEmpty())
     {
         constexpr auto error{"Refresh token is empty."_L1};
         qWarning() << "Refresher::refresh: "_L1 + error;
-        throw Business::TokenNotPresent(error);
+        return std::nullopt;
     }
 
     QNetworkRequest request(api_->createRequest("users/refresh/"_L1));

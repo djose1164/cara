@@ -1,6 +1,8 @@
 #ifndef IREFRESHABLE_H
 #define IREFRESHABLE_H
 
+#include <optional>
+
 class QNetworkReply;
 class QString;
 
@@ -10,7 +12,7 @@ class IRefreshable
 public:
     virtual ~IRefreshable();
 
-    virtual QNetworkReply *refresh() = 0;
+    virtual std::optional<QNetworkReply *> refresh() = 0;
     virtual void setRefreshToken(const QString &newRefreshToken) = 0;
 };
 }
