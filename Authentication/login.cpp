@@ -1,5 +1,4 @@
 #include "login.h"
-#include "tokenmanager.h"
 #include "networkrequestsingleton.h"
 #include <QJsonDocument>
 #include <QJsonObject>
@@ -87,7 +86,6 @@ void Login::componentComplete()
     connect(authenticator_, &Authentication::succeeded,
             this, &Login::userAuthenticated);
     connect(authenticator_, &Business::Authentication::tokenReady, this, [&](const QString &token) {
-        TokenManager::instance()->setAccessToken("Bearer "_L1 + token);
         Utils::NetworkRequestSingleton::instance().api()->setBearerToken(token.toUtf8());
     });
 }
