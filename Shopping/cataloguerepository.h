@@ -13,10 +13,14 @@ class CatalogueRepository : public QObject
     QML_ELEMENT
 
 public:
+    using ProductId = int;
+
     explicit CatalogueRepository(QObject *parent = nullptr);
 
 public slots:
     void addProduct(const QVariantMap &product);
+
+    void readProductById(ProductId id);
 
     void fetchProducts();
 
@@ -35,6 +39,7 @@ public slots:
 signals:
     void categoriesFetched(const QByteArray &data);
     void productsFetched(const QByteArray &data);
+    void productFetched(const QByteArray &data);
 
     void productAdded(const QByteArray &data);
 

@@ -5,6 +5,8 @@
 
 using namespace Qt::StringLiterals;
 
+static constexpr auto TRANSFER_TIMEOUT{std::chrono::minutes(1)};
+
 namespace Utils
 {
 NetworkRequestSingleton &NetworkRequestSingleton::instance()
@@ -24,6 +26,8 @@ NetworkRequestSingleton::NetworkRequestSingleton()
     headers.append(QHttpHeaders::WellKnownHeader::ContentType, "application/json"_L1);
 
     api_->setCommonHeaders(headers);
+
+    api_->setTransferTimeout(TRANSFER_TIMEOUT);
 }
 
 QString NetworkRequestSingleton::accessToken() const

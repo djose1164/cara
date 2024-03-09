@@ -2,13 +2,14 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 import QtQuick.Templates as T
+import Shopping
 
 Item {
     id: root
     required property int id
     readonly property int productId: id
     required property string name
-    required property string image_url
+    required property var images
     required property string description
     required property int sell_price
     readonly property T.StackView stackView: ListView.view.stackView
@@ -32,13 +33,13 @@ Item {
 
         ItemDelegate {
             onClicked: stackView.push("qrc:/qt/qml/Product/ProductPage.qml",
-                                      {sell_price, name, image_url, description,
-                                        productId})
+                                      {sell_price, name, image_url: img.source, description,
+                                        productId, product: internal.product})
             Column {
             ProductImage {
                 id: img
 
-                source: image_url
+                source: images[0].image_url
                 sourceSize: "128x128"//`${root.height-60}x${root.height-60}`
                 onReady: stackLayout.currentIndex = 1
             }
@@ -55,5 +56,21 @@ Item {
             }
             }
         }
+    }
+
+    CatalogueRepository {
+        id: catalogue
+        Component.onCompleted: {
+            readProductById(root.productId);
+        }
+        onProductFetched: resp => {
+            const product = JSON.parse(resp).product;
+            internal.product = product;
+        }
+    }
+
+    QtObject {
+        id: internal
+        property var product
     }
 }

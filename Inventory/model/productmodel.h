@@ -1,7 +1,7 @@
 #ifndef PRODUCTMODEL_H
 #define PRODUCTMODEL_H
 
-#include "../Entities/productentity.h"
+#include "productentity.h"
 #include <QAbstractListModel>
 #include <QObject>
 #include <QQmlEngine>

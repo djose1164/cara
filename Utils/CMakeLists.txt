@@ -46,9 +46,10 @@ qt_add_qml_module(UtilsLib
         SearchPage.qml
         Star.qml
         StarRating.qml
+        TimeoutDialog.qml
         TitleHeader.qml
     RESOURCES
-        utils.js
+        utils.js 
 )
 
 if(ANDROID)

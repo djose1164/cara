@@ -47,6 +47,11 @@ Payment::Payment()
     //     setStatus(Unpaid);
 }
 
+bool Payment::operator==(const Payment &other) const
+{
+    return paymentId_ == other.paymentId_ && orderId_ == other.orderId_;
+}
+
 int Payment::paymentId() const
 {
     return paymentId_;

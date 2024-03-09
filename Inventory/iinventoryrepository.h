@@ -1,8 +1,7 @@
 #ifndef IINVENTORYREPOSITORY_H
 #define IINVENTORYREPOSITORY_H
 
-#include "../entities/productentity.h"
-#include "../salesperson/salesperson.h"
+#include "productentity.h"
 #include <QQmlEngine>
 
 namespace Business {
@@ -12,7 +11,7 @@ class IInventoryRepository : public QObject
     QML_INTERFACE
 public:
     using QObject::QObject;
-    using SalespersonId = Entity::Salesperson::SalespersonId;
+    using SalespersonId = int;
 
     virtual ~IInventoryRepository();
 

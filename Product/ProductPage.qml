@@ -4,8 +4,9 @@ import QtQuick.Layouts
 import QtQuick.Dialogs
 import QtQuick.Templates as T
 import entities as Entity
-
 import Utils
+import Shopping
+import User
 import "qrc:/reviews"
 import "qrc:/inventory"
 
@@ -14,15 +15,9 @@ Page {
 
     readonly property T.StackView stackView: StackView.view
     readonly property TabBar bar: stackView ? stackView.bar : null
-    readonly property bool userIsAdmin: CurrentUser.isAdmin
-    readonly property int customerId: TheCurrentUser.customerId
+    readonly property int userId: UserSettings.userId
     readonly property bool hasStocks: inStock > 0
-    readonly property var editableProduct: {
-        "name": [productRating.nameText, api.patchName],
-        "sell_price": [parseInt(productRating.price), api.patchSellPrice],
-        "description": [productRating.description, api.patchDescription],
-    }
-    readonly property var product: {
+    readonly property var product_: {
         "name": name,
         "sell_price": sell_price,
         "description": description,
@@ -43,103 +38,72 @@ Page {
     required property int sell_price
     required property string description
     required property string image_url
+    required property var product
     property int inStock
     property int rating
 
     header: TitleHeader {
-        title: "Producto"
+        title: internal.titleTemplate.arg(root.title).arg(internal.shortDescription)
+        label.textFormat: Label.RichText
+        label.font.bold: false
+        btnLoader.sourceComponent: MoreVertButton {
+            onClicked: menu.open()
+
+            Menu {
+                id: menu
+                MenuItem {
+                    text: "Mas informacion"
+                }
+            }
+        }
+
         onBackClicked: root.stackView.pop()
     }
 
-    Component.onCompleted: inventoryApi.fetchByProductId(productId)
+    Component.onCompleted: {
+        organizationResource.readById(internal.caraId);
+        inventoryApi.fetchByProductId(productId);
+    }
 
-    BusyStackLayout {
-        id: stackLayout
+    ScrollView {
+        id: scrollView
         anchors.fill: parent
+        contentWidth: root.width
 
-        ScrollView {
-            contentWidth: root.width
-            contentHeight: columnLayout.height
+        ColumnLayout {
+            id: columnLayout
+            anchors {
+                fill: parent
+                topMargin: 10
+                bottomMargin: 20
+                leftMargin: internal.margin
+                rightMargin: internal.margin
+            }
+            spacing: 20
 
-            ColumnLayout {
-                id: columnLayout
-                width: parent.width*.85
-                anchors {
-                    bottom: parent.bottom
-                    bottomMargin: 20
-                    horizontalCenter: parent.horizontalCenter
-                }
-                spacing: 20
+            ProductItem {
+                id: productItem
+                product: root.product
+                Layout.fillWidth: true
+                onFavoriteClicked: like => handleFavClicked(like)
+            }
 
-                Product {
-                    id: productRating
+            ShopProduct {
+                id: shopProduct
+                sellPrice: root.product.sell_price
+                stock: root.inStock
+                Layout.fillWidth: true
+            }
 
-                    onImageReady: stackLayout.currentIndex = 1
-                    onUpdateStocksClicked: updateInStock.open()
-
-                    Layout.fillWidth: true
-                    Layout.minimumHeight: childrenRect.height
-                    Layout.fillHeight: true
-                    Layout.topMargin: 40
-                    imgSrc: image_url
-                    nameText: name
-                    inStock: root.inStock
-                    canModify: userIsAdmin
-                    price: sell_price
-                    description: root.description
-                }
-
-                Button {
-                    Layout.fillWidth: true
-                    text: userIsAdmin ? "Actualizar" : "Comprar"
-                    enabled: userIsAdmin || hasStocks
-                    onClicked: {
-                        if (!userIsAdmin) {
-                            if (cart.isProductInCart(detailsEntity))
-                                message.show("El producto ya se encuentra en el carrito!");
-                            else {
-                                cart.addtoCart(detailsEntity);
-                                message.show("¡Producto agregado al carrito!");
-                            }
-                            return;
-                        }
-
-                        Object.keys(editableProduct).forEach(key => {
-                            const data = editableProduct[key][0];
-                            const callable = editableProduct[key][1];
-
-                            if (data !== product[key])
-                                callable(data);
-                        });
-                    }
-                    font.pointSize: 12
-                }
-
-                Label {
-                    id: availableStockLocation
-                    text: "Disponible en: "
-                    wrapMode: Label.Wrap
-                    font.pointSize: 12
-                    Layout.fillWidth: true
-                }
-
-                ReviewSection {
-                    id: reviewSection
-                    Layout.fillWidth: true
-                }
+            ReviewSection {
+                id: reviewSection
+                Layout.fillWidth: true
+                Layout.bottomMargin: 10
             }
         }
     }
 
     Message { id: message }
-
-    StockPopup {
-        id: updateInStock
-        onOkClicked: quantity => api.patchStock(quantity, () => {
-            updateInStock.stackLayout.currentIndex = 1;
-            root.inStock = inStock;
-        }, () => updateInStock.stackLayout.currentIndex = 2)
-    }
 
     ProductApi { id: api }
 
@@ -154,13 +118,88 @@ Page {
                 totalStock += qty;
 
                 if (qty > 0)
-                    locations += `${inventory.warehouse.name}, `
+                    shopProduct.locations.push(inventory.warehouse.name)
             }
-
-            locations = locations ? locations.slice(0, locations.length - 2) : "-";
-            availableStockLocation.text += locations;
 
             inStock = totalStock;
         }
+    }
+
+    RestService {
+        OrganizationResource {
+            id: organizationResource
+            path: "organizations"
+            onFetched: data => {
+                const organization = JSON.parse(data).organization;
+                root.title = organization.name;
+                internal.shortDescription = organization.short_description;
+            }
+        }
+
+        FavoriteProduct {
+            id: favoriteResource
+            path: `users/${root.userId}/favorites`
+            onResourceFetched: resp => {
+                print(resp);
+                const favorites = JSON.parse(JSON.parse(resp).favorites);
+                print(favorites)
+                print(`length: ${favorites.length}`)
+                const func = fav => {
+                    internal.fav = createIdentifiedFavorite(fav.id, fav.user_id, fav.product_id);
+                    if (fav.product_id === root.product.id) {
+                        productItem.favoriteBtn.like = true;
+                        return true;
+                    }
+                    return false;
+                }
+                for (let fav of favorites)
+                    if (func(fav))
+                        break;
+            }
+            onResourceCreated: resp => {
+                const fav = JSON.parse(resp).favorite;
+                internal.fav = createIdentifiedFavorite(fav.id, fav.user_id, fav.product_id);
+            }
+
+            Component.onCompleted: {
+                readByCustomerId(root.userId)
+            }
+        }
+    }
+
+    UserController {
+        id: userController
+    }
+
+    QtObject {
+        id: internal
+        readonly property int caraId: 1
+        readonly property string titleTemplate: `<b>%1</b><br><font size="2">%2</font>`
+        readonly property int margin: scrollView.effectiveScrollBarWidth ?? 10
+        property string shortDescription
+        property favorite fav
+    }
+
+    function createFavorite(userId: int, productId: int): favorite {
+        return {
+            userId,
+            productId
+        };
+    }
+
+    function createIdentifiedFavorite(favoriteId: int, userId: int, productId: int): favorite {
+        return {
+            userId,
+            productId,
+            favoriteId
+        };
+    }
+
+    function handleFavClicked(like: bool) {
+        const favorite = createFavorite(root.userId, root.productId);
+        if (like)
+            favoriteResource.add(favorite);
+        else
+            favoriteResource.remove(internal.fav);
     }
 }

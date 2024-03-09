@@ -13,7 +13,7 @@ int main(int argc, char *argv[])
     app.setApplicationVersion("0.18.0");
 
     QQmlApplicationEngine engine;
-    const QUrl url(u"qrc:/qt/qml/Cara/main.qml"_qs);
+    const QUrl url(u"qrc:/qt/qml/Cara/Main.qml"_qs);
     QObject::connect(
         &engine,
         &QQmlApplicationEngine::objectCreationFailed,

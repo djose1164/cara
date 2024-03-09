@@ -1,7 +1,8 @@
 #include "usercontroller.h"
-#include "data/userrepositoryimpl.h"
 #include <QJsonDocument>
 #include <QJsonObject>
+#include "data/userrepositoryimpl.h"
+#include <QNetworkReply>
 
 namespace Controller
 {
@@ -44,6 +45,23 @@ void UserController::getUserById(int id)
     connect(repository_, &Data::UserRepository::fetched, this, [&, id] {
         qDebug() << "UserController::getUserById: user with id " << id << "was fetched.";
         emit fetched(repository_->buffer());
+    });
+}
+
+void UserController::readFavorites(UserId id)
+{
+    const auto reply{repository_->readFavorites(id)};
+    connect(reply, &QNetworkReply::finished, this, [this, reply] {
+        if (reply->error() != QNetworkReply::NoError)
+        {
+            setErrorString(reply->errorString());
+            emit errorOccurred();
+            return;
+        }
+
+        const auto doc{QJsonDocument::fromJson(reply->readAll())};
+        if (!doc.isEmpty())
+            emit fetched(doc.toJson());
     });
 }
 

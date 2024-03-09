@@ -26,6 +26,8 @@ public:
 public slots:
     void add(const QVariantMap &product) override;
 
+    QNetworkReply *read(ProductId id) override;
+
     void update(const QVariantMap &product) override;
 
     void fetchAll() override;

@@ -8,6 +8,7 @@ import Salesperson
 import "qrc:/orders" as Orders
 import Customer
 import Billing
+import Authentication
 
 // TODO: MaiPage should be deleted in a future release.
 // Plan in what release it should be deleted.
@@ -115,7 +116,6 @@ Page {
         target: LoginManager
 
         function onLoggedIn() {
-            userStore.update();
             root.state = "fetching";
         }
 
@@ -129,7 +129,17 @@ Page {
         }
     }
 
-    LocalUserStore { id: userStore }
+    Connections {
+        target: Application
+
+        function onStateChanged(state: int) {
+            if (state === Qt.ApplicationActive && !TokenManager.refreshing)
+                TokenManager.resumeRefreshing();
+            else if (state === Qt.ApplicationInactive && TokenManager.refreshing)
+                TokenManager.stopRefreshing();
+            print(`onApplicationStateChanged: ${state}`);
+        }
+    }
 
     UserController {
         id: userController

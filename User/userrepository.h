@@ -4,17 +4,23 @@
 #include "userentity.h"
 #include <QObject>
 
+class QNetworkReply;
+
 namespace Data
 {
 class UserRepository : public QObject
 {
     Q_OBJECT
 public:
+    using UserId = int;
+
     explicit UserRepository(QObject *parent = nullptr);
 
     virtual ~UserRepository();
 
     virtual void read(int id) = 0;
+
+    virtual QNetworkReply *readFavorites(UserId id) = 0;
 
     virtual void update(const Entity::UserEntity &user) = 0;
 

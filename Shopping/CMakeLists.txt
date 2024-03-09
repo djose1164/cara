@@ -5,15 +5,24 @@ qt_add_qml_module(ShoppingLib
     QML_FILES
         Catalogue.qml
         CategoryComboBox.qml
+        LikeButton.qml
+        PriceSpinBox.qml
+        ProductItem.qml
+        ShopProduct.qml
         StatusPopup.qml
     RESOURCES
         catalogue.svg
+        favorite.svg
+        favorite_fill.svg
     SOURCES
-        productrepository.h productrepository.cpp
         cataloguerepository.h cataloguerepository.cpp
-        productcategoryrepository.h productcategoryrepository.cpp
-        iproductrepository.h iproductrepository.cpp
+        favorite.h favorite.cpp
+        favoriteproduct.h favoriteproduct.cpp
         iproductcategoryrepository.h iproductcategoryrepository.cpp
+        iproductrepository.h iproductrepository.cpp
+        organizationresource.h organizationresource.cpp
+        productcategoryrepository.h productcategoryrepository.cpp
+        productrepository.h productrepository.cpp
 )
 
 target_include_directories(ShoppingLib PRIVATE
@@ -21,3 +30,5 @@ target_include_directories(ShoppingLib PRIVATE
     ../data
     ../utils
 )
+
+target_link_libraries(ShoppingLib PRIVATE UtilsLib)

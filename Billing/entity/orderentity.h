@@ -1,27 +1,27 @@
 #ifndef ORDERENTITY_H
 #define ORDERENTITY_H
 
-#include "paymententity.h"
+#include "payment.h"
 #include "detailsentity.h"
 #include "userentity.h"
 #include <QObject>
 #include <QtQml>
 
 namespace EntityLayer {
-class OrderEntity : public QObject, public JsonExportable
+class OrderEntity : public QObject
 {
     Q_OBJECT
     QML_ELEMENT
 
     Q_PROPERTY(Entity::UserEntity user READ user WRITE setUser NOTIFY userChanged)
-    Q_PROPERTY(PaymentEntity *payment MEMBER payment_ NOTIFY paymentChanged)
+    Q_PROPERTY(Entity::Payment payment MEMBER payment_ NOTIFY paymentChanged)
 
 public:
     explicit OrderEntity(QObject *parent = nullptr);
     
     Entity::UserEntity &user();
 
-    PaymentEntity *payment() const;
+    Entity::Payment payment() const;
 
     QByteArray details() const;
     void setDetails(const QByteArray &detail);
@@ -32,7 +32,7 @@ public:
 public slots:
     void setUser(Entity::UserEntity user);
 
-    Q_INVOKABLE QByteArray toJson() const;
+    Q_INVOKABLE QByteArray toJson();
 
 signals:
     void userChanged();
@@ -42,7 +42,7 @@ signals:
 private:
     Entity::UserEntity user_;
     QProperty<QByteArray> details_;
-    PaymentEntity *payment_;
+    Entity::Payment payment_;
 };
 }
 

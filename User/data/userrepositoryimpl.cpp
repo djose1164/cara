@@ -34,6 +34,13 @@ void UserRepositoryImpl::read(int id)
     });
 }
 
+QNetworkReply *UserRepositoryImpl::readFavorites(UserId id)
+{
+    return manager_->get(
+        api_->createRequest(path_ + QString("/%1").arg(id) + "/favorites")
+    );
+}
+
 void UserRepositoryImpl::update(const Entity::UserEntity &user)
 {
 

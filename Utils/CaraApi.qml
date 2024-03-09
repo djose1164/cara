@@ -3,7 +3,13 @@ import Authentication
 import data
 
 Rest {
+    id: root
     property string endpoint: ""
     base: Constants.base + endpoint
-    accessToken: TokenManager.accessToken
+    accessToken: tokenStore.access
+
+    property var ts: TokenStore {
+        id: tokenStore
+        Component.onCompleted: restore()
+    }
 }

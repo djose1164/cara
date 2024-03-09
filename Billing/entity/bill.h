@@ -1,17 +1,17 @@
 #ifndef BILLENTITY_H
 #define BILLENTITY_H
 
-#include "../billing/entity/payment.h"
-#include "../billing/model/ordermodel.h"
-#include "../Customer/entity/customer.h"
+#include "entity/payment.h"
+#include "model/ordermodel.h"
+#include "Customer/entity/customer.h"
 #include "orderstatus.h"
-#include "../user/userentity.h"
+#include "user/userentity.h"
 #include <QObject>
 #include <QtQml>
 
 namespace Entity {
 using Model::OrderModel;
-class Bill : public QObject, public EntityLayer::JsonExportable
+class Bill : public QObject
 {
     Q_OBJECT
     QML_ELEMENT

@@ -6,6 +6,7 @@ import Authentication as Auth
 import User
 import Utils
 import Salesperson
+import Cara
 
 ApplicationWindow {
     id: app
@@ -55,24 +56,32 @@ ApplicationWindow {
         onActivated: Qt.quit()
     }
 
-    CaraApi {
-        id: caraApi
+    RestService {
+        HealthResource {
+            id: healthResource
+            path: "health"
+            onStatusReady: resp => {
+                const data = JSON.parse(resp);
+                if (data.status !== "OK") {
+                    const message = "Nuestros servidores se encuentran actualmente bajo "
+                                    + "mantenimiento. Puedes ver como va en [Twiterr](https://twitter.com/carardoficial).";
+                    appStack.replace("qrc:/errors/ErrorPage.qml", {message});
+                } else {
+                    loginSetup();
+                }
+            }
+            onTimeout: {
+                print("Time out on health")
+                timeoutDialog.open()}
+        }
+    }
 
-        endpoint: "/health"
-        //  FIXME: Health should return when the service is unavailable
-        onServiceUnavailable: {
-            const message = "Nuestros servidores se encuentran actualmente bajo "
-                          + "mantenimiento. Puedes ver como va en [Twiterr](https://twitter.com/carardoficial).";
-            appStack.replace("qrc:/errors/ErrorPage.qml", {message});
-        }
-        onSucceeded: {
-            loginSetup();
-        }
-        Component.onCompleted: print("CaraApi: Healths", caraApi.base)
-
-        function checkStatus() {
-            get("/");
-        }
+    TimeoutDialog {
+        id: timeoutDialog
+        width: app.width * .9
+        height: app.height/2
+        anchors.centerIn: Overlay.overlay
+        onAccepted: healthResource.readStatus()
     }
 
     // In charge of checking if there's a previous login, if so logs the user in.
@@ -110,7 +119,7 @@ ApplicationWindow {
     function setup() {
         LoginManager.session = UserSession.session;
         myTokenStore.restore();
-        caraApi.checkStatus();
+        healthResource.readStatus();
     }
 
     function loginSetup() {

@@ -13,6 +13,8 @@ class UserController : public QObject
     QML_ELEMENT
     Q_PROPERTY(QString errorString READ errorString WRITE setErrorString NOTIFY errorStringChanged FINAL)
 public:
+    using UserId = int;
+
     explicit UserController(QObject *parent = nullptr);
 
     Data::UserRepository *repository() const;
@@ -31,6 +33,8 @@ public slots:
     void update(const QVariantMap &data);
 
     void getUserById(int id);
+
+    void readFavorites(UserId id);
 
 signals:
     void fetched(const QByteArray &data);

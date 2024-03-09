@@ -56,6 +56,13 @@ void ProductRepository::add(const QVariantMap &product)
     }
 }
 
+QNetworkReply *ProductRepository::read(ProductId id)
+{
+    return manager_->get(
+        api_->createRequest(path_ + "/"_L1 +resourceID.arg(QString::number(id)))
+    );
+}
+
 void ProductRepository::update(const QVariantMap &product)
 {
     QVariantMap productTmp{product};

@@ -5,7 +5,7 @@ OrderEntity::OrderEntity(QObject *parent)
     : QObject{parent}
     , user_{}
     , details_{}
-    , payment_{new PaymentEntity(this)}
+    , payment_{}
 {
 }
 
@@ -38,7 +38,7 @@ void OrderEntity::setUser(Entity::UserEntity user)
     }
 }
 
-QByteArray OrderEntity::toJson() const
+QByteArray OrderEntity::toJson()
 {
     QJsonObject object{};
     object["user_id"] = user_.userId();
@@ -65,8 +65,8 @@ QByteArray OrderEntity::toJson() const
     }
     object["details"] = arr;
 
-    payment_->setAmountToPay(amountToPay);
-    const auto doc_{QJsonDocument::fromJson(payment_->toJson())};
+    payment_.setAmountToPay(amountToPay);
+    const auto doc_{QJsonDocument::fromJson(payment_.toJson())};
     object["payment"] = QJsonValue::fromVariant(doc_);
 
     qDebug() << "OrderEntity::toJson " << object;

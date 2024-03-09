@@ -1,5 +1,6 @@
 #include "utils.h"
 #include <QJsonDocument>
+#include <QRestReply>
 
 namespace Utils
 {
@@ -15,4 +16,10 @@ std::optional<QJsonObject> byteArrayToJsonObject(const QByteArray &data)
     }
     return json.object();
 }
+
+bool isOperationCanceledError(const QRestReply &reply)
+{
+    return reply.error() == QNetworkReply::OperationCanceledError;
+}
+
 }

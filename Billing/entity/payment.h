@@ -34,6 +34,8 @@ public:
 
     Payment();
 
+    bool operator==(const Payment &other) const;
+
     int paymentId() const;
     void setPaymentId(int newPaymentId);
 

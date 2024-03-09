@@ -1,6 +1,7 @@
 #include "cataloguerepository.h"
 #include "productrepository.h"
 #include "productcategoryrepository.h"
+#include <QJsonDocument>
 
 namespace Catalogue {
 CatalogueRepository::CatalogueRepository(QObject *parent)
@@ -19,6 +20,23 @@ void CatalogueRepository::addProduct(const QVariantMap &product)
     const auto productRepository{dynamic_cast<ProductRepository *>(productRepository_)};
     connect(productRepository, &ProductRepository::added, this, [&](const QByteArray &data) {
         emit productAdded(data);
+    });
+}
+
+void CatalogueRepository::readProductById(ProductId id)
+{
+    const auto reply{productRepository_->read(id)};
+    connect(reply, &QNetworkReply::finished, this, [this, reply] {
+        const auto doc{QJsonDocument::fromJson(reply->readAll())};
+        if (reply->error() != QNetworkReply::NoError)
+        {
+            errorOccurred(doc.toJson());
+            return;
+        }
+
+        emit productFetched(doc.toJson());
+
+        reply->deleteLater();
     });
 }
 

@@ -3,6 +3,7 @@ import QtQuick.Dialogs
 import QtQuick.Controls
 import QtQuick.Layouts
 import Utils
+import User
 import "qrc:/reviews"
 
 
@@ -13,7 +14,7 @@ ColumnLayout {
     readonly property var review: {
         "review": comment.textField,
         "rating": starRating.selectedStars,
-        "customer_id": TheCurrentUser.customerId,
+        "customer_id": UserSettings.customerId,
         "product_id": productId
     }
     readonly property var reviewToPatch: {
@@ -21,7 +22,7 @@ ColumnLayout {
         "rating": starRating.selectedStars
     }
 
-    readonly property int customerId: TheCurrentUser.customerId
+    readonly property int customerId: UserSettings.customerId
     readonly property string name: `${TheCurrentUser.forename} ${TheCurrentUser.surname}`
     readonly property bool isReviewOwner: reviewCustomerId === customerId
     property int reviewId

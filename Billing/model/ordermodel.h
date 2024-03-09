@@ -7,8 +7,8 @@
 
 namespace Model
 {
-using EntityLayer::DetailsEntity, EntityLayer::JsonExportable;
-class OrderModel : public QAbstractListModel, public JsonExportable
+using EntityLayer::DetailsEntity;
+class OrderModel : public QAbstractListModel
 {
     Q_OBJECT
     QML_ELEMENT
@@ -33,7 +33,7 @@ public:
 
     int count() const;
     Q_INVOKABLE DetailsEntity *get(int index);
-    Q_INVOKABLE QByteArray toJson() const override;
+    Q_INVOKABLE QByteArray toJson() const;
 
 signals:
     void countChanged(int count);

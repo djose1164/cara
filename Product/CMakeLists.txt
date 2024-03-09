@@ -9,7 +9,6 @@ qt_add_qml_module(ProductLib
     VERSION 1.0
     QML_FILES
         AddProductView.qml
-        Product.qml
         ProductApi.qml
         ProductCard.qml
         ProductComboBox.qml
@@ -18,12 +17,10 @@ qt_add_qml_module(ProductLib
         ProductImage.qml
         ProductPage.qml
         ProductRequest.qml
-        ProductStocks.qml
         ProductThumbnail.qml
         ProductView.qml
-        StockPopup.qml
         ProductForm.qml
         ProductManager.qml
+    SOURCES
+        productentity.h productentity.cpp
 )
-
-target_include_directories(ProductLib PRIVATE business ../inventory)

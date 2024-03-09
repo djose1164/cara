@@ -52,6 +52,7 @@ qt_add_qml_module(BillingLib
         costcalculator.h costcalculator.cpp
         data/paymentresource.h data/paymentresource.cpp
         data/restorderrepository.h data/restorderrepository.cpp
+        detailsentity.h detailsentity.cpp
         document.h document.cpp
         entity/bill.h entity/bill.cpp
         entity/orderentity.h entity/orderentity.cpp
@@ -60,19 +61,20 @@ qt_add_qml_module(BillingLib
         model/billmodel.h model/billmodel.cpp
         model/billproxymodel.h model/billproxymodel.cpp
         model/ordermodel.h model/ordermodel.cpp
+        orderstatus.h orderstatus.cpp
         ordertemplate.h ordertemplate.cpp
         uniquefilenamegenerator.h uniquefilenamegenerator.cpp
     RESOURCES
-    order-model.html style.css pdf-icon.svg
+        order-model.html style.css pdf-icon.svg
     DEPENDENCIES
-        QtQuick Utils Entities
+        QtQuick Utils Product
 )
 
 target_include_directories(BillingLib
     PRIVATE
         business entity model data
-        ../user ../data ../entities ../authentication ../utils ../
+        ../user ../data ../product ../authentication ../utils ../
 )
 
 target_link_libraries(BillingLib
-    PRIVATE Qt6::Concurrent Qt6::PrintSupport Entities UtilsLib InventoryLib)
+    PRIVATE Qt6::Concurrent Qt6::PrintSupport UtilsLib InventoryLib)

@@ -16,6 +16,8 @@ public:
     // UserRepository interface
     void read(int id) override;
 
+    QNetworkReply *readFavorites(UserId id) override;
+
     void update(const Entity::UserEntity &user) override;
 
     QString path() const;
