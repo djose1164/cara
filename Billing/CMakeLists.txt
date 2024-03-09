@@ -40,7 +40,6 @@ qt_add_qml_module(BillingLib
         billrepository.h billrepository.cpp
         business/abstractdocument.h business/abstractdocument.cpp
         business/billbusiness.h business/billbusiness.cpp
-        business/cartbusiness.h	business/cartbusiness.cpp
         business/filenamegenerator.h business/filenamegenerator.cpp
         business/ordercontroller.h business/ordercontroller.cpp
         business/orderrepository.h business/orderrepository.cpp

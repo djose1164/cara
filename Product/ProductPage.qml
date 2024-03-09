@@ -3,7 +3,6 @@ import QtQuick.Controls
 import QtQuick.Layouts
 import QtQuick.Dialogs
 import QtQuick.Templates as T
-import entities as Entity
 import Utils
 import Shopping
 import User
@@ -23,14 +22,14 @@ Page {
         "description": description,
     }
 
-    Entity.Product {
-        id: detailsEntity
-        name: root.name
-        price: root.sell_price
-        description: root.description
-        productId: root.productId
-        imageUrl: root.image_url
-    }
+    // Product {
+    //     id: detailsEntity
+    //     name: root.name
+    //     price: root.sell_price
+    //     description: root.description
+    //     productId: root.productId
+    //     imageUrl: root.image_url
+    // }
     readonly property var cart: CartBusiness
 
     required property int productId

@@ -15,6 +15,7 @@ qt_add_qml_module(ShoppingLib
         favorite.svg
         favorite_fill.svg
     SOURCES
+        cartbusiness.h cartbusiness.cpp
         cataloguerepository.h cataloguerepository.cpp
         favorite.h favorite.cpp
         favoriteproduct.h favoriteproduct.cpp
