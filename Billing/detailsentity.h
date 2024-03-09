@@ -1,0 +1,34 @@
+#ifndef DETAILSENTITY_H
+#define DETAILSENTITY_H
+
+#include "product/productentity.h"
+#include <QObject>
+#include <QtQml>
+
+namespace EntityLayer {
+class DetailsEntity : public QObject
+{
+
+public:
+    explicit DetailsEntity(QObject *parent = nullptr);
+
+    void setQuantity(int quantity);
+    int quantity() const;
+
+    int total() const;
+    QBindable<int> bindableTotal() const;
+    
+    void setProduct(Product *const product);
+    Product *product() const;
+
+    QByteArray toJson() const;
+
+private:
+    QProperty<int> quantity_;
+    QProperty<int> total_;
+    
+    QProperty<Product *> product_;
+};
+}
+
+#endif // DETAILSENTITY_H
