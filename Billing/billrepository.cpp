@@ -1,32 +1,26 @@
 #include "billrepository.h"
+#include "Utils/networkrequestsingleton.h"
 #include "notimplementated.h"
-#include "constants.h"
-#include "business/tokenmanager.h"
+#include <QNetworkReply>
 
+using namespace Qt::StringLiterals;
 
 namespace DataLayer {
 BillRepository::BillRepository(QObject *parent)
     : QObject{parent}
     , manager_{new QNetworkAccessManager(this)}
     , reply_{nullptr}
+    , api_{Utils::NetworkRequestSingleton::instance().api()}
 {
 
 }
 
 void BillRepository::fetchByCustomerId(int customerId)
 {
-    QQmlEngine engine;
-    const auto constants{engine.singletonInstance<Constants *>("data", "Constants")};
-
-    Q_ASSERT(!constants->base().isEmpty());
-    const QUrl url{constants->base() + QString("/orders/?customer_id=%1").arg(customerId)};
-    QNetworkRequest request{url};
-    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
-
-    const auto tokenManager{Authentication::Business::TokenManager::instance()};
-    const QString token{tokenManager->accessToken()};
-
-    request.setRawHeader("Authorization", token.toUtf8());
+    constexpr auto path{"/orders/?customer_id=%1"_L1};
+    const auto request{
+        api_->createRequest(path.arg(QString::number(customerId)))
+    };
 
     reply_ = manager_->get(request);
 
@@ -46,20 +40,8 @@ void BillRepository::fetchById(int orderId)
 
 void BillRepository::fetchByAdminId(int adminId)
 {
-    QQmlEngine engine;
-    const auto constants{engine.singletonInstance<Constants *>("data", "Constants")};
-
-    Q_ASSERT(!constants->base().isEmpty());
-    const QUrl url{constants->base() + QString("/orders/?admin_id=%1").arg(adminId)};
-    QNetworkRequest request{url};
-    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
-
-    const auto tokenManager{Authentication::Business::TokenManager::instance()};
-    const QString token{tokenManager->accessToken()};
-
-    Q_ASSERT(!token.isEmpty());
-
-    request.setRawHeader("Authorization", token.toUtf8());
+    constexpr auto path{"/orders/?admin_id=%1"_L1};
+    const auto request{api_->createRequest(path.arg(QString::number(adminId)))};
 
     reply_ = manager_->get(request);
 
@@ -74,20 +56,10 @@ void BillRepository::fetchByAdminId(int adminId)
 
 void BillRepository::fetchBy(const QString &param, int id)
 {
-    QQmlEngine engine;
-    const auto constants{engine.singletonInstance<Constants *>("data", "Constants")};
-
-    Q_ASSERT(!constants->base().isEmpty());
-    const QUrl url{constants->base() + QString("/orders/?%1=%2").arg(param, id)};
-    QNetworkRequest request{url};
-    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
-
-    const auto tokenManager{Authentication::Business::TokenManager::instance()};
-    const QString token{tokenManager->accessToken()};
-
-    Q_ASSERT(!token.isEmpty());
-
-    request.setRawHeader("Authorization", token.toUtf8());
+    constexpr auto path{"/orders/?%1=%2"_L1};
+    const auto request{
+        api_->createRequest(path.arg(param, QString::number(id)))
+    };
 
     reply_ = manager_->get(request);
 

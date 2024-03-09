@@ -1,10 +1,11 @@
 #ifndef BILLREPOSITORY_H
 #define BILLREPOSITORY_H
 
-#include "ibillrepository.h"
+#include <QNetworkAccessManager>
 #include <QObject>
 #include <QQmlEngine>
-#include <QNetworkAccessManager>
+#include "Utils/abstractresource.h"
+#include "ibillrepository.h"
 
 namespace DataLayer {
 class BillRepository : public QObject, public IBillRepository
@@ -40,6 +41,7 @@ private:
 
     QNetworkAccessManager *manager_;
     QNetworkReply *reply_;
+    AbstractResource::Api api_;
 };
 }
 
