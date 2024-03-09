@@ -17,7 +17,6 @@ qt_standard_project_setup(REQUIRES 6.7)
 qt_policy(SET QTP0001 NEW)
 
 add_subdirectory(Data)
-add_subdirectory(Entities)
 add_subdirectory(Shopping)
 add_subdirectory(Inventory)
 add_subdirectory(Salesperson)
@@ -75,7 +74,6 @@ target_link_libraries(CaraLib PUBLIC
     Qt6::Test
     Qt6::Charts
     Dataplugin
-    Entitiesplugin
     ShoppingLibplugin
     InventoryLibplugin
     salespersonplugin
