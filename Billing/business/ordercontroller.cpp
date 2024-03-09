@@ -1,6 +1,6 @@
 #include "ordercontroller.h"
 #include "data/restorderrepository.h"
-#include "paymententity.h"
+#include "entity/payment.h"
 
 using namespace Qt::StringLiterals;
 
@@ -73,7 +73,7 @@ bool OrderController::validateOrder(const QVariantMap &order)
         setErrorString("pay's payment_status_id is missing."_L1);
         return false;
     }
-    if (pay["payment_status_id"_L1].toInt() == int(EntityLayer::PaymentEntity::Status::Unpaid))
+    if (pay["payment_status_id"_L1].toInt() == int(Entity::Payment::Status::Unpaid))
         return true;
     if (!pay.contains("paid_amount") || !pay.contains("payment_details") || !pay.contains("amount_to_pay"))
     {
