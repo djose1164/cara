@@ -1,32 +1,77 @@
-#include "salespersoncontroller.h"
-#include "data/salespersonmanager.h"
-#include <QJsonDocument>
+#include "associatesalespersonservice.h"
+#include "salesperson.h"
+#include "data/salespersonrepositoryimp.h"
 #include <QJsonObject>
+#include <QJsonDocument>
 
-namespace Controller
-{
-SalespersonController::SalespersonController(QObject *parent)
+namespace Salesperson {
+AssociateSalespersonService::AssociateSalespersonService(QObject *parent)
     : QObject{parent}
-    , manageable_{new Data::SalespersonManager(this)}
-    , adminId_{}
+    , salespersonRepository_{new Data::SalespersonRepositoryImpl(this)}
     , salespersonId_{}
-    , buffer_{}
+    , adminId_{}
 {
-    connect(manageable_, &Business::Manageable::finished, this, [&] {
-        setBuffer(manageable_->buffer());
+    using RepositoryImpl = Data::SalespersonRepositoryImpl;
+    const auto repository{static_cast<RepositoryImpl *>(salespersonRepository_)};
+    connect(repository, &RepositoryImpl::finished, this, [=, this] {
+        setData(repository->buffer());
     });
 
-    connect(manageable_, &Business::Manageable::fetched, this, &SalespersonController::fetched);
-
-    connect(manageable_, &Business::Manageable::errorOccurred, this, &SalespersonController::errorOccurred);
+    connect(repository, &RepositoryImpl::errorOccurred, this, &AssociateSalespersonService::errorOccurred);
+    connect(repository, &RepositoryImpl::fetched, this, &AssociateSalespersonService::fetched);
+    connect(repository, &RepositoryImpl::patched, this, &AssociateSalespersonService::patched);
 }
 
-int SalespersonController::adminId() const
+void AssociateSalespersonService::fetchAllAssociateSalesperson()
+{
+    salespersonRepository_->getAssociateSalespersons();
+}
+
+void AssociateSalespersonService::addAssociateSalesperson(const QVariantMap &data)
+{
+    const auto salesperson{Entity::Salesperson::fromMap(data)};
+    if (salesperson.isPosteable())
+        salespersonRepository_->addAssociateSalesperson(salesperson);
+    else
+        qDebug() << "Salesperson is not valid to be posteable";
+    
+    using RepositoryImpl = Data::SalespersonRepositoryImpl;
+    const auto repository{static_cast<RepositoryImpl *>(salespersonRepository_)};
+    connect(repository, &RepositoryImpl::added, this, &AssociateSalespersonService::added);
+}
+
+void AssociateSalespersonService::fetchAssociateSalespersonById(int id)
+{
+    salespersonRepository_->getSalespersonById(id);
+}
+
+void AssociateSalespersonService::fetchCustomers()
+{
+    if (salespersonId_ < 1)
+    {
+        emit errorOccurred();
+        return;
+    }
+    salespersonRepository_->getCustomers(salespersonId_);
+}
+
+void AssociateSalespersonService::patch(const QVariantMap &data)
+{
+    Q_ASSERT(!data.isEmpty());
+    qDebug() << "AssociateSalespersonService::patch: " << data;
+    const auto payload{QJsonObject::fromVariantMap(data)};
+
+    const auto doc{QJsonDocument(payload)};
+
+    salespersonRepository_->patch(salespersonId_, doc.toJson(QJsonDocument::Compact));
+}
+
+int AssociateSalespersonService::adminId() const
 {
     return adminId_;
 }
 
-void SalespersonController::setAdminId(SalespersonId newAdminId)
+void AssociateSalespersonService::setAdminId(int newAdminId)
 {
     if (adminId_ == newAdminId)
         return;
@@ -34,31 +79,12 @@ void SalespersonController::setAdminId(SalespersonId newAdminId)
     emit adminIdChanged();
 }
 
-void SalespersonController::readSalespeople()
-{
-    Q_ASSERT(adminId_ > 0);
-
-    manageable_->readAll(adminId_);
-}
-
-void SalespersonController::readSalesperson()
-{
-    Q_ASSERT(salespersonId_ > 0);
-
-    manageable_->read(salespersonId_);
-}
-
-void SalespersonController::update()
-{
-
-}
-
-int SalespersonController::salespersonId() const
+int AssociateSalespersonService::salespersonId() const
 {
     return salespersonId_;
 }
 
-void SalespersonController::setSalespersonId(SalespersonId newSalespersonId)
+void AssociateSalespersonService::setSalespersonId(int newSalespersonId)
 {
     if (salespersonId_ == newSalespersonId)
         return;
@@ -66,23 +92,16 @@ void SalespersonController::setSalespersonId(SalespersonId newSalespersonId)
     emit salespersonIdChanged();
 }
 
-Entity::Salesperson SalespersonController::fromJsonObject(const QJsonObject &data)
+QByteArray AssociateSalespersonService::data() const
 {
-    return Entity::Salesperson::fromJson(
-        QJsonDocument{data}.toJson()
-    );
+    return data_;
 }
 
-QByteArray SalespersonController::buffer() const
+void AssociateSalespersonService::setData(const QByteArray &newData)
 {
-    return buffer_;
-}
-
-void SalespersonController::setBuffer(const QByteArray &newBuffer)
-{
-    if (buffer_ == newBuffer)
+    if (data_ == newData)
         return;
-    buffer_ = newBuffer;
-    emit bufferChanged();
+    data_ = newData;
+    emit dataChanged();
 }
 }

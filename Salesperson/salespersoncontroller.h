@@ -1,70 +1,58 @@
-#ifndef SALESPERSONCONTROLLER_H
-#define SALESPERSONCONTROLLER_H
+#ifndef ASSOCIATESALESPERSONSERVICE_H
+#define ASSOCIATESALESPERSONSERVICE_H
 
-#include "business/manageable.h"
-#include "salesperson.h"
+#include "data/salespersonrepository.h"
 #include <QObject>
 #include <QQmlEngine>
 
-namespace Controller
-{
-/**
- * @brief The SalespersonController class handles, verifies & validates the
- * requests made by the clients related to Salesperson module.
- */
-class SalespersonController : public QObject
+namespace Salesperson {
+class AssociateSalespersonService : public QObject
 {
     Q_OBJECT
     QML_ELEMENT
-    Q_PROPERTY(int adminId READ adminId WRITE setAdminId NOTIFY adminIdChanged FINAL)
+
+    Q_PROPERTY(QByteArray data READ data WRITE setData NOTIFY dataChanged FINAL)
     Q_PROPERTY(int salespersonId READ salespersonId WRITE setSalespersonId NOTIFY salespersonIdChanged FINAL)
-    Q_PROPERTY(QByteArray buffer READ buffer WRITE setBuffer NOTIFY bufferChanged FINAL)
+    Q_PROPERTY(int adminId READ adminId WRITE setAdminId NOTIFY adminIdChanged FINAL)
+
 public:
-    using SalespersonId = Entity::Salesperson::SalespersonId;
+    explicit AssociateSalespersonService(QObject *parent = nullptr);
 
-    explicit SalespersonController(QObject *parent = nullptr);
-
-    int adminId() const;
-    void setAdminId(SalespersonId newAdminId);
-
-    QByteArray buffer() const;
-    void setBuffer(const QByteArray &newBuffer);
+    QByteArray data() const;
+    void setData(const QByteArray &newData);
 
     int salespersonId() const;
-    void setSalespersonId(SalespersonId newSalespersonId);
+    void setSalespersonId(int newSalespersonId);
 
-    Q_INVOKABLE Entity::Salesperson fromJsonObject(const QJsonObject &data);
+    int adminId() const;
+    void setAdminId(int newAdminId);
 
 public slots:
-    /**
-     * @brief readSalespeople Reads the associated salespeople of adminId_. Emit
-     * fetched when done; errorOccured otherwise
-     */
-    void readSalespeople();
+    void fetchAllAssociateSalesperson();
+    void addAssociateSalesperson(const QVariantMap &data);
+    void fetchAssociateSalespersonById(int id);
+    void fetchCustomers();
 
-    /**
-     * @brief readSalesperson Reads the salesperson having salespersonId_. Emit
-     * fetched when done; errorOccured otherwise
-     */
-    void readSalesperson();
+    void patch(const QVariantMap &data);
 
-    void update();
 signals:
-    void adminIdChanged();
-    void fetched();
-    void updated();
     void errorOccurred();
+    void fetched();
+    void added();
+    void patched();
 
-    void bufferChanged();
+    void dataChanged();
 
     void salespersonIdChanged();
 
+    void adminIdChanged();
+
 private:
-    Business::Manageable *manageable_;
-    SalespersonId adminId_;
-    SalespersonId salespersonId_;
-    QByteArray buffer_;
+    Data::SalespersonRepository *salespersonRepository_;
+    QByteArray data_;
+
+    int salespersonId_;
+    int adminId_;
 };
 }
-
-#endif // SALESPERSONCONTROLLER_H
+#endif // ASSOCIATESALESPERSONSERVICE_H
