@@ -1,21 +1,14 @@
 #include "billbusiness.h"
-#include "constants.h"
 #include "billrepository.h"
-
-using namespace EntityLayer;
 
 namespace BusinessLayer
 {
 BillBusiness::BillBusiness(QObject *parent)
     : QObject{parent}
-    , rest_{new Rest(this)}
+    , reply_{}
     , model_{nullptr}
     , billRepository_{new DataLayer::BillRepository(this)}
 {
-    QQmlEngine engine;
-    const auto constants{engine.singletonInstance<DataLayer::Constants *>("data", "Constants")};
-    const QString base{constants->base()};
-    rest_->base(base + "/orders");
 }
 
 BillModel *BillBusiness::model() const
@@ -88,8 +81,61 @@ void BillBusiness::fetchBillsByAdminId(int adminId)
     });
 }
 
+void BillBusiness::fetchUnpaidBills()
+{
+    qDebug() << QStringLiteral("BillBusiness::fetchUnpaidBills: fetching...");
+    reply_ = billRepository_->fetchUnpaidBills();
+
+    connect(reply_, &QNetworkReply::finished, this, &BillBusiness::handleRequestFinished);
+}
+
+void BillBusiness::fetchOrdersInQueue()
+{
+    qDebug() << QStringLiteral("BillBusiness::fetchOrdersInQueue: fetching...");
+    reply_ = billRepository_->fetchOrdersInQueue();
+
+    connect(reply_, &QNetworkReply::finished, this, &BillBusiness::handleRequestFinished);
+}
+
 void BillBusiness::clearModel()
 {
     model_->clear();
+}
+
+void BillBusiness::handleRequestFinished()
+{
+    if (reply_->error() != QNetworkReply::NoError)
+    {
+        emit ordersNotFound();
+        qDebug() << QStringLiteral("BillBusiness::handleRequestFinished: no orders found");
+        qDebug() << QStringLiteral("BillBusiness::handleRequestFinished: %1").arg(reply_->errorString());
+        return;
+    }
+
+    const auto data{reply_->readAll()};
+    const auto resp{QJsonDocument::fromJson(data).object()};
+    const auto ordersValue{resp["orders"]};
+    if (!ordersValue.isArray())
+    {
+        emit ordersNotFound();
+        return;
+    }
+
+    const auto ordersArr = resp["orders"].toArray();
+    if (ordersArr.isEmpty())
+    {
+        emit ordersNotFound();
+        return;
+    }
+
+    for (const auto &order : std::as_const(ordersArr))
+    {
+        const auto orderMap{order.toVariant().toMap()};
+        model_->append(Entity::Bill::fromMap(orderMap));
+    }
+    emit populated();
+    qDebug() << QStringLiteral("BillBusiness::handleRequestFinished: Done");
+
+    reply_->deleteLater();
 }
 }

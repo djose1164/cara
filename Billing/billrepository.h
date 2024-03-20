@@ -4,6 +4,7 @@
 #include <QNetworkAccessManager>
 #include <QObject>
 #include <QQmlEngine>
+#include <QNetworkReply>
 #include "Utils/abstractresource.h"
 #include "ibillrepository.h"
 
@@ -21,6 +22,10 @@ public slots:
     void fetchById(int orderId) override;
 
     void fetchByAdminId(int adminId) override;
+
+    [[nodiscard]] QNetworkReply *fetchUnpaidBills() override;
+
+    [[nodiscard]] QNetworkReply *fetchOrdersInQueue() override;
 
 signals:
     void errorOccurred(const QByteArray &data);

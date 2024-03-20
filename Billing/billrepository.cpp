@@ -1,7 +1,8 @@
 #include "billrepository.h"
+#include <QNetworkReply>
 #include "Utils/networkrequestsingleton.h"
 #include "notimplementated.h"
-#include <QNetworkReply>
+#include "payment.h"
 
 using namespace Qt::StringLiterals;
 
@@ -30,6 +31,8 @@ void BillRepository::fetchByCustomerId(int customerId)
             emit billsFetched(data);
         else
             emit errorOccurred(data);
+
+        reply_->deleteLater();
     });
 }
 
@@ -51,7 +54,32 @@ void BillRepository::fetchByAdminId(int adminId)
             emit billsFetched(data);
         else
             emit errorOccurred(data);
+
+        reply_->deleteLater();
     });
+}
+
+QNetworkReply *BillRepository::fetchUnpaidBills()
+{
+    qDebug() << "BillRepository::fetchUnpaidBills: issuing request...";
+    using enum Entity::Payment::Status;
+    constexpr int paymentStatusId{std::to_underlying(Unpaid)};
+
+    QUrlQuery query;
+    query.addQueryItem("payment_status_id"_L1, QString::number(paymentStatusId));
+
+    const auto request{
+        api_->createRequest("/orders/"_L1, std::move(query))
+    };
+
+    QNetworkReply *reply{manager_->get(request)};
+    qDebug() << "BillRepository::fetchUnpaidBills: issuing request...Done";
+    return reply;
+}
+
+QNetworkReply *BillRepository::fetchOrdersInQueue()
+{
+    return manager_->get(api_->createRequest("/orders/queue"_L1));
 }
 
 void BillRepository::fetchBy(const QString &param, int id)
@@ -69,6 +97,8 @@ void BillRepository::fetchBy(const QString &param, int id)
             emit billsFetched(data);
         else
             emit errorOccurred(data);
+
+        reply_->deleteLater();
     });
 }
 }

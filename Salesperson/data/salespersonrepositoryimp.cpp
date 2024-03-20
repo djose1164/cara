@@ -1,13 +1,15 @@
 #include "salespersonrepositoryimp.h"
+#include <QJsonDocument>
+#include <QNetworkReply>
 #include "networkrequestsingleton.h"
 #include "salesperson.h"
-#include <QNetworkReply>
 
 using namespace Qt::StringLiterals;
 
 namespace
 {
 constexpr auto resourceIdentification = "/%1"_L1;
+constexpr auto queueEndpoint{"/queue"_L1};
 }
 
 namespace Data {
@@ -42,9 +44,11 @@ void SalespersonRepositoryImpl::addAssociateSalesperson(const Entity::Salesperso
             this, &SalespersonRepositoryImpl::requestFinished);
 }
 
-void SalespersonRepositoryImpl::getAssociateSalespersons()
+void SalespersonRepositoryImpl::getAssociateSalespersons(AdminId adminId)
 {
-    reply_ = manager_->get(api_->createRequest(path_ + "/"_L1));
+    const QUrlQuery query{ {"admin_id"_L1, QString::number(adminId)} };
+
+    reply_ = manager_->get(api_->createRequest(path_ + "/"_L1, query));
 
     connect(reply_, &QNetworkReply::finished,
             this, &SalespersonRepositoryImpl::requestFinished);
@@ -74,6 +78,41 @@ void SalespersonRepositoryImpl::getCustomers(int salespersonId)
 
     connect(reply_, &QNetworkReply::finished,
             this, &SalespersonRepositoryImpl::requestFinished);
+}
+
+QNetworkReply *SalespersonRepositoryImpl::takeOrder(OrderId orderId, SalespersonId salespersonId)
+{
+    QJsonObject obj;
+    obj["order_id"] = orderId;
+    obj["salesperson_id"] = salespersonId;
+
+    return manager_->post(
+        api_->createRequest("orders"_L1 + queueEndpoint),
+        QJsonDocument{obj}.toJson()
+    );
+}
+
+QNetworkReply *SalespersonRepositoryImpl::abandonOrder(OrderId orderId)
+{
+    return manager_->deleteResource(api_->createRequest(
+        "orders"_L1
+        + resourceIdentification.arg(QString::number(orderId))
+        + queueEndpoint
+    ));
+}
+
+QNetworkReply *SalespersonRepositoryImpl::markOrderAsDone(OrderId orderId)
+{
+    QJsonObject obj;
+    obj["is_done"] = true;
+
+    return manager_->sendCustomRequest(
+        api_->createRequest("orders"_L1
+            + resourceIdentification.arg(QString::number(orderId))
+            + queueEndpoint),
+        "PATCH"_ba,
+        QJsonDocument{std::move(obj)}.toJson()
+    );
 }
 
 void SalespersonRepositoryImpl::requestFinished()
@@ -126,3 +165,6 @@ QByteArray SalespersonRepositoryImpl::buffer() const
     return buffer_;
 }
 }
+
+
+void Data::SalespersonRepositoryImpl::remove(int id) {}

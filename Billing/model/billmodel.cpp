@@ -8,13 +8,14 @@ BillModel::BillModel(QObject *parent)
     : QAbstractListModel(parent)
     , roleNames_{}
 {
-    roleNames_[int(RoleNames::UserRole)] = "user";
     roleNames_[int(RoleNames::DetailsRole)] = "details";
     roleNames_[int(RoleNames::OrderIdRole)] = "orderId";
     roleNames_[int(RoleNames::PaymentRole)] = "payment";
     roleNames_[int(RoleNames::DateRole)] = "date";
     roleNames_[int(RoleNames::StatusRole)] = "status";
     roleNames_[int(RoleNames::CustomerRole)] = "customer";
+    roleNames_[int(RoleNames::TakenRole)] = "taken";
+    roleNames_[int(RoleNames::DoneRole)] = "done";
 }
 
 int BillModel::rowCount(const QModelIndex &parent) const
@@ -41,12 +42,14 @@ QVariant BillModel::data(const QModelIndex &index, int role) const
         return item->orderId();
     case RoleNames::PaymentRole:
         return QVariant::fromValue(item->payment());
-    case RoleNames::UserRole:
-        return QVariant::fromValue(item->user());
     case RoleNames::StatusRole:
         return QVariant::fromValue(item->orderStatus());
     case RoleNames::CustomerRole:
         return QVariant::fromValue(item->customer());
+    case RoleNames::TakenRole:
+        return data_[row]->isTaken();
+    case RoleNames::DoneRole:
+        return data_[row]->done();
     default:
         return {};
     }
@@ -83,6 +86,14 @@ bool BillModel::setData(const QModelIndex &index, const QVariant &value, int rol
         return true;
     case PaymentRole:
         data_[row]->setPayment(value.value<Entity::Payment>());
+        emit dataChanged(index, index, {role});
+        return true;
+    case TakenRole:
+        data_[row]->setIsTaken(value.toInt());
+        emit dataChanged(index, index, {role});
+        return true;
+    case DoneRole:
+        data_[row]->setDone(value.toBool());
         emit dataChanged(index, index, {role});
         return true;
     default:

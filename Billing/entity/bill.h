@@ -5,7 +5,6 @@
 #include "model/ordermodel.h"
 #include "Customer/entity/customer.h"
 #include "orderstatus.h"
-#include "user/userentity.h"
 #include <QObject>
 #include <QtQml>
 
@@ -14,8 +13,6 @@ using Model::OrderModel;
 class Bill : public QObject
 {
     Q_OBJECT
-    QML_ELEMENT
-
 public:
     explicit Bill(QObject *parent = nullptr);
 
@@ -24,9 +21,6 @@ public:
     int orderId() const;
     void setOrderId(int orderId);
     QBindable<int> bindableOrderId();
-    
-    Entity::UserEntity user() const;
-    void setUser(Entity::UserEntity user);
 
     OrderModel *details() const;
     void setDetailsModel(OrderModel *const model);
@@ -46,17 +40,24 @@ public:
     Entity::Customer customer() const;
     void setCustomer(const Entity::Customer &newCustomer);
 
+    bool isTaken() const;
+    void setIsTaken(bool newIsTaken);
+
+    bool done() const;
+    void setDone(bool newDone);
+
 public slots:
     void appendDetail(EntityLayer::DetailsEntity *const detail);
 
 private:
     QProperty<int> orderId_;
-    Entity::UserEntity user_;
     OrderModel *details_;
     Entity::Payment payment_;
     OrderStatus *orderStatus_;
     QProperty<QDateTime> date_;
     Entity::Customer customer_;
+    bool isTaken_;
+    bool done_;
 };
 }
 

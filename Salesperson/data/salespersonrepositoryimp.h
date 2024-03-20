@@ -26,11 +26,17 @@ public slots:
 
     void addAssociateSalesperson(const Entity::Salesperson &salesperson) override;
 
-    void getAssociateSalespersons() override;
+    void getAssociateSalespersons(AdminId adminId) override;
 
     void patch(int id, const QByteArray &payload) override;
 
     void getCustomers(int salespersonId) override;
+
+    QNetworkReply *takeOrder(OrderId orderId, SalespersonId salespersonId) override;
+
+    QNetworkReply *abandonOrder(OrderId orderId) override;
+
+    QNetworkReply *markOrderAsDone(OrderId orderId) override;
 
 private slots:
     void requestFinished();
@@ -49,6 +55,10 @@ private:
     QString path_;
     QByteArray buffer_;
     const std::shared_ptr<QNetworkRequestFactory> api_;
+
+    // SalespersonRepository interface
+public:
+    void remove(int id) override;
 };
 }
 

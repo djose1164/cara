@@ -31,10 +31,6 @@ ColumnLayout {
                 target: orderStatusCB
                 enabled: false
             }
-            PropertyChanges {
-                target: updatePaymentBtn
-                visible: false
-            }
         }
     ]
 
@@ -43,6 +39,7 @@ ColumnLayout {
     CustomerInfoBox {
         Layout.fillWidth: true
         customer: buyer
+        visible: UserSettings.userTypeId  !== UserEntity.Customer
     }
 
     Label {
@@ -53,18 +50,20 @@ ColumnLayout {
 
     OrderStatusCB {
         id: orderStatusCB
-        Layout.fillWidth: true
         orderId: root.orderId
         statusId: status.statusId
+        acceptBtn.visible: model.taken
+        Layout.fillWidth: true
         onStatusUpdated: (newStatusId, newStatusString) => {
-            status.statusId = newStatusId;
-            status.statusString = newStatusString;
+            model.status.statusId = newStatusId;
+            model.status.statusString = newStatusString;
         }
     }
 
     PaymentDetails {
         payment_: root.payment
         stackView: billStack
+        taken: model.taken
         Layout.bottomMargin: 10
         Layout.topMargin: 20
         Layout.fillWidth: true
@@ -110,7 +109,9 @@ ColumnLayout {
             required property int quantity
             required total
 
-            Component.onCompleted: internal.orderTotal += total
+            Component.onCompleted: {
+                internal.orderTotal += total;
+            }
 
             Layout.fillHeight: true
             Layout.fillWidth: true

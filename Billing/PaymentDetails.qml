@@ -11,6 +11,7 @@ Item {
 
     required property payment payment_
     required property T.StackView stackView
+    required property bool taken
 
     signal refresh(newPayment: payment)
 
@@ -41,6 +42,8 @@ Item {
             }
             PropertyChanges {
                 target: loader
+                active: UserSettings.userTypeId !== UserEntity.Customer && taken
+                visible: active
                 sourceComponent: unpaidDelegate
             }
         },
@@ -59,7 +62,6 @@ Item {
         }
     ]
 
-    Component.onCompleted: print("paidAmount: "+payment_.paidAmount+" amountToPay: "+payment_.amountToPay)
     GroupBox {
         id: groupBox
         title: "Detalles de Pago"
@@ -192,9 +194,10 @@ Item {
         property alias state: payItem.state
 
         width: root.width
-        height: billStack.height/2
+        height: root.height
         anchors.centerIn: Overlay.overlay
         onClosed: payItem.resetView()
+        onAboutToShow: console.log(`size: ${width}x${height}`)
 
         PayItem {
             id: payItem

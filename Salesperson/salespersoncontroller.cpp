@@ -1,11 +1,12 @@
-#include "associatesalespersonservice.h"
-#include "salesperson.h"
-#include "data/salespersonrepositoryimp.h"
-#include <QJsonObject>
+#include "salespersoncontroller.h"
 #include <QJsonDocument>
+#include <QJsonObject>
+#include <QNetworkReply>
+#include "data/salespersonrepositoryimp.h"
+#include "salesperson.h"
 
 namespace Salesperson {
-AssociateSalespersonService::AssociateSalespersonService(QObject *parent)
+SalespersonController::SalespersonController(QObject *parent)
     : QObject{parent}
     , salespersonRepository_{new Data::SalespersonRepositoryImpl(this)}
     , salespersonId_{}
@@ -17,17 +18,17 @@ AssociateSalespersonService::AssociateSalespersonService(QObject *parent)
         setData(repository->buffer());
     });
 
-    connect(repository, &RepositoryImpl::errorOccurred, this, &AssociateSalespersonService::errorOccurred);
-    connect(repository, &RepositoryImpl::fetched, this, &AssociateSalespersonService::fetched);
-    connect(repository, &RepositoryImpl::patched, this, &AssociateSalespersonService::patched);
+    connect(repository, &RepositoryImpl::errorOccurred, this, &SalespersonController::errorOccurred);
+    connect(repository, &RepositoryImpl::fetched, this, &SalespersonController::fetched);
+    connect(repository, &RepositoryImpl::patched, this, &SalespersonController::patched);
 }
 
-void AssociateSalespersonService::fetchAllAssociateSalesperson()
+void SalespersonController::fetchAllAssociateSalesperson(AdminId adminId)
 {
-    salespersonRepository_->getAssociateSalespersons();
+    salespersonRepository_->getAssociateSalespersons(adminId);
 }
 
-void AssociateSalespersonService::addAssociateSalesperson(const QVariantMap &data)
+void SalespersonController::addAssociateSalesperson(const QVariantMap &data)
 {
     const auto salesperson{Entity::Salesperson::fromMap(data)};
     if (salesperson.isPosteable())
@@ -37,15 +38,15 @@ void AssociateSalespersonService::addAssociateSalesperson(const QVariantMap &dat
     
     using RepositoryImpl = Data::SalespersonRepositoryImpl;
     const auto repository{static_cast<RepositoryImpl *>(salespersonRepository_)};
-    connect(repository, &RepositoryImpl::added, this, &AssociateSalespersonService::added);
+    connect(repository, &RepositoryImpl::added, this, &SalespersonController::added);
 }
 
-void AssociateSalespersonService::fetchAssociateSalespersonById(int id)
+void SalespersonController::fetchAssociateSalespersonById(int id)
 {
     salespersonRepository_->getSalespersonById(id);
 }
 
-void AssociateSalespersonService::fetchCustomers()
+void SalespersonController::fetchCustomers()
 {
     if (salespersonId_ < 1)
     {
@@ -55,7 +56,7 @@ void AssociateSalespersonService::fetchCustomers()
     salespersonRepository_->getCustomers(salespersonId_);
 }
 
-void AssociateSalespersonService::patch(const QVariantMap &data)
+void SalespersonController::patch(const QVariantMap &data)
 {
     Q_ASSERT(!data.isEmpty());
     qDebug() << "AssociateSalespersonService::patch: " << data;
@@ -66,12 +67,79 @@ void AssociateSalespersonService::patch(const QVariantMap &data)
     salespersonRepository_->patch(salespersonId_, doc.toJson(QJsonDocument::Compact));
 }
 
-int AssociateSalespersonService::adminId() const
+void SalespersonController::takeOrder(OrderId orderId)
+{
+    const auto reply{salespersonRepository_->takeOrder(orderId, salespersonId_)};
+    connect(reply, &QNetworkReply::finished, this, [this, reply] {
+        setData(reply->readAll());
+        const auto respObj{QJsonDocument::fromJson(data_).object()};
+        if (reply->error() != QNetworkReply::NoError
+            or respObj["status"].toString() != QStringLiteral("success"))
+        {
+            setErrorString(reply->errorString());
+            emit errorOccurred();
+        }
+
+        emit orderTook();
+
+        reply->deleteLater();
+    });
+}
+
+void SalespersonController::abandonOrder(OrderId orderId)
+{
+    const auto reply{salespersonRepository_->abandonOrder(orderId)};
+    connect(reply, &QNetworkReply::finished, this, [this, reply] {
+        setData(reply->readAll());
+        if (reply->error() != QNetworkReply::NoError)
+        {
+            setErrorString(reply->errorString());
+            emit errorOccurred();
+        }
+
+        emit orderAbandoned();
+
+        reply->deleteLater();
+    });
+}
+
+void SalespersonController::markOrderAsDone(OrderId orderId)
+{
+    const auto reply{salespersonRepository_->markOrderAsDone(orderId)};
+    connect(reply, &QNetworkReply::finished, this, [this, reply] {
+        setData(reply->readAll());
+        if (reply->error() != QNetworkReply::NoError)
+        {
+            setErrorString(reply->errorString());
+            emit errorOccurred();
+        }
+
+        if (reply->attribute(QNetworkRequest::HttpStatusCodeAttribute) == 204)
+            emit orderMarkedAsDone();
+
+        reply->deleteLater();
+    });
+}
+
+QString SalespersonController::errorString() const
+{
+    return errorString_;
+}
+
+void SalespersonController::setErrorString(const QString &newErrorString)
+{
+    if (errorString_ == newErrorString)
+        return;
+    errorString_ = newErrorString;
+    emit errorStringChanged();
+}
+
+int SalespersonController::adminId() const
 {
     return adminId_;
 }
 
-void AssociateSalespersonService::setAdminId(int newAdminId)
+void SalespersonController::setAdminId(int newAdminId)
 {
     if (adminId_ == newAdminId)
         return;
@@ -79,12 +147,19 @@ void AssociateSalespersonService::setAdminId(int newAdminId)
     emit adminIdChanged();
 }
 
-int AssociateSalespersonService::salespersonId() const
+Entity::Salesperson SalespersonController::fromJsonObject(const QJsonObject &data) const
+{
+    return Entity::Salesperson::fromJson(
+        QJsonDocument{data}.toJson()
+    );
+}
+
+int SalespersonController::salespersonId() const
 {
     return salespersonId_;
 }
 
-void AssociateSalespersonService::setSalespersonId(int newSalespersonId)
+void SalespersonController::setSalespersonId(int newSalespersonId)
 {
     if (salespersonId_ == newSalespersonId)
         return;
@@ -92,12 +167,12 @@ void AssociateSalespersonService::setSalespersonId(int newSalespersonId)
     emit salespersonIdChanged();
 }
 
-QByteArray AssociateSalespersonService::data() const
+QByteArray SalespersonController::data() const
 {
     return data_;
 }
 
-void AssociateSalespersonService::setData(const QByteArray &newData)
+void SalespersonController::setData(const QByteArray &newData)
 {
     if (data_ == newData)
         return;

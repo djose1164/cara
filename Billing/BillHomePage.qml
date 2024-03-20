@@ -8,7 +8,7 @@ import "qrc:/filters"
 Page {
     id: root
 
-    readonly property T.StackView stackView: StackView.view
+    readonly property T.StackView stackView: StackView.view ?? billStack
     required property int customerId
 
     title: "Todas las cuentas"

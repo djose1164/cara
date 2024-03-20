@@ -1,7 +1,6 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Dialogs
-
 import Utils
 
 
@@ -12,6 +11,8 @@ Item {
 
     property int orderId
     property int statusId
+
+    readonly property alias acceptBtn: acceptBtn
 
     signal statusUpdated(newStatusId: int, newStatusString: string)
 
@@ -36,6 +37,7 @@ Item {
     }
 
     Button {
+        id: acceptBtn
         anchors {
             left: statusComboBox.right
             leftMargin: 20

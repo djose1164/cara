@@ -3,13 +3,11 @@
 
 #include "../Billing/model/billmodel.h"
 #include "ibillrepository.h"
-#include "rest.h"
-#include "userentity.h"
 #include <QObject>
 #include <QtQml>
 
 namespace BusinessLayer {
-using Entity::UserEntity, Model::BillModel;
+using Model::BillModel;
 
 class BillBusiness : public QObject
 {
@@ -29,8 +27,13 @@ public slots:
     void fetchBillsByCustomerId(int customerId);
     void fetchBillById(int orderId);
     void fetchBillsByAdminId(int adminId);
+    void fetchUnpaidBills();
+    void fetchOrdersInQueue();
 
     void clearModel();
+
+private slots:
+    void handleRequestFinished();
 
 signals:
     void modelChanged();
@@ -40,8 +43,8 @@ signals:
     void completed();
 
 private:
-    QProperty<Rest *> rest_;
     DataLayer::IBillRepository *billRepository_;
+    QNetworkReply *reply_;
 
     Q_OBJECT_BINDABLE_PROPERTY(BillBusiness, BillModel *, model_, &BillBusiness::modelChanged)
 };

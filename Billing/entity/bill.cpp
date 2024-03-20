@@ -1,5 +1,4 @@
 #include "bill.h"
-#include "userentity.h"
 
 using namespace EntityLayer;
 
@@ -9,18 +8,12 @@ using Model::OrderModel;
 Bill::Bill(QObject *parent)
     : QObject{parent}
     , orderId_{}
-    , user_{}
     , details_{new OrderModel(this)}
     , payment_{}
     , orderStatus_{nullptr}
     , date_{}
     , customer_{}
 {
-}
-
-Entity::UserEntity Bill::user() const
-{
-    return user_;
 }
 
 QDateTime Bill::date() const
@@ -47,6 +40,7 @@ Bill *Bill::fromMap(const QVariantMap &billMap)
 
     bill->setDate(QDateTime::fromString(strDate, "dd/MM/yyyy"));
     bill->setOrderId(billMap["id"].toInt());
+    bill->setIsTaken(billMap["is_taken"].toBool());
 
     bill->setPayment(
         Entity::Payment::fromJsonObject(billMap["payment"].toJsonObject())
@@ -60,6 +54,9 @@ Bill *Bill::fromMap(const QVariantMap &billMap)
         Entity::Customer::fromJson(billMap["customer"].toJsonObject())
     );
 
+    const auto queueMap{billMap["queue"].toMap()};
+    bill->setDone(queueMap["is_done"].toBool());
+
     for (const auto &detail : billMap["order_details"].toList())
     {
         const auto map{detail.toMap()};
@@ -70,6 +67,7 @@ Bill *Bill::fromMap(const QVariantMap &billMap)
             Product::fromMap(map["product"].toMap())
         );
 
+        newDetail->setParent(bill);
         bill->appendDetail(newDetail);
     }
 
@@ -106,11 +104,6 @@ void Bill::setPayment(const Entity::Payment &payment)
     payment_ = payment;
 }
 
-void Bill::setUser(Entity::UserEntity user)
-{
-    user_ = user;
-}
-
 OrderModel *Bill::details() const
 {
     return details_;
@@ -119,8 +112,7 @@ OrderModel *Bill::details() const
 QByteArray Bill::toJson() const
 {
     QJsonObject object{};
-    object["user_id"] = user_.userId();
-    object["customer_id"] = user_.customerId();
+    object["customer_id"] = customer_.customerId();
     object["order_id"] = orderId();
     object["date"] = date().toString();
 
@@ -146,6 +138,26 @@ void Bill::appendDetail(DetailsEntity * const detail)
     Q_ASSERT(detail);
 
     details_->append(detail);
+}
+
+bool Bill::done() const
+{
+    return done_;
+}
+
+void Bill::setDone(bool newDone)
+{
+    done_ = newDone;
+}
+
+bool Bill::isTaken() const
+{
+    return isTaken_;
+}
+
+void Bill::setIsTaken(bool newIsTaken)
+{
+    isTaken_ = newIsTaken;
 }
 
 Entity::Customer Bill::customer() const

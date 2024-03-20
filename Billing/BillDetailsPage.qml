@@ -1,7 +1,11 @@
 import QtQuick
 import QtQuick.Controls
+import QtQuick.Dialogs
+import QtQuick.Layouts
 import Utils
 import Billing
+import User
+import Salesperson
 import "qrc:/orders"
 
 BackPage {
@@ -11,9 +15,15 @@ BackPage {
     property int orderId
     property var date
     property var details
-    property var payment
+    property payment payment
     property var status
+    readonly property bool taken: model.taken
     property alias customer: orderState.buyer
+
+    enum Operation {
+        AbandonOrder,
+        OrderAbandoned
+    }
 
     title: "Detalles de orden"
     btnLoader.sourceComponent: menuBtn
@@ -50,21 +60,83 @@ BackPage {
 
     Component {
         id: menuBtn
-        MoreVertButton {
-            onClicked: menu.open()
+        Row {
+            RoundButton {
+                visible: root.taken
+                enabled: internal.done
+                flat: true
+                icon.source: model.done ? "check_circle_fill.svg" : "qrc:/icons/done.svg"
+                onClicked: if (!model.done) spController.markOrderAsDone(root.orderId)
+            }
 
-            Menu {
-                id: menu
+            MoreVertButton {
+                onClicked: menu.open()
 
-                MenuItem {
-                    text: "Exportar como PDF"
-                    onTriggered: {
-                        processingIndicator.open();
-                        orderResource.getOrderById(root.orderId);
+                Menu {
+                    id: menu
+
+                    MenuItem {
+                        text: "Exportar como PDF"
+                        onTriggered: {
+                            processingIndicator.open();
+                            orderResource.getOrderById(root.orderId);
+                        }
+                    }
+
+                    MenuItem {
+                        visible: UserSettings.userTypeId !== UserEntity.Customer
+                        text: root.taken ? "Abandonar orden" : "Tomar orden"
+                        enabled: root.payment.status !== Payment.Paid
+                        onTriggered: {
+                            internal.operation = root.taken ? BillDetailsPage.AbandonOrder : -1;
+                            processingIndicator.open();
+                            if (root.taken)
+                                abandonMessage.open();
+                            else
+                                spController.takeOrder(root.orderId);
+                        }
+                    }
+
+                    MenuItem {
+                        visible: UserSettings.userTypeId !== UserEntity.Customer
+                        enabled: !model.done
+                        text: "Cancelar orden"
+                        onTriggered: {
+
+                        }
                     }
                 }
             }
         }
+    }
+
+    MessageDialog {
+        id: abandonMessage
+        buttons: MessageDialog.Ok | MessageDialog.Cancel
+        text: internal.operation === BillDetailsPage.AbandonOrder
+              ? "¿Estas seguro de abandonar esta orden?" : "¡Orden abandonada con exito!"
+        onAccepted: {
+            // TODO: Abandon this order
+            if (internal.operation === BillDetailsPage.AbandonOrder)
+                spController.abandonOrder(root.orderId)
+        }
+    }
+
+    MessageDialog {
+        id: takeMessage
+        text: "¡Orden tomada con exito!"
+        buttons: MessageDialog.Ok
+    }
+
+    MessageDialog {
+        id: errorMessage
+        text: "¡Error!"
+        buttons: MessageDialog.Ok
+    }
+
+    MessageDialog {
+        id: doneMessage
+        text: "¡Orden marcada como completada con exito!"
     }
 
     RestService {
@@ -87,5 +159,32 @@ BackPage {
             processingIndicator.close();
             ShareUtils.share("file://" + path);
         }
+    }
+
+    SalespersonController {
+        id: spController
+        salespersonId: SalespersonSettings.salespersonId
+        onOrderTook: {
+            processingIndicator.close();
+            model.taken = true;
+            takeMessage.open();
+        }
+        onOrderAbandoned: {
+            model.taken = false;
+            internal.operation = BillDetailsPage.OrderAbandoned;
+            processingIndicator.close();
+            abandonMessage.open();
+        }
+        onOrderMarkedAsDone: {
+            model.done = true;
+            doneMessage.open();
+        }
+    }
+
+    QtObject {
+        id: internal
+        property int operation: -1
+        readonly property bool done: root.status.statusId === OrderStatus.Delivered
+                                     && root.payment.status === Payment.Paid
     }
 }

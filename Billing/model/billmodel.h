@@ -17,12 +17,13 @@ public:
     enum class RoleNames
     {
         OrderIdRole = Qt::UserRole,
-        UserRole,
         DetailsRole,
         PaymentRole,
         DateRole,
         StatusRole,
-        CustomerRole
+        CustomerRole,
+        TakenRole,
+        DoneRole
     };
 
     explicit BillModel(QObject *parent = nullptr);
