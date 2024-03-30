@@ -50,7 +50,7 @@ void InventoryRepository::fetchAll(SalespersonId spId)
         }
 
         const auto inventoryArray = inventoryValue.toArray();
-        QList<QPointer<EntityLayer::Product>> products;
+        QList<EntityLayer::Product> products;
         for (const auto product : std::as_const(inventoryArray))
         {
             const auto productJson = QJsonDocument(product.toObject()).toJson();

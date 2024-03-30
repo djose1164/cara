@@ -20,16 +20,16 @@ bool ProductModel::setData(const QModelIndex &index, const QVariant &value, int 
     if (!index.isValid())
         return false;
 
-    const auto product{data_.at(index.row())};
+    auto &product{data_[index.row()]};
     switch (static_cast<RoleNames>(role))
     {
     case RoleNames::SelectedQtyRole:
-        product->setSelectedQty(value.toInt());
-        emit dataChanged(QModelIndex(), QModelIndex(), {role});
+        product.setSelectedQty(value.toInt());
+        emit dataChanged(index, index, {role});
         return true;
     case RoleNames::QuantityAvailableRole:
-        product->setQuantityAvailable(value.toInt());
-        emit dataChanged(QModelIndex(), QModelIndex(), {role});
+        product.setQuantityAvailable(value.toInt());
+        emit dataChanged(index, index, {role});
         return true;
     default:
         return false;
@@ -45,23 +45,23 @@ QVariant ProductModel::data(const QModelIndex &index, int role) const
     switch (static_cast<RoleNames>(role))
     {
     case RoleNames::ProductNameRole:
-        return getValue->name();
+        return getValue.name();
     case RoleNames::ProductIdRole:
-        return getValue->productId();
+        return getValue.productId();
     case RoleNames::BuyPriceRole:
-        return getValue->buyPrice();
+        return getValue.buyPrice();
     case RoleNames::SellPriceRole:
-        return getValue->price();
+        return getValue.price();
     case RoleNames::DescriptionRole:
-        return getValue->description();
+        return getValue.description();
     case RoleNames::ReorderPointRole:
-        return getValue->reorderPoint();
+        return getValue.reorderPoint();
     case RoleNames::QuantityAvailableRole:
-        return getValue->quantityAvailable();
+        return getValue.quantityAvailable();
     case RoleNames::ImageUrlRole:
-        return getValue->imageUrl();
+        return getValue.imageUrl();
     case RoleNames::SelectedQtyRole:
-        return getValue->selectedQty();
+        return getValue.selectedQty();
     default:
         return {};
     }
@@ -85,30 +85,29 @@ int ProductModel::count() const
     return data_.count();
 }
 
-QObject *ProductModel::get(int index) const
+EntityLayer::Product ProductModel::get(int index) const
 {
     if (index < 0 || index >= data_.count())
-        return nullptr;
+        return {};
 
     return data_.at(index);
 }
 
-bool ProductModel::contains(const EntityLayer::Product *product)
+bool ProductModel::contains(const EntityLayer::Product &product) const
 {
     return data_.contains(product);
 }
 
-QModelIndex ProductModel::find(int productId)
+QModelIndex ProductModel::find(int productId) const
 {
-    const auto pred = [&](const QPointer<EntityLayer::Product> &p) {
-        return p->productId() == productId;
+    const auto pred = [productId](const EntityLayer::Product &p) -> bool {
+        return p.productId() == productId;
     };
-
 
     if (const auto res{std::find_if(data_.begin(), data_.end(), pred)};
         res != data_.end())
     {
-        if (const auto idx{data_.indexOf(*res)}; idx == -1)
+        if (const auto idx{data_.indexOf(std::as_const(*res))}; idx == -1)
             return {};
         else
             return index(idx);
@@ -127,10 +126,7 @@ void ProductModel::update(SalespersonId spId)
 
     repository_->fetchAll(spId);
 
-    connect(repository_, &Business::IInventoryRepository::fetchedAll, this, [&](const QList<QPointer<EntityLayer::Product>> &products) {
-        for (auto &el : products)
-            el->setParent(this);
-
+    connect(repository_, &Business::IInventoryRepository::fetchedAll, this, [&](const QList<EntityLayer::Product> &products) {
         beginResetModel();
         data_.clear();
         data_ = products;
@@ -140,10 +136,10 @@ void ProductModel::update(SalespersonId spId)
     });
 }
 
-void ProductModel::append(QObject *product)
+void ProductModel::append(const EntityLayer::Product &product)
 {
     beginInsertRows(QModelIndex(), count(), count());
-    data_.append(qobject_cast<EntityLayer::Product *>(product));
+    data_.append(product);
     endInsertRows();
     emit countChanged();
 }

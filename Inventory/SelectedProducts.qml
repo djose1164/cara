@@ -26,6 +26,7 @@ Item {
             clip: true
             model: productModel
             delegate: ProductCard {
+                id: productCard
                 required productName
                 required productId
                 required imageUrl
@@ -36,8 +37,9 @@ Item {
                 width: listView.width
                 productPrice: sellPrice
                 total: sellPrice * model.selectedQty
-                spinBox.onValueChanged: model.selectedQty = spinBox.value
+                spinBox.onValueChanged: productCard.model.selectedQty = spinBox.value
                 onDeleted: deleteClicked(index, productId)
+                Component.onCompleted: console.log(`SelectedProduct: total: ${sellPrice}x${productCard.model.selectedQty}`)
             }
         }
     }

@@ -20,8 +20,8 @@ public:
     virtual void update(const QVariantMap &stocks) = 0;
 
 signals:
-    void fetchedOne(const QPointer<EntityLayer::Product> product);
-    void fetchedAll(const QList<QPointer<EntityLayer::Product>> &products);
+    void fetchedOne(const QList<EntityLayer::Product> &product);
+    void fetchedAll(const QList<EntityLayer::Product> &products);
     void errorOccurred(const QString &errorString);
 };
 }

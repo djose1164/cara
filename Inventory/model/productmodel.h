@@ -48,13 +48,13 @@ public:
 
     int count() const;
 
-    Q_INVOKABLE QObject *get(int index) const;
-    Q_INVOKABLE bool contains(const EntityLayer::Product *product);
-    Q_INVOKABLE QModelIndex find(int productId);
+    Q_INVOKABLE EntityLayer::Product get(int index) const;
+    Q_INVOKABLE bool contains(const EntityLayer::Product &product) const;
+    Q_INVOKABLE QModelIndex find(int productId) const;
 
 public slots:
     void update(SalespersonId spId);
-    void append(QObject * product);
+    void append(const EntityLayer::Product &product);
     void clear();
     void remove(int index);
     void removeByProductId(ProductId id);
@@ -65,7 +65,7 @@ signals:
     void updated();
 
 private:
-    QList<QPointer<EntityLayer::Product>> data_;
+    QList<EntityLayer::Product> data_;
     Business::IInventoryRepository *repository_;
 };
 }
