@@ -1,8 +1,7 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
-
-import entities
+import Billing
 import Customer
 
 Popup {
@@ -32,10 +31,10 @@ Popup {
             textRole: "text"
             valueRole: "value"
             model: [
-                {text: "Cuentas pagadas", value: PaymentEntity.Paid},
-                {text: "Cuentas por pagar", value: PaymentEntity.Unpaid},
-                {text: "Cuentas abonadas", value: PaymentEntity.Credited},
-                {text: "Todas", value: PaymentEntity.Any}
+                {text: "Cuentas pagadas", value: Payment.Paid},
+                {text: "Cuentas por pagar", value: Payment.Unpaid},
+                {text: "Cuentas abonadas", value: Payment.Credited},
+                {text: "Todas", value: Payment.Any}
             ]
             Layout.fillWidth: true
             flat: true

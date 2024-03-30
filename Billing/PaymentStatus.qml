@@ -1,7 +1,7 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
-import entities
+import Billing
 
 Item {
     id: root
@@ -25,11 +25,11 @@ Item {
             onClicked: function(btn) {
                 const name = btn.text;
                 if (name === "Pago")
-                    internal.selectedStatus = PaymentEntity.Paid;
+                    internal.selectedStatus = Payment.Paid;
                 else if (name === "Credito")
-                    internal.selectedStatus = PaymentEntity.Unpaid;
+                    internal.selectedStatus = Payment.Unpaid;
                 else if (name === "Abono")
-                    internal.selectedStatus = PaymentEntity.Credited;
+                    internal.selectedStatus = Payment.Credited;
             }
         }
 

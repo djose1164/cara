@@ -1,7 +1,7 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
-import entities
+import Billing
 import Product
 import Utils
 
@@ -24,8 +24,8 @@ Item {
     states: [
         State {
             name: "inputDisabled"
-            when: paymentStatus.selectedStatus === PaymentEntity.Paid
-                  || paymentStatus.selectedStatus === PaymentEntity.Unpaid
+            when: paymentStatus.selectedStatus === Payment.Paid
+                  || paymentStatus.selectedStatus === Payment.Unpaid
             PropertyChanges {
                 target: amountField
                 text: ""
@@ -50,7 +50,7 @@ Item {
             NumberTextField {
                 id: amountField
                 placeholderText: getPlaceholderText()
-                enabled: paymentStatus.selectedStatus === PaymentEntity.Credited
+                enabled: paymentStatus.selectedStatus === Payment.Credited
                          && calculator.total > 0
                 inputMethodHints: Qt.ImhDigitsOnly
                 intValidator.top: calculator.total
@@ -91,7 +91,7 @@ Item {
     }
 
     function toJson() {
-        const isPaid = selectedStatus === PaymentEntity.Paid;
+        const isPaid = selectedStatus === Payment.Paid;
         const calcTotal = calculator.total;
         const paidAmount = isPaid ? calcTotal : value;
         const payment = {
@@ -99,7 +99,7 @@ Item {
             amount_to_pay: calcTotal,
             payment_status_id: selectedStatus
         };
-        if (selectedStatus !== PaymentEntity.Unpaid)
+        if (selectedStatus !== Payment.Unpaid)
             payment.payment_details = [{amount: paidAmount}];
         return payment;
     }
@@ -107,9 +107,9 @@ Item {
     function validate() {
         if (checkState === Qt.Unchecked)
             throw "Debes selecionar la condicion de pago de la orden";
-        else if(selectedStatus === PaymentEntity.Credited && root.value < 1)
+        else if(selectedStatus === Payment.Credited && root.value < 1)
             throw "Debes digitar un monto valido mayor a 0";
-        else if (selectedStatus === PaymentEntity.Credited && internal.debt < 0)
+        else if (selectedStatus === Payment.Credited && internal.debt < 0)
             throw "El monto digitado excede el total de la orden.";
     }
 }
