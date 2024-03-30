@@ -9,6 +9,7 @@ UserEntity UserEntity::fromJson(const QByteArray &data)
     const auto dataObj{dataJson.object()};
     const auto userObj{dataObj["user"].toObject()};
     const auto contactDoc{userObj["contact"].toObject()};
+    const auto customerObj{userObj["customer"].toObject()};
 
     UserEntity user{};
     user.setForename(contactDoc["forename"].toString());
@@ -20,7 +21,7 @@ UserEntity UserEntity::fromJson(const QByteArray &data)
     user.setUsername(userObj["username"].toString());
     qDebug() << "UserEntity::fromJson: " << user.username();
     Q_ASSERT(user.username().isEmpty() == false);
-    user.setCustomerId(userObj["customer_id"].toInt());
+    user.setCustomerId(customerObj["id"].toInt());
 
     const auto salespersonData{QJsonDocument(userObj["salesperson"].toObject())};
     user.setSalespersonId(salespersonData["id"].toInt());
