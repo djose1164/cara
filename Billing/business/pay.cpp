@@ -1,10 +1,11 @@
 #include "pay.h"
-#include "payment.h"
+#include <QJsonDocument>
+#include <QJsonObject>
+#include <QRestAccessManager.h>
 #include <QRestReply>
 #include <QSettings>
-#include <QJsonObject>
-#include <QJsonDocument>
-#include <QRestAccessManager>
+#include "payment.h"
+
 
 namespace Business
 {
