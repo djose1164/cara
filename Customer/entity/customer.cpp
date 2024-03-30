@@ -22,6 +22,16 @@ Customer::Customer()
     , customerId_{-1}
 {}
 
+bool Customer::operator==(const Customer &rhs) const
+{
+    return customerId_ == rhs.customerId_;
+}
+
+bool Customer::operator!=(const Customer &rhs) const
+{
+    return !(*this == rhs);
+}
+
 QString Customer::forename() const
 {
     return forename_;

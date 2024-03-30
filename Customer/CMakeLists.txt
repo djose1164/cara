@@ -17,7 +17,9 @@ qt_add_qml_module(CustomerLib
         CustomerForm.qml
         CustomerInfoBox.qml
         CustomerManager.qml
+        CustomerPage.qml
         CustomerSelector.qml
+        CustomerSettings.qml
         CustomerViewItem.qml
         Customers.qml
         PersonalInformationForm.qml
@@ -34,7 +36,6 @@ qt_add_qml_module(CustomerLib
         person-add.svg
         person-search.svg
         supervisor-account.svg
-        QML_FILES CustomerPage.qml
 )
 
 target_include_directories(CustomerLib PRIVATE
@@ -45,3 +46,5 @@ target_include_directories(CustomerLib PRIVATE
     ../Salesperson
     ../utils
 )
+
+target_link_libraries(CustomerLib PRIVATE Qt6::Network)

@@ -1,9 +1,10 @@
 ﻿#include "customerresource.h"
-#include <QSettings>
-#include <QNetworkReply>
-#include <QRestReply>
+#include "httpstatuscodes.h"
 #include <QJsonObject>
-#include <QRestAccessManager>
+#include <QNetworkReply>
+#include <QRestAccessManager.h>
+#include <QRestReply>
+#include <QSettings>
 
 using namespace Qt::StringLiterals;
 
@@ -11,6 +12,7 @@ namespace
 {
 constexpr auto resourceIdentification = "/%1"_L1;
 constexpr auto summaryPath{"/summary"_L1};
+constexpr auto userKey{"user_id"_L1};
 }
 
 namespace Data
@@ -46,7 +48,32 @@ void CustomerResource::readBySalespersonId(SalespersonId salespersonId)
         {
             setErrorString(reply.errorString());
             emit errorOccurred();
-            if (reply.httpStatus() == 404)
+            if (reply.httpStatus() == HttpStatus::NotFound)
+            {
+                setErrorString("El recurso solicitado no existe."_L1);
+                emit contentNotFound();
+            }
+            return;
+        }
+
+        setData(reply.readBody());
+
+        emit fetched(data());
+    });
+}
+
+void CustomerResource::readByUserId(UserId id)
+{
+    QUrlQuery query{};
+    query.addQueryItem(userKey, QString::number(id));
+    const auto req{api_->createRequest(path_ + "/"_L1, std::move(query))};
+
+    manager_->get(req, this, [&](QRestReply &reply) {
+        if (!reply.isSuccess())
+        {
+            setErrorString(reply.errorString());
+            emit errorOccurred();
+            if (reply.httpStatus() == HttpStatus::NotFound)
             {
                 setErrorString("El recurso solicitado no existe."_L1);
                 emit contentNotFound();

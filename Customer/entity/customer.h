@@ -12,6 +12,7 @@ class Customer
 {
     Q_GADGET
     QML_VALUE_TYPE(customer)
+    QML_STRUCTURED_VALUE
     Q_PROPERTY(QString forename READ forename WRITE setForename FINAL)
     Q_PROPERTY(QString surname READ surname WRITE setSurname FINAL)
     Q_PROPERTY(QString phoneNumber READ phoneNumber WRITE setPhoneNumber FINAL)
@@ -20,6 +21,9 @@ public:
     static Customer fromJson(const QJsonObject &customerObject);
 
     Customer();
+
+    bool operator==(const Customer &rhs) const;
+    bool operator!=(const Customer &rhs) const;
 
     QString forename() const;
     void setForename(const QString &newForename);

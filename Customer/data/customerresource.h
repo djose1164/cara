@@ -21,6 +21,7 @@ class CustomerResource
 public:
     using SalespersonId = int;
     using CustomerId = int;
+    using UserId = int;
 
     explicit CustomerResource(QObject *parent = nullptr);
 
@@ -35,6 +36,7 @@ public:
 
 public slots:
     void readBySalespersonId(SalespersonId salespersonId) override final;
+    void readByUserId(UserId id);
     void readSummary(CustomerId id);
 
 signals:
