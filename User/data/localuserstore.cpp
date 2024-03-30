@@ -14,7 +14,7 @@ LocalUserStore::LocalUserStore(QObject *parent)
 {
 }
 
-void LocalUserStore::save(const QByteArray &data)
+bool LocalUserStore::save(const QByteArray &data)
 {
     qDebug() << "LocalUserStore::save: saving...";
     const auto obj{QJsonDocument::fromJson(data).object()};
@@ -39,7 +39,7 @@ void LocalUserStore::save(const QByteArray &data)
     settings.endGroup();
 
     qDebug() << "LocalUserStore::save: saving... Done";
-    emit saved();
+    return true;
 }
 
 void LocalUserStore::restore()

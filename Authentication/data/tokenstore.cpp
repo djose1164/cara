@@ -14,14 +14,14 @@ TokenStore::TokenStore(QObject *parent)
     , access_{}
 {}
 
-void TokenStore::save(const QByteArray &data)
+bool TokenStore::save(const QByteArray &data)
 {
     constexpr auto refresh_token{"refresh_token"_L1};
     constexpr auto access_token{"access_token"_L1};
     if (!data.contains(refresh_token) && !data.contains(access_token))
     {
         qWarning() << "TokenStore::save: none token to save";
-        emit errorOccurred();
+        return false;
     }
 
     QSettings settings;
@@ -35,7 +35,7 @@ void TokenStore::save(const QByteArray &data)
         settings.setValue("refreshToken", refresh_);
     }
 
-    if ( const auto accessValue{obj[access_token]};
+    if (const auto accessValue{obj[access_token]};
         accessValue.isString())
     {
         setAccess(accessValue.toString());
@@ -43,19 +43,23 @@ void TokenStore::save(const QByteArray &data)
     }
     settings.endGroup();
 
+    // TODO: I think this should be deleted.
     Q_ASSERT(!access_.isEmpty());
     const auto api{Utils::NetworkRequestSingleton::instance().api()};
     api->setBearerToken(access_.toUtf8());
-    emit saved();
+    return true;
 }
 
 void TokenStore::restore()
 {
     QSettings settings;
     settings.beginGroup("Credentials"_L1);
-    setAccess(settings.value("acessToken"_L1).toString());
+    setAccess(settings.value("accessToken"_L1).toString());
     setRefresh(settings.value("refreshToken"_L1).toString());
     settings.endGroup();
+
+    qDebug() << settings.value("accessToken"_L1).toString();
+    Q_ASSERT(access_.isEmpty() == false);
 }
 
 void TokenStore::clear()

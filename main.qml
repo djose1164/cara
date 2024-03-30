@@ -7,6 +7,7 @@ import User
 import Utils
 import Salesperson
 import Cara
+import Customer
 
 ApplicationWindow {
     id: app
@@ -40,7 +41,7 @@ ApplicationWindow {
         onFetched: function(resp) {
             const salesperson = JSON.parse(resp).user.salesperson;
             const user = userController.create(resp);
-            print("Replacing appStack with MainPage");
+            print("Replacing appStack with MainPage: "+JSON.stringify(user,null, 2));
             UserSettings.setEntity(user);
             SalespersonSettings.setEntity(spController.fromJsonObject(salesperson));
             stackView.replace(mainPage, {user});
@@ -92,17 +93,18 @@ ApplicationWindow {
         stores: [
             Auth.TokenStore {
                 id: myTokenStore
-                onSaved: {
-                    const userId = UserSettings.userId;
-                    if (userId === 0) {
-                        stackView.replace(mainPage, {user: userController.create({})});
-                        return;
-                    }
-
-                    userController.getUserById(userId);
-                }
             }
         ]
+        onAuthenticated: {
+            print("Login: authenticated");
+            const userId = UserSettings.userId;
+            if (userId === 0) {
+                stackView.replace(mainPage, {user: userController.create({})});
+                return;
+            }
+
+            userController.getUserById(userId);
+        }
     }
 
     Auth.LocalUserAuthentication {

@@ -21,6 +21,7 @@ class TokenManager : public QObject
     QML_SINGLETON
 
     Q_PROPERTY(bool refreshing READ refreshing WRITE setRefreshing NOTIFY refreshingChanged FINAL)
+    Q_PROPERTY(QString accessToken READ accessToken NOTIFY accessTokenChanged FINAL)
 public:
     QString refreshToken() const;
     void setRefreshToken(const QString &newRefreshToken);
@@ -36,6 +37,8 @@ public:
 
     bool refreshing() const;
     void setRefreshing(bool newRefreshing);
+
+    QString accessToken() const;
 
 public slots:
     void clear();

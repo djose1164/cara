@@ -124,12 +124,10 @@ Item {
             },
             TokenStore {
                 id: myTokenStore
-                onSaved: {
-                    stackView.replace(internal.mainPage, {user: UserSettings.entity()});
-                }
             }
         ]
         authenticator: auth
+        onAuthenticated: stackView.replace(internal.mainPage, {user: UserSettings.entity()});
         onErrorOccurred: {
             busyIndicator.close();
             popup.open();

@@ -15,7 +15,7 @@ public:
     explicit TokenStore(QObject *parent = nullptr);
 
     // IStore interface
-    void save(const QByteArray &data) override;
+    bool save(const QByteArray &data) override;
 
     QString refresh() const;
     void setRefresh(const QString &newRefresh);

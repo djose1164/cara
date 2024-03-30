@@ -29,6 +29,8 @@ void Login::userAuthenticated(const QByteArray &data)
 
     for (const auto &store : std::as_const(stores_))
         store->save(data);
+
+    emit authenticated({});
 }
 
 QQmlListProperty<Store::IStore> Login::stores()

@@ -65,6 +65,11 @@ void TokenManager::setRefreshing(bool newRefreshing)
     emit refreshingChanged();
 }
 
+QString TokenManager::accessToken() const
+{
+    return tokenStore_->access();
+}
+
 QString TokenManager::errorString() const
 {
     return errorString_;
@@ -166,6 +171,5 @@ void TokenManager::replyReady()
 void TokenManager::timeout()
 {
     refreshAccessToken();
-
 }
 }

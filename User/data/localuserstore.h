@@ -35,7 +35,7 @@ public:
 
 public slots:
     void restore() override;
-    void save(const QByteArray &data) override;
+    bool save(const QByteArray &data) override;
 
     void update();
 
