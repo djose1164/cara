@@ -13,6 +13,7 @@ qt_add_qml_module(BillingLib
         BillDetailsPage.qml
         BillFilterPopup.qml
         BillHomePage.qml
+        BillListView.qml
         BillMessage.qml
         BillPage.qml
         BillPageHeader.qml
@@ -25,6 +26,7 @@ qt_add_qml_module(BillingLib
         CustomerBills.qml
         CustomerBillsHome.qml
         NewPurchaseOrder.qml
+        OrderQueue.qml
         OrderState.qml
         OrderStatusCB.qml
         PayItem.qml
@@ -60,20 +62,24 @@ qt_add_qml_module(BillingLib
         model/billmodel.h model/billmodel.cpp
         model/billproxymodel.h model/billproxymodel.cpp
         model/ordermodel.h model/ordermodel.cpp
+        orderqueueconstants.h
         orderstatus.h orderstatus.cpp
         ordertemplate.h ordertemplate.cpp
+        queueproxymodel.h queueproxymodel.cpp
         uniquefilenamegenerator.h uniquefilenamegenerator.cpp
     RESOURCES
-        order-model.html style.css pdf-icon.svg
+        order-model.html style.css pdf-icon.svg orders.svg done_all.svg check_circle_fill.svg
     DEPENDENCIES
-        QtQuick Utils Product
+        QtQuick Utils Product Customer
 )
 
 target_include_directories(BillingLib
     PRIVATE
         business entity model data
-        ../user ../data ../product ../authentication ../utils ../
+        ../Customer ../data ../product ../authentication ../utils ../
 )
 
+find_package(Qt6 REQUIRED COMPONENTS Network)
+
 target_link_libraries(BillingLib
-    PRIVATE Qt6::Concurrent Qt6::PrintSupport UtilsLib InventoryLib)
+    PRIVATE Qt6::Concurrent Qt6::PrintSupport Qt6::Network UtilsLib InventoryLib CustomerLib)

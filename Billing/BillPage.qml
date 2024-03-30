@@ -3,6 +3,7 @@ import QtQuick.Controls
 import QtQuick.Templates as T
 import Customer
 import Utils
+import User
 
 Page {
     id: root
@@ -10,7 +11,7 @@ Page {
     required property var user
     readonly property T.StackView stackView: StackView.view
     readonly property string adminViewPath: "qrc:/qt/qml/Customer/CustomerViewItem.qml"
-    readonly property string customerViewPath: "qrc:/qt/qml/Billing/CustomerBillsHome.qml"
+    readonly property string customerViewPath: "qrc:/qt/qml/Billing/BillHomePage.qml"
     readonly property string messagePath: "qrc:/qt/qml/Billing/BillMessage.qml"
 
     title: "Facturas"
@@ -27,7 +28,10 @@ Page {
 
     onUserChanged: {
         if (user.customerId > 0)
-            loader.setSource(customerViewPath);
+            loader.setSource(customerViewPath, {
+                                 customerId: UserSettings.customerId,
+                                 header: null
+                             });
         else if (user.isAdmin || user.isSalesperson)
             loader.sourceComponent = customerViewItem;
         else
@@ -73,7 +77,6 @@ Page {
         id: loader
         readonly property int customerId: user.customerId
         anchors.fill: parent
-        onSourceChanged: print("Loader.onSourceChanged: "+source)
     }
 
     Component {

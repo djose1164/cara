@@ -8,7 +8,6 @@ import User
 import Utils
 import Inventory
 import Product
-import entities
 import Billing
 import Salesperson
 
