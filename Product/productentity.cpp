@@ -1,52 +1,61 @@
 #include "productentity.h"
 
 namespace EntityLayer {
-Product::Product(QObject *parent)
-    : QObject{parent}
-    , name_{}
+Product::Product()
+    : name_{}
     , description_{}
     , price_{}
     , productId_{}
     , imageUrl_{}
+    , maximumStockLevel_{}
+    , minimumStockLevel_{}
+    , quantityAvailable_{}
+    , reorderPoint_{}
     , selectedQty_{}
 {
 }
 
-Product *Product::fromMap(const QVariantMap &map)
+Product Product::fromMap(const QVariantMap &map)
 {
-    const auto product{new Product};
-    product->setName(map["name"].toString());
-    product->setImageUrl(map["image_url"].toString());
-    product->setPrice(map["sell_price"].toInt());
+    Product product{};
+    product.setName(map["name"].toString());
+    product.setImageUrl(map["image_url"].toString());
+    product.setPrice(map["sell_price"].toInt());
+    product.setProductId(map["id"].toInt());
+
+    Q_ASSERT(product.name().isEmpty() == false);
+    Q_ASSERT(product.price_ > 0);
 
     return product;
 }
 
-QPointer<Product> Product::fromJson(const QByteArray &data)
+Product Product::fromJson(const QByteArray &data)
 {
     const auto inventoryObj{QJsonDocument::fromJson(data).object()};
     const auto productObj = inventoryObj.value("product").toObject();
 
-    const auto product{new Product};
-    product->setProductId(productObj.value("id").toInt());
-    product->setName(productObj.value("name").toString());
-    product->setDescription(productObj.value("description").toString());
-    product->setImageUrl(productObj.value("image_url").toString());
-    product->setPrice(productObj.value("sell_price").toInt());
-    product->setBuyPrice(productObj.value("buy_price").toInt());
-    product->setMaximumStockLevel(inventoryObj.value("maximum_stock_level").toInt());
-    product->setMinimumStockLevel(inventoryObj.value("minimum_stock_level").toInt());
-    product->setReorderPoint(inventoryObj.value("reorder_point").toInt());
-    product->setQuantityAvailable(inventoryObj.value("quantity_available").toInt());
+    Product product{};
+    product.setProductId(productObj.value("id").toInt());
+    product.setName(productObj.value("name").toString());
+    product.setDescription(productObj.value("description").toString());
+    product.setImageUrl(productObj.value("image_url").toString());
+    product.setPrice(productObj.value("sell_price").toInt());
+    product.setBuyPrice(productObj.value("buy_price").toInt());
+    product.setMaximumStockLevel(inventoryObj.value("maximum_stock_level").toInt());
+    product.setMinimumStockLevel(inventoryObj.value("minimum_stock_level").toInt());
+    product.setReorderPoint(inventoryObj.value("reorder_point").toInt());
+    product.setQuantityAvailable(inventoryObj.value("quantity_available").toInt());
+
+    Q_ASSERT(product.price() > 0);
     return product;
 }
 
-bool Product::operator==(Product * const rhs)
+bool Product::operator==(const Product &rhs) const
 {
-    return productId_ == rhs->productId();
+    return productId_ == rhs.productId();
 }
 
-bool Product::operator!=(Product * const rhs)
+bool Product::operator!=(const Product &rhs) const
 {
     return !(*this == rhs);
 }
@@ -94,7 +103,6 @@ void Product::setName(const QString &name)
     if (name_ != name)
     {
         name_ = name;
-        emit nameChanged();
     }
 }
 
@@ -103,7 +111,6 @@ void Product::setDescription(const QString &description)
     if (description_ != description)
     {
         description_ = description;
-        emit descriptionChanged();
     }
 }
 
@@ -112,16 +119,12 @@ void Product::setImageUrl(const QString &url)
     if (imageUrl_ != url)
     {
         imageUrl_ = url;
-        emit imageUrlChanged();
     }
 }
 
 void Product::setPrice(int price)
 {
     price_ = price;
-
-    // FIXME: Move this to QObjectBindableProperty
-    //emit priceChanged();
 }
 
 void Product::setProductId(int productId)
@@ -129,7 +132,6 @@ void Product::setProductId(int productId)
     if (productId_ != productId)
     {
         productId_ = productId;
-        emit productIdChanged();
     }
 }
 
@@ -140,10 +142,12 @@ int Product::selectedQty() const
 
 void Product::setSelectedQty(int newSelectedQty)
 {
-    if (selectedQty_ == newSelectedQty)
-        return;
     selectedQty_ = newSelectedQty;
-    emit selectedQtyChanged();
+}
+
+bool EntityLayer::Product::valid() const
+{
+    return productId_ > 0 && price_ > 0;
 }
 
 int Product::reorderPoint() const
@@ -156,7 +160,6 @@ void Product::setReorderPoint(int newReorderPoint)
     if (reorderPoint_ == newReorderPoint)
         return;
     reorderPoint_ = newReorderPoint;
-    emit reorderPointChanged();
 }
 
 int Product::quantityAvailable() const
@@ -169,7 +172,6 @@ void Product::setQuantityAvailable(int newQuantityAvailable)
     if (quantityAvailable_ == newQuantityAvailable)
         return;
     quantityAvailable_ = newQuantityAvailable;
-    emit quantityAvailableChanged();
 }
 
 int Product::minimumStockLevel() const
@@ -182,7 +184,6 @@ void Product::setMinimumStockLevel(int newMinimumStockLevel)
     if (minimumStockLevel_ == newMinimumStockLevel)
         return;
     minimumStockLevel_ = newMinimumStockLevel;
-    emit minimumStockLevelChanged();
 }
 
 int Product::maximumStockLevel() const
@@ -195,7 +196,6 @@ void Product::setMaximumStockLevel(int newMaximumStockLevel)
     if (maximumStockLevel_ == newMaximumStockLevel)
         return;
     maximumStockLevel_ = newMaximumStockLevel;
-    emit maximumStockLevelChanged();
 }
 
 int Product::buyPrice() const
@@ -208,6 +208,13 @@ void Product::setBuyPrice(int newBuyPrice)
     if (buyPrice_ == newBuyPrice)
         return;
     buyPrice_ = newBuyPrice;
-    emit buyPriceChanged();
 }
+}
+
+QDebug operator<<(QDebug dbg, const EntityLayer::Product &p) {
+    dbg.nospace() << QStringLiteral("Product(name=%1, sellPrice=%2, productId=%3)")
+                         .arg(p.name(),
+                              QString::number(p.price()),
+                              QString::number(p.productId()));
+    return dbg;
 }

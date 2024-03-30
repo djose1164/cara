@@ -24,13 +24,10 @@ Page {
 
     // Product {
     //     id: detailsEntity
-    //     name: root.name
-    //     price: root.sell_price
     //     description: root.description
-    //     productId: root.productId
-    //     imageUrl: root.image_url
     // }
-    readonly property var cart: CartBusiness
+
+    readonly property var cart: CartController
 
     required property int productId
     required property string name
@@ -82,7 +79,8 @@ Page {
 
             ProductItem {
                 id: productItem
-                product: root.product
+                images: root.product.images
+                name: root.product.name
                 Layout.fillWidth: true
                 onFavoriteClicked: like => handleFavClicked(like)
             }
@@ -92,6 +90,7 @@ Page {
                 sellPrice: root.product.sell_price
                 stock: root.inStock
                 Layout.fillWidth: true
+                onBuyClicked: handleBuyClicked()
             }
 
             ReviewSection {
@@ -200,5 +199,30 @@ Page {
             favoriteResource.add(favorite);
         else
             favoriteResource.remove(internal.fav);
+    }
+
+    function createProduct({productId, price, imageUrl, name}): product {
+        return {
+            productId,
+            price,
+            imageUrl,
+            name
+        };
+    }
+
+    function handleBuyClicked() {
+        const productObj = {
+            name: root.name,
+            price: root.sell_price,
+            productId: root.productId,
+            imageUrl: root.image_url
+        };
+        const productToBuy = createProduct(productObj);
+        if (CartController.isProductInCart(productToBuy)) {
+            message.show("Este producto ya se encuentra en el carrito");
+            return;
+        }
+
+        CartController.addtoCart(productToBuy);
     }
 }

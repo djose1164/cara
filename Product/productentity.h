@@ -6,30 +6,30 @@
 
 namespace EntityLayer
 {
-class Product : public QObject
+class Product
 {
-    Q_OBJECT
-    QML_ELEMENT
-
-    Q_PROPERTY(QString name READ name WRITE setName NOTIFY nameChanged FINAL)
-    Q_PROPERTY(QString description MEMBER description_ NOTIFY descriptionChanged FINAL)
-    Q_PROPERTY(int price READ price WRITE setPrice NOTIFY priceChanged FINAL)
-    Q_PROPERTY(int productId READ productId WRITE setProductId NOTIFY productIdChanged FINAL)
-    Q_PROPERTY(QString imageUrl READ imageUrl WRITE setImageUrl NOTIFY imageUrlChanged FINAL)
-    Q_PROPERTY(int buyPrice READ buyPrice WRITE setBuyPrice NOTIFY buyPriceChanged FINAL)
-    Q_PROPERTY(int maximumStockLevel READ maximumStockLevel WRITE setMaximumStockLevel NOTIFY maximumStockLevelChanged FINAL)
-    Q_PROPERTY(int minimumStockLevel READ minimumStockLevel WRITE setMinimumStockLevel NOTIFY minimumStockLevelChanged FINAL)
-    Q_PROPERTY(int quantityAvailable READ quantityAvailable WRITE setQuantityAvailable NOTIFY quantityAvailableChanged FINAL)
-    Q_PROPERTY(int reorderPoint READ reorderPoint WRITE setReorderPoint NOTIFY reorderPointChanged FINAL)
-    Q_PROPERTY(int selectedQty READ selectedQty WRITE setSelectedQty NOTIFY selectedQtyChanged FINAL)
+    Q_GADGET
+    QML_VALUE_TYPE(product)
+    QML_STRUCTURED_VALUE
+    Q_PROPERTY(QString name READ name WRITE setName FINAL)
+    Q_PROPERTY(QString description MEMBER description_ FINAL)
+    Q_PROPERTY(int price READ price WRITE setPrice FINAL)
+    Q_PROPERTY(int productId READ productId WRITE setProductId FINAL)
+    Q_PROPERTY(QString imageUrl READ imageUrl WRITE setImageUrl FINAL)
+    Q_PROPERTY(int buyPrice READ buyPrice WRITE setBuyPrice FINAL)
+    Q_PROPERTY(int maximumStockLevel READ maximumStockLevel WRITE setMaximumStockLevel FINAL)
+    Q_PROPERTY(int minimumStockLevel READ minimumStockLevel WRITE setMinimumStockLevel FINAL)
+    Q_PROPERTY(int quantityAvailable READ quantityAvailable WRITE setQuantityAvailable FINAL)
+    Q_PROPERTY(int reorderPoint READ reorderPoint WRITE setReorderPoint FINAL)
+    Q_PROPERTY(int selectedQty READ selectedQty WRITE setSelectedQty FINAL)
 public:
-    explicit Product(QObject *parent = nullptr);
+    Product();
 
-    static Product *fromMap(const QVariantMap &map);
-    static QPointer<Product> fromJson(const QByteArray &data);
+    static Product fromMap(const QVariantMap &map);
+    static Product fromJson(const QByteArray &data);
 
-    bool operator==(Product *const rhs);
-    bool operator!=(Product *const rhs);
+    bool operator==(const Product &rhs) const;
+    bool operator!=(const Product &rhs) const;
 
     QString name() const;
     QString description() const;
@@ -45,7 +45,6 @@ public:
 
     int buyPrice() const;
     void setBuyPrice(int newBuyPrice);
-    QBindable<int> bindableBuyPrice() const;
 
     int maximumStockLevel() const;
     void setMaximumStockLevel(int newMaximumStockLevel);
@@ -62,24 +61,7 @@ public:
     int selectedQty() const;
     void setSelectedQty(int newSelectedQty);
 
-signals:
-    void nameChanged();
-    void descriptionChanged();
-    void priceChanged();
-    void productIdChanged();
-    void imageUrlChanged();
-
-    void maximumStockLevelChanged();
-
-    void minimumStockLevelChanged();
-
-    void quantityAvailableChanged();
-
-    void reorderPointChanged();
-
-    void buyPriceChanged();
-
-    void selectedQtyChanged();
+    bool valid() const;
 
 public slots:
     void setName(const QString &name);
@@ -91,7 +73,7 @@ public slots:
 private:
     QString name_;
     QString description_;
-    QProperty<int> price_;
+    int price_;
     int buyPrice_;
     int productId_;
 
@@ -103,5 +85,7 @@ private:
     int selectedQty_;
 };
 }
+
+QDebug operator<<(QDebug dbg, const EntityLayer::Product &p);
 
 #endif // PRODUCTENTITY_H

@@ -23,4 +23,6 @@ qt_add_qml_module(ProductLib
         ProductManager.qml
     SOURCES
         productentity.h productentity.cpp
+    RESOURCES
+        add_a_photo.svg
 )
