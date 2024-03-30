@@ -20,6 +20,10 @@ public:
 public slots:
     void addProduct(const QVariantMap &product);
 
+    void addPicture(ProductId productId, const QVariantList &pictureList);
+
+    void deletePicture(IProductRepository::PictureId pictureId);
+
     void readProductById(ProductId id);
 
     void fetchProducts();
@@ -46,6 +50,10 @@ signals:
     void productEdited();
 
     void errorOccurred(const QByteArray &data);
+
+    void pictureAdded(const QByteArray &data);
+
+    void pictureDeleted();
 
 private:
     IProductRepository *productRepository_;

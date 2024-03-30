@@ -1,7 +1,7 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
-import catalogue as Catalogue
+import Shopping as Catalogue
 import Utils
 import Product
 

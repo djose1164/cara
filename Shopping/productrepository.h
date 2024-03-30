@@ -32,6 +32,10 @@ public slots:
 
     void fetchAll() override;
 
+    QNetworkReply *addPicture(ProductId id, const QVariantList &pictureList) override;
+
+    QNetworkReply *deletePicture(PictureId pictureId) override;
+
 signals:
     void added(const QByteArray &body);
     void updated();
@@ -39,9 +43,11 @@ signals:
     void errorOccurred(const QByteArray &data);
 
 private:
-    void prepareImagePart(const QUrl imageUrl);
+    void prepareImagePart(const QVariantList &pictureList);
 
     void prepareJsonPart(const QVariantMap &product);
+
+    QNetworkRequest requestWithBoundary(QAnyStringView endpoint = {}) const;
 
     QNetworkAccessManager *manager_;
     QNetworkReply *reply_;

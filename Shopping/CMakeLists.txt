@@ -15,7 +15,7 @@ qt_add_qml_module(ShoppingLib
         favorite.svg
         favorite_fill.svg
     SOURCES
-        cartbusiness.h cartbusiness.cpp
+        cartcontroller.h cartcontroller.cpp
         cataloguerepository.h cataloguerepository.cpp
         favorite.h favorite.cpp
         favoriteproduct.h favoriteproduct.cpp
@@ -24,12 +24,16 @@ qt_add_qml_module(ShoppingLib
         organizationresource.h organizationresource.cpp
         productcategoryrepository.h productcategoryrepository.cpp
         productrepository.h productrepository.cpp
+    DEPENDENCIES
+        User Billing Utils Product
 )
 
 target_include_directories(ShoppingLib PRIVATE
-    ../entities
     ../data
     ../utils
+    ../user
+    ../billing
+    ../product
 )
 
 target_link_libraries(ShoppingLib PRIVATE UtilsLib)

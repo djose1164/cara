@@ -23,6 +23,42 @@ void CatalogueRepository::addProduct(const QVariantMap &product)
     });
 }
 
+void CatalogueRepository::addPicture(ProductId productId, const QVariantList &pictureList)
+{
+    const auto reply{productRepository_->addPicture(productId, pictureList)};
+
+    connect(reply, &QNetworkReply::finished, this, [reply, this] {
+        const QByteArray data{reply->readAll()};
+        if (reply->error() != QNetworkReply::NoError)
+        {
+            emit errorOccurred(data);
+            return;
+        }
+
+        emit pictureAdded(data);
+
+        reply->deleteLater();
+    });
+}
+
+void CatalogueRepository::deletePicture(IProductRepository::PictureId pictureId)
+{
+    const auto reply{productRepository_->deletePicture(pictureId)};
+
+    connect(reply, &QNetworkReply::finished, this, [this, reply] {
+        const QByteArray data{reply->readAll()};
+        if (reply->error() != QNetworkReply::NoError)
+        {
+            emit errorOccurred(data);
+            return;
+        }
+
+        emit pictureDeleted();
+
+        reply->deleteLater();
+    });
+}
+
 void CatalogueRepository::readProductById(ProductId id)
 {
     const auto reply{productRepository_->read(id)};
@@ -30,7 +66,7 @@ void CatalogueRepository::readProductById(ProductId id)
         const auto doc{QJsonDocument::fromJson(reply->readAll())};
         if (reply->error() != QNetworkReply::NoError)
         {
-            errorOccurred(doc.toJson());
+            emit errorOccurred(doc.toJson());
             return;
         }
 

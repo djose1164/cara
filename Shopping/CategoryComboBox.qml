@@ -1,6 +1,6 @@
 import QtQuick
 import QtQuick.Controls
-import catalogue as Catalogue
+import Shopping as Catalogue
 
 ComboBox {
     id: root

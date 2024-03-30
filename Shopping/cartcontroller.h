@@ -1,55 +1,50 @@
-#ifndef CARTBUSINESS_H
-#define CARTBUSINESS_H
+#ifndef CARTCONTROLLER_H
+#define CARTCONTROLLER_H
 
-#include "../data/rest.h"
 #include "userentity.h"
-#include "orderentity.h"
-#include "../Billing/model/ordermodel.h"
+#include "entity/orderentity.h"
+#include "model/ordermodel.h"
+#include "abstractresource.h"
+#include "productentity.h"
 
 #include <QObject>
-#include <QtQml>
+#include <QQmlEngine>
 
-namespace BusinessLayer {
-
-class CartBusiness : public QObject
+namespace Shopping {
+class CartController : public QObject
 {
     Q_OBJECT
     QML_ELEMENT
     QML_SINGLETON
 
-    Q_PROPERTY(Entity::UserEntity user READ user WRITE setUser NOTIFY userChanged)
     Q_PROPERTY(EntityLayer::OrderEntity *order READ order WRITE setOrder NOTIFY orderChanged)
     Q_PROPERTY(Model::OrderModel *model READ model WRITE setModel NOTIFY modelChanged)
     Q_PROPERTY(int totalToPay READ totalToPay NOTIFY totalToPayChanged)
 
 public:
-    explicit CartBusiness(QObject *parent = nullptr);
-    
-    Entity::UserEntity user() const;
-    EntityLayer::OrderEntity *order() const;
+    explicit CartController(QObject *parent = nullptr);
 
+    EntityLayer::OrderEntity *order() const;
     Model::OrderModel *model() const;
     
-    Q_INVOKABLE bool isProductInCart(EntityLayer::Product *const product);
+    Q_INVOKABLE bool isProductInCart(const EntityLayer::Product &product) const;
     Q_INVOKABLE int totalToPay() const;
 
 public slots:
-    void setUser(Entity::UserEntity user);
     void setOrder(EntityLayer::OrderEntity *const order);
     void setModel(Model::OrderModel *const model);
 
-    void addtoCart(EntityLayer::Product *const detail);
-    void removeFromCart(EntityLayer::DetailsEntity *const detail);
+    void addtoCart(const EntityLayer::Product &detail);
+    void removeFromCart(const int index);
 
     /**
      * @brief checkout Create an order and send it to the server. This method
      * do some checking process.
      */
-    void checkout();
+    void checkout(const Entity::Customer &buyer);
 
 
 signals:
-    void userChanged();
     void modelChanged();
     void orderChanged();
     void checkoutSucceeded();
@@ -57,11 +52,10 @@ signals:
     void totalToPayChanged();
 
 private:
-    void prepareOrder();
-
-    Rest *rest_;
+    void prepareOrder(const Entity::Customer &buyer);
     
-    Entity::UserEntity user_;
+    AbstractResource::Api api_;
+    AbstractResource::Manager manager_;
     EntityLayer::OrderEntity *order_;
     Model::OrderModel *model_;
 
@@ -69,4 +63,4 @@ private:
 };
 }
 
-#endif // CARTBUSINESS_H
+#endif // CARTCONTROLLER_H

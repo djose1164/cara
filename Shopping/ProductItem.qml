@@ -1,17 +1,23 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
+import Utils
 
 Item {
     id: root
 
     readonly property alias favoriteBtn: likeButton
-    property var product
+    readonly property alias deleteBtn: deleteBtn
+    readonly property alias loader: loader
+    property string name
+    property alias images: imageView.model
 
     signal favoriteClicked(favorite: bool)
+    signal deletePictureClicked(index: int)
 
     implicitWidth: columnLayout.implicitWidth
     implicitHeight: columnLayout.implicitHeight
+    Component.onCompleted: console.log("ProductItem: "+root.images)
 
     ColumnLayout {
         id: columnLayout
@@ -21,44 +27,46 @@ Item {
 
         Label {
             id: label
-            text: product.name
+            text: root.name
             font.pointSize: 14
             horizontalAlignment: Label.AlignHCenter
             Layout.fillWidth: true
         }
 
-        SwipeView {
+        PicSwipeView {
             id: imageView
-            clip: true
             Layout.fillWidth: true
+            Layout.alignment: Qt.AlignCenter
+        }
 
-            Repeater {
-                model: product.images
-                Loader {
-                    required property string image_url
-                    active: SwipeView.isCurrentItem || SwipeView.isNextItem || SwipeView.isPreviousItem
-                    sourceComponent: Image {
-                        source: image_url
-                        sourceSize: internal.sourceSize
-                        fillMode: Image.PreserveAspectFit
-                        Layout.alignment: Qt.AlignHCenter
-                    }
-                }
+        Item {
+            Layout.fillWidth: true
+            implicitHeight: Math.max(likeButton.implicitHeight, deleteBtn.implicitHeight)
+            LikeButton {
+                id: likeButton
+                onClicked: like => root.favoriteClicked(like)
+            }
+
+            PageIndicator {
+                id: pageIndicator
+                anchors.centerIn: parent
+                currentIndex: imageView.currentIndex
+                count: imageView.count
+            }
+
+            RoundButton {
+                id: deleteBtn
+                anchors.right: parent.right
+                flat: true
+                icon.source: "qrc:/icons/trash-can-outline.svg"
+                onClicked: root.deletePictureClicked(imageView.currentIndex)
             }
         }
 
-        LikeButton {
-            id: likeButton
-            onClicked: like => root.favoriteClicked(like)
+        Loader {
+            id: loader
+            visible: false
         }
-
-        PageIndicator {
-            id: pageIndicator
-            currentIndex: imageView.currentIndex
-            count: imageView.count
-            Layout.alignment: Qt.AlignHCenter
-        }
-
     }
 
     QtObject {

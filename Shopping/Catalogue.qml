@@ -2,9 +2,10 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 import QtQuick.Templates as T
-import catalogue as Catalogue
+import Shopping as Catalogue
 import Utils
 import Product
+import data
 
 Page {
     id: root
@@ -27,14 +28,12 @@ Page {
         // FIXME: A new component `InventoryView` must be created.
         ListView {
             id: productView
-
             model: listModel
-
             delegate: ItemDelegate {
                 id: item
                 required property int id
                 required property int category_id
-                required property url image_url
+                required property var images
                 required property string description
                 required property string name
                 required property int sell_price
@@ -44,7 +43,7 @@ Page {
                     stackView.push("qrc:/qt/qml/Product/ProductForm.qml", {
                         productId: id,
                         name,
-                        imageUrl: image_url,
+                        images,
                         categoryId: category_id,
                         description,
                         buyPrice: buy_price,
@@ -64,7 +63,7 @@ Page {
 
                     width: parent.width
                     height: 100
-                    source: item.image_url
+                    source: item.images.get(0)?.image_url ? (Constants.uploadsPath + item.images.get(0).image_url) : "qrc:/cara-logo-v1.png"
                     name: item.name
                     detailed: description
                 }

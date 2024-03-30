@@ -1,26 +1,20 @@
-#include "cartbusiness.h"
-#include "constants.h"
+#include "cartcontroller.h"
+#include "networkrequestsingleton.h"
+#include <QSettings>
 
-namespace BusinessLayer {
-CartBusiness::CartBusiness(QObject *parent)
+using namespace Qt::StringLiterals;
+
+static constexpr auto path{"shopping"_L1};
+
+namespace Shopping {
+CartController::CartController(QObject *parent)
     : QObject{parent}
-    , rest_{new Rest(this)}
-    , user_{}
+    , api_{Utils::NetworkRequestSingleton::instance().api()}
+    , manager_{std::make_shared<QRestAccessManager>(new QNetworkAccessManager{this})}
     , order_{new EntityLayer::OrderEntity(this)}
     , model_{new Model::OrderModel(this)}
     , totalToPay_{}
 {
-    QQmlEngine engine;
-    const auto instance{engine.singletonInstance<DataLayer::Constants *>("data", "Constants")};
-    const QString base{instance->base()};
-    rest_->base(base + "/orders");
-
-    QSettings settings{};
-    const auto token{settings.value("Credentials/refreshToken").toString()};
-
-    rest_->refreshToken(token);
-    rest_->refreshAccessToken();
-
     // Keep totalToPay updated in the view
     connect(model_, &Model::OrderModel::dataChanged, this, [this](const QModelIndex &, const QModelIndex &, const QList<int> &roles) {
         if (roles.indexOf(int(Model::OrderModel::RoleNames::TotalRole)) != -1)
@@ -28,22 +22,17 @@ CartBusiness::CartBusiness(QObject *parent)
     });
 }
 
-Entity::UserEntity CartBusiness::user() const
-{
-    return user_;
-}
-
-EntityLayer::OrderEntity *CartBusiness::order() const
+EntityLayer::OrderEntity *CartController::order() const
 {
     return order_;
 }
 
-Model::OrderModel *CartBusiness::model() const
+Model::OrderModel *CartController::model() const
 {
     return model_;
 }
 
-bool CartBusiness::isProductInCart(EntityLayer::Product * const product)
+bool CartController::isProductInCart(const EntityLayer::Product &product) const
 {
     // TODO: This' being repetive. Consider to create a find method in model_.
     const auto predicate = [&](EntityLayer::DetailsEntity *const d) -> bool {
@@ -59,7 +48,7 @@ bool CartBusiness::isProductInCart(EntityLayer::Product * const product)
     }();
 }
 
-int CartBusiness::totalToPay() const
+int CartController::totalToPay() const
 {
     int sum{};
     for (int i{}; i < model_->count(); ++i)
@@ -68,16 +57,7 @@ int CartBusiness::totalToPay() const
     return sum;
 }
 
-void CartBusiness::setUser(Entity::UserEntity user)
-{
-    if (user_ != user)
-    {
-        user_ = user;
-        emit userChanged();
-    }
-}
-
-void CartBusiness::setOrder(EntityLayer::OrderEntity * const order)
+void CartController::setOrder(EntityLayer::OrderEntity * const order)
 {
     if (order_ != order)
     {
@@ -86,7 +66,7 @@ void CartBusiness::setOrder(EntityLayer::OrderEntity * const order)
     }
 }
 
-void CartBusiness::setModel(Model::OrderModel * const model)
+void CartController::setModel(Model::OrderModel * const model)
 {
     if (model_ != model)
     {
@@ -95,7 +75,7 @@ void CartBusiness::setModel(Model::OrderModel * const model)
     }
 }
 
-void CartBusiness::addtoCart(EntityLayer::Product *const product)
+void CartController::addtoCart(const EntityLayer::Product &product)
 {
     auto detail{new EntityLayer::DetailsEntity(model_)};
     detail->setProduct(product);
@@ -103,26 +83,16 @@ void CartBusiness::addtoCart(EntityLayer::Product *const product)
     model_->append(detail);
 }
 
-void CartBusiness::removeFromCart(EntityLayer::DetailsEntity * const detail)
+void CartController::removeFromCart(const int index)
 {
-    const auto predicate = [&](EntityLayer::DetailsEntity *const d) -> bool {
-        return detail->product() == d->product();
-    };
-
-    model_->remove([&]() -> int {
-        int idx{-1};
-        for (int i{}; i < model_->count(); ++i)
-            if (predicate(model_->get(i)))
-                idx = i;
-        return idx;
-    }());
+    model_->remove(index);
 }
 
-void CartBusiness::checkout()
+void CartController::checkout(const Entity::Customer &buyer)
 {
     qDebug() << "Checking out...";
 
-    prepareOrder();
+    prepareOrder(buyer);
 
     const auto order{
         QJsonDocument::fromJson(order_->toJson())
@@ -130,24 +100,28 @@ void CartBusiness::checkout()
             .toMap()
     };
 
-    rest_->post("/", order);
+    qDebug() << "CartController::checkout: " << order;
 
-    connect(rest_, &Rest::succeeded, this, [&](){
-        emit checkoutSucceeded();
-    });
+    manager_->post(api_->createRequest(path), order, this, [this](QRestReply &reply) {
+        if  (reply.isSuccess())
+        {
+            emit checkoutSucceeded();
+            return;
+        }
 
-    connect(rest_, &Rest::failed, this, [this](const QVariantMap &resp) {
-        emit checkoutFailed(resp);
+        // We failed.
+        if (const auto resp{reply.readJson()})
+            emit checkoutFailed(resp->object().toVariantMap());
+        else
+            emit checkoutFailed(QVariantMap{});
     });
 }
 
-void CartBusiness::prepareOrder()
+void CartController::prepareOrder(const Entity::Customer &buyer)
 {
     // TODO: For later, the payment process with credit/debit card must taken
     // into account.
-    auto user{order_->user()};
-    user.setUserId(user_.userId());
-    user.setCustomerId(user_.customerId());
+    order_->setCustomer(buyer);
 
     order_->setDetails(model_->toJson());
 }

@@ -9,7 +9,8 @@ using namespace Qt::Literals::StringLiterals;
 
 namespace
 {
-constexpr auto resourceID{"%1"_L1};
+constexpr auto resourceID{"/%1"_L1};
+constexpr auto pictureEndpoint{"/picture"_L1};
 }
 
 namespace Catalogue {
@@ -29,15 +30,14 @@ void ProductRepository::add(const QVariantMap &product)
     try
     {
         multiPart_ = new QHttpMultiPart(QHttpMultiPart::FormDataType, this);
-        const auto tmp{product};
-        prepareImagePart(tmp.value("image_url").toUrl());
+        auto tmp{product};
+        const auto imagesVariant{tmp.take("images")};
+        qDebug() << "ProductRepository::add: " << imagesVariant.value<QList<QUrl>>();
+        qDebug() << "ProductRepository::add: " << imagesVariant;
+        prepareImagePart(imagesVariant.toList());
         prepareJsonPart(tmp);
 
-        QNetworkRequest request{api_->createRequest("products/"_L1)};
-        const auto headerValue{"multipart/form-data; boundary=\"%1\""_L1.arg(multiPart_->boundary())};
-        request.setHeader(QNetworkRequest::ContentTypeHeader, headerValue);
-
-        reply_ = manager_->post(request, multiPart_);
+        reply_ = manager_->post(requestWithBoundary(), multiPart_);
         multiPart_->setParent(reply_);
 
         connect(reply_, &QNetworkReply::finished, this, [&] {
@@ -52,6 +52,7 @@ void ProductRepository::add(const QVariantMap &product)
     }
     catch(const std::runtime_error &err)
     {
+        qDebug() << "ProductRepository::add: " << err.what();
         emit errorOccurred(err.what());
     }
 }
@@ -59,7 +60,7 @@ void ProductRepository::add(const QVariantMap &product)
 QNetworkReply *ProductRepository::read(ProductId id)
 {
     return manager_->get(
-        api_->createRequest(path_ + "/"_L1 +resourceID.arg(QString::number(id)))
+        api_->createRequest(path_ + resourceID.arg(QString::number(id)))
     );
 }
 
@@ -96,34 +97,67 @@ void ProductRepository::fetchAll()
     });
 }
 
-void ProductRepository::prepareImagePart(const QUrl imageUrl)
+QNetworkReply *ProductRepository::addPicture(ProductId id, const QVariantList &pictureList)
 {
-    QHttpPart imagePart;
-    imagePart.setHeader(QNetworkRequest::ContentTypeHeader, "image/jpeg"_L1);
+    multiPart_ = new QHttpMultiPart(QHttpMultiPart::FormDataType, this);
+    prepareImagePart(pictureList);
 
-#ifdef Q_OS_ANDROID
-    auto img{ new QFile(imageUrl.toString()) };
-#else
-    auto img{ new QFile(imageUrl.toLocalFile()) };
-#endif
-    imagePart.setHeader(
-        QNetworkRequest::ContentDispositionHeader,
-        "form-data; name=\"image\"; filename=\"%1\""_L1
-            .arg(QFileInfo(*img).fileName())
+    reply_ = manager_->post(
+        requestWithBoundary(
+            resourceID.arg(QString::number(id)) + pictureEndpoint
+        ),
+        multiPart_
     );
+    multiPart_->setParent(reply_);
 
-    if (!img->open(QIODevice::ReadOnly))
+    return reply_;
+}
+
+QNetworkReply *ProductRepository::deletePicture(PictureId pictureId)
+{
+    return manager_->deleteResource(
+        api_->createRequest(
+            path_ + pictureEndpoint + resourceID.arg(QString::number(pictureId))
+        )
+    );
+}
+
+void ProductRepository::prepareImagePart(const QVariantList &pictureList)
+{
+    qDebug() << "ProductRepository::prepareImagePart: " << pictureList;
+    if (pictureList.isEmpty())
+        throw std::runtime_error{"Picture list cannot be empty."};
+
+    for (const auto &picture : pictureList)
     {
-        qCritical() << "Failed to open file for reading";
-        setErrorString("El archivo no existe."_L1);
-        emit errorOccurred(errorString_.toUtf8());
-        throw std::runtime_error(errorString_.toUtf8());
+        QHttpPart imagePart;
+        imagePart.setHeader(QNetworkRequest::ContentTypeHeader, "image/jpeg"_L1);
+
+        const QUrl imageUrl{picture.toMap()["image_url"].toString()};
+#ifdef Q_OS_ANDROID
+        const auto img{new QFile(imageUrl.toString())};
+#else
+        const auto img{new QFile(imageUrl.toLocalFile())};
+#endif
+        imagePart.setHeader(
+            QNetworkRequest::ContentDispositionHeader,
+            "form-data; name=\"image\"; filename=\"%1\""_L1
+                .arg(QFileInfo(*img).fileName())
+        );
+
+        if (!img->open(QIODevice::ReadOnly))
+        {
+            qCritical() << "Failed to open file for reading";
+            setErrorString("El archivo no existe."_L1);
+            emit errorOccurred(errorString_.toUtf8());
+            throw std::runtime_error(errorString_.toUtf8());
+        }
+
+        imagePart.setBodyDevice(img);
+        img->setParent(multiPart_);
+
+        multiPart_->append(imagePart);
     }
-
-    imagePart.setBodyDevice(img);
-    img->setParent(multiPart_);
-
-    multiPart_->append(imagePart);
 }
 
 void ProductRepository::prepareJsonPart(const QVariantMap &product)
@@ -136,6 +170,14 @@ void ProductRepository::prepareJsonPart(const QVariantMap &product)
     );
 
     multiPart_->append(jsonPart);
+}
+
+QNetworkRequest ProductRepository::requestWithBoundary(QAnyStringView endpoint) const
+{
+    QNetworkRequest request{api_->createRequest(path_ + endpoint.toString())};
+    const auto headerValue{"multipart/form-data; boundary=\"%1\""_L1.arg(multiPart_->boundary())};
+    request.setHeader(QNetworkRequest::ContentTypeHeader, headerValue);
+    return request;
 }
 
 QString ProductRepository::errorString() const

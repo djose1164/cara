@@ -9,6 +9,8 @@ Item {
     property int sellPrice
     property int stock
 
+    signal buyClicked
+
     implicitWidth: columnLayout.implicitWidth
     implicitHeight: columnLayout.implicitHeight
 
@@ -27,6 +29,7 @@ Item {
             text: internal.canBuy ? "Agregar al Carrito" : "Mas uninades en camino"
             enabled: internal.canBuy
             Layout.fillWidth: true
+            onClicked: root.buyClicked()
         }
 
         Label {
