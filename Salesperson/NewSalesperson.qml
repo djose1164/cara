@@ -51,7 +51,7 @@ Page {
         }
     }
 
-    AssociateSalespersonService {
+    SalespersonController {
         id: service
         onAdded: {
             SalespersonManager.add(JSON.parse(data).salesperson)

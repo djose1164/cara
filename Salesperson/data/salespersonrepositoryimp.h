@@ -26,7 +26,7 @@ public slots:
 
     void addAssociateSalesperson(const Entity::Salesperson &salesperson) override;
 
-    void getAssociateSalespersons(AdminId adminId) override;
+    void fetchSalesperson(SalespersonId salespersonId) override;
 
     void patch(int id, const QByteArray &payload) override;
 
@@ -37,6 +37,10 @@ public slots:
     QNetworkReply *abandonOrder(OrderId orderId) override;
 
     QNetworkReply *markOrderAsDone(OrderId orderId) override;
+
+    QNetworkReply *fetchSalespeopleByAdminId(AdminId adminId) override;
+
+    QNetworkReply *canOrderBePaid(SalespersonId salespersonId, OrderId orderId) override;
 
 private slots:
     void requestFinished();

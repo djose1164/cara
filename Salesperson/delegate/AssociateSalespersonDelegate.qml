@@ -133,7 +133,7 @@ Page {
         onButtonClicked: close()
     }
     
-    AssociateSalespersonService {
+    SalespersonController {
         id: spService
         salespersonId: root.salespersonId
         onPatched: {

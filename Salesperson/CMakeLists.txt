@@ -22,13 +22,10 @@ qt_add_qml_module(salesperson
     RESOURCES
         salesperson.svg
     SOURCES
-        associatesalespersonservice.h associatesalespersonservice.cpp
-        business/manageable.h business/manageable.cpp
-        data/salespersonmanager.h data/salespersonmanager.cpp
+        salespersoncontroller.h salespersoncontroller.cpp
         data/salespersonrepository.h data/salespersonrepository.cpp
         data/salespersonrepositoryimp.h data/salespersonrepositoryimp.cpp
         salesperson.h salesperson.cpp
-        salespersoncontroller.h salespersoncontroller.cpp
         salespersonmodel.h salespersonmodel.cpp
     DEPENDENCIES
         User

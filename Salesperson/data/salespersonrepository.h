@@ -18,7 +18,7 @@ public:
     
     virtual void getSalespersonById(int id) = 0;
 
-    virtual void getAssociateSalespersons(AdminId adminId) = 0;
+    virtual void fetchSalesperson(AdminId adminId) = 0;
 
     virtual void addAssociateSalesperson(const Entity::Salesperson &salesperson) = 0;
 
@@ -33,6 +33,10 @@ public:
     [[nodiscard]] virtual QNetworkReply *abandonOrder(OrderId orderId) = 0;
 
     [[nodiscard]] virtual QNetworkReply *markOrderAsDone(OrderId orderId) = 0;
+
+    [[nodiscard]] virtual QNetworkReply *fetchSalespeopleByAdminId(AdminId adminId) = 0;
+
+    [[nodiscard]] virtual QNetworkReply *canOrderBePaid(SalespersonId salespersonId, OrderId orderId) = 0;
 };
 }
 

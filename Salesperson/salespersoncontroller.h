@@ -38,7 +38,8 @@ public:
     void setErrorString(const QString &newErrorString);
 
 public slots:
-    void fetchAllAssociateSalesperson(AdminId adminId);
+    void readSalesperson();
+    void readSalespeople();
     void addAssociateSalesperson(const QVariantMap &data);
     void fetchAssociateSalespersonById(int id);
     void fetchCustomers();
@@ -50,6 +51,13 @@ public slots:
     void abandonOrder(OrderId orderId);
 
     void markOrderAsDone(OrderId orderId);
+
+    /**
+     * @brief canPayOrder Check if the issuing salesperson has enough stocks to
+     * mark the order as paid.
+     * @param orderId The order's id.
+     */
+    void canPayOrder(OrderId orderId);
 
 signals:
     void errorOccurred();
@@ -70,6 +78,8 @@ signals:
     void orderAbandoned();
 
     void orderMarkedAsDone();
+
+    void orderCanBePaid();
 
 private:
     Data::SalespersonRepository *salespersonRepository_;

@@ -10,6 +10,7 @@ namespace
 {
 constexpr auto resourceIdentification = "/%1"_L1;
 constexpr auto queueEndpoint{"/queue"_L1};
+constexpr auto orderEndpoint{"orders"_L1};
 }
 
 namespace Data {
@@ -44,11 +45,13 @@ void SalespersonRepositoryImpl::addAssociateSalesperson(const Entity::Salesperso
             this, &SalespersonRepositoryImpl::requestFinished);
 }
 
-void SalespersonRepositoryImpl::getAssociateSalespersons(AdminId adminId)
+void SalespersonRepositoryImpl::fetchSalesperson(SalespersonId salespersonId)
 {
-    const QUrlQuery query{ {"admin_id"_L1, QString::number(adminId)} };
+    const auto resourceId{
+        resourceIdentification.arg(QString::number(salespersonId))
+    };
 
-    reply_ = manager_->get(api_->createRequest(path_ + "/"_L1, query));
+    reply_ = manager_->get(api_->createRequest(path_ + resourceId));
 
     connect(reply_, &QNetworkReply::finished,
             this, &SalespersonRepositoryImpl::requestFinished);
@@ -87,7 +90,7 @@ QNetworkReply *SalespersonRepositoryImpl::takeOrder(OrderId orderId, Salesperson
     obj["salesperson_id"] = salespersonId;
 
     return manager_->post(
-        api_->createRequest("orders"_L1 + queueEndpoint),
+        api_->createRequest(orderEndpoint + queueEndpoint),
         QJsonDocument{obj}.toJson()
     );
 }
@@ -95,7 +98,7 @@ QNetworkReply *SalespersonRepositoryImpl::takeOrder(OrderId orderId, Salesperson
 QNetworkReply *SalespersonRepositoryImpl::abandonOrder(OrderId orderId)
 {
     return manager_->deleteResource(api_->createRequest(
-        "orders"_L1
+        orderEndpoint
         + resourceIdentification.arg(QString::number(orderId))
         + queueEndpoint
     ));
@@ -107,11 +110,27 @@ QNetworkReply *SalespersonRepositoryImpl::markOrderAsDone(OrderId orderId)
     obj["is_done"] = true;
 
     return manager_->sendCustomRequest(
-        api_->createRequest("orders"_L1
+        api_->createRequest(orderEndpoint
             + resourceIdentification.arg(QString::number(orderId))
             + queueEndpoint),
         "PATCH"_ba,
         QJsonDocument{std::move(obj)}.toJson()
+    );
+}
+
+QNetworkReply *SalespersonRepositoryImpl::fetchSalespeopleByAdminId(AdminId adminId)
+{
+    QUrlQuery query{ {"admin_id"_L1, QString::number(adminId)} };
+    return manager_->get(api_->createRequest(path_, std::move(query)));
+}
+
+QNetworkReply *SalespersonRepositoryImpl::canOrderBePaid(SalespersonId salespersonId, OrderId orderId)
+{
+    return manager_->get(
+        api_->createRequest(path_
+            + resourceIdentification.arg(QString::number(salespersonId))
+            + resourceIdentification.arg(QString::number(orderId))
+        )
     );
 }
 

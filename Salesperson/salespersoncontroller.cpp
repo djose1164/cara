@@ -18,14 +18,36 @@ SalespersonController::SalespersonController(QObject *parent)
         setData(repository->buffer());
     });
 
-    connect(repository, &RepositoryImpl::errorOccurred, this, &SalespersonController::errorOccurred);
-    connect(repository, &RepositoryImpl::fetched, this, &SalespersonController::fetched);
-    connect(repository, &RepositoryImpl::patched, this, &SalespersonController::patched);
+    connect(repository, &RepositoryImpl::errorOccurred,
+            this, &SalespersonController::errorOccurred);
+    connect(repository, &RepositoryImpl::fetched,
+            this, &SalespersonController::fetched);
+    connect(repository, &RepositoryImpl::patched,
+            this, &SalespersonController::patched);
 }
 
-void SalespersonController::fetchAllAssociateSalesperson(AdminId adminId)
+void SalespersonController::readSalesperson()
 {
-    salespersonRepository_->getAssociateSalespersons(adminId);
+    salespersonRepository_->fetchSalesperson(adminId_);
+}
+
+void SalespersonController::readSalespeople()
+{
+    const auto reply{salespersonRepository_->fetchSalespeopleByAdminId(adminId_)};
+    connect(reply, &QNetworkReply::finished, this, [this, reply] {
+        setData(reply->readAll());
+
+        if (reply->error() != QNetworkReply::NoError)
+        {
+            setErrorString(reply->errorString());
+            emit errorOccurred();
+            return;
+        }
+
+        emit fetched();
+
+        reply->deleteLater();
+    });
 }
 
 void SalespersonController::addAssociateSalesperson(const QVariantMap &data)
@@ -116,6 +138,24 @@ void SalespersonController::markOrderAsDone(OrderId orderId)
 
         if (reply->attribute(QNetworkRequest::HttpStatusCodeAttribute) == 204)
             emit orderMarkedAsDone();
+
+        reply->deleteLater();
+    });
+}
+
+void SalespersonController::canPayOrder(OrderId orderId)
+{
+    const auto reply{salespersonRepository_->canOrderBePaid(salespersonId_, orderId)};
+    connect(reply, &QNetworkReply::finished, this, [this, reply] {
+        setData(reply->readAll());
+        if (reply->error() != QNetworkReply::NoError)
+        {
+            setErrorString(reply->errorString());
+            emit errorOccurred();
+        }
+
+        if (reply->attribute(QNetworkRequest::HttpStatusCodeAttribute) == 200)
+            emit orderCanBePaid();
 
         reply->deleteLater();
     });
