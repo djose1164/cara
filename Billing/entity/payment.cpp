@@ -1,5 +1,6 @@
 #include "payment.h"
 
+#include <QJsonArray>
 #include <QJsonDocument>
 #include <QJsonObject>
 
@@ -49,7 +50,11 @@ Payment::Payment()
 
 bool Payment::operator==(const Payment &other) const
 {
-    return paymentId_ == other.paymentId_ && orderId_ == other.orderId_;
+    return paymentId_ == other.paymentId_
+           && orderId_ == other.orderId_
+           && paidAmount_ == other.paidAmount_
+           && amountToPay_ == other.amountToPay_
+           && status_ == other.status_;
 }
 
 int Payment::paymentId() const
@@ -124,14 +129,17 @@ QJsonObject Payment::toJsonObject() const
 
 QByteArray Payment::toJson() const
 {
+    if (status_ == Status::Any)
+        throw std::runtime_error{"Payment::toJson: invalid status."};
+
     QJsonObject object{};
-    object["id"] = paymentId_;
     object["paid_amount"] = paidAmount_;
     object["amount_to_pay"] = amountToPay_;
-    object["payment_status_id"] = int(status());
-    const QJsonDocument doc{object};
 
-    return doc.toJson(QJsonDocument::Compact);
+    const int statusInt{std::to_underlying(status())};
+    object["payment_status_id"] = statusInt;
+
+    return QJsonDocument{object}.toJson(QJsonDocument::Compact);
 }
 
 Payment::Status Payment::status() const
@@ -168,5 +176,18 @@ QDateTime Payment::updatedAt() const
 void Payment::setUpdatedAt(const QDateTime &newUpdatedAt)
 {
     updatedAt_ = newUpdatedAt;
+}
+
+void Entity::Payment::decideStatus()
+{
+    using enum Status;
+    if (amountToPay_ == paidAmount_)
+        setStatus(Paid);
+    else if (paidAmount_ == 0)
+        setStatus(Unpaid);
+    else if (paidAmount_ > 0 && paidAmount_ < amountToPay_)
+        setStatus(Credited);
+    else
+        setStatus(Any);
 }
 }

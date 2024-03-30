@@ -19,11 +19,28 @@ BackPage {
     property var status
     readonly property bool taken: model.taken
     property alias customer: orderState.buyer
+    property int mode
 
     enum Operation {
         AbandonOrder,
         OrderAbandoned
     }
+
+    enum Mode {
+        NormalMode,
+        QueueMode
+    }
+
+    states: [
+        State {
+            when: root.mode === BillDetailsPage.QueueMode
+            PropertyChanges {
+                target: orderState
+                paymentDetails.orderId: root.orderId
+                paymentDetails.salespersonId: SalespersonSettings.salespersonId
+            }
+        }
+    ]
 
     title: "Detalles de orden"
     btnLoader.sourceComponent: menuBtn
@@ -50,6 +67,7 @@ BackPage {
             date: root.date
             status: root.status
             model: root.model
+            stackView: root.stackView
         }
     }
 
@@ -62,7 +80,7 @@ BackPage {
         id: menuBtn
         Row {
             RoundButton {
-                visible: root.taken
+                visible: root.taken && root.mode === BillDetailsPage.QueueMode
                 enabled: internal.done
                 flat: true
                 icon.source: model.done ? "check_circle_fill.svg" : "qrc:/icons/done.svg"
@@ -70,10 +88,12 @@ BackPage {
             }
 
             MoreVertButton {
+                id: moreVertBtn
                 onClicked: menu.open()
 
                 Menu {
                     id: menu
+                    y: moreVertBtn.height
 
                     MenuItem {
                         text: "Exportar como PDF"
@@ -84,9 +104,10 @@ BackPage {
                     }
 
                     MenuItem {
+                        height: visible ? implicitHeight : 0
                         visible: UserSettings.userTypeId !== UserEntity.Customer
                         text: root.taken ? "Abandonar orden" : "Tomar orden"
-                        enabled: root.payment.status !== Payment.Paid
+                        enabled: root.payment.status !== Payment.Paid && visible
                         onTriggered: {
                             internal.operation = root.taken ? BillDetailsPage.AbandonOrder : -1;
                             processingIndicator.open();
@@ -98,8 +119,9 @@ BackPage {
                     }
 
                     MenuItem {
+                        height: visible ? implicitHeight : 0
                         visible: UserSettings.userTypeId !== UserEntity.Customer
-                        enabled: !model.done
+                        enabled: !model.done && visible
                         text: "Cancelar orden"
                         onTriggered: {
 
@@ -178,6 +200,11 @@ BackPage {
         onOrderMarkedAsDone: {
             model.done = true;
             doneMessage.open();
+        }
+        onErrorOccurred: {
+            const err = JSON.parse(data).message;
+            errorMessage.informativeText = err;
+            errorMessage.open();
         }
     }
 

@@ -1,7 +1,7 @@
 #ifndef DETAILSENTITY_H
 #define DETAILSENTITY_H
 
-#include "product/productentity.h"
+#include "productentity.h"
 #include <QObject>
 #include <QtQml>
 
@@ -18,16 +18,19 @@ public:
     int total() const;
     QBindable<int> bindableTotal() const;
     
-    void setProduct(Product *const product);
-    Product *product() const;
+    void setProduct(const Product &product);
+    const Product &product() const;
 
     QByteArray toJson() const;
+
+signals:
+    void productChanged();
 
 private:
     QProperty<int> quantity_;
     QProperty<int> total_;
     
-    QProperty<Product *> product_;
+    QProperty<Product> product_;
 };
 }
 

@@ -6,10 +6,10 @@ DetailsEntity::DetailsEntity(QObject *parent)
     : QObject{parent}
     , quantity_{}
     , total_{}
-    , product_{nullptr}
+    , product_{}
 {
-     total_.setBinding([&] {
-            return product_ ? product_->price() * quantity_ : 0;
+    total_.setBinding([&] {
+        return product().valid() ? product().price() * quantity_ : 0;
     });
 }
 
@@ -23,7 +23,7 @@ int DetailsEntity::total() const
     return total_.value();
 }
 
-EntityLayer::Product *DetailsEntity::product() const
+const EntityLayer::Product &DetailsEntity::product() const
 {
     return product_.value();
 }
@@ -32,16 +32,16 @@ QByteArray DetailsEntity::toJson() const
 {
     QJsonObject object{};
     object["quantity"] = quantity();
-    const QJsonObject product{QJsonDocument::fromJson(product_->toJson()).object()};
-    object["product"] = product;
+    const auto doc{QJsonDocument::fromJson(product().toJson())};
+    const QJsonObject product{doc.object()};
+    object["product"] = std::move(product);
 
-    return QJsonDocument(object).toJson(QJsonDocument::Compact);
+    return QJsonDocument{object}.toJson(QJsonDocument::Compact);
 }
 
-void DetailsEntity::setProduct(Product * const product)
+void DetailsEntity::setProduct(const Product &product)
 {
     product_ = product;
-    product_->setParent(this);
 }
 
 void DetailsEntity::setQuantity(int quantity)

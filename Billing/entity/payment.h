@@ -71,6 +71,8 @@ public:
     QDateTime updatedAt() const;
     void setUpdatedAt(const QDateTime &newUpdatedAt);
 
+    Q_INVOKABLE void decideStatus();
+
 private:
     int paymentId_;
     int paidAmount_;

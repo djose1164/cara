@@ -1,11 +1,11 @@
 #ifndef ORDERENTITY_H
 #define ORDERENTITY_H
 
-#include "payment.h"
-#include "detailsentity.h"
-#include "userentity.h"
 #include <QObject>
 #include <QtQml>
+#include "../Customer/entity/customer.h"
+#include "detailsentity.h"
+#include "payment.h"
 
 namespace EntityLayer {
 class OrderEntity : public QObject
@@ -13,13 +13,13 @@ class OrderEntity : public QObject
     Q_OBJECT
     QML_ELEMENT
 
-    Q_PROPERTY(Entity::UserEntity user READ user WRITE setUser NOTIFY userChanged)
-    Q_PROPERTY(Entity::Payment payment MEMBER payment_ NOTIFY paymentChanged)
+    Q_PROPERTY(Entity::Customer customer READ customer WRITE setCustomer NOTIFY customerChanged FINAL)
+    Q_PROPERTY(Entity::Payment payment MEMBER payment_ NOTIFY paymentChanged FINAL)
 
 public:
     explicit OrderEntity(QObject *parent = nullptr);
     
-    Entity::UserEntity &user();
+    Entity::Customer &customer();
 
     Entity::Payment payment() const;
 
@@ -30,17 +30,17 @@ public:
     DetailsEntity *detail(qsizetype index) const;
 
 public slots:
-    void setUser(Entity::UserEntity user);
+    void setCustomer(const Entity::Customer &user);
 
     Q_INVOKABLE QByteArray toJson();
 
 signals:
-    void userChanged();
+    void customerChanged();
     void detailsChanged();
     void paymentChanged();
 
 private:
-    Entity::UserEntity user_;
+    Entity::Customer customer_;
     QProperty<QByteArray> details_;
     Entity::Payment payment_;
 };

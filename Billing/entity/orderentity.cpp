@@ -3,15 +3,15 @@
 namespace EntityLayer {
 OrderEntity::OrderEntity(QObject *parent)
     : QObject{parent}
-    , user_{}
+    , customer_{}
     , details_{}
     , payment_{}
 {
 }
 
-Entity::UserEntity &OrderEntity::user()
+Entity::Customer &OrderEntity::customer()
 {
-    return user_;
+    return customer_;
 }
 
 void OrderEntity::setDetails(const QByteArray &details)
@@ -29,20 +29,19 @@ QByteArray OrderEntity::details() const
     return details_.value();
 }
 
-void OrderEntity::setUser(Entity::UserEntity user)
+void OrderEntity::setCustomer(const Entity::Customer &newCustomer)
 {
-    if (user_ != user)
+    if (customer_ != newCustomer)
     {
-        user_ = user;
-        emit userChanged();
+        customer_ = newCustomer;
+        emit customerChanged();
     }
 }
 
 QByteArray OrderEntity::toJson()
 {
     QJsonObject object{};
-    object["user_id"] = user_.userId();
-    object["customer_id"] = user_.customerId();
+    object["customer_id"] = customer_.customerId();
 
     const auto detailsDoc{QJsonDocument::fromJson(details_)};
     QJsonArray arr{};
@@ -63,13 +62,14 @@ QByteArray OrderEntity::toJson()
 
         arr.append(detailsObj);
     }
-    object["details"] = arr;
+    object["products"] = arr;
 
     payment_.setAmountToPay(amountToPay);
+    payment_.decideStatus();
     const auto doc_{QJsonDocument::fromJson(payment_.toJson())};
-    object["payment"] = QJsonValue::fromVariant(doc_);
 
-    qDebug() << "OrderEntity::toJson " << object;
+
+    object["pay"] = QJsonValue::fromVariant(doc_);
 
     const auto doc{QJsonDocument(object)};
     return doc.toJson(QJsonDocument::Compact);

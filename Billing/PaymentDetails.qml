@@ -1,10 +1,12 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
+import QtQuick.Dialogs
 import QtQuick.Templates as T
 import Billing
 import User
 import Utils
+import Salesperson
 
 Item {
     id: root
@@ -12,6 +14,10 @@ Item {
     required property payment payment_
     required property T.StackView stackView
     required property bool taken
+    // If different to -1, we'll evulate whether the salesperson meet the criteria
+    // to mark the bill as paid.
+    property int salespersonId: -1
+    property int orderId: -1
 
     signal refresh(newPayment: payment)
 
@@ -101,6 +107,24 @@ Item {
         }
     }
 
+    SalespersonController {
+        id: spController
+        salespersonId: root.salespersonId
+        onOrderCanBePaid: payService.pay(internal.debt)
+        onErrorOccurred: {
+            popup.state = "";
+            popup.close();
+
+            const err = JSON.parse(data).message;
+            errorMessage.text = err;
+            errorMessage.open();
+        }
+    }
+
+    MessageDialog {
+        id: errorMessage
+    }
+
     Component {
         id: paidDelegate
         Item {
@@ -118,21 +142,29 @@ Item {
         onClicked: stackView.push("PaymentDetailsPage.qml", {paymentId: payment_.paymentId})
     }
 
+    component PayButton: Button {
+        text: "Pagar"
+        Layout.fillWidth: true
+        onClicked: {
+            popup.state = "busy";
+            popup.open();
+
+            if (root.salespersonId !== -1) {
+                spController.canPayOrder(root.orderId);
+                return;
+            }
+
+            payService.pay(internal.debt)
+        }
+    }
+
     Component {
         id: unpaidDelegate
         Item {
             implicitWidth: groupBox.width
             RowLayout {
                 anchors.fill: parent
-                Button {
-                    text: "Pagar"
-                    Layout.fillWidth: true
-                    onClicked: {
-                        payService.pay(internal.debt)
-                        popup.state = "busy";
-                        popup.open();
-                    }
-                }
+                PayButton {}
 
                 Button {
                     text: "Abonar"
@@ -162,15 +194,7 @@ Item {
                     Layout.fillWidth: true
                 }
 
-                Button {
-                    text: "Pagar"
-                    Layout.fillWidth: true
-                    onClicked: {
-                        payService.pay(internal.debt)
-                        popup.state = "busy";
-                        popup.open();
-                    }
-                }
+                PayButton {}
 
                 Button {
                     id: abonarBtn

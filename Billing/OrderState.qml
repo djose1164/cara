@@ -10,7 +10,7 @@ import Product
 ColumnLayout {
     id: root
 
-    readonly property T.StackView stackView: StackView.view
+    property T.StackView stackView: StackView.view
     required property var model
     property var payment: model.payment
     property var status
@@ -18,8 +18,7 @@ ColumnLayout {
     property int orderId
     property var details
     property customer buyer
-
-    signal paymentApplied(newPayment: var)
+    readonly property alias paymentDetails: paymentDetails
 
     spacing: 20
 
@@ -33,8 +32,6 @@ ColumnLayout {
             }
         }
     ]
-
-    onPaymentApplied: p => payment = p
 
     CustomerInfoBox {
         Layout.fillWidth: true
@@ -61,8 +58,9 @@ ColumnLayout {
     }
 
     PaymentDetails {
+        id: paymentDetails
         payment_: root.payment
-        stackView: billStack
+        stackView: root.stackView
         taken: model.taken
         Layout.bottomMargin: 10
         Layout.topMargin: 20
