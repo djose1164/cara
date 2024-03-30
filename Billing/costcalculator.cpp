@@ -40,10 +40,8 @@ void CostCalculator::calculateTotal()
     int totalPrice{};
     for (int i{}; i < model_->count(); ++i)
     {
-        const auto product{
-            qobject_cast<EntityLayer::Product *>(model_->get(i))
-        };
-        totalPrice += product->price() * product->selectedQty();
+        const auto product{model_->get(i)};
+        totalPrice += product.price() * product.selectedQty();
     }
     setTotal(totalPrice);
 }
