@@ -25,4 +25,8 @@ qt_add_qml_module(ProductLib
         productentity.h productentity.cpp
     RESOURCES
         add_a_photo.svg
+    DEPENDENCIES
+        data
 )
+
+target_include_directories(ProductLib PRIVATE ../data)

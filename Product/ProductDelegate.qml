@@ -3,6 +3,7 @@ import QtQuick.Controls
 import QtQuick.Layouts
 import QtQuick.Templates as T
 import Shopping
+import data
 
 Item {
     id: root
@@ -39,7 +40,7 @@ Item {
             ProductImage {
                 id: img
 
-                source: images[0].image_url
+                source: images ? Constants.uploadsPath + images[0].image_url : ""
                 sourceSize: "128x128"//`${root.height-60}x${root.height-60}`
                 onReady: stackLayout.currentIndex = 1
             }
