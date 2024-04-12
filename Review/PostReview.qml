@@ -5,7 +5,6 @@ import QtQuick.Dialogs
 import Utils
 import Review
 
-// El mejor producto. Aprobado por el Byakugan 👍😀👌.
 Drawer {
     id: root
 
@@ -69,7 +68,6 @@ Drawer {
 
                 StarRating {
                     id: stars
-                    selectedStars: root.selectedStars
                     Layout.fillWidth: true
                     Layout.topMargin: 40
                 }

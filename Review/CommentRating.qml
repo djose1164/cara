@@ -26,43 +26,6 @@ ColumnLayout {
     property string reviewPostedDate
     property int reviewCustomerId
 
-    property string agoDate: {
-        if (reviewPostedDate === "")
-            return "";
-        let formattedDate = reviewPostedDate.replace( /[-]/g, '/' );
-        // parse the proper date string from the formatted string.
-        formattedDate = Date.parse( formattedDate );
-
-        let jsDate = new Date(formattedDate);
-        let currentDate = new Date();
-        let msec = currentDate - jsDate;
-
-        if (Math.floor(msec/1000) <= 60)
-            return `Hace ${Math.floor(msec/1000)} segundos`;
-        else if (Math.floor(msec/1000/60) <= 60)
-            return `Hace ${Math.floor(msec/1000/60)} minutos`;
-        else if (Math.floor(msec/1000/60/60) <= 24) {
-            const hours = Math.floor(msec/1000/60/60);
-            const hourStr = hours === 1 ? 'hora' : 'horas';
-            return `Hace ${hours} ${hourStr}`;
-        }
-        else if (Math.floor(msec/1000/60/60/24) <= 30) {
-            const days = Math.floor(msec/1000/60/60/24);
-            const dayStr = days === 1 ? "dia" : "dias";
-            return `Hace ${days} ${dayStr}`;
-        }
-        else if (Math.floor(msec/1000/60/60/24/getDaysInCurrentMonth()) <= 12) {
-            const months = Math.floor(msec/1000/60/60/24/getDaysInCurrentMonth());
-            const monthStr = months === 1 ? "mes" : "meses";
-            return `Hace ${months} ${monthStr}`;
-        }
-        else {
-            const years = Math.floor(msec/1000/60/60/24/getDaysInCurrentMonth()/12);
-            const yearStr = years === 1 ? "año" : "años";
-            return `Hace ${years} ${yearStr}`;
-        }
-    }
-
     states: [
         State {
             when: root.customerReview.reviewId > 0
@@ -150,6 +113,7 @@ ColumnLayout {
 
     StarRating {
         id: starRating
+        selectedStars: postReview.starsCount
         onStarClicked: postReview.open();
     }
 
@@ -185,9 +149,14 @@ ColumnLayout {
             }
             postReview.close();
         }
+        onClosed: {
+            if (postReview.reviewText === "" && postReview.starsCount > -1)
+                postReview.selectedStars = -1;
+
+        }
 
         Binding on selectedStars {
-            when: root.customerReview.reviewId === -1
+            when: root.customerReview.reviewId === -1 && postReview.visible
             value: starRating.starsCount
         }
     }
@@ -227,20 +196,6 @@ ColumnLayout {
             root.customerReview = newReview;
         }
     }
-
-    // ReviewHeader {
-    //     id: reviewHeader
-    //     Layout.preferredWidth: isReviewOwner ? root.width : root.width/2
-    //     Layout.maximumWidth: app.width*1.5
-    //     customerNameTxt: customerName
-    //     dateTxt: agoDate
-    //     canModify: isReviewOwner && reviewText
-    //     onEditClicked: {
-    //         comment.gotoCommentEdit(true);
-    //         selectedStarsBeforePatch = starRating.selectedStars;
-    //     }
-    //     onDeleteClicked: api.deleteReview(reviewId)
-    // }
 
     MessageDialog {
         id: message
