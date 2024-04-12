@@ -31,17 +31,6 @@
         <file>Inventory.qml</file>
         <file>InventoryAPI.qml</file>
     </qresource>
-    <qresource lang="qml" prefix="/reviews">
-        <file>Review.qml</file>
-        <file>Comment.qml</file>
-        <file>CommentMenuButton.qml</file>
-        <file>ReviewApi.qml</file>
-        <file>Reviews.qml</file>
-        <file>ReviewHeader.qml</file>
-        <file>CommentEntry.qml</file>
-        <file>ReviewDelegate.qml</file>
-        <file>ReviewSection.qml</file>
-    </qresource>
     <qresource prefix="/cart">
         <file>Cart.qml</file>
         <file>CartContent.qml</file>

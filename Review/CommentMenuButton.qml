@@ -1,6 +1,7 @@
 import QtQuick.Controls
+import Utils
 
-RoundButton {
+MoreVertButton {
     id: menuBtn
 
     property bool isMenuOpened
@@ -9,9 +10,6 @@ RoundButton {
     signal deleteClicked
 
     onClicked: if (!isMenuOpened) menu.open()
-
-    icon.source: "qrc:/icons/more_vert.svg"
-    flat: true
 
     Menu {
         id: menu
