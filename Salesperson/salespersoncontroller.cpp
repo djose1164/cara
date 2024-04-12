@@ -91,15 +91,24 @@ void SalespersonController::patch(const QVariantMap &data)
 
 void SalespersonController::takeOrder(OrderId orderId)
 {
+    if (orderId < 1)
+    {
+        setData(QByteArrayLiteral("Invalid orderId."));
+        emit errorOccurred();
+        return;
+    }
+
     const auto reply{salespersonRepository_->takeOrder(orderId, salespersonId_)};
     connect(reply, &QNetworkReply::finished, this, [this, reply] {
         setData(reply->readAll());
         const auto respObj{QJsonDocument::fromJson(data_).object()};
+
         if (reply->error() != QNetworkReply::NoError
-            or respObj["status"].toString() != QStringLiteral("success"))
+            or respObj[QStringLiteral("code")].toString() != QStringLiteral("success"))
         {
             setErrorString(reply->errorString());
             emit errorOccurred();
+            return;
         }
 
         emit orderTook();

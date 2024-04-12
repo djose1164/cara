@@ -140,7 +140,10 @@ void SalespersonRepositoryImpl::requestFinished()
     emit finished();
 
     if (reply_->error() != QNetworkReply::NoError)
+    {
         emit errorOccurred();
+        return;
+    }
 
     switch(reply_->operation())
     {

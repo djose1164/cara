@@ -15,10 +15,11 @@ qt_add_qml_module(salesperson
     VERSION 1.0
     QML_FILES
         AssociateSalesperson.qml
+        CreditOverview.qml
         NewSalesperson.qml
-        delegate/AssociateSalespersonDelegate.qml
         SalespersonManager.qml
         SalespersonSettings.qml
+        delegate/AssociateSalespersonDelegate.qml
     RESOURCES
         salesperson.svg
     SOURCES
