@@ -29,6 +29,10 @@ public:
 
     DetailsEntity *detail(qsizetype index) const;
 
+    QDateTime orderDate() const;
+    void setOrderDate(const QDateTime &newOrderDate);
+    QBindable<QDateTime> bindableOrderDate();
+
 public slots:
     void setCustomer(const Entity::Customer &user);
 
@@ -43,6 +47,7 @@ private:
     Entity::Customer customer_;
     QProperty<QByteArray> details_;
     Entity::Payment payment_;
+    QProperty<QDateTime> orderDate_;
 };
 }
 

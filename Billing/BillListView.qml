@@ -83,7 +83,7 @@ Item {
             orderDate: model.date
             onClicked: {
                 stackView.push("qrc:/qt/qml/Billing/BillDetailsPage.qml", {
-                                   details, date: orderDate, payment, orderId, status, customer, model, mode: BillDetailsPage.QueueMode
+                                   model, mode: BillDetailsPage.QueueMode
                                });
             }
         }

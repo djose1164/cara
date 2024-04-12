@@ -9,7 +9,7 @@ BillProxyModel::BillProxyModel(QObject *parent)
     , paymentFilter_{PaymentStatus::Any}
     , orderFilter_{OrderStatus::Status::Any}
 {
-
+    sort(0);
 }
 
 bool BillProxyModel::filterAcceptsRow(int source_row, const QModelIndex &source_parent) const
@@ -17,7 +17,7 @@ bool BillProxyModel::filterAcceptsRow(int source_row, const QModelIndex &source_
     using enum Model::BillModel::RoleNames;
     const auto statusIdx{sourceModel()->index(source_row, 0, source_parent)};
 
-    const auto filterPayment = [&] {
+    const auto filterPayment = [=, this] {
         const auto payment{qvariant_cast<Entity::Payment>(
             statusIdx.data(int(PaymentRole))
         )};
@@ -26,7 +26,7 @@ bool BillProxyModel::filterAcceptsRow(int source_row, const QModelIndex &source_
         return paymentStatus == paymentFilter_ || paymentFilter_ == PaymentStatus::Any;
     };
 
-    const auto filterOrder = [&] {
+    const auto filterOrder = [=, this] {
         const auto orderStatus{qvariant_cast<OrderStatus *>(
             statusIdx.data(int(StatusRole))
         )};
@@ -50,6 +50,12 @@ void BillProxyModel::setOrderFilter(const OrderStatus::Status &newOrderFilter)
     emit orderFilterChanged();
 
     invalidateFilter();
+    emit countChanged();
+}
+
+int BillProxyModel::count() const
+{
+    return rowCount();
 }
 
 PaymentStatus BillProxyModel::statusFilter() const
@@ -65,5 +71,6 @@ void BillProxyModel::setStatusFilter(const PaymentStatus &newStatusFilter)
     emit statusFilterChanged();
 
     invalidateFilter();
+    emit countChanged();
 }
 }

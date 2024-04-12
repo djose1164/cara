@@ -50,6 +50,7 @@ void BillBusiness::fetchBillsByCustomerId(int customerId)
             return;
         }
 
+        model_->clear();
         for (const auto &order : std::as_const(ordersArr))
         {
             const auto orderMap{order.toVariant().toMap()};

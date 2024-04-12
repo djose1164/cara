@@ -16,7 +16,9 @@ Item {
     signal success(newPayment: payment)
     signal error
 
+    implicitWidth: columnLayout.implicitWidth
     implicitHeight: columnLayout.implicitHeight
+
     ColumnLayout {
         id: columnLayout
         anchors.fill: parent

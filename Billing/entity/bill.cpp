@@ -38,7 +38,7 @@ Bill *Bill::fromMap(const QVariantMap &billMap)
 
     const auto strDate{billMap["date"].toString()};
 
-    bill->setDate(QDateTime::fromString(strDate, "dd/MM/yyyy"));
+    bill->setDate(QDateTime::fromString(strDate, "yyyy-MM-dd"));
     bill->setOrderId(billMap["id"].toInt());
     bill->setIsTaken(billMap["is_taken"].toBool());
 

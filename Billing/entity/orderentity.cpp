@@ -1,11 +1,19 @@
 #include "orderentity.h"
 
+using namespace Qt::StringLiterals;
+
+namespace
+{
+constexpr auto dateTimeFormat{"yyyy-MM-dd hh:mm:ss"_L1};
+}
+
 namespace EntityLayer {
 OrderEntity::OrderEntity(QObject *parent)
     : QObject{parent}
     , customer_{}
     , details_{}
     , payment_{}
+    , orderDate_{QDateTime::currentDateTimeUtc()}
 {
 }
 
@@ -24,6 +32,21 @@ QBindable<QByteArray> OrderEntity::bindableDetails()
     return &details_;
 }
 
+QDateTime EntityLayer::OrderEntity::orderDate() const
+{
+    return orderDate_.value();
+}
+
+void OrderEntity::setOrderDate(const QDateTime &newOrderDate)
+{
+    orderDate_ = newOrderDate;
+}
+
+QBindable<QDateTime> OrderEntity::bindableOrderDate()
+{
+    return &orderDate_;
+}
+
 QByteArray OrderEntity::details() const
 {
     return details_.value();
@@ -40,6 +63,9 @@ void OrderEntity::setCustomer(const Entity::Customer &newCustomer)
 
 QByteArray OrderEntity::toJson()
 {
+    if (!customer_.valid())
+        throw std::runtime_error{"Invalid user entity"};
+
     QJsonObject object{};
     object["customer_id"] = customer_.customerId();
 
@@ -63,6 +89,7 @@ QByteArray OrderEntity::toJson()
         arr.append(detailsObj);
     }
     object["products"] = arr;
+    object["date"] = orderDate().toString(dateTimeFormat);
 
     payment_.setAmountToPay(amountToPay);
     payment_.decideStatus();

@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
+import User
 
 Item {
     id: root
@@ -8,8 +9,8 @@ Item {
     property int orderId
     property date orderDate
     property var customer
-    property var details
     property var payment
+    property var details
     property var status
     readonly property string delegateUrl: "qrc:/orders/OrderState.qml"
 
@@ -40,6 +41,7 @@ Item {
             }
 
             Label {
+                visible: UserSettings.userTypeId !== UserEntity.Customer
                 text: `
                     <strong>Cliente:</strong> ${customer.forename} ${customer.surname}
                 `

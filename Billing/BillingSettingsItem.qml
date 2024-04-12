@@ -6,7 +6,7 @@ Item {
     id: root
     
     implicitWidth: label.implicitWidth + spinBox.implicitWidth
-    implicitHeight: label.implicitHeight + spinBox.implicitHeight
+    implicitHeight: Math.max(label.implicitHeight, spinBox.implicitHeight)
 
     Label {
         id: label

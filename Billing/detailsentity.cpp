@@ -4,13 +4,15 @@ using EntityLayer::DetailsEntity;
 
 DetailsEntity::DetailsEntity(QObject *parent)
     : QObject{parent}
-    , quantity_{}
+    , quantity_{1}
     , total_{}
     , product_{}
 {
     total_.setBinding([&] {
         return product().valid() ? product().price() * quantity_ : 0;
     });
+
+    quantity_.setBinding([&] { return product().selectedQty(); });
 }
 
 int DetailsEntity::quantity() const

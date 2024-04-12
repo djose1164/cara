@@ -17,7 +17,7 @@ class BillProxyModel : public QSortFilterProxyModel
 
     Q_PROPERTY(PaymentStatus paymentFilter READ statusFilter WRITE setStatusFilter NOTIFY statusFilterChanged FINAL)
     Q_PROPERTY(OrderStatus::Status orderFilter READ orderFilter WRITE setOrderFilter NOTIFY orderFilterChanged FINAL)
-
+    Q_PROPERTY(int count READ count NOTIFY countChanged FINAL)
 public:
     explicit BillProxyModel(QObject *parent = nullptr);
 
@@ -30,6 +30,7 @@ public:
     OrderStatus::Status orderFilter() const;
     void setOrderFilter(const OrderStatus::Status &newOrderFilter);
 
+    int count() const;
 signals:
     void statusFilterChanged();
 
@@ -37,6 +38,8 @@ signals:
     void orderStatusChanged();
 
     void orderFilterChanged();
+
+    void countChanged();
 
 protected:
     bool filterAcceptsRow(int source_row, const QModelIndex &source_parent) const override;

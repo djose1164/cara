@@ -6,19 +6,22 @@ namespace Billing
 QueueProxyModel::QueueProxyModel(QObject *parent)
     : QSortFilterProxyModel{parent}
     , status_{OrderQueueEnum::FilterBy::Any}
+    , filterEnabled_{true}
 {}
 
 bool QueueProxyModel::filterAcceptsRow(int source_row,
                                        const QModelIndex &source_parent) const
 {
-    const auto index{sourceModel()->index(source_row, 0, source_parent)};
+    if (!filterEnabled_)
+        return true;
+
+    QModelIndex index{sourceModel()->index(source_row, 0, source_parent)};
     using enum Model::BillModel::RoleNames;
 
     switch (status_)
     {
         using enum OrderQueueEnum::FilterBy;
     case NoAssignment:
-        qDebug() << "QueueProxyModel::filterAcceptsRow: " << (index.data(int(TakenRole)).value<bool>() == false);
         return index.data(int(TakenRole)).value<bool>() == false;
     case AssingedToMe:
         return index.data(int(TakenRole)).value<bool>();
@@ -29,6 +32,22 @@ bool QueueProxyModel::filterAcceptsRow(int source_row,
     default:
         return false;
     }
+}
+
+bool QueueProxyModel::filterEnabled() const
+{
+    return filterEnabled_;
+}
+
+void QueueProxyModel::setFilterEnabled(bool newFilterEnabled)
+{
+    if (filterEnabled_ == newFilterEnabled)
+        return;
+    filterEnabled_ = newFilterEnabled;
+    emit filterEnabledChanged();
+
+    if (filterEnabled_)
+        invalidateFilter();
 }
 
 OrderQueueEnum::FilterBy QueueProxyModel::status() const

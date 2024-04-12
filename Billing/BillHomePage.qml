@@ -3,6 +3,8 @@ import QtQuick.Controls
 import QtQuick.Templates as T
 import Billing
 import Utils
+import Shopping
+import User
 import "qrc:/filters"
 
 Page {
@@ -17,27 +19,23 @@ Page {
         btnLoader.sourceComponent: FilterButton {
             onClicked: billFilter.open()
         }
-
+        backBtn.visible: stackView.depth > 1
         onBackClicked: stackView.pop()
     }
     states: [
         State {
             name: "fetching"
             PropertyChanges {
-                target: label
-                visible: false
-            }
-            PropertyChanges {
                 target: busyIndicator
                 running: true
             }
         },
         State {
-            name: "hasOrders"
-            when: listView.count > 0
+            when: billProxyModel.count === 0
             PropertyChanges {
                 target: label
-                visible: false
+                visible: true
+                text: "No se ha encontrado ninguna orden con los filtros establecidos."
             }
         },
         State {
@@ -54,8 +52,7 @@ Page {
     ]
 
     Component.onCompleted: {
-        root.state = "fetching";
-        billBusiness.fetchBillsByCustomerId(customerId);
+        root.fetchCustomerBills();
     }
 
     ListView {
@@ -77,9 +74,20 @@ Page {
         id: label
         width: root.width*.8
         anchors.centerIn: parent
-        text: "No se ha podido encontrar ninguna orden."
+        visible: false
+        text: UserSettings.userTypeId === UserEntity.Customer ? "Aun no has realizado ninguna compra."
+                                                              : "No se ha podido encontrar ninguna orden."
         font.pointSize: 14
         wrapMode: Label.Wrap
+    }
+
+    Connections {
+        target: CartController
+
+        function onCheckoutSucceeded() {
+            billModel.clear();
+            root.fetchCustomerBills();
+        }
     }
 
     Component {
@@ -107,6 +115,7 @@ Page {
     BillProxyModel {
         id: billProxyModel
         sourceModel: billModel
+        onCountChanged: console.log("BillProxyModel.count: "+count)
     }
 
     BillModel { id: billModel }
@@ -115,6 +124,7 @@ Page {
         id: billBusiness
         model: billModel
         onOrdersNotFound: root.state = "noOrders"
+        onPopulated: root.state = "hasOrders"
     }
 
     BillFilterPopup {
@@ -124,5 +134,10 @@ Page {
             billProxyModel.orderFilter = orderFilterValue;
             billProxyModel.paymentFilter = paymentFilterValue;
         }
+    }
+
+    function fetchCustomerBills() {
+        root.state = "fetching";
+        billBusiness.fetchBillsByCustomerId(customerId);
     }
 }

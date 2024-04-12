@@ -218,7 +218,7 @@ Item {
         property alias state: payItem.state
 
         width: root.width
-        height: root.height
+        height: root.height * 1.3
         anchors.centerIn: Overlay.overlay
         onClosed: payItem.resetView()
         onAboutToShow: console.log(`size: ${width}x${height}`)

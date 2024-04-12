@@ -77,10 +77,41 @@ BackPage {
         sourceModel: billModel
     }
 
-    BillListView {
-        id: billListView
+    ListView {
+        id: listView
         anchors.fill: parent
+        anchors.topMargin: 5
+        delegate: billDelegate
+        spacing: 20
         model: queueProxy
+    }
+
+    Component {
+        id: billDelegate
+        CustomerBillDelegate {
+            id: customerBillDelegate
+            required property var model
+            required details
+            required payment
+            required status
+            required customer
+
+            width: root.width
+            height: 110
+            orderId: model.orderId
+            orderDate: model.date
+            onClicked: {
+                stackView.pushItem("qrc:/qt/qml/Billing/BillDetailsPage.qml", {
+                                   model, mode: BillDetailsPage.QueueMode, proxyModel: queueProxy
+                               });
+            }
+        }
+    }
+
+    Timer {
+        id: timer
+        interval: 500
+        onTriggered: queueProxy.filterEnabled = false
     }
 
     BillBusiness {
@@ -97,7 +128,7 @@ BackPage {
     }
 
     function setFetchingState() {
-        billListView.state = "fetching";
+
     }
 
     function fetchOrdersInQueue() {

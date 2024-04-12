@@ -6,18 +6,18 @@ import Billing
 import User
 import Customer
 import Product
+import data
 
 ColumnLayout {
     id: root
 
     property T.StackView stackView: StackView.view
     required property var model
-    property var payment: model.payment
+    property var payment: root.model.payment
     property var status
     property date date
     property int orderId
     property var details
-    property customer buyer
     readonly property alias paymentDetails: paymentDetails
 
     spacing: 20
@@ -35,7 +35,7 @@ ColumnLayout {
 
     CustomerInfoBox {
         Layout.fillWidth: true
-        customer: buyer
+        customer: root.model.customer
         visible: UserSettings.userTypeId  !== UserEntity.Customer
     }
 
@@ -49,11 +49,11 @@ ColumnLayout {
         id: orderStatusCB
         orderId: root.orderId
         statusId: status.statusId
-        acceptBtn.visible: model.taken
+        acceptBtn.visible: root.model.taken
         Layout.fillWidth: true
         onStatusUpdated: (newStatusId, newStatusString) => {
-            model.status.statusId = newStatusId;
-            model.status.statusString = newStatusString;
+            root.model.status.statusId = newStatusId;
+            root.model.status.statusString = newStatusString;
         }
     }
 
@@ -61,7 +61,7 @@ ColumnLayout {
         id: paymentDetails
         payment_: root.payment
         stackView: root.stackView
-        taken: model.taken
+        taken: root.model.taken
         Layout.bottomMargin: 10
         Layout.topMargin: 20
         Layout.fillWidth: true
@@ -75,7 +75,7 @@ ColumnLayout {
     }
 
     Label {
-        property date orderDate: root.date
+        property date orderDate: root.model.date
         text: orderDate.toLocaleDateString()
         font.pointSize: 14
     }
@@ -109,6 +109,7 @@ ColumnLayout {
 
             Component.onCompleted: {
                 internal.orderTotal += total;
+                console.log(imageUrl)
             }
 
             Layout.fillHeight: true

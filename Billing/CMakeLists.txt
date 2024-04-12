@@ -15,7 +15,6 @@ qt_add_qml_module(BillingLib
         BillHomePage.qml
         BillListView.qml
         BillMessage.qml
-        BillPage.qml
         BillPageHeader.qml
         BillPrinter.qml
         BillViewChooser.qml
@@ -23,6 +22,7 @@ qt_add_qml_module(BillingLib
         BillingSettingsItem.qml
         CreditedView.qml
         CustomerBillDelegate.qml
+        CustomerBillPage.qml
         CustomerBills.qml
         CustomerBillsHome.qml
         NewPurchaseOrder.qml
@@ -38,6 +38,7 @@ qt_add_qml_module(BillingLib
         PaymentStatusFilter.qml
         PdfBillListing.qml
         ProductSale.qml
+        SalespersonBillPage.qml
     SOURCES
         billrepository.h billrepository.cpp
         business/abstractdocument.h business/abstractdocument.cpp
@@ -68,7 +69,13 @@ qt_add_qml_module(BillingLib
         queueproxymodel.h queueproxymodel.cpp
         uniquefilenamegenerator.h uniquefilenamegenerator.cpp
     RESOURCES
-        order-model.html style.css pdf-icon.svg orders.svg done_all.svg check_circle_fill.svg
+        order-model.html style.css
+        pdf-icon.svg
+        orders.svg
+        done_all.svg
+        check_circle_fill.svg
+        lists.svg
+        contact-support.svg
     DEPENDENCIES
         QtQuick Utils Product Customer
 )
@@ -78,8 +85,6 @@ target_include_directories(BillingLib
         business entity model data
         ../Customer ../data ../product ../authentication ../utils ../
 )
-
-find_package(Qt6 REQUIRED COMPONENTS Network)
 
 target_link_libraries(BillingLib
     PRIVATE Qt6::Concurrent Qt6::PrintSupport Qt6::Network UtilsLib InventoryLib CustomerLib)

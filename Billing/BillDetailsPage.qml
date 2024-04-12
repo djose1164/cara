@@ -11,14 +11,9 @@ import "qrc:/orders"
 BackPage {
     id: root
 
+    required property QueueProxyModel proxyModel
     required property var model
-    property int orderId
-    property var date
-    property var details
-    property payment payment
-    property var status
-    readonly property bool taken: model.taken
-    property alias customer: orderState.buyer
+    readonly property bool taken: root.model.taken
     property int mode
 
     enum Operation {
@@ -36,7 +31,7 @@ BackPage {
             when: root.mode === BillDetailsPage.QueueMode
             PropertyChanges {
                 target: orderState
-                paymentDetails.orderId: root.orderId
+                paymentDetails.orderId: root.model.orderId
                 paymentDetails.salespersonId: SalespersonSettings.salespersonId
             }
         }
@@ -44,6 +39,8 @@ BackPage {
 
     title: "Detalles de orden"
     btnLoader.sourceComponent: menuBtn
+    Component.onCompleted: root.proxyModel.filterEnabled = false
+    Component.onDestruction: root.proxyModel.filterEnabled = true
 
     ScrollView {
         anchors.fill: parent
@@ -62,10 +59,10 @@ BackPage {
                     return root.width *.75
             }
             anchors.horizontalCenter: parent.horizontalCenter
-            orderId: root.orderId
-            details: root.details
-            date: root.date
-            status: root.status
+            orderId: root.model.orderId
+            details: root.model.details
+            date: root.model.date
+            status: root.model.status
             model: root.model
             stackView: root.stackView
         }
@@ -83,8 +80,8 @@ BackPage {
                 visible: root.taken && root.mode === BillDetailsPage.QueueMode
                 enabled: internal.done
                 flat: true
-                icon.source: model.done ? "check_circle_fill.svg" : "qrc:/icons/done.svg"
-                onClicked: if (!model.done) spController.markOrderAsDone(root.orderId)
+                icon.source: root.model.done ? "check_circle_fill.svg" : "qrc:/icons/done.svg"
+                onClicked: if (!root.model.done) spController.markOrderAsDone(root.model.orderId)
             }
 
             MoreVertButton {
@@ -99,7 +96,7 @@ BackPage {
                         text: "Exportar como PDF"
                         onTriggered: {
                             processingIndicator.open();
-                            orderResource.getOrderById(root.orderId);
+                            orderResource.getOrderById(root.model.orderId);
                         }
                     }
 
@@ -107,21 +104,21 @@ BackPage {
                         height: visible ? implicitHeight : 0
                         visible: UserSettings.userTypeId !== UserEntity.Customer
                         text: root.taken ? "Abandonar orden" : "Tomar orden"
-                        enabled: root.payment.status !== Payment.Paid && visible
+                        enabled: root.model.payment.status !== Payment.Paid && visible
                         onTriggered: {
                             internal.operation = root.taken ? BillDetailsPage.AbandonOrder : -1;
                             processingIndicator.open();
                             if (root.taken)
                                 abandonMessage.open();
                             else
-                                spController.takeOrder(root.orderId);
+                                spController.takeOrder(root.model.orderId);
                         }
                     }
 
                     MenuItem {
                         height: visible ? implicitHeight : 0
                         visible: UserSettings.userTypeId !== UserEntity.Customer
-                        enabled: !model.done && visible
+                        enabled: !root.model.done && visible
                         text: "Cancelar orden"
                         onTriggered: {
 
@@ -140,7 +137,7 @@ BackPage {
         onAccepted: {
             // TODO: Abandon this order
             if (internal.operation === BillDetailsPage.AbandonOrder)
-                spController.abandonOrder(root.orderId)
+                spController.abandonOrder(root.model.orderId)
         }
     }
 
@@ -188,30 +185,35 @@ BackPage {
         salespersonId: SalespersonSettings.salespersonId
         onOrderTook: {
             processingIndicator.close();
-            model.taken = true;
+            root.model.taken = true;
             takeMessage.open();
         }
         onOrderAbandoned: {
-            model.taken = false;
+            root.model.taken = false;
             internal.operation = BillDetailsPage.OrderAbandoned;
             processingIndicator.close();
             abandonMessage.open();
         }
         onOrderMarkedAsDone: {
-            model.done = true;
+            root.model.done = true;
             doneMessage.open();
         }
         onErrorOccurred: {
-            const err = JSON.parse(data).message;
-            errorMessage.informativeText = err;
-            errorMessage.open();
+            processingIndicator.close();
+            try {
+                errorMessage.informativeText = JSON.parse(data).message;
+            } catch (err) {
+                errorMessage.informativeText = data;
+            } finally {
+                errorMessage.open();
+            }
         }
     }
 
     QtObject {
         id: internal
         property int operation: -1
-        readonly property bool done: root.status.statusId === OrderStatus.Delivered
-                                     && root.payment.status === Payment.Paid
+        readonly property bool done: root.model.status.statusId === OrderStatus.Delivered
+                                     && root.model.payment.status === Payment.Paid
     }
 }

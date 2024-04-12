@@ -89,11 +89,23 @@ bool BillModel::setData(const QModelIndex &index, const QVariant &value, int rol
         emit dataChanged(index, index, {role});
         return true;
     case TakenRole:
-        data_[row]->setIsTaken(value.toInt());
+        data_[row]->setIsTaken(value.toBool());
         emit dataChanged(index, index, {role});
         return true;
     case DoneRole:
         data_[row]->setDone(value.toBool());
+        emit dataChanged(index, index, {role});
+        return true;
+    case OrderIdRole:
+        data_[row]->setOrderId(value.toInt());
+        emit dataChanged(index, index, {role});
+        return true;
+    case StatusRole:
+        data_[row]->setOrderStatus(value.value<OrderStatus *>());
+        emit dataChanged(index, index, {role});
+        return true;
+    case CustomerRole:
+        data_[row]->setCustomer(value.value<Entity::Customer>());
         emit dataChanged(index, index, {role});
         return true;
     default:
@@ -142,6 +154,7 @@ void BillModel::clear()
         return;
 
     beginResetModel();
+    qDeleteAll(data_);
     data_.clear();
     endResetModel();
 
