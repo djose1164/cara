@@ -1,6 +1,7 @@
 ﻿#include "customerresource.h"
 #include "httpstatuscodes.h"
 #include <QJsonObject>
+#include <QJsonDocument>
 #include <QNetworkReply>
 #include <QRestAccessManager.h>
 #include <QRestReply>

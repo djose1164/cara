@@ -3,7 +3,7 @@ import QtQuick.Controls
 import Utils
 
 
-@Deprecated { reason: "Use AssociateSalespersonService or SalespersonController." }
+@Deprecated { reason: "Use SalespersonController." }
 QtObject {
     id: root
 

@@ -14,7 +14,6 @@ class CustomerResource
 {
     Q_OBJECT
     QML_ELEMENT
-    Q_INTERFACES(Business::CustomerRepository)
     Q_PROPERTY(QByteArray data READ data WRITE setData NOTIFY dataChanged FINAL)
     Q_PROPERTY(QString errorString READ errorString WRITE setErrorString NOTIFY errorStringChanged FINAL)
     Q_PROPERTY(QString path READ path WRITE setPath NOTIFY pathChanged FINAL REQUIRED)
@@ -48,6 +47,8 @@ signals:
     void contentNotFound();
 
     void pathChanged();
+
+    void customerAdded(const QByteArray &data);
 
 private:
     QByteArray data_;

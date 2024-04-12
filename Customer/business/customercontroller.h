@@ -15,8 +15,6 @@ public:
     explicit CustomerController(QObject *parent = nullptr);
 
     Q_INVOKABLE Entity::Customer fromMap(const QVariantMap &data) const;
-
-signals:
 };
 }
 

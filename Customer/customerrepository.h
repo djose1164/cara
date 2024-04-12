@@ -3,6 +3,8 @@
 
 #include <QQmlEngine>
 
+class QRestReply;
+
 namespace Business
 {
 class CustomerRepository
@@ -15,6 +17,5 @@ public:
     virtual void readBySalespersonId(SalespersonId salespersonId) = 0;
 };
 }
-Q_DECLARE_INTERFACE(Business::CustomerRepository, "com.cara.CustomerRepository")
 
 #endif // CUSTOMERREPOSITORY_H

@@ -71,4 +71,9 @@ void Customer::setCustomerId(CustomerId newCustomerId)
 {
     customerId_ = newCustomerId;
 }
+
+bool Customer::valid() const
+{
+    return customerId_ > 0;
+}
 }

@@ -11,11 +11,19 @@ GroupBox {
 
     property alias forename: forename.text
     property alias surname: surname.text
+    readonly property bool same: internal.oldForename === root.forename
+                                 && internal.oldSurname === root.surname
 
     title: "Informacion Personal"
     Layout.fillWidth: true
-    RowLayout {
+    Component.onCompleted: {
+        root.setOldProperties();
+    }
+
+    ColumnLayout {
         anchors.fill: parent
+        spacing: 20
+
         TextField {
             id: forename
             placeholderText: "Nombre"
@@ -29,6 +37,12 @@ GroupBox {
         }
     }
 
+    QtObject {
+        id: internal
+        property string oldForename
+        property string oldSurname
+    }
+
     function validate(): void {
         if (JS.isEmpty(forename.text))
             throw "El nombre no puede estar vacio.";
@@ -39,6 +53,15 @@ GroupBox {
     function clear(): void {
         forename.clear();
         surname.clear();
+    }
+
+    function resetSame() {
+        setOldProperties();
+    }
+
+    function setOldProperties() {
+        internal.oldForename = root.forename;
+        internal.oldSurname = root.surname;
     }
 }
 

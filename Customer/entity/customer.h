@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include <QQmlEngine>
+#include <QProperty>
 
 using CustomerId = int;
 
@@ -17,6 +18,7 @@ class Customer
     Q_PROPERTY(QString surname READ surname WRITE setSurname FINAL)
     Q_PROPERTY(QString phoneNumber READ phoneNumber WRITE setPhoneNumber FINAL)
     Q_PROPERTY(CustomerId customerId READ customerId WRITE setCustomerId FINAL)
+    Q_PROPERTY(bool valid READ valid FINAL)
 public:
     static Customer fromJson(const QJsonObject &customerObject);
 
@@ -36,6 +38,8 @@ public:
 
     CustomerId customerId() const;
     void setCustomerId(CustomerId newCustomerId);
+
+    bool valid() const;
 
 private:
     QString forename_;
