@@ -127,7 +127,10 @@ Item {
             }
         ]
         authenticator: auth
-        onAuthenticated: stackView.replace(internal.mainPage, {user: UserSettings.entity()});
+        onAuthenticated: {
+            // MainPage.qml is already in stack. No need to replace.
+            stackView.popCurrentItem();
+        }
         onErrorOccurred: {
             busyIndicator.close();
             popup.open();
@@ -141,10 +144,12 @@ Item {
             password: internal.password
         }
         onSucceeded: data => {
+            LoginManager.loggingIn();
             internal.saveSalespersonSettings(data);
             const user = userController.create(data);
             busyIndicator.close();
             UserSettings.setEntity(user);
+            LoginManager.loggedIn();
         }
     }
 

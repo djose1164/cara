@@ -137,15 +137,12 @@ void TokenManager::stopRefreshing()
 
 void TokenManager::resumeRefreshing()
 {
-    qDebug() << "TokenManager::resumeRefreshing: resuming...";
     if (timer_->isActive())
         return;
 
     refreshAccessToken();
     timer_->start();
     setRefreshing(true);
-    qDebug() << "TokenManager::resumeRefreshing: remainingTime: "<< timer_->remainingTime();
-    qDebug() << "TokenManager::resumeRefreshing: resuming...Done";
 }
 
 void TokenManager::replyReady()

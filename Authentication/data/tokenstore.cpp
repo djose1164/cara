@@ -57,9 +57,6 @@ void TokenStore::restore()
     setAccess(settings.value("accessToken"_L1).toString());
     setRefresh(settings.value("refreshToken"_L1).toString());
     settings.endGroup();
-
-    qDebug() << settings.value("accessToken"_L1).toString();
-    Q_ASSERT(access_.isEmpty() == false);
 }
 
 void TokenStore::clear()

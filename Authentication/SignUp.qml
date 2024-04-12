@@ -2,7 +2,9 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 import QtQuick.Templates as T
+import QtQuick.Dialogs
 import Utils
+import User
 
 Item {
     id: signUp
@@ -15,7 +17,7 @@ Item {
         anchors.top: parent.top
         anchors.topMargin: 20
         anchors.horizontalCenter: parent.horizontalCenter
-        source: "https://iili.io/HXfzSQj.png"
+        source: "qrc:/cara-logo-v1.png"
         sourceSize: "128x128"
     }
 
@@ -57,16 +59,11 @@ Item {
             EnterKey.type: Qt.EnterKeyNext
         }
 
-
     TextField {
-        id: emailInput
+        id: usernameInput
         Layout.fillWidth: true
-        placeholderText: "Correo electronico"
+        placeholderText: "Usuario"
         inputMethodHints: Qt.ImhEmailCharactersOnly | Qt.ImhPreferLowercase | Qt.ImhNoAutoUppercase
-        validator: RegularExpressionValidator {
-            regularExpression: /[a-z0-9]+@[a-z]+\.[a-z]{2,3}/
-        }
-
         Layout.leftMargin: 15
         Layout.rightMargin: 15
         Layout.columnSpan: 2
@@ -97,10 +94,17 @@ Item {
             onClicked: onOk()
         }
 
-        // TODO: Delete weak reference of `appStack`.
         Label {
             text: '¿Ya tienes una cuenta? [Inicia sesion](LoginPage.qml)'
-            onLinkActivated: link => appStack.replace(link)
+            onLinkActivated: link => stackView.replaceCurrentItem(link)
+            textFormat: Label.MarkdownText
+            Layout.alignment: Qt.AlignCenter
+            font.pointSize: 12
+        }
+
+        Label {
+            text: '[Continuar sin registrarme](url)'
+            onLinkActivated: stackView.popCurrentItem()
             textFormat: Label.MarkdownText
             Layout.alignment: Qt.AlignCenter
             font.pointSize: 12
@@ -115,10 +119,18 @@ Item {
         id: popup
     }
 
+    MessageDialog {
+        id: successMsg
+        text: "Te has registrado existosamente"
+        informativeText: "Favor de iniciar sesion"
+        buttons: MessageDialog.Ok
+        onAccepted: stackView.replaceCurrentItem(Qt.resolvedUrl("LoginPage.qml"))
+    }
+
     CaraApi {
         id: request
         endpoint:  "/users"
-        onSucceeded: stackView.pop();
+        onSucceeded: successMsg.open()
     }
 
     Connections {
@@ -144,9 +156,11 @@ Item {
 
     function onOk() {
         const newUser = {
-            "forename": forenameInput.text,
-            "surname": surnameInput.text,
-            "email": emailInput.text,
+            contact: {
+                "forename": forenameInput.text,
+                "surname": surnameInput.text,
+            },
+            "username": usernameInput.text,
             "password": passwordInput.text,
         };
         print(`OnNewUser: ${JSON.stringify(newUser, null, 2)}`);

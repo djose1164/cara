@@ -30,7 +30,7 @@ void Login::userAuthenticated(const QByteArray &data)
     for (const auto &store : std::as_const(stores_))
         store->save(data);
 
-    emit authenticated({});
+    emit authenticated(data);
 }
 
 QQmlListProperty<Store::IStore> Login::stores()
