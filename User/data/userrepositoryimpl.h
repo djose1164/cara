@@ -20,6 +20,8 @@ public:
 
     void update(const Entity::UserEntity &user) override;
 
+    void updatePassword(UserId userId, const QVariantMap &data) override;
+
     QString path() const;
     void setPath(const QString &newPath);
 

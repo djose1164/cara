@@ -17,8 +17,11 @@ UserEntity UserEntity::fromJson(const QByteArray &data)
     user.setEmail(contactDoc["email"].toString());
     user.setCustomerId(userObj["customer_id"].toInt());
     user.setUserType(static_cast<UserTypes>(userObj["user_type_id"].toInt()));
+    Q_ASSERT(std::to_underlying(user.userType_));
     user.setUserId(userObj["id"].toInt());
+    Q_ASSERT(user.userId());
     user.setUsername(userObj["username"].toString());
+    user.setPhoneNumber(contactDoc["telephone"].toString());
     qDebug() << "UserEntity::fromJson: " << user.username();
     Q_ASSERT(user.username().isEmpty() == false);
     user.setCustomerId(customerObj["id"].toInt());
@@ -32,6 +35,8 @@ UserEntity UserEntity::fromJson(const QByteArray &data)
 UserEntity::UserEntity()
     : username_{}
     , password_{}
+    , email_{}
+    , phoneNumber_{}
     , forename_{}
     , surname_{}
     , customerId_{}
@@ -185,5 +190,17 @@ void UserEntity::setEmail(const QString &newEmail)
     if (email_ == newEmail)
         return;
     email_ = newEmail;
+}
+
+QString UserEntity::phoneNumber() const
+{
+    return phoneNumber_;
+}
+
+void UserEntity::setPhoneNumber(const QString &newPhoneNumber)
+{
+    if (phoneNumber_ == newPhoneNumber)
+        return;
+    phoneNumber_ = newPhoneNumber;
 }
 }

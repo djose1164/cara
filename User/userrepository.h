@@ -24,6 +24,8 @@ public:
 
     virtual void update(const Entity::UserEntity &user) = 0;
 
+    virtual void updatePassword(UserId userId, const QVariantMap &data) = 0;
+
     QString base() const;
     void setBase(const QString &newBase);
 
@@ -37,6 +39,7 @@ signals:
     void fetched();
     void updated();
     void errorOccurred();
+    void passwordUpdated();
 
 private:
     QString base_;

@@ -23,7 +23,7 @@ class UserEntity
     Q_PROPERTY(bool isAdmin READ isAdmin)
     Q_PROPERTY(bool isCustomer READ isCustomer)
     Q_PROPERTY(int salespersonId READ salespersonId WRITE setSalespersonId FINAL)
-
+    Q_PROPERTY(QString phoneNumber READ phoneNumber WRITE setPhoneNumber FINAL)
 public:
     using UserId = int;
     using SalespersonId = int;
@@ -83,10 +83,14 @@ public:
     QString email() const;
     void setEmail(const QString &newEmail);
 
+    QString phoneNumber() const;
+    void setPhoneNumber(const QString &newPhoneNumber);
+
 private:
     QString username_;
     QString password_;
     QString email_;
+    QString phoneNumber_;
 
     QString forename_;
     QString surname_;

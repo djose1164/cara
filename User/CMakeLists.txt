@@ -12,6 +12,7 @@ qt_add_qml_module(UserLib
         AddressForm.qml
         ContactForm.qml
         PerfilPage.qml
+        UpdatePasswordPage.qml
         UserCredentialsForm.qml
         UserSettings.qml
     SOURCES
@@ -29,6 +30,8 @@ qt_add_qml_module(UserLib
         userrepository.h userrepository.cpp
         usersession.h usersession.cpp
         loginmanager.h loginmanager.cpp
+    RESOURCES
+        password.svg
     DEPENDENCIES
         Utils
         Authentication

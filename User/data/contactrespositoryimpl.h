@@ -4,19 +4,22 @@
 #include "contactrepository.h"
 #include <QObject>
 
+class QRestAccessManager;
+class QNetworkRequestFactory;
+
 namespace Data {
 class ContactRespositoryImpl : public QObject, public ContactRepository
 {
     Q_OBJECT
-    Q_INTERFACES(ContactRepository)
 public:
     explicit ContactRespositoryImpl(QObject *parent = nullptr);
 
-    void getById(int id) override;
-    void update(const QVariantMap &data) override;
-signals:
+    void getById(int id, Handler &&h) override;
+    void update(const QVariantMap &data, const QUrlQuery &query, Handler &&h) override;
 
-
+private:
+    QRestAccessManager *manager_;
+    std::shared_ptr<QNetworkRequestFactory> api_;
 };
 }
 

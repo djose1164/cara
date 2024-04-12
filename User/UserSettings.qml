@@ -10,6 +10,7 @@ Settings {
     property string surname
     property string email
     property string username
+    property string phoneNumber
     property int userId
     property int userTypeId
     property int customerId
@@ -35,6 +36,7 @@ Settings {
         root.userId = newUser.userId;
         root.userTypeId = newUser.userType;
         root.customerId = newUser.customerId;
+        root.phoneNumber = newUser.phoneNumber;
     }
 
     function clear() {
@@ -44,5 +46,7 @@ Settings {
         root.email = "";
         root.userId = 0;
         root.userTypeId = 0;
+        root.phoneNumber = "";
+        root.customerId = 0;
     }
 }

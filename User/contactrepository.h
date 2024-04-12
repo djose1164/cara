@@ -3,16 +3,19 @@
 
 #include <QObject>
 
+class QRestReply;
+class QUrlQuery;
+
 class ContactRepository
 {
 public:
+    using Handler = std::function<void(QRestReply &reply)>;
+
     virtual ~ContactRepository();
 
-    virtual void getById(int id) = 0;
+    virtual void getById(int id, Handler &&h) = 0;
 
-    virtual void update(const QVariantMap &data) = 0;
+    virtual void update(const QVariantMap &data, const QUrlQuery &query, Handler &&h) = 0;
 };
-
-Q_DECLARE_INTERFACE(ContactRepository, "Cara.ContactRepositoryInterface")
 
 #endif // CONTACTREPOSITORY_H

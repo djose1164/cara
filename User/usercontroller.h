@@ -1,6 +1,7 @@
 #ifndef USERCONTROLLER_H
 #define USERCONTROLLER_H
 
+#include "contactrepository.h"
 #include "userrepository.h"
 #include <QObject>
 #include <QQmlEngine>
@@ -32,6 +33,10 @@ public:
 public slots:
     void update(const QVariantMap &data);
 
+    void updateContact(const QVariantMap &data);
+
+    void updatePassword(UserId userId, const QVariantMap &data);
+
     void getUserById(int id);
 
     void readFavorites(UserId id);
@@ -39,12 +44,19 @@ public slots:
 signals:
     void fetched(const QByteArray &data);
     void updated();
+    void contactUpdated();
     void errorOccurred();
 
     void errorStringChanged();
 
+    void passwordUpdated();
+
+private:
+    bool validatePasswordData(const QVariantMap &data);
+
 private:
     Data::UserRepository *repository_;
+    ContactRepository *contactRepository_;
     QString errorString_;
 };
 }

@@ -8,9 +8,19 @@ ColumnLayout {
     id: root
     spacing: 20
 
+    property alias email: email.text
+    property alias phoneNumber: phoneNumber.text
+
     readonly property var contact: {
         "telephone": phoneNumber.text,
         "email": email.text,
+    }
+    readonly property bool empty: !root.email && !phoneNumber.text
+    readonly property bool same: internal.oldEmail === root.email
+                                 && internal.oldPhoneNumber === root.phoneNumber
+
+    Component.onCompleted: {
+        root.setOldProperties();
     }
 
     GroupBox {
@@ -19,6 +29,7 @@ ColumnLayout {
 
         ColumnLayout {
             anchors.fill: parent
+            spacing: 20
 
             NumberTextField {
                 id: phoneNumber
@@ -35,6 +46,12 @@ ColumnLayout {
                 }
             }
         }
+    }
+
+    QtObject {
+        id: internal
+        property string oldPhoneNumber
+        property string oldEmail
     }
 
     function removeEmptyFields() {
@@ -56,5 +73,14 @@ ColumnLayout {
             throw "El correo electronico no puede estar vacio";
         else if (!email.acceptableInput)
             throw "El Correo electronico no es valido.";
+    }
+
+    function setOldProperties() {
+        internal.oldEmail = root.email;
+        internal.oldPhoneNumber = root.phoneNumber;
+    }
+
+    function resetSame() {
+        root.setOldProperties();
     }
 }
