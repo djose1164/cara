@@ -50,6 +50,7 @@ signals:
     void checkoutSucceeded();
     void checkoutFailed(const QVariantMap &resp);
     void totalToPayChanged();
+    void errorOccurred(const QString &errorString);
 
 private:
     void prepareOrder(const Entity::Customer &buyer);

@@ -1,15 +1,26 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
+import User
+import Shopping
+import Product
+import data
 
 Item {
     id: root
+
+    required property FavoriteProduct favoriteProduct
+    required property var productForSale
+
+    readonly property  int productId: root.productForSale.id
+    readonly property int userId: UserSettings.userId
+    readonly property alias selectedQty: priceSpinBox.selectedQty
 
     property list<string> locations
     property int sellPrice
     property int stock
 
-    signal buyClicked
+    signal buyClicked(productToBuy: product)
 
     implicitWidth: columnLayout.implicitWidth
     implicitHeight: columnLayout.implicitHeight
@@ -17,8 +28,19 @@ Item {
     ColumnLayout {
         id: columnLayout
         anchors.fill: parent
+        spacing: 20
+
+        ProductItem {
+            id: productItem
+            images: root.productForSale.images
+            name: root.productForSale.name
+            deleteBtn.visible: UserSettings.userTypeId !== UserEntity.Customer
+            Layout.fillWidth: true
+            onFavoriteClicked: like => handleFavClicked(like)
+        }
 
         PriceSpinBox {
+            id: priceSpinBox
             enabled: internal.canBuy
             to: internal.topLimit
             unitPrice: root.sellPrice
@@ -29,7 +51,18 @@ Item {
             text: internal.canBuy ? "Agregar al Carrito" : "Mas uninades en camino"
             enabled: internal.canBuy
             Layout.fillWidth: true
-            onClicked: root.buyClicked()
+            onClicked: {
+                const productObj = {
+                    name: root.productForSale.name,
+                    price: root.productForSale.sell_price,
+                    productId: root.productId,
+                    imageUrl: Constants.uploadsPath + root.productForSale.images[0].image_url,
+                    selectedQty: root.selectedQty
+                };
+                print(JSON.stringify(productObj, null, 2));
+                const productToBuy = root.createProduct(productObj);
+                root.buyClicked(productToBuy);
+            }
         }
 
         Label {
@@ -45,10 +78,43 @@ Item {
         }
     }
 
+    Connections {
+        target: root.favoriteProduct
+
+        function onResourceFetched(resp) {
+            const favorites = JSON.parse(JSON.parse(resp).favorites);
+            const func = fav => {
+                internal.fav = createFavorite({
+                                                  favoriteId: fav.id,
+                                                  userId: fav.user_id,
+                                                  productId: fav.product_id
+                                              });
+                if (fav.product_id === root.productId) {
+                    productItem.favoriteBtn.like = true;
+                    return true;
+                }
+                return false;
+            }
+            for (let fav of favorites)
+                if (func(fav))
+                    break;
+        }
+
+        function onResourceCreated(resp) {
+            const fav = JSON.parse(resp).favorite;
+            internal.fav = root.createFavorite({
+                                                   favoriteId: fav.id,
+                                                   userId: fav.user_id,
+                                                   productId: fav.product_id
+                                               });
+        }
+    }
+
     QtObject {
         id: internal
         readonly property bool canBuy: root.stock > 0
         readonly property int topLimit: canBuy ? root.stock : 1
+        property favorite fav
     }
 
     function getAvailableLocations(): string {
@@ -68,5 +134,31 @@ Item {
         }
         print(template.arg(finalLocations))
         return template.arg(finalLocations);
+    }
+
+    function handleFavClicked(like: bool) {
+        const favorite = createFavorite({userId: root.userId, productId: root.productId});
+        if (like)
+            favoriteProduct.add(favorite);
+        else
+            favoriteProduct.remove(internal.fav);
+    }
+
+    function createFavorite({userId = -1, productId = -1, favoriteId = -1}): favorite {
+        return {
+            userId,
+            productId,
+            favoriteId
+        };
+    }
+
+    function createProduct({productId, price, imageUrl, name, selectedQty}): product {
+        return {
+            productId,
+            price,
+            imageUrl,
+            name,
+            selectedQty
+        };
     }
 }

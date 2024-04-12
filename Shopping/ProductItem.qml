@@ -17,7 +17,6 @@ Item {
 
     implicitWidth: columnLayout.implicitWidth
     implicitHeight: columnLayout.implicitHeight
-    Component.onCompleted: console.log("ProductItem: "+root.images)
 
     ColumnLayout {
         id: columnLayout

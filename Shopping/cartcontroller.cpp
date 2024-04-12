@@ -86,35 +86,40 @@ void CartController::addtoCart(const EntityLayer::Product &product)
 void CartController::removeFromCart(const int index)
 {
     model_->remove(index);
+    emit totalToPayChanged();
 }
 
 void CartController::checkout(const Entity::Customer &buyer)
 {
-    qDebug() << "Checking out...";
+    if (!buyer.valid())
+    {
+        emit errorOccurred("The buyer is invalid");
+        return;
+    }
 
     prepareOrder(buyer);
 
-    const auto order{
-        QJsonDocument::fromJson(order_->toJson())
-            .toVariant()
-            .toMap()
-    };
+    const auto order{QJsonDocument::fromJson(order_->toJson()).toVariant().toMap()};
 
     qDebug() << "CartController::checkout: " << order;
 
-    manager_->post(api_->createRequest(path), order, this, [this](QRestReply &reply) {
-        if  (reply.isSuccess())
-        {
-            emit checkoutSucceeded();
-            return;
-        }
+    manager_->post(api_->createRequest(path),
+                   order,
+                   this,
+                   [this](QRestReply &reply)
+                   {
+                       if (reply.isSuccess())
+                       {
+                           emit checkoutSucceeded();
+                           return;
+                       }
 
-        // We failed.
-        if (const auto resp{reply.readJson()})
-            emit checkoutFailed(resp->object().toVariantMap());
-        else
-            emit checkoutFailed(QVariantMap{});
-    });
+                       // We failed.
+                       if (const auto resp{reply.readJson()})
+                           emit checkoutFailed(resp->object().toVariantMap());
+                       else
+                           emit checkoutFailed(QVariantMap{});
+                   });
 }
 
 void CartController::prepareOrder(const Entity::Customer &buyer)

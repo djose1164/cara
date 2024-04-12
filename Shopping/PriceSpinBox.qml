@@ -7,6 +7,7 @@ Item {
 
     property int unitPrice
     property alias to: spinBox.to
+    readonly property alias selectedQty: spinBox.value
 
     implicitWidth: rowLayout.implicitWidth
     implicitHeight: rowLayout.implicitHeight
