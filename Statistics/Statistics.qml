@@ -31,6 +31,7 @@ Page {
     }
 
     ScrollView {
+        id: scrollView
         anchors.fill: parent
         contentWidth: availableWidth
         contentHeight: columnLayout.implicitHeight
@@ -39,23 +40,9 @@ Page {
             id: columnLayout
             anchors {
                 fill: parent
-                margins: 10
+                margins: Math.max(scrollView.effectiveScrollBarWidth, 10)
             }
             spacing: 10
-
-            GridLayout {
-                columns: 2
-                columnSpacing: 10
-                rowSpacing: 10
-                Layout.margins: 20
-                Layout.fillWidth: true
-                Layout.preferredHeight: root.height * .55
-
-                Repeater {
-                    model: model
-                    delegate: iconDelegate
-                }
-            }
 
             Label {
                 text: "Estadisticas del ultimo mes"
@@ -146,7 +133,7 @@ Page {
 
             Frame {
                 id: frame
-                width: parent.width * .9
+                width: parent.width
                 anchors.horizontalCenter: parent.horizontalCenter
 
                 RowLayout {
@@ -178,23 +165,23 @@ Page {
     ListModel {
         id: model
 
-        ListElement {
-            imageSource: "qrc:/icons/product_statistics.svg"
-            title: "Estadisticas de Productos"
-            path: "qrc:qt/qml/Statistics/ProductStatistics.qml"
-        }
+        // ListElement {
+        //     imageSource: "qrc:/icons/product_statistics.svg"
+        //     title: "Estadisticas de Productos"
+        //     path: "qrc:qt/qml/Statistics/ProductStatistics.qml"
+        // }
 
-        ListElement {
-            imageSource: "qrc:/icons/customer_statistics.svg"
-            title: "Estadisticas de Clientes"
-            path: "qrc:qt/qml/Statistics/CustomerStatistics.qml"
-        }
+        // ListElement {
+        //     imageSource: "qrc:/icons/customer_statistics.svg"
+        //     title: "Estadisticas de Clientes"
+        //     path: "qrc:qt/qml/Statistics/CustomerStatistics.qml"
+        // }
 
-        ListElement {
-            imageSource: "statistics-color.svg"
-            title: "Ordenes"
-            path: "OrderStatistics.qml"
-        }
+        // ListElement {
+        //     imageSource: "statistics-color.svg"
+        //     title: "Ordenes"
+        //     path: "OrderStatistics.qml"
+        // }
     }
 
     ListModel {

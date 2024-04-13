@@ -9,10 +9,11 @@ qt_add_qml_module(StatisticsLib
     QML_FILES
         Statistics.qml
         ProductStatistics.qml
-        CustomerStatistics.qml
         StatisticsAPI.qml
         OrderStatistics.qml
-        StatisticsResource.qml
+        StatisticsResource.qml # -- QtGraphs is just too limited.
     RESOURCES
         statistics-color.svg
 )
+
+target_link_libraries(StatisticsLib PRIVATE Qt6::Graphs)
