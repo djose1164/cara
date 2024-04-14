@@ -33,7 +33,6 @@ void UserSession::buildUser(const QByteArray &data)
 void UserSession::update()
 {
     qDebug() << "UserSession::update: updating...";
-    const User::Data::LocalUserStore userStore{};
 
 }
 
