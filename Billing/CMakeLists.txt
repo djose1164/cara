@@ -39,6 +39,7 @@ qt_add_qml_module(BillingLib
         PdfBillListing.qml
         ProductSale.qml
         SalespersonBillPage.qml
+    SOURCES
         billrepository.h billrepository.cpp
         business/abstractdocument.h business/abstractdocument.cpp
         business/billbusiness.h business/billbusiness.cpp
@@ -68,7 +69,6 @@ qt_add_qml_module(BillingLib
         ordertemplate.h ordertemplate.cpp
         queueproxymodel.h queueproxymodel.cpp
         uniquefilenamegenerator.h uniquefilenamegenerator.cpp
-    SOURCES
     RESOURCES
         order-model.html style.css
         pdf-icon.svg

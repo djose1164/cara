@@ -8,9 +8,11 @@ qt_add_qml_module(UtilsLib
     SOURCES
         abstractresource.h abstractresource.cpp
         fileutils.h fileutils.cpp
+        httpstatuscodes.h
         internetstatus.h internetstatus.cpp
         networkrequestsingleton.h networkrequestsingleton.cpp
         notimplementated.h
+        qnamsingleton.h qnamsingleton.cpp
         restservice.h restservice.cpp
         shareplataform.h shareplataform.cpp
         shareutils.h shareutils.cpp
@@ -48,8 +50,12 @@ qt_add_qml_module(UtilsLib
         StarRating.qml
         TimeoutDialog.qml
         TitleHeader.qml
+        PicSwipeView.qml
+        EmailField.qml
     RESOURCES
-        utils.js 
+        utils.js
+        star.png
+        star-unfilled.png
 )
 
 if(ANDROID)
@@ -58,4 +64,4 @@ if(ANDROID)
     )
 endif()
 
-target_link_libraries(UtilsLib PRIVATE Qt6::Core)
+target_link_libraries(UtilsLib PRIVATE Qt6::Core Qt6::Network)
