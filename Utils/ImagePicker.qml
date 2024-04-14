@@ -6,7 +6,7 @@ import QtCore
 Rectangle {
     id: root
 
-    property alias imagePath: img.source
+    signal fileAccepted(filename: url)
 
     color: "gray"
 
@@ -23,37 +23,13 @@ Rectangle {
         }
     ]
 
-    RoundButton {
-        id: plusBtn
-        anchors.centerIn: parent
-        visible: img.source
-        flat: true
-        text: "+"
-        font.pointSize: 14
-        onClicked: fileDialog.open()
-    }
-
-    Image {
-        id: img
-        anchors.fill: parent
-    }
-
-    RoundButton {
-        id: deleteBtn
-        anchors {
-            left: img.right
-            leftMargin: 20
-            top: img.top
-        }
-        visible: false
-        flat: true
-        icon.source: "qrc:/icons/trash-can-outline.svg"
-        onClicked: img.source = ""
-    }
-
     FileDialog {
         id: fileDialog
         currentFolder: StandardPaths.standardLocations(StandardPaths.PicturesLocation)[0]
-        onAccepted: img.source = selectedFile
+        onAccepted: fileAccepted(selectedFile)
+    }
+
+    function open() {
+        fileDialog.open();
     }
 }
