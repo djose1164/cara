@@ -5,7 +5,7 @@ TextField {
     id: textField
 
     property bool showText: false
-
+    readonly property alias eyeBtn: eyeIcon
 
     placeholderText: "Contraseña"
     echoMode: showText ? TextField.Normal : TextField.Password
