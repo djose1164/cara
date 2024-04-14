@@ -7,9 +7,11 @@ Popup {
 
     property alias text: label.text
 
+    implicitWidth: rowLayout.implicitWidth * 1.5
     anchors.centerIn: Overlay.overlay
 
     RowLayout {
+        id: rowLayout
         anchors.fill: parent
 
         BusyIndicator {}
