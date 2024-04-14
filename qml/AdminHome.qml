@@ -1,7 +1,7 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
-import catalogue
+import Shopping
 import User
 import Salesperson
 import "qrc:/orders" as Order
@@ -119,14 +119,6 @@ Home {
         id: model
 
         ListElement {
-            source: "qrc:/icons/complete_order.svg"
-            path: "qrc:/orders/BuyOrder.qml"
-            name: "Ordenes de Compra"
-            showCustomers: false
-            admin: false
-        }
-
-        ListElement {
             source: "qrc:/icons/customers.svg"
             path: "qrc:qt/qml/Customer/Customers.qml"
             name: "Clientes"
@@ -159,8 +151,8 @@ Home {
         }
 
         ListElement {
-            source: "qrc:/qt/qml/catalogue/catalogue.svg"
-            path: "qrc:/qt/qml/catalogue/Catalogue.qml"
+            source: "qrc:/qt/qml/Shopping/catalogue.svg"
+            path: "qrc:/qt/qml/Shopping/Catalogue.qml"
             name: "Catalogo"
         }
 
@@ -175,6 +167,12 @@ Home {
             source: "qrc:/qt/qml/Billing/pdf-icon.svg"
             path: "qrc:/qt/qml/Billing/PdfBillListing.qml"
             name: "Facturas exportadas"
+        }
+
+        ListElement {
+            source: "qrc:/qt/qml/Billing/orders.svg"
+            path: "qrc:/qt/qml/Billing/OrderQueue.qml"
+            name: "Cola"
         }
     }
 }
