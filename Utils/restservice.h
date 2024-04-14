@@ -3,6 +3,7 @@
 
 #include "abstractresource.h"
 
+#include <QNetworkAccessManager>
 #include <QNetworkRequestFactory>
 #include <QObject>
 #include <QQmlEngine>
@@ -44,6 +45,7 @@ private:
 private:
     QUrl url_;
     QList<AbstractResource *> resources_;
+    QNetworkAccessManager *accessManager_;
     const AbstractResource::Manager manager_;
     const AbstractResource::Api api_;
 };
