@@ -16,14 +16,23 @@ Page {
         onBackClicked: stackView.pop()
     }
 
-    ColumnLayout {
+    Column {
+        id: column
         anchors.fill: parent
         anchors.leftMargin: 5
         anchors.rightMargin: 5
+        spacing: 20
+        topPadding: 10
 
         BillingSettingsItem {
-            Layout.fillWidth: true
-            Layout.alignment: Qt.AlignTop
+            width: column.width
+        }
+
+        ItemDelegate {
+            text: "Actualizar contraseña"
+            icon.source: "qrc:/qt/qml/User/password.svg"
+            width: column.width
+            onClicked: root.stackView.pushItem("qrc:/qt/qml/User/UpdatePasswordPage.qml")
         }
     }
 }
