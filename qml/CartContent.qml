@@ -1,27 +1,42 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
-import entities as Entity
 import Product
+import Shopping
+import data
 
-ListView {
+Item {
     id: root
 
-    spacing: 5
-    model: CartBusiness.model
-    delegate: ProductCard {
-        required property var model
-        required property Entity.Product product
-        required property int quantity
-        required total
-        required property int index
+    readonly property alias count: listView.count
 
-        onDeleted: CartBusiness.removeFromCart(index)
-        spinBox.onValueChanged: model.quantity = spinBox.value
+    implicitWidth: listView.implicitWidth
+    implicitHeight: listView.implicitHeight
 
-        productName: product.name
-        productPrice: product.price
-        imageUrl: product.imageUrl
-        productId: product.productId
+    ListView {
+        id: listView
+        anchors.fill: parent
+        anchors.topMargin: 5
+        anchors.leftMargin: 5
+        anchors.rightMargin: 5
+        spacing: 5
+        model: CartController.model
+        delegate: ProductCard {
+            required property var model
+            required property product product
+            required property int quantity
+            required total
+            required property int index
+
+            width: listView.width
+            productName: product.name
+            productPrice: product.price
+            imageUrl: product.imageUrl
+            productId: product.productId
+            spinBox.value: quantity
+
+            onDeleted: CartController.removeFromCart(index)
+            spinBox.onValueChanged: model.quantity = spinBox.value
+        }
     }
 }
