@@ -19,7 +19,6 @@ public:
     void setAccessToken(const QString &newAccessToken) override;
 
     std::shared_ptr<QNetworkRequestFactory> api() const;
-    QNetworkAccessManager *manager() const;
 
 private:
     NetworkRequestSingleton();
@@ -27,7 +26,6 @@ private:
 
 private:
     std::shared_ptr<QNetworkRequestFactory> api_;
-    std::shared_ptr<QNetworkAccessManager> manager_;
 };
 }
 
