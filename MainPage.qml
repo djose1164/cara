@@ -9,18 +9,19 @@ import "qrc:/orders" as Orders
 import Customer
 import Billing
 import Authentication
+import QtNetwork
 
 // TODO: MaiPage should be deleted in a future release.
 // Plan in what release it should be deleted.
 Page {
     id: root
 
-    required property var user
+    readonly property var user: UserSettings.entity()
 
     readonly property alias billStack: billStack
 
     readonly property T.StackView currentStackView: stackLayout.children[stackLayout.currentIndex]
-    readonly property StackView stackView: StackView.view
+    readonly property T.StackView stackView: StackView.view
     readonly property string userHomePath: "qrc:/home/UserHome.qml"
     readonly property url adminHomePath: "qrc:/home/AdminHome.qml"
     readonly property url adminCartPath: "qrc:/qt/qml/Billing/NewPurchaseOrder.qml"
@@ -63,20 +64,58 @@ Page {
 
     states: [
         State {
-            name: "fetching"
+            when: NetworkInformation.reachability !== NetworkInformation.Reachability.Online
+            PropertyChanges {
+                target: offlinePane
+                visible: true
+            }
+            PropertyChanges {
+                target: root
+                enabled: false
+            }
             PropertyChanges {
                 target: stackLayout
                 visible: false
-            }
-            PropertyChanges {
-                target: busyIndicator
-                visible: true
             }
         }
     ]
 
     Component.onCompleted: {
         updateViews();
+    }
+
+    Pane {
+        id: offlinePane
+        width: root.width * .9
+        anchors.centerIn: parent
+        visible: false
+
+        ColumnLayout {
+            anchors.fill: parent
+            spacing: 10
+
+            Image {
+                source: "wifi-off.svg"
+                sourceSize: "32x32"
+                Layout.alignment: Qt.AlignHCenter
+                Layout.bottomMargin: 10
+            }
+
+            Label {
+                text: "No estas conectado a Intenet"
+                font.pointSize: 16
+                font.bold: true
+                Layout.fillWidth: true
+            }
+
+            Label {
+                text: "Verifica tu conexion de internet. Intenta verificar que"
+                      + " tu WiFi o datos mobiles esten activiados."
+                font.pointSize: 14
+                wrapMode: Label.Wrap
+                Layout.fillWidth: true
+            }
+        }
     }
 
     StackLayout {
@@ -96,7 +135,6 @@ Page {
 
         StackView {
             id: billStack
-            Component.onCompleted: replace("qrc:/qt/qml/Billing/BillPage.qml", {user});
         }
     }
 
@@ -108,20 +146,20 @@ Page {
 
     SidePane {
         id: sideMenu
+        implicitWidth: root.width
+        implicitHeight: root.height
         stackView: root.stackView
-        user: root.user
     }
 
     Connections {
         target: LoginManager
 
         function onLoggedIn() {
-            root.state = "fetching";
+            updateViews();
         }
 
         function onLoggingOut() {
             CustomerManager.clearModel();
-            root.user = userController.create({});
         }
 
         function onLoggedOut() {
@@ -153,9 +191,16 @@ Page {
         }
     }
 
-    AssociateSalespersonService {
+    SalespersonController {
         id: spService
         salespersonId: SalespersonSettings.salespersonId
+    }
+
+    QtObject {
+        id: internal
+        readonly property url customerBillPage: "qrc:/qt/qml/Billing/BillHomePage.qml"
+        readonly property url salespersonBillPage: "qrc:/qt/qml/Billing/SalespersonBillPage.qml"
+        readonly property url billMessage: "qrc:/qt/qml/Billing/BillMessage.qml"
     }
 
     function updateViews(): void {
@@ -163,19 +208,23 @@ Page {
         case UserEntity.Admin:
         case UserEntity.Salesperson:
             CustomerManager.populate(SalespersonSettings.salespersonId);
-
             if (CustomerManager.isEmpty) spService.fetchCustomers();
             homeStack.replace(adminHomePath);
-            orderStackView.replace(adminCartPath/*, {salesperson: user.salesperson}*/);
+            orderStackView.replace(adminCartPath);
+            billStack.replace(internal.salespersonBillPage)
             break;
         case UserEntity.Guest:
-        case UserEntity.Customer:
-        case UserEntity.User:
             homeStack.replace(userHomePath);
             orderStackView.replace(userCartPath);
+            billStack.replaceCurrentItem(internal.billMessage)
+            break;
+        case UserEntity.Customer:
+        case UserEntity.User:
+            console.log("Updating views to customer/user...")
+            homeStack.replace(userHomePath);
+            orderStackView.replace(userCartPath);
+            billStack.replaceCurrentItem(internal.customerBillPage, {customerId: UserSettings.customerId})
             break;
         }
-        if (billStack.currentItem?.user)
-            billStack.currentItem.user = root.user;
     }
 }
