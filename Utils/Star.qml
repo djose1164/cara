@@ -1,19 +1,24 @@
 import QtQuick
 
-Image {
+Item {
     id: root
-    readonly property string unfilled: "qrc:/icons/star.svg"
-    readonly property string filled: "qrc:/icons/star_fill.svg"
-    required property bool selected
-    required property int index
 
-    signal clicked(idx: int)
+    readonly property string unfilled: "star-unfilled.png"
+    property bool on
+    property int rating
+    property alias sourceSize: image.sourceSize
 
-    source: selected ? filled : unfilled
-    sourceSize: "24x24"
+    signal clicked
+
+    implicitWidth: image.implicitWidth
+    implicitHeight: image.implicitHeight
+
+    Image {
+        id: image
+        source: root.on ? "star.png" : unfilled
+    }
 
     TapHandler {
-        onTapped:
-            clicked(index);
+        onTapped: clicked()
     }
 }

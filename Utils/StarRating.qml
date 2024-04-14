@@ -6,40 +6,43 @@ Item {
     id: root
 
     property int selectedStars
+    property size starSize: "24x24"
+    readonly property alias starsCount: internal.starsCount
 
-    width: 24*5
-    height: 24
+    signal starClicked(index: int)
+
+    implicitWidth: 24*5
+    implicitHeight: 24
+    onSelectedStarsChanged: {
+        internal.starsCount = root.selectedStars;
+        console.log("selectedStarsChanged: "+root.selectedStars);
+        //root.updateStarSelection();
+    }
 
     RowLayout {
         anchors.fill: parent
 
         Repeater {
-            model: starModel
-            delegate: Star { onClicked: idx => selectedStars = idx + 1 }
+            model: 5//starModel
+            delegate: Star {
+                required property int index
+
+                sourceSize: root.starSize
+                rating: index
+                on: internal.starsCount >= index
+                onClicked: {
+                    internal.starsCount = rating;
+
+                    //internal.starsCount = newIdx;
+                    //root.updateStarSelection();
+                    root.starClicked(index);
+                }
+            }
         }
     }
 
-    ListModel {
-        id: starModel
-
-        ListElement { selected: false }
-
-        ListElement { selected: false }
-
-        ListElement { selected: false }
-
-        ListElement { selected: false }
-
-        ListElement { selected: false }
-    }
-
-    onSelectedStarsChanged: {
-        for (let i = 0; i < starModel.count; ++i) {
-            const star = starModel.get(i);
-            if (i <= selectedStars-1)
-                star.selected = true;
-            else
-                star.selected = false;
-        }
+    QtObject {
+        id: internal
+        property int starsCount: -1
     }
 }
