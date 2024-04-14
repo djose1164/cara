@@ -40,8 +40,6 @@ signals:
     void populated();
     void ordersNotFound();
 
-    void completed();
-
 private:
     DataLayer::IBillRepository *billRepository_;
     QNetworkReply *reply_;

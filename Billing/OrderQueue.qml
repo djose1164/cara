@@ -8,8 +8,41 @@ BackPage {
     id: root
     title: "Cola"
     btnLoader.sourceComponent: menuBtn
+
+    states: [
+        State {
+            when: internal.busy
+            PropertyChanges {
+                target: busyIndicator
+                running: true
+            }
+        },
+        State {
+            when: !internal.busy && listView.count === 0
+            PropertyChanges {
+                target: messageLbl
+                text: "No hay ninguna orden para mostrar."
+            }
+        }
+    ]
+
     Component.onCompleted: {
         fetchOrdersInQueue();
+    }
+
+    BusyIndicator {
+        id: busyIndicator
+        anchors.centerIn: parent
+        running: false
+    }
+
+    Label {
+        id: messageLbl
+        width: root.width * .8
+        visible: false
+        wrapMode: Label.Wrap
+        horizontalAlignment: Label.AlignHCenter
+        font.pointSize: 16
     }
 
     Component {
@@ -108,16 +141,11 @@ BackPage {
         }
     }
 
-    Timer {
-        id: timer
-        interval: 500
-        onTriggered: queueProxy.filterEnabled = false
-    }
-
     BillBusiness {
         id: billBusiness
         model: billModel
-        onOrdersNotFound: billListView.state = "noOrders"
+        onOrdersNotFound: internal.busy = false
+        onPopulated: internal.busy = false
     }
 
     BillModel { id: billModel }
@@ -125,6 +153,7 @@ BackPage {
     QtObject {
         id: internal
         property int queueStatus
+        property bool busy
     }
 
     function setFetchingState() {
@@ -132,6 +161,7 @@ BackPage {
     }
 
     function fetchOrdersInQueue() {
+        internal.busy = true;
         setFetchingState();
         billBusiness.fetchOrdersInQueue();
     }

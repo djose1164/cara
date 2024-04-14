@@ -1,14 +1,14 @@
 #ifndef BILLPROXYMODEL_H
 #define BILLPROXYMODEL_H
 
-#include "orderstatus.h"
+#include "abstractsortfiltermodel.h"
 #include "entity/payment.h"
-#include <QSortFilterProxyModel>
+#include "orderstatus.h"
 #include <QObject>
 #include <QQmlEngine>
 
 namespace ModelLayer {
-class BillProxyModel : public QSortFilterProxyModel
+class BillProxyModel : public Model::AbstractSortFilterModel
 {
     Q_OBJECT
     QML_ELEMENT
@@ -31,10 +31,10 @@ public:
     void setOrderFilter(const OrderStatus::Status &newOrderFilter);
 
     int count() const;
+
 signals:
     void statusFilterChanged();
 
-    // QSortFilterProxyModel interface
     void orderStatusChanged();
 
     void orderFilterChanged();

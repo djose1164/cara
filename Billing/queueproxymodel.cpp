@@ -4,15 +4,14 @@
 namespace Billing
 {
 QueueProxyModel::QueueProxyModel(QObject *parent)
-    : QSortFilterProxyModel{parent}
+    : AbstractSortFilterModel{parent}
     , status_{OrderQueueEnum::FilterBy::Any}
-    , filterEnabled_{true}
 {}
 
 bool QueueProxyModel::filterAcceptsRow(int source_row,
                                        const QModelIndex &source_parent) const
 {
-    if (!filterEnabled_)
+    if (!filterEnabled())
         return true;
 
     QModelIndex index{sourceModel()->index(source_row, 0, source_parent)};
@@ -32,22 +31,6 @@ bool QueueProxyModel::filterAcceptsRow(int source_row,
     default:
         return false;
     }
-}
-
-bool QueueProxyModel::filterEnabled() const
-{
-    return filterEnabled_;
-}
-
-void QueueProxyModel::setFilterEnabled(bool newFilterEnabled)
-{
-    if (filterEnabled_ == newFilterEnabled)
-        return;
-    filterEnabled_ = newFilterEnabled;
-    emit filterEnabledChanged();
-
-    if (filterEnabled_)
-        invalidateFilter();
 }
 
 OrderQueueEnum::FilterBy QueueProxyModel::status() const

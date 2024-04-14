@@ -124,8 +124,6 @@ ColumnLayout {
 
     Item { Layout.fillWidth: true }
 
-    LocalUserStore { id: userStore }
-
     QtObject {
         id: internal
 

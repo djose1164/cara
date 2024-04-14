@@ -11,7 +11,7 @@ import "qrc:/orders"
 BackPage {
     id: root
 
-    required property QueueProxyModel proxyModel
+    property AbstractSortFilterModel proxyModel
     required property var model
     readonly property bool taken: root.model.taken
     property int mode
@@ -39,8 +39,8 @@ BackPage {
 
     title: "Detalles de orden"
     btnLoader.sourceComponent: menuBtn
-    Component.onCompleted: root.proxyModel.filterEnabled = false
-    Component.onDestruction: root.proxyModel.filterEnabled = true
+    Component.onCompleted: if (root.proxyModel) root.proxyModel.filterEnabled = false
+    Component.onDestruction: if (root.proxyModel) root.proxyModel.filterEnabled = true
 
     ScrollView {
         anchors.fill: parent

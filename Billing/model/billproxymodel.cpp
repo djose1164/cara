@@ -5,7 +5,7 @@ namespace ModelLayer {
 using PaymentStatus = Entity::Payment::Status;
 
 BillProxyModel::BillProxyModel(QObject *parent)
-    : QSortFilterProxyModel{parent}
+    : AbstractSortFilterModel{parent}
     , paymentFilter_{PaymentStatus::Any}
     , orderFilter_{OrderStatus::Status::Any}
 {
@@ -14,6 +14,9 @@ BillProxyModel::BillProxyModel(QObject *parent)
 
 bool BillProxyModel::filterAcceptsRow(int source_row, const QModelIndex &source_parent) const
 {
+    if (!filterEnabled())
+        return true;
+
     using enum Model::BillModel::RoleNames;
     const auto statusIdx{sourceModel()->index(source_row, 0, source_parent)};
 
