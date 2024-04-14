@@ -7,7 +7,6 @@ import Salesperson
 import User
 import Billing
 import Utils
-import Utils
 import "qrc:/orders"
 
 
