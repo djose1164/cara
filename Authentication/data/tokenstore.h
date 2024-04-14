@@ -8,16 +8,17 @@ namespace Authentication::Data
 class TokenStore : public Store::IStore
 {
     Q_OBJECT
-    QML_ELEMENT
     Q_PROPERTY(QString refresh READ refresh NOTIFY refreshChanged FINAL)
     Q_PROPERTY(QString access READ access NOTIFY accessChanged FINAL)
+    QML_ELEMENT
+    QML_SINGLETON
 public:
     explicit TokenStore(QObject *parent = nullptr);
 
     // IStore interface
     bool save(const QByteArray &data) override;
 
-    QString refresh() const;
+    QString refresh() const override;
     void setRefresh(const QString &newRefresh);
 
     QString access() const;

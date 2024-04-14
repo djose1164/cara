@@ -20,6 +20,7 @@ public:
     virtual bool save(const QByteArray &data) = 0;
     virtual void restore() = 0;
     virtual void clear() = 0;
+    virtual QString refresh() const = 0;
 };
 }
 

@@ -6,9 +6,7 @@
 #include <QQmlEngine>
 #include <QSettings>
 #include <QTimer>
-
-
-namespace Authentication::Data { class TokenStore; }
+#include <istore.h>
 
 namespace Authentication::Business {
 class IRefreshable;
@@ -19,9 +17,8 @@ class TokenManager : public QObject
     Q_OBJECT
     QML_ELEMENT
     QML_SINGLETON
-
+    Q_PROPERTY(Store::IStore *store READ store WRITE setStore NOTIFY storeChanged FINAL)
     Q_PROPERTY(bool refreshing READ refreshing WRITE setRefreshing NOTIFY refreshingChanged FINAL)
-    Q_PROPERTY(QString accessToken READ accessToken NOTIFY accessTokenChanged FINAL)
 public:
     QString refreshToken() const;
     void setRefreshToken(const QString &newRefreshToken);
@@ -38,7 +35,8 @@ public:
     bool refreshing() const;
     void setRefreshing(bool newRefreshing);
 
-    QString accessToken() const;
+    Store::IStore *store() const;
+    void setStore(Store::IStore *newStore);
 
 public slots:
     void clear();
@@ -60,6 +58,8 @@ signals:
 
     void refreshingChanged();
 
+    void storeChanged();
+
 private:
     explicit TokenManager(QObject *parent = nullptr);
     void refreshAccessToken();
@@ -68,7 +68,7 @@ private:
     QTimer *timer_;
     QNetworkReply *reply_;
     QString errorString_;
-    Data::TokenStore *tokenStore_;
+    Store::IStore *store_;
 
     IRefreshable *refresher_;
     IToken *token_;
