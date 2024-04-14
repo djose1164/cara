@@ -27,6 +27,10 @@ signals:
 
     void errorOccurred(const QString &errorString);
 
+    void connectionRefused();
+
+    void upgradeRequired();
+
 private:
     QString path_;
 };
