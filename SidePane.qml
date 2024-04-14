@@ -7,20 +7,17 @@ import User
 Drawer {
     id: root
 
-    required property var user
-
     required property StackView stackView
-    readonly property bool isGuest: user.userType === UserEntity.Guest
+    readonly property bool isGuest: UserSettings.userTypeId === UserEntity.Guest
 
     width: {
-        if (parent.width >= 200 && parent.width <= 500)
-            return parent.width * .65;
-        if (parent.width > 500)
-            return parent.width * .4
+        if (implicitWidth >= 200 && implicitWidth <= 500)
+            return implicitWidth * .65;
+        if (implicitWidth > 500)
+            return implicitWidth * .4
         else
-            return parent.width * .8
+            return implicitWidth * .8
     }
-    height: parent.height
 
     ColumnLayout {
         id: menuLayout
