@@ -1,26 +1,28 @@
-#include <QApplication>
+#include <QGuiApplication>
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
+#include "config.h"
+
+using namespace Qt::StringLiterals;
 
 int main(int argc, char *argv[])
 {
-    qputenv("QT_LOGGING_RULES", "qt.qml.binding.removal.info=true");
+    qputenv("QT_LOGGING_RULES", "qt.qml.binding.removal.info=true"_ba);
 
-    QApplication app(argc, argv);
-    app.setOrganizationDomain("cara.com");
-    app.setOrganizationName("Cara");
-    app.setApplicationName("Cara");
-    app.setApplicationVersion("0.18.0");
+    QGuiApplication app(argc, argv);
+    app.setOrganizationDomain("cara.com"_L1);
+    app.setOrganizationName("Cara"_L1);
+    app.setApplicationName("Cara"_L1);
+    app.setApplicationVersion(getCaraVersion().toString());
 
     QQmlApplicationEngine engine;
-    const QUrl url(u"qrc:/qt/qml/Cara/Main.qml"_qs);
     QObject::connect(
         &engine,
         &QQmlApplicationEngine::objectCreationFailed,
         &app,
         []() { QCoreApplication::exit(-1); },
         Qt::QueuedConnection);
-    engine.load(url);
+    engine.loadFromModule("Cara"_L1, "Main"_L1);
 
     return app.exec();
 }
