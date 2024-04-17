@@ -162,9 +162,13 @@ Item {
         id: unpaidDelegate
         Item {
             implicitWidth: groupBox.width
+
             RowLayout {
                 anchors.fill: parent
-                PayButton {}
+
+                PayButton {
+                    visible: internal.canPay
+                }
 
                 Button {
                     text: "Abonar"
@@ -194,12 +198,15 @@ Item {
                     Layout.fillWidth: true
                 }
 
-                PayButton {}
+                PayButton {
+                    visible: internal.canPay
+                }
 
                 Button {
                     id: abonarBtn
                     width: parent.width
                     anchors.margins: 10
+                    visible: internal.canPay
                     text: "Abonar"
                     Layout.fillWidth: true
                     Layout.columnSpan: 2
@@ -254,5 +261,7 @@ Item {
     QtObject {
         id: internal
         readonly property int debt: payment_.amountToPay - payment_.paidAmount
+        readonly property bool canPay: UserSettings.userTypeId === UserEntity.Admin
+                                       || UserSettings.userTypeId === UserEntity.Salesperson
     }
 }
