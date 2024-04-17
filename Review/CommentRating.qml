@@ -72,10 +72,6 @@ ColumnLayout {
 
     implicitWidth: 300
     spacing: 10
-
-    onCustomerReviewChanged: {
-        console.log("review: "+JSON.stringify(root.customerReview, null, 2))
-    }
     Component.onCompleted: {
         ReviewController.fetchReviewByCustomerIdAndProductId(root.customerId,
                                                              root.productId);
@@ -135,7 +131,6 @@ ColumnLayout {
         id: postReview
         width: ApplicationWindow.window.width
         height: ApplicationWindow.window.height
-        onReviewTextChanged: console.log(reviewText)
         onPostClicked: newReview => {
             if (root.customerReview.reviewId > 0) {
                 newReview.reviewId = root.customerReview.reviewId;
@@ -178,7 +173,6 @@ ColumnLayout {
 
         function onCustomerDisableToReview() {
             root.visible = false;
-            console.log("onReviewDisabled");
         }
 
         function onReviewDeleted() {
@@ -187,7 +181,6 @@ ColumnLayout {
         }
 
         function onReviewEdited() {
-            console.log("Reseña actualizada.");
             root.ToolTip.show("Reseña actualizada", internal.timeout);
 
             const newReview = root.customerReview;
