@@ -101,7 +101,7 @@ Item {
             case Login.InvalidCredentials:
                 return "Usuario o contraseña incorrecta.";
             default:
-                return "Ha ocurrido un error. Favor de intentar mas tarder";
+                return "Ha ocurrido un error. Favor de intentar mas tarde.";
         }
         onButtonClicked: close()
     }
@@ -121,9 +121,6 @@ Item {
         stores: [
             LocalUserStore {
                 id: localUserStore
-            },
-            TokenStore {
-                id: myTokenStore
             }
         ]
         authenticator: auth
