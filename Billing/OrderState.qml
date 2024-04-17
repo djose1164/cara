@@ -49,7 +49,7 @@ ColumnLayout {
         id: orderStatusCB
         orderId: root.orderId
         statusId: status.statusId
-        acceptBtn.visible: root.model.taken
+        acceptBtn.visible: root.model.taken && !internal.userIsCustomer
         Layout.fillWidth: true
         onStatusUpdated: (newStatusId, newStatusString) => {
             root.model.status.statusId = newStatusId;
@@ -126,7 +126,7 @@ ColumnLayout {
 
     QtObject {
         id: internal
-
+        readonly property bool userIsCustomer: UserSettings.userTypeId  === UserEntity.Customer
         property int orderTotal
     }
 }

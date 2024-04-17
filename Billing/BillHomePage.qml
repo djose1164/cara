@@ -105,7 +105,10 @@ Page {
             orderId: model.orderId
             orderDate: model.date
             onClicked: {
-                stackView.push("qrc:/qt/qml/Billing/BillDetailsPage.qml", {model, proxyModel: billProxyModel});
+                stackView.push("qrc:/qt/qml/Billing/BillDetailsPage.qml", {
+                                   model, proxyModel: billProxyModel,
+                                   mode: BillDetailsPage.QueueOwnerMode
+                               });
             }
         }
     }

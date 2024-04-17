@@ -23,19 +23,9 @@ BackPage {
 
     enum Mode {
         NormalMode,
-        QueueMode
+        QueueMode,
+        QueueOwnerMode // The logged salesperson is the manager of customer.
     }
-
-    states: [
-        State {
-            when: root.mode === BillDetailsPage.QueueMode
-            PropertyChanges {
-                target: orderState
-                paymentDetails.orderId: root.model.orderId
-                paymentDetails.salespersonId: SalespersonSettings.salespersonId
-            }
-        }
-    ]
 
     title: "Detalles de orden"
     btnLoader.sourceComponent: menuBtn
@@ -65,6 +55,8 @@ BackPage {
             status: root.model.status
             model: root.model
             stackView: root.stackView
+            paymentDetails.orderId: root.model.orderId
+            paymentDetails.salespersonId: SalespersonSettings.salespersonId
         }
     }
 
@@ -76,6 +68,16 @@ BackPage {
     Component {
         id: menuBtn
         Row {
+            states: [
+                State {
+                    when: root.mode === BillDetailsPage.QueueOwnerMode
+                    PropertyChanges {
+                        target: takeAbandonAction
+                        enabled: false
+                    }
+                }
+            ]
+
             RoundButton {
                 visible: root.taken && root.mode === BillDetailsPage.QueueMode
                 enabled: internal.done
@@ -101,6 +103,7 @@ BackPage {
                     }
 
                     MenuItem {
+                        id: takeAbandonAction
                         height: visible ? implicitHeight : 0
                         visible: UserSettings.userTypeId !== UserEntity.Customer
                         text: root.taken ? "Abandonar orden" : "Tomar orden"
@@ -149,7 +152,7 @@ BackPage {
 
     MessageDialog {
         id: errorMessage
-        text: "¡Error!"
+        title: "¡Error!"
         buttons: MessageDialog.Ok
     }
 
@@ -201,9 +204,9 @@ BackPage {
         onErrorOccurred: {
             processingIndicator.close();
             try {
-                errorMessage.informativeText = JSON.parse(data).message;
+                errorMessage.text = JSON.parse(data).message;
             } catch (err) {
-                errorMessage.informativeText = data;
+                errorMessage.text = data;
             } finally {
                 errorMessage.open();
             }
