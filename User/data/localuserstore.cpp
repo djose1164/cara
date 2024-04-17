@@ -1,10 +1,16 @@
 #include "localuserstore.h"
 #include "userentity.h"
+#include "data/tokenstore.h"
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QSettings>
 
 using namespace Qt::StringLiterals;
+
+namespace
+{
+constexpr auto credentialsField{"Credentials"_L1};
+}
 
 namespace User::Data
 {
@@ -37,6 +43,8 @@ bool LocalUserStore::save(const QByteArray &data)
     settings.setValue("surname", contactData["surname"].toString());
     settings.setValue("email", contactData["email"].toString());
     settings.endGroup();
+
+    Authentication::Data::TokenStore{}.save(data);
 
     qDebug() << "LocalUserStore::save: saving... Done";
     return true;
@@ -86,7 +94,7 @@ void LocalUserStore::clearSettings() const
     settings.remove("User");
     settings.remove("Contact");
     settings.remove("Salesperson");
-    settings.remove("Credentials");
+    settings.remove(credentialsField);
 }
 
 Entity::UserEntity LocalUserStore::user() const
@@ -107,4 +115,11 @@ bool LocalUserStore::hasUser() const
     QSettings settings;
     return settings.contains("User/userId") && settings.contains("User/refreshToken");
 }
+
+QString LocalUserStore::refresh() const
+{
+    QSettings settings;
+    return settings.value(credentialsField).toString();
+}
+
 }

@@ -33,6 +33,8 @@ public:
     Authentication::Entity::Credential credentials() const;
     void setCredentials(const Authentication::Entity::Credential &newCredentials);
 
+    QString refresh() const override;
+
 public slots:
     void restore() override;
     bool save(const QByteArray &data) override;
