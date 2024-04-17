@@ -36,16 +36,16 @@ void HealthResource::readStatus()
 {
     qDebug() << "HealthResource::readStatus: issuing request...";
     auto req{api_->createRequest(path_ + versionLocator.arg(getCaraVersion().toString()))};
-    qDebug() << "HealthResource::readStatus: timeout: " << req.transferTimeout();
-
 
     manager_->get(req, this, [this](QRestReply &reply) {
         qDebug() << "HealthResource::readStatus: handling response";
         const auto optionalJson{reply.readJson()};
         if (!reply.isSuccess())
         {
-            qDebug() << "HealthResource::readStatus: errorCode: " << reply.error()
-                     << ": " << reply.errorString() << " " << reply.networkReply()->error();
+            const QString errorMessage{
+                reply.errorString().isEmpty() ? reply.networkReply()->errorString()
+                                              : reply.errorString()
+            };
 
             if (reply.error() == QNetworkReply::OperationCanceledError)
                 emit timeout();
@@ -59,7 +59,7 @@ void HealthResource::readStatus()
                     && optionalJson->object().contains(messageField))
                     emit errorOccurred((*optionalJson)[messageField].toString());
                 else
-                    emit errorOccurred(reply.errorString());
+                    emit errorOccurred(errorMessage);
             }
 
             return;
