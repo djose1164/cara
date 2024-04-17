@@ -3,9 +3,7 @@ import QtQuick.Controls
 import QtQuick.Dialogs
 import Utils
 
-
 // TODO: This component need to be reviewed
-
 Item {
     id: root
 
@@ -18,6 +16,21 @@ Item {
 
     width: 100
     height: 40
+
+    states: [
+        State {
+            name: "failed"
+            PropertyChanges {
+                target: msgDialog
+                title: "Error"
+                text: internal.errorText
+            }
+        }
+    ]
+
+    Component.onCompleted: {
+        internal.oldStatus = root.statusId;
+    }
 
     ComboBox {
         id: statusComboBox
@@ -44,11 +57,9 @@ Item {
             right: root.right
             rightMargin: 10
         }
-        visible: root.enabled
+        enabled: statusComboBox.currentValue !== internal.oldStatus
         text: "Aceptar"
         onClicked: {
-            if (statusComboBox.currentValue === statusId)
-                return;
             busyPopup.open();
             api.update(statusComboBox.currentValue)
         }
@@ -56,10 +67,13 @@ Item {
 
     MessageDialog {
         id: msgDialog
-        text: "El estatus de la orden ha sido actualizado"
-        informativeText: "Si el cliente cuenta con un usuario, el mismo sera notificado."
+        title: "Estatus actualizado con exito"
+        text: "Si el cliente cuenta con un usuario, el mismo sera notificado."
         buttons: MessageDialog.Ok
-        onButtonClicked: close()
+        onButtonClicked: {
+            root.state = "";
+            msgDialog.close();
+        }
     }
 
     Popup {
@@ -79,7 +93,15 @@ Item {
             busyPopup.close();
             msgDialog.open();
 
+            internal.oldStatus = statusComboBox.currentValue;
+            console.log(`${internal.oldStatus} = ${statusComboBox.currentValue}`)
             statusUpdated(statusComboBox.currentValue, statusComboBox.currentText);
+        }
+        onFailed: resp => {
+            internal.errorText = resp.message;
+            root.state = "failed";
+            busyPopup.close();
+            msgDialog.open();
         }
 
         endpoint: "/statuses"
@@ -87,5 +109,11 @@ Item {
         function update(newOrderStatus: int) {
             patch(`/${orderId}`, {"status_id": newOrderStatus});
         }
+    }
+
+    QtObject {
+        id: internal
+        property string errorText
+        property int oldStatus
     }
 }
