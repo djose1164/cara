@@ -31,6 +31,10 @@ Item {
                 target: leadingBtn
                 icon.source: "qrc:/left_arrow"
             }
+            PropertyChanges {
+                target: searchField
+                fieldFocus: true
+            }
         },
         State {
             name: "disabled"
