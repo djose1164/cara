@@ -53,6 +53,7 @@ Item {
                 enabled: paymentStatus.selectedStatus === Payment.Credited
                          && calculator.total > 0
                 inputMethodHints: Qt.ImhDigitsOnly
+                intValidator.bottom: 1
                 intValidator.top: calculator.total
                 Layout.alignment: Qt.AlignLeading
                 Layout.fillWidth: true

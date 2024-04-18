@@ -37,6 +37,8 @@ Item {
         NumberTextField {
             id: newPayment
             placeholderText: "Ingrese monto a abonar"
+            intValidator.bottom: 1
+            intValidator.top: payment_.amountToPay
             Layout.fillWidth: true
         }
 
@@ -46,7 +48,8 @@ Item {
             Layout.fillWidth: true
             onClicked: {
                 creditClicked(internal.amount);
-                payService.pay(internal.amount)
+                payService.pay(internal.amount);
+                newPayment.text = "";
             }
         }
     }
