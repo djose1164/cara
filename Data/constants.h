@@ -14,6 +14,7 @@ class Constants : public QObject
     Q_PROPERTY(QString base READ base WRITE setBase NOTIFY baseChanged)
     Q_PROPERTY(int appWidth READ appWidth CONSTANT)
     Q_PROPERTY(int appHeight READ appHeight CONSTANT)
+    Q_PROPERTY(QString uploadsPath READ uploadsPath CONSTANT FINAL)
 
 public:
     static QUrl getBase();
@@ -26,6 +27,9 @@ public:
     int appWidth() const;
     int appHeight() const;
 
+    void setUploadsPath();
+    QString uploadsPath() const;
+
 signals:
     void baseChanged();
     void ready();
@@ -35,6 +39,7 @@ private:
     const QString remoteTesting_;
     const QString production_;
     QString base_;
+    QString uploadsPath_;
 
     int appWidth_;
     int appHeight_;

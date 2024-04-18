@@ -1,5 +1,6 @@
 import QtQuick
 import QtQuick.Controls
+import QtQuick.Layouts
 import "qrc:/errors"
 import data
 import Authentication as Auth
@@ -8,6 +9,7 @@ import Utils
 import Salesperson
 import Cara
 import Customer
+import QtNetwork
 
 ApplicationWindow {
     id: app
@@ -44,7 +46,7 @@ ApplicationWindow {
             print("Replacing appStack with MainPage: "+JSON.stringify(user,null, 2));
             UserSettings.setEntity(user);
             SalespersonSettings.setEntity(spController.fromJsonObject(salesperson));
-            stackView.replace(mainPage, {user});
+            stackView.replace(mainPage);
         }
     }
 
@@ -65,7 +67,7 @@ ApplicationWindow {
                 const data = JSON.parse(resp);
                 if (data.status !== "OK") {
                     const message = "Nuestros servidores se encuentran actualmente bajo "
-                                    + "mantenimiento. Puedes ver como va en [Twiterr](https://twitter.com/carardoficial).";
+                                    + 'mantenimiento. Puedes ver como va en <a href="https://twitter.com/carardoficial">Twiterr</a>.';
                     appStack.replace("qrc:/errors/ErrorPage.qml", {message});
                 } else {
                     loginSetup();
@@ -73,7 +75,21 @@ ApplicationWindow {
             }
             onTimeout: {
                 print("Time out on health")
-                timeoutDialog.open()}
+                timeoutDialog.open();
+            }
+            onConnectionRefused: {
+                const message = "No se ha podido establecer una conexion con el servidor. "
+                              + "Intenta de nuevo mas tarde.";
+                appStack.replace("qrc:/errors/ErrorPage.qml", {message});
+            }
+            onUpgradeRequired: {
+                const message = "Necesitas actualizar Cara a la ultima version.";
+                appStack.replace("qrc:/errors/ErrorPage.qml", {message});
+            }
+            onErrorOccurred: message => {
+                console.log("onErrorOccurred: "+message);
+                appStack.replace("qrc:/errors/ErrorPage.qml", {message});
+            }
         }
     }
 
@@ -90,47 +106,36 @@ ApplicationWindow {
     Auth.Login {
         id: login
         authenticator: localAuthenticator
-        stores: [
-            Auth.TokenStore {
-                id: myTokenStore
-            }
-        ]
+        stores: Auth.TokenStore
         onAuthenticated: {
-            print("Login: authenticated");
-            const userId = UserSettings.userId;
-            if (userId === 0) {
-                stackView.replace(mainPage, {user: userController.create({})});
-                return;
-            }
-
-            userController.getUserById(userId);
+            print("Login: authenticated: ");
+            userController.getUserById(UserSettings.userId);
         }
     }
 
     Auth.LocalUserAuthentication {
         id: localAuthenticator
-        refreshToken: myTokenStore.refresh
+        refreshToken: Auth.TokenStore.refresh
         onTokenExpired: {
             print("Token is expired");
-            UserSettings.clear();
-            SalespersonSettings.clear();
+            clearSavedSettings();
             stackView.replace(mainPage, {user: userController.create({})});
         }
     }
 
     function setup() {
+        Auth.TokenManager.store = Auth.TokenStore;
         LoginManager.session = UserSession.session;
-        myTokenStore.restore();
+        Auth.TokenStore.restore();
         healthResource.readStatus();
     }
 
     function loginSetup() {
-        if (myTokenStore.refresh) {
-            print("Previous login found.")
-            print("Authentication refresh token.")
+        if (Auth.TokenStore.refresh && UserSettings.userId > 0) {
             login.authenticate();
         } else {
-            stackView.replace(mainPage, {user: userController.create({})});
+            clearSavedSettings();
+            stackView.replaceCurrentItem(mainPage);
         }
     }
 
@@ -150,5 +155,10 @@ ApplicationWindow {
                 return;
             }
         }
+    }
+
+    function clearSavedSettings() {
+        UserSettings.clear();
+        SalespersonSettings.clear();
     }
 }
