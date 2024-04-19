@@ -1,6 +1,6 @@
 import QtQuick
 import QtQuick.Controls
-import User
+import Cara.User
 
 Item {
     id: root
@@ -12,7 +12,7 @@ Item {
                 return "El carrito esta vacio, intenta agregar algunos productos.";
             else
                 return "Necesitas inicar sesion para agregar productos a tu carrito."
-                        + '<br><br><a href="qrc:/qt/qml/Authentication/LoginPage.qml">Iniciar sesion</a>';
+                        + '<br><br><a href="qrc:/qt/qml/Cara/Authentication/LoginPage.qml">Iniciar sesion</a>';
         }
         font.pointSize: 16
         horizontalAlignment: Label.AlignHCenter

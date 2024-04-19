@@ -1,12 +1,12 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
-import User
-import Salesperson
-import Utils
+import Cara.User
+import Cara.Salesperson
+import Cara.Utils
 import "qrc:/provider"
-import Billing
-import Product
+import Cara.Billing
+import Cara.Product
 
 Drawer {
     id: root

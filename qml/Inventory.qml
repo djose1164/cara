@@ -2,9 +2,9 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 import QtQuick.Templates as T
-import Utils
-import Product
-import data
+import Cara.Utils
+import Cara.Product
+import Cara.Data
 
 Page {
     id: root
@@ -51,7 +51,7 @@ Page {
                 onClicked: {
                     item.product.image_url = thumbnail.source;
                     stackView.push(
-                        "qrc:/qt/qml/Inventory/InventoryForm.qml",
+                        "qrc:/qt/qml/Cara/Inventory/InventoryForm.qml",
                         {
                             inventoryId: id,
                             product,

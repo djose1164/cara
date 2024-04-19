@@ -12,19 +12,7 @@ find_package(Qt6 6.7 REQUIRED
 qt_standard_project_setup(REQUIRES 6.7)
 qt_policy(SET QTP0001 NEW)
 
-add_subdirectory(Data)
-add_subdirectory(Shopping)
-add_subdirectory(Inventory)
-add_subdirectory(Salesperson)
-add_subdirectory(User)
-add_subdirectory(Authentication)
-add_subdirectory(Utils)
-add_subdirectory(Billing)
-add_subdirectory(Customer)
-add_subdirectory(Product)
-add_subdirectory(Statistics)
-add_subdirectory(Store)
-add_subdirectory(Review)
+add_subdirectory(Cara)
 
 if(NOT CMAKE_BUILD_TYPE STREQUAL "Release")
     #add_subdirectory(tests)
@@ -32,64 +20,31 @@ endif()
 
 if (WIN32)
     qt_add_executable(Cara
-        main.cpp cara.rc
+        main.cpp
+        cara.rc
+        assets/res.qrc
+        qml/qml.qrc
     )
 else()
     qt_add_executable(Cara
         main.cpp
+        assets/res.qrc
+        qml/qml.qrc
     )
 endif()
 
-# Create CaraLib target
-add_library(CaraLib STATIC)
-
-qt_add_qml_module(Cara
-    URI Cara
-    VERSION 1.0
-    QML_FILES
-        Main.qml
-        MainFooter.qml
-        MainPage.qml
-        SidePane.qml
-        SettingsPage.qml
-        ContactUs.qml
-    RESOURCES
-        assets/res.qrc
-        qml/qml.qrc
-        twitter.svg
-        mail.svg
-        logout.svg
-        wifi-off.svg
-    SOURCES
-        healthresource.h healthresource.cpp
-        config.h.in
-)
 
 set(CARA_VERSION ${CMAKE_PROJECT_VERSION})
-configure_file(config.h.in ${CMAKE_CURRENT_SOURCE_DIR}/config.h @ONLY)
 
-target_link_libraries(CaraLib PUBLIC
+target_link_libraries(${PROJECT_NAME} PRIVATE
     Qt6::Qml
     Qt6::Quick
     Qt6::Core
     Qt6::Network
     Qt6::Svg
     Qt6::Test
-    Dataplugin
-    ShoppingLibplugin
-    InventoryLibplugin
-    salespersonplugin
-    UserLibplugin
-    AuthenticationLibplugin
-    UtilsLibplugin
-    BillingLibplugin
-    CustomerLibplugin
-    ProductLibplugin
-    StatisticsLibplugin
-    ReviewLibplugin
+    CaraLibplugin
 )
-
-target_link_libraries(Cara PRIVATE CaraLib)
 
 qt_add_resources(Cara "configuration"
     PREFIX "/"

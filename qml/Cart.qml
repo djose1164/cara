@@ -1,10 +1,10 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
-import Utils
-import Shopping
-import Customer
-import User
+import Cara.Utils
+import Cara.Shopping
+import Cara.Customer
+import Cara.User
 
 Page {
     id: root

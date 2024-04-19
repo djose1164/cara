@@ -1,5 +1,5 @@
 import QtQuick
-import User
+import Cara.User
 
 Home {
     id: root

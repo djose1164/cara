@@ -2,9 +2,9 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 import QtQuick.Templates as T
-import Utils
-import Product
-import Billing
+import Cara.Utils
+import Cara.Product
+import Cara.Billing
 
 Page {
     id: root

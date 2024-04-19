@@ -1,7 +1,7 @@
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
-#include "config.h"
+#include "cara/config.h"
 
 using namespace Qt::StringLiterals;
 

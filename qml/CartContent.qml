@@ -1,9 +1,9 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
-import Product
-import Shopping
-import data
+import Cara.Product
+import Cara.Shopping
+import Cara.Data
 
 Item {
     id: root

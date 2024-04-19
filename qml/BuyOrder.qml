@@ -3,10 +3,10 @@ import QtQuick.Controls
 import QtQuick.Layouts
 import QtQuick.Dialogs
 import QtQuick.Templates as T
-import Salesperson
-import User
-import Billing
-import Utils
+import Cara.Salesperson
+import Cara.User
+import Cara.Billing
+import Cara.Utils
 import "qrc:/orders"
 
 
