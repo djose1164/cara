@@ -14,7 +14,7 @@ Refresher::Refresher(QObject *parent)
     , reply_{nullptr}
     , refreshToken_{}
     , timer_{new QTimer(this)}
-    , api_{Utils::NetworkRequestSingleton::instance().api()}
+    , api_{NetworkRequestSingleton::instance().api()}
 {
 }
 

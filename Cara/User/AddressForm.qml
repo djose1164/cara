@@ -93,7 +93,7 @@ GroupBox {
         internal.oldMunicipalityId = address.municipality_id;
         internal.oldSectorId = address.sector_id;
         internal.oldStreet = address.street;
-        internal.oldHouseNumber = house_num.text;
+        internal.oldHouseNumber = parseInt(house_num.text);
     }
 
     function resetSame() {

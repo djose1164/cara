@@ -14,7 +14,7 @@ RestService::RestService(QObject *parent)
     , resources_{}
     , accessManager_{QNAMSingleton::instance().qnam()}
     , manager_{std::make_shared<QRestAccessManager>(accessManager_)}
-    , api_{NetworkRequestSingleton::instance().api()}
+    , api_{Authentication::NetworkRequestSingleton::instance().api()}
 {
 }
 

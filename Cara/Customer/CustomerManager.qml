@@ -1,7 +1,7 @@
 pragma Singleton
 import QtQuick
 import Cara.Customer
-import Cara.Utils
+import Cara
 
 Item {
     id: root

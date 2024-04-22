@@ -19,6 +19,7 @@ qt_add_qml_module(AuthenticationLib
         entity/credential.h entity/credential.cpp
         login.h login.cpp
         service/localuserauthentication.h service/localuserauthentication.cpp
+        networkrequestsingleton.h networkrequestsingleton.cpp
     DEPENDENCIES
         Utils
     IMPORTS

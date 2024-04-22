@@ -41,7 +41,7 @@ Page {
 
                     ListElement {
                         text: "Ver clientes"
-                        source: "qrc:qt/qml/Customer/Customers.qml"
+                        source: "qrc:qt/qml/Cara/Customer/Customers.qml"
                     }
 
                     ListElement {

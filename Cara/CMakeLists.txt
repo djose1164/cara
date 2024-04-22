@@ -21,8 +21,9 @@ qt_add_qml_module(CaraLib
         logout.svg
         wifi-off.svg
     SOURCES
-        healthresource.h healthresource.cpp
         config.h.in
+        healthresource.h healthresource.cpp
+        restservice.h restservice.cpp
     DEPENDENCIES
         Authentication
         Billing
@@ -57,6 +58,8 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
     salespersonplugin
     StoreLibplugin
 )
+
+target_include_directories(CaraLib PRIVATE utils authentication)
 
 add_subdirectory(Data)
 add_subdirectory(Shopping)

@@ -120,7 +120,7 @@ Home {
 
         ListElement {
             source: "qrc:/icons/customers.svg"
-            path: "qrc:qt/qml/Customer/Customers.qml"
+            path: "qrc:qt/qml/Cara/Customer/Customers.qml"
             name: "Clientes"
             showCustomers: true
             admin: false

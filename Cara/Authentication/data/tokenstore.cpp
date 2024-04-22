@@ -45,7 +45,7 @@ bool TokenStore::save(const QByteArray &data)
 
     // TODO: I think this should be deleted.
     Q_ASSERT(!access_.isEmpty());
-    const auto api{Utils::NetworkRequestSingleton::instance().api()};
+    const auto api{NetworkRequestSingleton::instance().api()};
     api->setBearerToken(access_.toUtf8());
     return true;
 }

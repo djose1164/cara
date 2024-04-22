@@ -23,7 +23,7 @@ UserRepositoryImpl::UserRepositoryImpl(QObject *parent)
     , manager_{new QNetworkAccessManager(this)}
     , reply_{}
     , path_{}
-    , api_{Utils::NetworkRequestSingleton::instance().api()}
+    , api_{Authentication::NetworkRequestSingleton::instance().api()}
 {
 
 }

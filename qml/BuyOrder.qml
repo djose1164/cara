@@ -6,7 +6,7 @@ import QtQuick.Templates as T
 import Cara.Salesperson
 import Cara.User
 import Cara.Billing
-import Cara.Utils
+import Cara
 import "qrc:/orders"
 
 

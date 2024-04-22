@@ -16,7 +16,7 @@ RestUserAuthentication::RestUserAuthentication(QObject *parent)
     , data_{}
     , manager_{new QNetworkAccessManager(this)}
     , reply_{}
-    , api_{Utils::NetworkRequestSingleton::instance().api()}
+    , api_{NetworkRequestSingleton::instance().api()}
 {
 
 }

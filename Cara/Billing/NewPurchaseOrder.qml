@@ -81,6 +81,7 @@ Page {
                 id: dateRedirectLbl
                 title: datePicker.selectedDate.toLocaleDateString()
                 font.pointSize: 14
+                Layout.fillWidth: true
                 onClicked: datePicker.open()
             }
 

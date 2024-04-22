@@ -3,7 +3,7 @@ import QtQuick.Controls
 import QtQuick.Layouts
 import QtQuick.Dialogs
 import Cara.Utils
-import Review
+import Cara.Review
 
 Drawer {
     id: root

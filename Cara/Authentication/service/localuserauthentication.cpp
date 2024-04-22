@@ -29,7 +29,7 @@ void LocalUserAuthentication::authenticate()
         return;
     }
 
-    const auto api{Utils::NetworkRequestSingleton::instance().api()};
+    const auto api{NetworkRequestSingleton::instance().api()};
 
     QNetworkRequest request{api->createRequest("/users/refresh/"_L1)};
     request.setRawHeader("Authorization"_ba, "Bearer "_ba + refreshToken_.toUtf8());

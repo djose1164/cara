@@ -1,6 +1,6 @@
 #include "billrepository.h"
 #include <QNetworkReply>
-#include "Utils/networkrequestsingleton.h"
+#include "networkrequestsingleton.h"
 #include "notimplementated.h"
 #include "payment.h"
 
@@ -11,7 +11,7 @@ BillRepository::BillRepository(QObject *parent)
     : QObject{parent}
     , manager_{new QNetworkAccessManager(this)}
     , reply_{nullptr}
-    , api_{Utils::NetworkRequestSingleton::instance().api()}
+    , api_{Authentication::NetworkRequestSingleton::instance().api()}
 {
 
 }

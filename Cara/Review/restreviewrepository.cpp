@@ -24,7 +24,7 @@ namespace Review
 {
 RestReviewRepository::RestReviewRepository(QObject *parent)
     : ReviewRepository{parent}
-    , api_{Utils::NetworkRequestSingleton::instance().api()}
+    , api_{Authentication::NetworkRequestSingleton::instance().api()}
     , manager_{new QRestAccessManager{QNAMSingleton::instance().qnam(), this}}
 {
 }

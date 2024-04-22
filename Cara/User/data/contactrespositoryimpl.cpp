@@ -14,7 +14,7 @@ namespace Data {
 ContactRespositoryImpl::ContactRespositoryImpl(QObject *parent)
     : QObject{parent}
     , manager_{new QRestAccessManager{QNAMSingleton::instance().qnam()}}
-    , api_{Utils::NetworkRequestSingleton::instance().api()}
+    , api_{Authentication::NetworkRequestSingleton::instance().api()}
 {
 
 }

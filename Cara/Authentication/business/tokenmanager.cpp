@@ -22,7 +22,7 @@ TokenManager::TokenManager(QObject *parent)
     , errorString_{}
     , store_{}
     , refresher_{new Data::Refresher(this)}
-    , token_{&Utils::NetworkRequestSingleton::instance()}
+    , token_{&NetworkRequestSingleton::instance()}
     , refreshing_{true}
 {
     timer_->setInterval(ACCESS_TOKEN_LIFESPAN);

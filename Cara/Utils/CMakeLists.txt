@@ -10,10 +10,8 @@ qt_add_qml_module(UtilsLib
         fileutils.h fileutils.cpp
         httpstatuscodes.h
         internetstatus.h internetstatus.cpp
-        networkrequestsingleton.h networkrequestsingleton.cpp
         notimplementated.h
         qnamsingleton.h qnamsingleton.cpp
-        restservice.h restservice.cpp
         shareplataform.h shareplataform.cpp
         shareutils.h shareutils.cpp
         utils.h utils.cpp

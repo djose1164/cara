@@ -118,7 +118,7 @@ ApplicationWindow {
         onTokenExpired: {
             print("Token is expired");
             clearSavedSettings();
-            stackView.replace(mainPage, {user: userController.create({})});
+            stackView.replaceCurrentItem(mainPage);
         }
     }
 

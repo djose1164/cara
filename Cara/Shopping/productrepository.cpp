@@ -21,7 +21,7 @@ ProductRepository::ProductRepository(QObject *parent)
     , multiPart_{nullptr}
     , path_{"products"_L1}
     , errorString_{}
-    , api_{Utils::NetworkRequestSingleton::instance().api()}
+    , api_{Authentication::NetworkRequestSingleton::instance().api()}
 {
 }
 

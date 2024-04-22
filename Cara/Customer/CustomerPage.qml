@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
+import Cara
 import Cara.Utils
 import Cara.Customer
 import Cara.Billing
@@ -48,6 +49,7 @@ BackPage {
 
         RedirectLabel {
             title: "Ver informacion personal"
+            Layout.fillWidth: true
             onClicked: {
                 customerEdit.customerId = customerId;
                 customerEdit.open();
@@ -56,6 +58,7 @@ BackPage {
 
         RedirectLabel {
             title: "Ver todas las ordenes"
+            Layout.fillWidth: true
             onClicked: {
                 stackView.pushItem("qrc:/qt/qml/Cara/Billing/BillHomePage.qml", {customerId});
             }

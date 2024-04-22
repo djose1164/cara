@@ -261,8 +261,6 @@ void Salesperson::setCreditConsumed(int newCreditConsumed)
 
 Salesperson Salesperson::fromMap(const QVariantMap &data)
 {
-    qDebug() << data;
-
     Salesperson sp{};
 
     sp.setForename(data.value("forename").toString());
@@ -284,8 +282,6 @@ Salesperson Salesperson::fromJson(const QByteArray &data)
     const auto spObj{QJsonDocument::fromJson(data).object()};
     Salesperson sp{};
 
-    qDebug() << data;
-
     sp.setSalespersonId(spObj.value("id").toInt());
     sp.setCreditLimit(spObj.value("credit_limit").toInt());
     sp.setCreditAvailable(spObj.value("credit_available").toInt());
@@ -300,7 +296,6 @@ Salesperson Salesperson::fromJson(const QByteArray &data)
     const auto warehouse{spObj["warehouse"].toObject()};
     sp.setWarehouseAddress(warehouse["address_name"].toString());
 
-    Q_ASSERT(sp.organizationId_ > 0);
     return sp;
 }
 }

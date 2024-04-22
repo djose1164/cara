@@ -1,10 +1,11 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Templates as T
+import Cara
+import Cara.Customer
 import Cara.Salesperson
 import Cara.User
 import Cara.Utils
-import Cara.Customer
 
 ListViewPage {
     id: root
@@ -104,6 +105,6 @@ ListViewPage {
         icon.source: "qrc:/icons/person_add.svg"
         icon.width: 30
         icon.height: 30
-        onClicked: stackView.push("qrc:qt/qml/Customer/CustomerForm.qml")
+        onClicked: stackView.push("qrc:qt/qml/Cara/Customer/CustomerForm.qml")
     }
 }

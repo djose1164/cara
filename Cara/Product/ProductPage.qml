@@ -3,10 +3,11 @@ import QtQuick.Controls
 import QtQuick.Layouts
 import QtQuick.Dialogs
 import QtQuick.Templates as T
+import Cara
 import Cara.Utils
 import Cara.Shopping
 import Cara.User
-import Review
+import Cara.Review
 import "qrc:/inventory"
 
 Page {

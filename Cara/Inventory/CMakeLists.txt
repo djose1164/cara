@@ -19,4 +19,4 @@ qt_add_qml_module(InventoryLib
 )
 
 target_include_directories(InventoryLib
-    PRIVATE model ../product ../utils)
+    PRIVATE model ../product ../authentication)

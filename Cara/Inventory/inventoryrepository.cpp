@@ -20,7 +20,7 @@ InventoryRepository::InventoryRepository(QObject *parent)
     , manager_{new QNetworkAccessManager(this)}
     , reply_{}
     , path_{"inventory/"_L1}
-    , api_{Utils::NetworkRequestSingleton::instance().api()}
+    , api_{Authentication::NetworkRequestSingleton::instance().api()}
 {
 
 }

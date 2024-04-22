@@ -4,7 +4,7 @@ import QtQuick.Controls
 import QtQuick.Layouts
 import Cara.Utils
 import Cara.User
-import Review
+import Cara.Review
 
 /**
   * The user will be able to write a review witha rating, edit it & delete it.

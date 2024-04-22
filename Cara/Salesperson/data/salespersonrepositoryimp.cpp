@@ -20,7 +20,7 @@ SalespersonRepositoryImpl::SalespersonRepositoryImpl(QObject *parent)
     , reply_{nullptr}
     , path_{"salespersons"_L1}
     , buffer_{}
-    , api_{Utils::NetworkRequestSingleton::instance().api()}
+    , api_{Authentication::NetworkRequestSingleton::instance().api()}
 {
 }
 

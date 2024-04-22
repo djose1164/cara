@@ -88,7 +88,7 @@ void Login::componentComplete()
     connect(authenticator_, &Authentication::succeeded,
             this, &Login::userAuthenticated);
     connect(authenticator_, &Business::Authentication::tokenReady, this, [&](const QString &token) {
-        Utils::NetworkRequestSingleton::instance().api()->setBearerToken(token.toUtf8());
+        NetworkRequestSingleton::instance().api()->setBearerToken(token.toUtf8());
     });
 }
 }

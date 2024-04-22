@@ -28,7 +28,7 @@ void RestOrderRepository::setErrorString(const QString &newErrorString)
 
 void RestOrderRepository::add(const QVariantMap &payload)
 {
-    const auto api{Utils::NetworkRequestSingleton::instance().api()};
+    const auto api{Authentication::NetworkRequestSingleton::instance().api()};
     const auto req{api->createRequest("orders/"_L1)};
 
     const auto jsonPayload{QJsonDocument::fromVariant(payload)};

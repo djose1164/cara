@@ -9,7 +9,7 @@ static constexpr auto path{"shopping"_L1};
 namespace Shopping {
 CartController::CartController(QObject *parent)
     : QObject{parent}
-    , api_{Utils::NetworkRequestSingleton::instance().api()}
+    , api_{Authentication::NetworkRequestSingleton::instance().api()}
     , manager_{std::make_shared<QRestAccessManager>(new QNetworkAccessManager{this})}
     , order_{new EntityLayer::OrderEntity(this)}
     , model_{new Model::OrderModel(this)}

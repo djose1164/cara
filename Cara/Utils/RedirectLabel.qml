@@ -1,23 +1,15 @@
 import QtQuick
 import QtQuick.Controls
-import QtQuick.Layouts
 
-Item {
+ItemDelegate {
     id: root
 
     property alias title: customerLbl.text
-    property alias font: customerLbl.font
 
-    signal clicked
-
-    implicitWidth: customerLbl.implicitWidth + icon.implicitWidth
-    implicitHeight: Math.max(customerLbl.implicitHeight, icon.implicitHeight)
-
-    RowLayout {
-        anchors.fill: parent
-
+    contentItem: Item {
         Label {
             id: customerLbl
+            anchors.verticalCenter: parent.verticalCenter
             wrapMode: Label.Wrap
             elide: Label.ElideRight
             font.pointSize: 12
@@ -25,13 +17,10 @@ Item {
 
         IconImage {
             id: icon
+            anchors.verticalCenter: parent.verticalCenter
+            anchors.right: parent.right
             source: "qrc:/icons/arrow_forward.svg"
             sourceSize: "24x24"
-            Layout.alignment: Qt.AlignRight
-        }
-
-        TapHandler {
-            onTapped: clicked()
         }
     }
 }
