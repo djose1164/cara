@@ -4,7 +4,8 @@ project(CaraLib LANGUAGES CXX)
 set(CMAKE_AUTORCC ON)
 set(CMAKE_AUTOMOC ON)
 
-add_library(${PROJECT_NAME} STATIC)
+add_library(${PROJECT_NAME} STATIC
+    apienvironment.cpp)
 qt_add_qml_module(CaraLib
     URI Cara
     VERSION 1.0
@@ -24,6 +25,7 @@ qt_add_qml_module(CaraLib
         config.h.in
         healthresource.h healthresource.cpp
         restservice.h restservice.cpp
+        apienvironment.h
     DEPENDENCIES
         Authentication
         Billing
@@ -59,7 +61,7 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
     StoreLibplugin
 )
 
-target_include_directories(CaraLib PRIVATE utils authentication)
+target_include_directories(CaraLib PRIVATE utils authentication data)
 
 add_subdirectory(Data)
 add_subdirectory(Shopping)

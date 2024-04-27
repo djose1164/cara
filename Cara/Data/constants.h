@@ -11,15 +11,15 @@ class Constants : public QObject
     QML_ELEMENT
     QML_SINGLETON
 
-    Q_PROPERTY(QString base READ base WRITE setBase NOTIFY baseChanged)
-    Q_PROPERTY(int appWidth READ appWidth CONSTANT)
-    Q_PROPERTY(int appHeight READ appHeight CONSTANT)
+    Q_PROPERTY(QString base READ base WRITE setBase NOTIFY baseChanged FINAL)
+    Q_PROPERTY(int appWidth READ appWidth CONSTANT FINAL)
+    Q_PROPERTY(int appHeight READ appHeight CONSTANT FINAL)
     Q_PROPERTY(QString uploadsPath READ uploadsPath CONSTANT FINAL)
 
 public:
     static QUrl getBase();
 
-    Constants();
+    Constants(QObject *parent = nullptr);
 
     void setBase(const QString &base);
     QString base() const;
