@@ -9,8 +9,6 @@ Item {
 
     required property CustomerModel customerModel
 
-    property SearchHeaderItem header
-
     property alias searchText: customerProxy.text
 
     signal customerSelected(customer: var)
@@ -21,8 +19,8 @@ Item {
             name: "searchDisabled"
             when: CustomerManager.state === "fetching"
             PropertyChanges {
-                target: headerItem
-                state: "disabled"
+                target: root
+                enabled: false
             }
         },
         State {

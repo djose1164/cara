@@ -10,28 +10,38 @@ Drawer {
 
     signal customerSelected(customer: var)
 
-    interactive: false
-
-    Component.onCompleted: {
-        headerItem.closeClicked.connect(root.close);
+    enum View {
+        TitleView,
+        SearchView
     }
 
-    SearchHeaderItem {
-        id: headerItem
-        anchors.top: parent.top
-        width: root.width
-        height: 50
+    interactive: false
+
+    SelectorHeaderItem {
+        id: searchHeader
+        anchors {
+            top: parent.top
+            left: parent.left
+            right: parent.right
+        }
+
         title: "Seleccionar cliente"
+        onCloseClicked: root.close()
     }
 
     CustomerViewItem {
         id: customerView
-        width: root.width
-        anchors.top: headerItem.bottom
-        anchors.bottom: parent.bottom
-        searchText: headerItem.displayText
+        anchors {
+            top: searchHeader.bottom
+            topMargin: 20
+            bottom: parent.bottom
+            left: parent.left
+            right: parent.right
+        }
+
+        searchText: searchHeader.searchText
         customerModel: CustomerManager.model
-        header: headerItem
+        Layout.fillHeight: true
         onCustomerSelected: customer => {
             root.customerSelected(customer);
             root.close();

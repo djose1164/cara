@@ -12,13 +12,12 @@ Item {
     signal changeCustomerClicked
     signal customerClicked(customer: var)
 
-    implicitHeight: 125
+    implicitHeight: 150
 
     RedirectGroupBox {
         id: groupBox
         anchors.fill: parent
         title: "Cliente seleccionado"
-        redirectText: "Editar cliente"
         onRedirectClicked: root.changeCustomerClicked()
 
         CustomerCard {

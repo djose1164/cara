@@ -22,10 +22,10 @@ Item {
         id: stackLayout
         anchors.fill: parent
         currentIndex: internal.hasSelection ? ChooseCustomer.Selected : ChooseCustomer.Empty
+
         RedirectLabel {
             id: customerRedirect
             title: "Elegir cliente"
-            font.pointSize: 14
             onClicked: customerSelector.open()
         }
 

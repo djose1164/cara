@@ -1,5 +1,6 @@
 import QtQuick
 import QtQuick.Controls
+import QtQuick.Layouts
 import QtQuick.Templates as T
 import Cara
 import Cara.Customer
@@ -15,34 +16,37 @@ ListViewPage {
     readonly property int fontSize: 12
     readonly property T.StackView stackView: StackView.view
 
+    enum StackLayoutView {
+        TitleView,
+        SearchView
+    }
+
     title: "Clientes"
-    header: TitleHeader {
-        title: root.title
-        btnLoader.sourceComponent: SearchButton {
-            onClicked: root.state = "searching";
+    header: StackLayout {
+        id: stackLayout
+
+        TitleHeader {
+            title: root.title
+            btnLoader.sourceComponent: SearchButton {
+                enabled: root.state !== "fetching"
+                onClicked: stackLayout.currentIndex = Customers.SearchView
+            }
+            onBackClicked: stackView.popCurrentItem()
         }
-        onBackClicked: stackView.pop()
+
+        Rectangle {
+            color: Material.backgroundColor
+
+            SearchItem {
+                id: searchItem
+                anchors.fill: parent
+                onSearchClosed: stackLayout.currentIndex = Customers.TitleView
+            }
+        }
     }
     noDataMessage: UserSettings.userTypeId === UserEntity.Admin
                    ? "Este vendedor no cuenta con ningun cliente."
                    : "La lista de clientes esta vacia. Inteta agregar uno nuevo."
-
-    states: State {
-        name: "searching"
-        PropertyChanges {
-            target: root
-            header: null
-        }
-        PropertyChanges {
-            target: listView
-            anchors.topMargin: searchHeader.height * 1.05
-        }
-        PropertyChanges {
-            target: searchHeader
-            visible: true
-            state: "searching"
-        }
-    }
 
     listView {
         anchors.topMargin: 5
@@ -65,19 +69,10 @@ ListViewPage {
         root.state = "fetching";
     }
 
-    SearchHeaderItem {
-        id: searchHeader
-        anchors.top: parent.top
-        width: root.width
-        visible: false
-        title: "Nombre"
-        onSearchClosed: root.state = ""
-    }
-
     CustomerProxyModel {
         id: proxyModel
         sourceModel: customerModel
-        text: searchHeader.displayText
+        text: searchItem.displayText
     }
 
     CustomerModel {
