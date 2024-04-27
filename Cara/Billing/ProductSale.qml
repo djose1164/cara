@@ -28,7 +28,7 @@ Item {
             if (currentIndex === ProductSale.Empty)
                 return productRedirect.implicitHeight;
             const count = selectedProductsView.model.count;
-            const itemHeight = 160;
+            const itemHeight = 180;
             if (count === 1)
                 return itemHeight;
             else if (count === 2)
@@ -40,7 +40,6 @@ Item {
         RedirectLabel {
             id: productRedirect
             title: "Agregar producto(s)"
-            font.pointSize: 14
             Layout.maximumHeight: implicitHeight
             onClicked: productSelector.open()
         }

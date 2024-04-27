@@ -47,14 +47,15 @@ Page {
     ]
 
     ScrollView {
+        id: scrollView
         anchors.fill: parent
         contentWidth: availableWidth
         contentHeight: columnLayout.implicitHeight
 
         ColumnLayout {
             id: columnLayout
-            width: root.width * .95
-            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.fill: parent
+            anchors.margins: Math.max(scrollView.effectiveScrollBarWidth, 10)
             spacing: 30
 
             ChooseCustomer {
@@ -63,7 +64,6 @@ Page {
                 onSelectedCustomerClicked: c => stackView.pushItem("qrc:/qt/qml/Cara/Customer/CustomerPage.qml",
                                                                    {customerId: c.customerId,
                                                                     model: c})
-                Layout.topMargin: columnLayout.spacing
             }
 
             ProductSale {
@@ -92,6 +92,8 @@ Page {
                 Layout.bottomMargin: 10
                 onClicked: acceptHandle()
             }
+
+            Item {}
         }
     }
 
@@ -125,6 +127,7 @@ Page {
         }
         onErrorOccurred: {
             errorDialog(errorString);
+            root.state = "";
         }
     }
 

@@ -1,16 +1,53 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
+import QtQuick.Templates as T
 import Cara.Utils
 import Cara.Billing
 
-BackPage {
+Page {
     id: root
+
+    readonly property T.StackView stackView: StackView.view
+
+    enum View {
+        TitleView,
+        SearchView
+    }
+
     title: "Cola"
-    btnLoader.sourceComponent: menuBtn
+    header: StackLayout {
+        id: stackLayout
+
+        TitleHeader {
+            id: titleHeader
+            title: root.title
+            btnLoader.sourceComponent: menuBtn
+            onBackClicked: root.stackView.popCurrentItem()
+        }
+
+        Rectangle {
+            color: Material.backgroundColor
+
+            RowLayout {
+                anchors.fill: parent
+
+                SearchItem {
+                    id: searchItem
+                    Layout.fillWidth: true
+                    onSearchClosed: stackLayout.currentIndex = OrderQueue.TitleView
+                }
+
+                FilterMenu {
+                    Layout.alignment: Qt.AlignRight
+                }
+            }
+        }
+    }
 
     states: [
         State {
+            name: "busy"
             when: internal.busy
             PropertyChanges {
                 target: busyIndicator
@@ -18,6 +55,7 @@ BackPage {
             }
         },
         State {
+            name: "empty"
             when: !internal.busy && listView.count === 0
             PropertyChanges {
                 target: messageLbl
@@ -47,19 +85,25 @@ BackPage {
 
     Component {
         id: menuBtn
-        MoreVertButton {
-            onClicked: menu.open()
+        RowLayout {
+            SearchButton {
+                onClicked: stackLayout.currentIndex = OrderQueue.SearchView
+            }
 
-            Menu {
-                id: menu
+            FilterMenu {}
+        }
+    }
 
-                MenuItem {
-                    text: "Filtro"
-                    onTriggered: {
-                        // TODO: Open filter dialog.
-                        filterDialog.open();
-                    }
-                }
+    component FilterMenu : MoreVertButton {
+        onClicked: menu.open()
+
+        Menu {
+            id: menu
+            rightMargin: 5
+
+            MenuItem {
+                text: "Filtro"
+                onTriggered:filterDialog.open()
             }
         }
     }
@@ -108,6 +152,7 @@ BackPage {
     QueueProxyModel {
         id: queueProxy
         sourceModel: billModel
+        searchString: searchItem.displayText
     }
 
     ListView {

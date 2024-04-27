@@ -15,7 +15,6 @@ qt_add_qml_module(BillingLib
         BillHomePage.qml
         BillListView.qml
         BillMessage.qml
-        BillPageHeader.qml
         BillPrinter.qml
         BillViewChooser.qml
         BillingSettings.qml

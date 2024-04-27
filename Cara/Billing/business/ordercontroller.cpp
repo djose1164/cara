@@ -10,7 +10,10 @@ OrderController::OrderController(QObject *parent)
     : QObject{parent}
     , repository_{new Data::RestOrderRepository(this)}
 {
-    connect(repository_, &OrderRepository::resourceAdded, this, &OrderController::orderCreated);
+    connect(repository_, &OrderRepository::resourceAdded,
+            this, &OrderController::orderCreated);
+    connect(repository_, &OrderRepository::errorOccurred,
+            this, &OrderController::errorOccurred);
 }
 
 void OrderController::createOrder(const QVariantMap &order)
