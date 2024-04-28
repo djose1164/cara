@@ -16,7 +16,6 @@ Item {
         id: groupBox
         anchors.fill: parent
         title: "Producto(s) agregados"
-        redirectText: "Editar producto(s)"
         onRedirectClicked: root.redirectClicked()
 
         ListView {

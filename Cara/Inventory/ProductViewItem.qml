@@ -11,7 +11,7 @@ Item {
     id: root
 
     required property ProductModel selectedProducts
-    required property SearchHeaderItem header
+    required property string searchText
     property alias productModel: productModel
 
     states: [
@@ -91,7 +91,7 @@ Item {
     ProductProxyModel {
         id: proxyModel
         sourceModel: productModel
-        productName: header.displayText
+        productName: searchText
     }
 
     ProductModel {

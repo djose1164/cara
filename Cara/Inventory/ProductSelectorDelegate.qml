@@ -23,6 +23,7 @@ ItemDelegate {
             source: imageUrl
             sourceSize.width: productThumbnail.width /4
             sourceSize.height: productThumbnail.height
+            onStatusChanged: if (status === Image.Error) console.log(image.source)
         }
 
         Label {

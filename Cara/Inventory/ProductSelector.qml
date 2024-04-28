@@ -22,11 +22,14 @@ Drawer {
         refresh();
     }
 
-    SearchHeaderItem {
-        id: headerItem
-        anchors.top: parent.top
-        width: root.width
-        height: 50
+    SelectorHeaderItem {
+        id: searchHeader
+        anchors {
+            top: parent.top
+            left: parent.left
+            right: parent.right
+        }
+
         title: "Seleccionar producto"
         onCloseClicked: root.close()
     }
@@ -34,10 +37,10 @@ Drawer {
     ProductViewItem {
         id: productView
         width: root.width
-        anchors.top: headerItem.bottom
+        anchors.top: searchHeader.bottom
         anchors.bottom: parent.bottom
         selectedProducts: root.selectedProducts
-        header: headerItem
+        searchText: searchHeader.searchText
     }
 
     function removeSelectionOf(productId) {
