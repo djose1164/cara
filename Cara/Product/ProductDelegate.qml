@@ -34,14 +34,13 @@ Item {
 
         ItemDelegate {
             onClicked: stackView.push("qrc:/qt/qml/Cara/Product/ProductPage.qml",
-                                      {sell_price, name, image_url: img.source, description,
-                                        productId, product: internal.product})
+                                      {productId, product: internal.product})
             Column {
             ProductImage {
                 id: img
 
                 source: images ? Constants.uploadsPath + images[0].image_url : ""
-                sourceSize: "128x128"//`${root.height-60}x${root.height-60}`
+                sourceSize: "128x128"
                 onReady: stackLayout.currentIndex = 1
             }
 

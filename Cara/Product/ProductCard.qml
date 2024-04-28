@@ -82,7 +82,7 @@ Rectangle {
             Layout.bottomMargin: 5
             from: UserSettings.userTypeId === UserEntity.ADMIN ? 0 : 1
             editable: true
-            Keys.onReturnPressed: Qt.inputMethod.hide()
+            //Keys.onReturnPressed: Qt.inputMethod.hide()
         }
     }
 }

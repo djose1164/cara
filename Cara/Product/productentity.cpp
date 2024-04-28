@@ -1,10 +1,31 @@
 #include "productentity.h"
 #include "restconfig.h"
+#include "utils.h"
+#include "apienvironment.h"
 
 using namespace Qt::StringLiterals;
 
 namespace
 {
+
+consteval QLatin1StringView getPicIdentificator()
+{
+    switch (Api::getApiEnvironment())
+    {
+        using enum Api::ApiEnvironment;
+    case LocalTesting:
+        return LOCAL_API_URL "/uploads/%1"_L1;
+    case LocalNetworkTesting:
+        return LOCAL_NETWORK_API_URL "/uploads/%1"_L1;
+    case RemoteTesting:
+        return REMOTE_TESTING_API_URL "/uploads/%1"_L1;
+    case Production:
+        return REMOTE_API_URL "/uploads/%1"_L1;
+    default:
+        throw;
+    }
+}
+
 const auto imageUrlField{"image_url"_L1};
 const auto imageUrlProperty{"imageUrl"_L1};
 const auto imagesField{"images"_L1};
@@ -18,11 +39,7 @@ constexpr auto maximumStockLevelField{"maximum_stock_level"_L1};
 constexpr auto minimumStockLevelField{"minimum_stock_level"_L1};
 constexpr auto reorderPointField{"reorder_point"_L1};
 constexpr auto quantityAvailableField{"quantity_available"_L1};
-#ifdef QT_DEBUG
-constexpr auto picIdentificator{LOCAL_API_URL "/uploads/%1"_L1};
-#else
-constexpr auto picIdentificator{REMOTE_API_URL "/uploads/%1"_L1};
-#endif
+constexpr auto picIdentificator{getPicIdentificator()};
 }
 
 namespace EntityLayer {

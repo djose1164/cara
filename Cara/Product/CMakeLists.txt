@@ -29,4 +29,4 @@ qt_add_qml_module(ProductLib
         data
 )
 
-target_include_directories(ProductLib PRIVATE ../data)
+target_include_directories(ProductLib PRIVATE ../data ../utils ..)

@@ -15,12 +15,7 @@ Page {
 
     readonly property T.StackView stackView: StackView.view
     readonly property int userId: UserSettings.userId
-    readonly property bool hasStocks: inStock > 0
     required property int productId
-    required property string name
-    required property int sell_price
-    required property string description
-    required property string image_url
     required property var product
     property int inStock
 
@@ -44,8 +39,8 @@ Page {
 
     Component.onCompleted: {
         organizationResource.readById(internal.caraId);
-        inventoryApi.fetchByProductId(productId);
-        reviewModel.fetchReviewsByProductId(productId);
+        inventoryApi.fetchByProductId(root.productId);
+        reviewModel.fetchReviewsByProductId(root.productId);
         ReviewController.canCustomerReview(UserSettings.customerId, root.productId);
     }
 
@@ -86,7 +81,6 @@ Page {
                 font.bold: true
                 font.pointSize: 14
                 Layout.topMargin: 10
-                Layout.bottomMargin: 10
             }
 
             Repeater {

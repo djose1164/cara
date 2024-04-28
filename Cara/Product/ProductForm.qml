@@ -20,12 +20,35 @@ Page {
     property string name
     property var images
     property string mode: "add"
+    property var product
 
     header: TitleHeader {
         title: root.mode == "add" ? "Agregar nuevo producto" : "Editar producto"
-        btnLoader.sourceComponent: ToolButton {
-            icon.source: "add_a_photo.svg"
-            onClicked: imgPicker.open()
+        btnLoader.sourceComponent: RowLayout {
+            id: rowLayout
+            ToolButton {
+                icon.source: "add_a_photo.svg"
+                onClicked: imgPicker.open()
+            }
+
+            MoreVertButton {
+                onClicked: menu.visible = !menu.visible
+                Menu {
+                    id: menu
+                    y: parent.height
+                    rightMargin: 5
+
+                    MenuItem {
+                        text: "Vista de producto"
+                        onTriggered: root.myStack.pushItem("Cara/Product/ProductPage.qml", {productId, product})
+                    }
+
+                    MenuItem {
+                        text: "Ver reseñas"
+                        onTriggered: root.myStack.pushItem("Cara/Review/ReviewsPage.qml", {productId})
+                    }
+                }
+            }
         }
 
         onBackClicked: myStack.pop()
@@ -65,12 +88,10 @@ Page {
 
                 MenuSeparator { Layout.alignment: Qt.AlignCenter }
 
-                ImagePicker {
+                FileDialog {
                     id: imgPicker
-                    visible: false
-                    Layout.preferredWidth: root.width/2
-                    Layout.preferredHeight: root.width/2
-                    onFileAccepted: filename => root.handlePictureSelected(filename)
+                    currentFolder: StandardPaths.standardLocations(StandardPaths.PicturesLocation)[0]
+                    onAccepted: root.handlePictureSelected(imgPicker.selectedFile)
                 }
 
                 TextField {
@@ -248,6 +269,11 @@ Page {
     }
 
     function handlePictureSelected(filename: url) {
+        if (filename.toString() === "") {
+            console.log("handlePictureSelected:", filename);
+            return;
+        }
+
         if (root.mode === "add") {
             if (root.images.get(0).image_url === internal.picturePlaceHolder)
                 root.images.clear();
