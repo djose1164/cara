@@ -2,29 +2,22 @@ import QtQuick.Controls
 import Cara.Utils
 
 MoreVertButton {
-    id: menuBtn
+    id: root
 
-    property bool isMenuOpened
+    property bool canDelete: false
 
-    signal editClicked
     signal deleteClicked
 
-    onClicked: if (!isMenuOpened) menu.open()
+    onClicked: menu.visible = !menu.visible
 
     Menu {
         id: menu
-        onOpened: menuBtn.isMenuOpened = true
-        onClosed: menuBtn.isMenuOpened = false
         y: parent.height
-        height: 100
         rightMargin: 10
 
         MenuItem {
-            onTriggered: editClicked()
-            text: "Editar"
-        }
-
-        MenuItem {
+            height: visible ? implicitHeight : 0
+            visible: root.canDelete
             onTriggered: deleteClicked()
             text: "Eliminar"
         }

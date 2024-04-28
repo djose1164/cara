@@ -5,9 +5,10 @@ qt_add_qml_module(ReviewLib
         CommentMenuButton.qml
         CommentRating.qml
         CustomerReview.qml
+        PostReview.qml
         ReviewApi.qml
         ReviewHeader.qml
-        PostReview.qml
+        ReviewsPage.qml
     SOURCES
         restreviewrepository.h restreviewrepository.cpp
         review.h review.cpp

@@ -14,6 +14,8 @@ Item {
     property int rating
     property string reviewText
     property int customerId
+    property alias canDelete: reviewHeader.canDelete
+    property int reviewId
 
     property string agoDate: {
         const dateString = root.createdAt.toISOString();
@@ -52,18 +54,20 @@ Item {
         }
     }
 
+    signal reviewDeleted
+
     implicitHeight: columnLayout.implicitHeight
     ColumnLayout {
         id: columnLayout
         anchors.fill: parent
+        anchors.margins: spacing
 
         ReviewHeader {
             id: reviewHeader
-            Layout.preferredWidth: root.width/2
             customerNameTxt: root.reviewer
             dateTxt: agoDate
-            canModify: UserSettings.userTypeId === UserEntity.Admin
-            onDeleteClicked: api.deleteReview(reviewId)
+            Layout.preferredWidth: root.width/2
+            onDeleteClicked: ReviewController.deleteReview(root.reviewId)
         }
 
         StarRating {
@@ -78,6 +82,14 @@ Item {
             text: root.reviewText
             wrapMode: Label.Wrap
             Layout.fillWidth: true
+        }
+    }
+
+    Connections {
+        target: ReviewController
+
+        function onReviewDeleted() {
+            root.reviewDeleted();
         }
     }
 

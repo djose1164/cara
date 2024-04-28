@@ -74,13 +74,13 @@ Drawer {
 
                 Column {
                     id: column
-                    TextField {
+                    TextArea {
                         id: reviewArea
                         width: columnLayout.width
                         placeholderText: "¿Qué piensas sobre el producto?"
                         text: root.reviewText
                         wrapMode: TextArea.Wrap
-                        maximumLength: internal.maximumWords
+                        onTextChanged: if (reviewArea.length > internal.maximumWords) reviewArea.remove(internal.maximumWords, reviewArea.length)
                     }
 
                     Label {

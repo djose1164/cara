@@ -13,8 +13,9 @@ namespace Review
 class ReviewModel : public QAbstractListModel
 {
     Q_OBJECT
-    QML_ELEMENT
+    Q_PROPERTY(Status status READ status WRITE setStatus NOTIFY statusChanged FINAL)
     Q_PROPERTY(ReviewRepository *repository READ repository NOTIFY repositoryChanged FINAL)
+    QML_ELEMENT
 public:
     enum class RoleNames
     {
@@ -23,8 +24,19 @@ public:
         ReviewTextRole,
         RatingRole,
         CreatedAtRole,
-        ReviewerRole
+        ReviewerRole,
+        ReviewIdRole
     };
+
+    enum class Status
+    {
+        Fetching,
+        Fetched,
+        Empty,
+        Error
+    };
+    Q_ENUM(Status)
+
     explicit ReviewModel(QObject *parent = nullptr);
 
     int rowCount(const QModelIndex &parent) const override;
@@ -34,8 +46,12 @@ public:
     ReviewRepository *repository() const;
     void setRepository(ReviewRepository *newRepository);
 
+    Status status() const;
+    void setStatus(Status newStatus);
+
 public slots:
     void fetchReviewsByProductId(ReviewRepository::ProductId productId);
+    void remove(int index);
 
 private slots:
     void reviewsFetched(const QList<Review>& reviews);
@@ -43,9 +59,12 @@ private slots:
 signals:
     void repositoryChanged();
 
+    void statusChanged();
+
 private:
     ReviewRepository *repository_;
     QList<Review> data_;
+    Status status_;
 };
 
 } // namespace Review
