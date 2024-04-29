@@ -160,7 +160,7 @@ Item {
 
     QtObject {
         id: internal
-        readonly property url mainPage: "qrc:/qt/qml/Cara/Cara/MainPage.qml"
+        readonly property url mainPage: "qrc:/qt/qml/Cara/MainPage.qml"
         readonly property string username: usernameInput.text
         readonly property string password: passwordInput.text
         readonly property bool areInputsValid: usernameInput.text !== ""
