@@ -13,7 +13,7 @@ ProductCategoryRepository::ProductCategoryRepository(QObject *parent)
 void ProductCategoryRepository::fetchAll()
 {
     QQmlEngine engine;
-    const auto instance{engine.singletonInstance<DataLayer::Constants *>("data", "Constants")};
+    const auto instance{engine.singletonInstance<DataLayer::Constants *>("Cara.Data", "Constants")};
     const QString base{instance->base()};
     const QUrl url{base + "/products/categories/"};
 

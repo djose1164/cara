@@ -38,6 +38,7 @@ Page {
                 required property string name
                 required property int sell_price
                 required property int buy_price
+                required property var model
 
                 onClicked: {
                     stackView.push("qrc:/qt/qml/Cara/Product/ProductForm.qml", {
@@ -48,6 +49,7 @@ Page {
                         description,
                         buyPrice: buy_price,
                         sellPrice: sell_price,
+                        product: item.model,
                         mode: "edit"
                    });
                 }
