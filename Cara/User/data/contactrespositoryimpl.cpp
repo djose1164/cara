@@ -13,7 +13,7 @@ constexpr auto path{"contacts"_L1};
 namespace Data {
 ContactRespositoryImpl::ContactRespositoryImpl(QObject *parent)
     : QObject{parent}
-    , manager_{new QRestAccessManager{QNAMSingleton::instance().qnam()}}
+    , manager_{new QRestAccessManager{QNAMSingleton::instance().qnam(), this}}
     , api_{Authentication::NetworkRequestSingleton::instance().api()}
 {
 
