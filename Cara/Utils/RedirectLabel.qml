@@ -7,6 +7,8 @@ ItemDelegate {
     property alias title: customerLbl.text
 
     contentItem: Item {
+        implicitWidth: customerLbl.implicitWidth + icon.implicitWidth
+        implicitHeight: Math.max(customerLbl.implicitHeight, icon.implicitHeight)
         Label {
             id: customerLbl
             anchors.verticalCenter: parent.verticalCenter
@@ -23,4 +25,6 @@ ItemDelegate {
             sourceSize: "24x24"
         }
     }
+
+    font.pointSize: 16
 }

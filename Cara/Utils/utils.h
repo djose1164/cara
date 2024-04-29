@@ -8,7 +8,7 @@ namespace Utils
 {
 std::optional<QJsonObject> byteArrayToJsonObject(const QByteArray &data);
 
-constexpr bool runningOnAndroid()
+consteval bool runningOnAndroid()
 {
 #ifdef Q_OS_ANDROID
     return true;

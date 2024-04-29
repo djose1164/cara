@@ -24,11 +24,11 @@ qt_add_qml_module(UtilsLib
         Card.qml
         CenterBusyIndicator.qml
         CloseButton.qml
+        CloseHeader.qml
         DateDelegate.qml
         DatePicker.qml
         DrawerHeader.qml
         Header.qml
-        ImagePicker.qml
         ListViewPage.qml
         Message.qml
         MessagePane.qml
@@ -42,7 +42,7 @@ qt_add_qml_module(UtilsLib
         SearchBar.qml
         SearchButton.qml
         SearchField.qml
-        SearchHeaderItem.qml
+        SearchItem.qml
         SearchPage.qml
         Star.qml
         StarRating.qml
@@ -50,10 +50,12 @@ qt_add_qml_module(UtilsLib
         TitleHeader.qml
         PicSwipeView.qml
         EmailField.qml
+        SearchHeader.qml
     RESOURCES
         utils.js
         star.png
         star-unfilled.png
+        QML_FILES SelectorHeaderItem.qml
 )
 
 if(ANDROID)

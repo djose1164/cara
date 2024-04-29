@@ -89,6 +89,6 @@ Dialog {
     }
 
     function toShortDate() {
-        return selectedDate.toLocaleDateString(root.locale, "dd/MM/yyyy")
+        return selectedDate.toLocaleDateString(root.locale, "yyyy-MM-dd")
     }
 }

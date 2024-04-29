@@ -10,18 +10,18 @@ Item {
     property alias placeholderText: textField.placeholderText
     property alias text: textField.text
     readonly property alias displayText: textField.displayText
-    property alias fieldFocus: textField.focus
 
     signal accepted(string text)
     signal textEdited
 
     implicitHeight: textField.implicitHeight
+
     TextField {
         id: textField
         anchors.fill: parent
         verticalAlignment: TextField.AlignVCenter
         rightPadding: lupa.width + font.pixelSize
-        color: "black"
+        focus: root.visible
         Keys.onEnterPressed: shouldAccept()
         Keys.onReturnPressed: shouldAccept()
         EnterKey.type: Qt.EnterKeySearch
