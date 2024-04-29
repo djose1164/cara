@@ -121,7 +121,7 @@ Drawer {
                 flat: true
                 onClicked: {
                     close();
-                    stackView.pushItem("qrc:/qt/qml/Cara/Cara/SettingsPage.qml");
+                    stackView.pushItem("qrc:/qt/qml/Cara/SettingsPage.qml");
                 }
             }
         }
