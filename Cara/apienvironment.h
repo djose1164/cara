@@ -41,6 +41,8 @@ public:
             return QStringLiteral(REMOTE_TESTING_API_URL) + apiSuffix;
         case Production:
             return QStringLiteral(REMOTE_API_URL) + apiSuffix;
+        default:
+            return QStringLiteral(LOCAL_API_URL) + apiSuffix;
         }
     }
 
