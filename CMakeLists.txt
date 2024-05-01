@@ -15,7 +15,7 @@ qt_policy(SET QTP0001 NEW)
 add_subdirectory(Cara)
 
 if(NOT CMAKE_BUILD_TYPE STREQUAL "Release")
-    #add_subdirectory(tests)
+    add_subdirectory(tests)
 endif()
 
 if (WIN32)
