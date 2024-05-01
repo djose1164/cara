@@ -20,6 +20,6 @@ set(LOCAL_NETWORK_API_URL http://192.168.0.13:5000)
 # LocalTesting -- 1
 # LocalNetworkTesting -- 2
 # Production -- 3
-set(API_ENVIRONMENT 1)
+set(API_ENVIRONMENT 3)
 
 configure_file(restconfig.h.in ${CMAKE_CURRENT_SOURCE_DIR}/restconfig.h @ONLY)

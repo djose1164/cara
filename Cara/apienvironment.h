@@ -22,7 +22,7 @@ public:
     };
     Q_ENUM(ApiEnvironment)
 
-    static consteval ApiEnvironment getApiEnvironment()
+    static constexpr ApiEnvironment getApiEnvironment()
     {
         return static_cast<ApiEnvironment>(API_ENVIRONMENT);
     };
