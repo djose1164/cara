@@ -1,7 +1,7 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
-import Product
+import Cara.Product
 
 RowLayout {
     id: root

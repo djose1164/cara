@@ -1,11 +1,12 @@
+import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 import QtQuick.Dialogs
-import User
+import Cara.User
 
 Pane {
     property int total
-    readonly property bool userIsGuest: userStore.user.userType === UserEntity.Guest
+
     signal payClicked
 
     ColumnLayout {
@@ -19,22 +20,11 @@ Pane {
         }
 
         RoundButton {
-            onClicked: userIsGuest ? dialog.open() : payClicked()
-
-            text: "Pagar"
+            text: "Ordenar"
             Layout.fillWidth: true
-//            Material.background: Material.Green
-//            Material.foreground: "white"
+            Material.background: Material.Green
+            Material.foreground: "white"
+            onClicked: payClicked()
         }
-    }
-
-    LocalUserStore { id: userStore }
-
-    MessageDialog {
-        id: dialog
-        onButtonClicked: close()
-        text: "Usuario no registrado"
-        informativeText: "Para poder realizar compras necesitas estar registrado."
-        buttons: MessageDialog.Ok
     }
 }

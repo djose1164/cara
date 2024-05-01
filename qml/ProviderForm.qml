@@ -1,7 +1,8 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
-import Utils
+import Cara.Utils
+import Cara.User
 
 Popup {
     id: newProviderForm
@@ -54,8 +55,8 @@ Popup {
                     Layout.fillWidth: true
                     Layout.alignment: Qt.AlignBottom
                     text: "Agregar"
-//                    Material.background: Material.Green
-//                    Material.foreground: "white"
+                   Material.background: Material.Green
+                   Material.foreground: "white"
                 }
             }
         }

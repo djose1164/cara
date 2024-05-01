@@ -1,6 +1,6 @@
 import QtQuick
-import User
-import Utils
+import Cara.User
+import Cara.Utils
 
 QtObject {
     id: root

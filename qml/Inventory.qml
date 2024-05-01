@@ -2,8 +2,9 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 import QtQuick.Templates as T
-import Utils
-import Product
+import Cara.Utils
+import Cara.Product
+import Cara.Data
 
 Page {
     id: root
@@ -14,6 +15,15 @@ Page {
     title: "Inventario"
     header: TitleHeader {
         title: root.title
+        btnLoader.sourceComponent: ToolButton {
+            icon.source: "qrc:/icons/complete_order.svg"
+            onClicked: root.stackView.pushItem("qrc:/orders/BuyOrder.qml")
+            ToolTip.text: "Ordenes de Compra"
+            ToolTip.visible: hovered
+            ToolTip.delay: 1000
+            ToolTip.timeout: 5000
+        }
+
         onBackClicked: stackView.pop()
     }
 
@@ -39,8 +49,9 @@ Page {
                 required property int reorder_point
 
                 onClicked: {
+                    item.product.image_url = thumbnail.source;
                     stackView.push(
-                        "qrc:/qt/qml/Inventory/InventoryForm.qml",
+                        "qrc:/qt/qml/Cara/Inventory/InventoryForm.qml",
                         {
                             inventoryId: id,
                             product,
@@ -56,6 +67,7 @@ Page {
                 height: 100
 
                 ProductThumbnail {
+                    id: thumbnail
                     anchors.left: parent.left
                     anchors.leftMargin: 5
                     anchors.right: parent.right
@@ -64,7 +76,7 @@ Page {
                     width: parent.width
                     height: 100
                     detailed: `Disponible ${quantity_available}`
-                    source: item.product.image_url
+                    source: Constants.uploadsPath + item.product.images[0].image_url
                     name: item.product.name
                 }
             }

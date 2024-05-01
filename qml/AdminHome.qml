@@ -1,9 +1,9 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
-import catalogue
-import User
-import Salesperson
+import Cara.Shopping
+import Cara.User
+import Cara.Salesperson
 import "qrc:/orders" as Order
 
 
@@ -119,16 +119,8 @@ Home {
         id: model
 
         ListElement {
-            source: "qrc:/icons/complete_order.svg"
-            path: "qrc:/orders/BuyOrder.qml"
-            name: "Ordenes de Compra"
-            showCustomers: false
-            admin: false
-        }
-
-        ListElement {
             source: "qrc:/icons/customers.svg"
-            path: "qrc:qt/qml/Customer/Customers.qml"
+            path: "qrc:qt/qml/Cara/Customer/Customers.qml"
             name: "Clientes"
             showCustomers: true
             admin: false
@@ -152,29 +144,35 @@ Home {
 
         ListElement {
             source: "qrc:/icons/statistics.svg"
-            path: "qrc:/qt/qml/Statistics/Statistics.qml"
+            path: "qrc:/qt/qml/Cara/Statistics/Statistics.qml"
             name: "Estadisticas"
             showCustomers: true
             admin: false
         }
 
         ListElement {
-            source: "qrc:/qt/qml/catalogue/catalogue.svg"
-            path: "qrc:/qt/qml/catalogue/Catalogue.qml"
+            source: "qrc:/qt/qml/Cara/Shopping/catalogue.svg"
+            path: "qrc:/qt/qml/Cara/Shopping/Catalogue.qml"
             name: "Catalogo"
         }
 
         ListElement {
-            source: "qrc:/qt/qml/Salesperson/salesperson.svg"
-            path: "qrc:/qt/qml/Salesperson/AssociateSalesperson.qml"
+            source: "qrc:/qt/qml/Cara/Salesperson/salesperson.svg"
+            path: "qrc:/qt/qml/Cara/Salesperson/AssociateSalesperson.qml"
             name: "Vendedor Asociado"
             needUser: true
         }
 
         ListElement {
-            source: "qrc:/qt/qml/Billing/pdf-icon.svg"
-            path: "qrc:/qt/qml/Billing/PdfBillListing.qml"
+            source: "qrc:/qt/qml/Cara/Billing/pdf-icon.svg"
+            path: "qrc:/qt/qml/Cara/Billing/PdfBillListing.qml"
             name: "Facturas exportadas"
+        }
+
+        ListElement {
+            source: "qrc:/qt/qml/Cara/Billing/orders.svg"
+            path: "qrc:/qt/qml/Cara/Billing/OrderQueue.qml"
+            name: "Cola"
         }
     }
 }

@@ -1,5 +1,5 @@
 import QtQuick
-import Utils
+import Cara.Utils
 
 QtObject {
     id: root

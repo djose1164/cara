@@ -1,0 +1,44 @@
+#ifndef TOKENSTORE_H
+#define TOKENSTORE_H
+
+#include "istore.h"
+
+namespace Authentication::Data
+{
+class TokenStore : public Store::IStore
+{
+    Q_OBJECT
+    Q_PROPERTY(QString refresh READ refresh NOTIFY refreshChanged FINAL)
+    Q_PROPERTY(QString access READ access NOTIFY accessChanged FINAL)
+    QML_ELEMENT
+    QML_SINGLETON
+public:
+    explicit TokenStore(QObject *parent = nullptr);
+
+    // IStore interface
+    bool save(const QByteArray &data) override;
+
+    QString refresh() const override;
+    void setRefresh(const QString &newRefresh);
+
+    QString access() const;
+    void setAccess(const QString &newAccess);
+
+public slots:
+    void restore() override;
+    void clear() override;
+
+signals:
+    void credentialsChanged();
+
+    void refreshChanged();
+
+    void accessChanged();
+
+private:
+    QString refresh_;
+    QString access_;
+};
+}
+
+#endif // TOKENSTORE_H

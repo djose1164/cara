@@ -1,0 +1,13 @@
+#ifndef CONFIG_H_IN
+#define CONFIG_H_IN
+
+#define CARA_VERSION "@CARA_VERSION@"
+
+#include <QAnyStringView>
+
+consteval QAnyStringView getCaraVersion()
+{
+    return "@CARA_VERSION@";
+}
+
+#endif // CONFIG_H_IN

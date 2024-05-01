@@ -1,12 +1,16 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
-
-
-import Utils
+import Cara
+import Cara.Customer
+import Cara.Shopping
+import Cara.User
+import Cara.Utils
 
 Page {
     id: root
+
+    readonly property customer buyer: ({customerId: UserSettings.customerId})
 
     title: "Mi Carrito"
     header: TitleHeader {
@@ -28,15 +32,15 @@ Page {
             }
 
             Checkout {
-                onPayClicked: CartBusiness.checkout()
+                onPayClicked: CartController.checkout(root.buyer)
                 Layout.fillWidth: true
-                total: CartBusiness.totalToPay
+                total: CartController.totalToPay
             }
         }
     }
 
     Connections {
-        target: CartBusiness
+        target: CartController
 
         function onCheckoutSucceeded(resp) {
             const title = "¡Gracias por su compra!";
@@ -51,9 +55,21 @@ Page {
             message.informativeText = resp.message;
             message.open();
         }
+
+        function onErrorOccurred(err: string) {
+            message.text = "Error " + err;
+            message.open();
+        }
     }
 
     Message {
         id: message
+    }
+
+    RestService {
+        CustomerResource {
+            id: customerResource
+            path: "customers"
+        }
     }
 }

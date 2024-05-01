@@ -3,10 +3,10 @@ import QtQuick.Controls
 import QtQuick.Layouts
 import QtQuick.Dialogs
 
-import Utils
+import Cara.Utils
 import "qrc:/orders"
 import "qrc:/provider"
-import Billing
+import Cara.Billing
 
 ListView {
     id: listView
