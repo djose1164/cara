@@ -1,11 +1,9 @@
-#include "Authentication/data/restuserauthentication.h"
-#include "Authentication/entity/credential.h"
-#include "Authentication/login.h"
 #include "User/data/localuserstore.h"
-#include <QTest>
-#include <QSignalSpy>
+#include "loginhelper.h"
 #include <QJsonDocument>
 #include <QJsonObject>
+#include <QSignalSpy>
+#include <QTest>
 
 class TestLocalUserStore : public QObject
 {
@@ -31,29 +29,12 @@ TestLocalUserStore::TestLocalUserStore(QObject *parent)
 
 void TestLocalUserStore::initTestCase()
 {
-    QCoreApplication::setOrganizationDomain("cara.com");
-    QCoreApplication::setOrganizationName("Cara");
-    QCoreApplication::setApplicationName("CaraTesting");
+    LoginHelper::setAppConf();
 }
 
 void TestLocalUserStore::init() const
 {
-    Authentication::Business::Login login{};
-    QSignalSpy spy{&login, &Authentication::Business::Login::authenticated};
-
-    QVERIFY(spy.isValid());
-
-    Authentication::Data::RestUserAuthentication restAuthenticator{};
-    Authentication::Entity::Credential credentials{};
-    credentials.setUsername("josevictoriano");
-    credentials.setPassword("2077120");
-    restAuthenticator.setCredentials(credentials);
-    login.setAuthenticator(&restAuthenticator);
-
-    login.authenticate();
-    QVERIFY(spy.wait());
-
-    QCOMPARE(spy.count(), 1);
+    LoginHelper::loginWithoutAppConf();
 }
 
 

@@ -3,7 +3,7 @@
 
 #include <QNetworkRequestFactory>
 #include <QQmlEngine>
-#include "Utils/abstractresource.h"
+#include "abstractresource.h"
 
 class QRestReply;
 namespace Business

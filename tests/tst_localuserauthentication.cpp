@@ -1,11 +1,9 @@
-#include "Authentication/data/restuserauthentication.h"
 #include "Authentication/data/tokenstore.h"
-#include "Authentication/entity/credential.h"
 #include "Authentication/login.h"
 #include "Authentication/service/localuserauthentication.h"
-#include "User/data/localuserstore.h"
-#include <QtTest>
+#include "LoginHelper.h"
 #include <QSignalSpy>
+#include <QtTest>
 
 using namespace Qt::StringLiterals;
 
@@ -31,28 +29,7 @@ TestLocalUserAuthentication::~TestLocalUserAuthentication() {}
 
 void TestLocalUserAuthentication::initTestCase() const
 {
-    QCoreApplication::setOrganizationDomain("cara.com");
-    QCoreApplication::setOrganizationName("Cara");
-    QCoreApplication::setApplicationName("CaraTesting");
-
-    auto login = std::make_unique<Authentication::Business::Login>();
-    Authentication::Data::RestUserAuthentication auth{};
-    Authentication::Entity::Credential c{};
-    c.setUsername("cara");
-    c.setPassword("1234");
-    auth.setCredentials(c);
-    login->setAuthenticator(&auth);
-    User::Data::LocalUserStore lus{};
-    login->setStore(&lus);
-
-    QSignalSpy spy{login.get(), &Authentication::Business::Login::authenticated};
-    QVERIFY(spy.isValid());
-
-    login->authenticate();
-
-    QVERIFY(spy.wait());
-
-    QCOMPARE(spy.count(), 1);
+    LoginHelper::login();
 }
 
 void TestLocalUserAuthentication::test_shouldReturnTrueIfAuthenticationSuccess() const
@@ -82,7 +59,7 @@ void TestLocalUserAuthentication::test_shouldReturnTrueIfAuthenticationSuccess()
 void TestLocalUserAuthentication::test_shouldReturnFalseIfAuthenticationFails() const
 {
     Authentication::Service::LocalUserAuthentication ur{};
-    QSignalSpy spy{&ur, &Authentication::Service::LocalUserAuthentication::finished};
+    QSignalSpy spy{&ur, &Authentication::Service::LocalUserAuthentication::errorOccurred};
 
     QVERIFY(spy.isValid());
 

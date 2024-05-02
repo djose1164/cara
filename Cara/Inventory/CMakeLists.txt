@@ -1,3 +1,5 @@
+set(CMAKE_INCLUDE_CURRENT_DIR ON)
+
 qt_add_library(InventoryLib STATIC)
 qt_add_qml_module(InventoryLib
     URI Cara.Inventory

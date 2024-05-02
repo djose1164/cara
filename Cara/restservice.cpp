@@ -6,7 +6,7 @@
 
 using namespace Qt::StringLiterals;
 
-namespace Utils
+namespace Cara
 {
 RestService::RestService(QObject *parent)
     : QObject{parent}

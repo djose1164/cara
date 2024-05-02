@@ -1,3 +1,5 @@
+set(CMAKE_INCLUDE_CURRENT_DIR ON)
+
 qt_add_library(CustomerLib STATIC)
 
 set_source_files_properties(CustomerManager.qml PROPERTIES
@@ -45,6 +47,7 @@ target_include_directories(CustomerLib PRIVATE
     business
     ../Salesperson
     ../utils
+    ../
 )
 
 target_link_libraries(CustomerLib PRIVATE Qt6::Network)

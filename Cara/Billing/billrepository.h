@@ -5,7 +5,7 @@
 #include <QObject>
 #include <QQmlEngine>
 #include <QNetworkReply>
-#include "Utils/abstractresource.h"
+#include "abstractresource.h"
 #include "ibillrepository.h"
 
 namespace DataLayer {

@@ -33,6 +33,27 @@ void Login::userAuthenticated(const QByteArray &data)
     emit authenticated(data);
 }
 
+void Login::authenticatorConnection()
+{
+    connections_.append(connect(authenticator_, &Authentication::errorOccurred,
+                                this, &Login::errorOccurred));
+    connections_.append(connect(authenticator_, &Authentication::succeeded,
+                                this, &Login::userAuthenticated));
+    connections_.append(connect(authenticator_, &Business::Authentication::tokenReady,
+                                this, [&](const QString &token) {
+                                    NetworkRequestSingleton::instance().api()->setBearerToken(token.toUtf8());
+                                }));
+}
+
+void Login::authenticatorDisconnection()
+{
+    for (const auto &connection : connections_)
+    {
+        disconnect(connection);
+    }
+    connections_.clear();
+}
+
 QQmlListProperty<Store::IStore> Login::stores()
 {
     return {this, &stores_};
@@ -47,7 +68,9 @@ void Login::setAuthenticator(Authentication *newAuthenticator)
 {
     if (authenticator_ == newAuthenticator)
         return;
+    authenticatorDisconnection();
     authenticator_ = newAuthenticator;
+    authenticatorConnection();
     emit authenticatorChanged();
 }
 
@@ -83,12 +106,12 @@ void Login::classBegin()
 
 void Login::componentComplete()
 {
-    connect(authenticator_, &Authentication::errorOccurred,
-            this, &Login::errorOccurred);
-    connect(authenticator_, &Authentication::succeeded,
-            this, &Login::userAuthenticated);
-    connect(authenticator_, &Business::Authentication::tokenReady, this, [&](const QString &token) {
-        NetworkRequestSingleton::instance().api()->setBearerToken(token.toUtf8());
-    });
+    // connect(authenticator_, &Authentication::errorOccurred,
+    //         this, &Login::errorOccurred);
+    // connect(authenticator_, &Authentication::succeeded,
+    //         this, &Login::userAuthenticated);
+    // connect(authenticator_, &Business::Authentication::tokenReady, this, [&](const QString &token) {
+    //     NetworkRequestSingleton::instance().api()->setBearerToken(token.toUtf8());
+    // });
 }
 }

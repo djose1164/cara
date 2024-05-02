@@ -2,8 +2,7 @@
 #include "Customer/data/customerresource.h"
 #include "Authentication/entity/credential.h"
 #include "Authentication/data/restuserauthentication.h"
-#include "User/data/localuserstore.h"
-#include "Utils/restservice.h"
+#include "restservice.h"
 #include <QTest>
 #include <QSignalSpy>
 #include <QJsonDocument>
@@ -54,8 +53,6 @@ void TestCustomerResource::initTestCase()
     credentials.setPassword("2077120");
     restAuthenticator.setCredentials(credentials);
     login.setAuthenticator(&restAuthenticator);
-    User::Data::LocalUserStore lus{};
-    login.setStore(&lus);
 
     login.authenticate();
     QVERIFY(spy.wait());
@@ -66,7 +63,7 @@ void TestCustomerResource::initTestCase()
 
 void TestCustomerResource::test_shouldReturnCustomersByTheirSalespersonId() const
 {
-    Utils::RestService rs{};
+    Cara::RestService rs{};
     Data::CustomerResource repository{};
     repository.setPath(customerPath);
 
@@ -89,7 +86,7 @@ void TestCustomerResource::test_shouldReturnCustomersByTheirSalespersonId() cons
 
 void TestCustomerResource::test_shouldEmitContentNotFoundIfSalespersonidIsNotValid() const
 {
-    Utils::RestService rs{};
+    Cara::RestService rs{};
     Data::CustomerResource repository{};
     repository.setPath(customerPath);
 

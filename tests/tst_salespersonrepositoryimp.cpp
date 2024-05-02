@@ -1,13 +1,10 @@
 #include "Salesperson/data/salespersonrepositoryimp.h"
 #include "Salesperson/salesperson.h"
-#include "User/data/localuserstore.h"
-#include "Authentication/data/restuserauthentication.h"
-#include "Authentication/entity/credential.h"
-#include "Authentication/login.h"
-#include <QTest>
-#include <QSignalSpy>
+#include "loginhelper.h"
 #include <QJsonDocument>
 #include <QJsonObject>
+#include <QSignalSpy>
+#include <QTest>
 
 using namespace Qt::StringLiterals;
 namespace
@@ -37,25 +34,7 @@ TestSalespersonRepositoryImp::TestSalespersonRepositoryImp(QObject *parent)
 
 void TestSalespersonRepositoryImp::initTestCase()
 {
-    QCoreApplication::setOrganizationDomain("cara.com");
-    QCoreApplication::setOrganizationName("Cara");
-    QCoreApplication::setApplicationName("CaraTesting");
-
-    Authentication::Business::Login login{};
-    Authentication::Entity::Credential c{};
-    c.setUsername("cara");
-    c.setPassword("1234");
-    Authentication::Data::RestUserAuthentication auth{};
-    auth.setCredentials(c);
-    login.setAuthenticator(&auth);
-
-
-    User::Data::LocalUserStore userStore{};
-    QSignalSpy spy{&login, SIGNAL(authenticated(const QByteArray &))};
-    login.setStore(&userStore);
-
-    login.authenticate();
-    QVERIFY(spy.wait());
+    LoginHelper::login();
 }
 
 void TestSalespersonRepositoryImp::test_shouldGetSalespersonById() const

@@ -3,6 +3,7 @@ project(CaraLib LANGUAGES CXX)
 
 set(CMAKE_AUTORCC ON)
 set(CMAKE_AUTOMOC ON)
+set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 add_library(${PROJECT_NAME} STATIC
     apienvironment.cpp)
@@ -22,18 +23,11 @@ qt_add_qml_module(CaraLib
         logout.svg
         wifi-off.svg
     SOURCES
+        abstractresource.h abstractresource.cpp
+        apienvironment.h
         config.h.in
         healthresource.h healthresource.cpp
         restservice.h restservice.cpp
-        apienvironment.h
-    DEPENDENCIES
-        Authentication
-        Billing
-        Customer
-        data
-        Inventory
-        Product
-        Shopping
 )
 
 set(CARA_VERSION ${CMAKE_PROJECT_VERSION})

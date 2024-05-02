@@ -1,11 +1,12 @@
 #include "Authentication/data/restuserauthentication.h"
 #include "Authentication/login.h"
 #include "Salesperson/salespersoncontroller.h"
-#include <QTest>
-#include <QSignalSpy>
+#include "data/localuserstore.h"
+#include "loginhelper.h"
 #include <QJsonDocument>
 #include <QJsonObject>
-#include "data/localuserstore.h"
+#include <QSignalSpy>
+#include <QTest>
 
 class TestSalespersonController : public QObject
 {
@@ -29,33 +30,12 @@ TestSalespersonController::TestSalespersonController(QObject *parent)
 
 void TestSalespersonController::initTestCase()
 {
-    QCoreApplication::setOrganizationDomain("cara.com");
-    QCoreApplication::setOrganizationName("Cara");
-    QCoreApplication::setApplicationName("CaraTesting");
-
-    Authentication::Business::Login login{};
-    QSignalSpy spy{&login, &Authentication::Business::Login::authenticated};
-
-    QVERIFY(spy.isValid());
-
-    Authentication::Data::RestUserAuthentication restAuthenticator{};
-    Authentication::Entity::Credential credentials{};
-    credentials.setUsername("cara");
-    credentials.setPassword("1234");
-    restAuthenticator.setCredentials(credentials);
-    login.setAuthenticator(&restAuthenticator);
-    User::Data::LocalUserStore lus{};
-    login.setStore(&lus);
-
-    login.authenticate();
-    QVERIFY(spy.wait());
-
-    QCOMPARE(spy.count(), 1);
+    LoginHelper::login();
 }
 
 void TestSalespersonController::test_shouldGetSalespersonById() const
 {
-    Controller::SalespersonController spController{};
+    Salesperson::SalespersonController spController{};
     spController.setSalespersonId(1);
     QSignalSpy spy{&spController, SIGNAL(fetched(void))};
 
@@ -66,10 +46,10 @@ void TestSalespersonController::test_shouldGetSalespersonById() const
     QVERIFY(spy.wait());
 
     QCOMPARE(spy.count(), 1);
-    QVERIFY(spController.buffer().isEmpty() == false);
+    QVERIFY(spController.data().isEmpty() == false);
 
     const auto obj{
-        QJsonDocument::fromJson(spController.buffer())
+        QJsonDocument::fromJson(spController.data())
             .object()
     };
 
@@ -83,7 +63,7 @@ void TestSalespersonController::test_shouldGetSalespersonById() const
 
 void TestSalespersonController::test_shouldGetSalespeopleByAdminId() const
 {
-    Controller::SalespersonController spController{};
+    Salesperson::SalespersonController spController{};
     spController.setAdminId(5);
     QSignalSpy spy{&spController, SIGNAL(fetched(void))};
 
@@ -94,10 +74,10 @@ void TestSalespersonController::test_shouldGetSalespeopleByAdminId() const
     QVERIFY(spy.wait());
 
     QCOMPARE(spy.count(), 1);
-    QVERIFY(spController.buffer().isEmpty() == false);
+    QVERIFY(spController.data().isEmpty() == false);
 
     const auto obj{
-        QJsonDocument::fromJson(spController.buffer())
+        QJsonDocument::fromJson(spController.data())
             .object()
     };
 

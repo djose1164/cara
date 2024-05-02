@@ -1,11 +1,13 @@
-#include "Authentication/login.h"
 #include "Authentication/data/restuserauthentication.h"
+#include "Authentication/data/tokenstore.h"
+#include "Authentication/entity/credential.h"
+#include "Authentication/login.h"
 #include "Authentication/service/localuserauthentication.h"
 #include "User/data/localuserstore.h"
-#include "authentication/entity/credential.h"
-#include <QtTest>
-#include <QSignalSpy>
+#include "LoginHelper.h"
 #include <QSettings>
+#include <QSignalSpy>
+#include <QtTest>
 
 using namespace Qt::StringLiterals;
 
@@ -33,30 +35,7 @@ TestLogin::~TestLogin() {}
 
 void TestLogin::initTestCase()
 {
-    QCoreApplication::setOrganizationDomain("cara.com");
-    QCoreApplication::setOrganizationName("Cara");
-    QCoreApplication::setApplicationName("CaraTesting");
-
-    Authentication::Entity::Credential c{};
-    c.setUsername("cara");
-    c.setPassword("1234");
-
-    Authentication::Data::RestUserAuthentication auth{};
-    auth.setCredentials(c);
-
-    User::Data::LocalUserStore us{};
-    Authentication::Business::Login login{};
-    login.setAuthenticator(&auth);
-    login.setStore(&us);
-
-    QSignalSpy spy{&login, &Authentication::Business::Login::dataSaved};
-    QVERIFY(spy.isValid());
-
-    login.authenticate();
-
-    QVERIFY(spy.wait());
-
-    QCOMPARE(spy.count(), 1);
+    LoginHelper::login();
 }
 
 void TestLogin::cleanupTestCase()

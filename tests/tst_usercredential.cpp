@@ -2,8 +2,6 @@
 #include <QtTest>
 #include <QSignalSpy>
 
-// add necessary includes here
-
 class TestUserCredential : public QObject
 {
     Q_OBJECT

@@ -112,8 +112,9 @@ void LocalUserStore::setUser(const Entity::UserEntity &newUser)
 
 bool LocalUserStore::hasUser() const
 {
-    QSettings settings;
-    return settings.contains("User/userId") && settings.contains("User/refreshToken");
+    qDebug() << (user_.userId() > 0);
+    qDebug() << not user_.username().isEmpty();
+    return user_.userId() > 0 and not user_.username().isEmpty();
 }
 
 QString LocalUserStore::refresh() const

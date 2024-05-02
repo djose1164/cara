@@ -1,13 +1,10 @@
-#include "Authentication/data/restuserauthentication.h"
-#include "Authentication/login.h"
-#include "Authentication/entity/credential.h"
 #include "Inventory/inventoryrepository.h"
-#include "User/data/localuserstore.h"
 #include "Inventory/model/productmodel.h"
-#include <QTest>
-#include <QSignalSpy>
+#include "loginhelper.h"
 #include <QJsonDocument>
 #include <QJsonObject>
+#include <QSignalSpy>
+#include <QTest>
 
 class TestProductModel : public QObject
 {
@@ -33,24 +30,7 @@ TestProductModel::TestProductModel(QObject *parent)
 
 void TestProductModel::initTestCase()
 {
-    QCoreApplication::setOrganizationDomain("cara.com");
-    QCoreApplication::setOrganizationName("Cara");
-    QCoreApplication::setApplicationName("CaraTesting");
-
-    Authentication::Business::Login login{};
-    Authentication::Entity::Credential c{};
-    c.setUsername("cara");
-    c.setPassword("1234");
-    Authentication::Data::RestUserAuthentication auth{};
-    auth.setCredentials(c);
-    login.setAuthenticator(&auth);
-
-    User::Data::LocalUserStore userStore{};
-    QSignalSpy spy{&login, SIGNAL(authenticated(const QByteArray &))};
-    login.setStore(&userStore);
-
-    login.authenticate();
-    QVERIFY(spy.wait());
+    LoginHelper::login();
 }
 
 void TestProductModel::init()

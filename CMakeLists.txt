@@ -5,6 +5,7 @@ project(Cara VERSION 0.18.0 LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_AUTORCC ON)
+set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 find_package(Qt6 6.7 REQUIRED
     COMPONENTS Qml Quick Core Network Svg Test Concurrent PrintSupport Graphs REQUIRED)

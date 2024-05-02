@@ -6,7 +6,6 @@ qt_add_qml_module(UtilsLib
     URI Cara.Utils
     VERSION 1.0
     SOURCES
-        abstractresource.h abstractresource.cpp
         fileutils.h fileutils.cpp
         httpstatuscodes.h
         internetstatus.h internetstatus.cpp

@@ -41,9 +41,6 @@ public:
 
     Status status() const;
     void setStatus(Status newStatus);
-    
-    Store::IStore *store() const;
-    void setStore(Store::IStore *newUserStore);
 
     AuthenticationMode mode() const;
     void setMode(AuthenticationMode newMode);
@@ -53,10 +50,6 @@ public:
 
     Authentication *authenticator() const;
     void setAuthenticator(Authentication *newAuthenticator);
-
-    Data::TokenStore *tokenStore() const;
-
-    void setTokenStore(Data::TokenStore *newTokenStore);
 
     QQmlListProperty<Store::IStore> stores();
 
@@ -75,12 +68,15 @@ public slots:
 
 private slots:
     void userAuthenticated(const QByteArray &data);
+    void authenticatorConnection();
+    void authenticatorDisconnection();
 
 private:
     Status status_;
     AuthenticationMode mode_;
     Authentication *authenticator_;
     QList<Store::IStore *> stores_;
+    QList<QMetaObject::Connection> connections_;
 };
 }
 

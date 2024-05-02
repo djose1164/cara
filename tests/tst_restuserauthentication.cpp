@@ -1,6 +1,7 @@
 #include "Authentication/data/restuserauthentication.h"
-#include "authentication/entity/credential.h"
 #include "Authentication/login.h"
+#include "authentication/entity/credential.h"
+#include "loginhelper.h"
 #include <QtTest>
 
 class TestRestUserAuthentication : public QObject
@@ -27,9 +28,7 @@ TestRestUserAuthentication::~TestRestUserAuthentication() {}
 
 void TestRestUserAuthentication::initTestCase()
 {
-    QCoreApplication::setOrganizationDomain("cara.com");
-    QCoreApplication::setOrganizationName("Cara");
-    QCoreApplication::setApplicationName("CaraTesting");
+    LoginHelper::setAppConf();
 }
 
 void TestRestUserAuthentication::init()

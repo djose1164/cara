@@ -1,12 +1,9 @@
 #include "Billing/data/restorderrepository.h"
-#include "User/data/localuserstore.h"
-#include "Authentication/data/restuserauthentication.h"
-#include "Authentication/entity/credential.h"
-#include "Authentication/login.h"
-#include <QTest>
-#include <QSignalSpy>
+#include "loginhelper.h"
 #include <QJsonDocument>
 #include <QJsonObject>
+#include <QSignalSpy>
+#include <QTest>
 
 using namespace Qt::StringLiterals;
 
@@ -56,28 +53,7 @@ QByteArray TestRestOrderRepository::readJsonFile(const QLatin1StringView path) c
 
 void TestRestOrderRepository::initTestCase()
 {
-    QCoreApplication::setOrganizationDomain("cara.com");
-    QCoreApplication::setOrganizationName("Cara");
-    QCoreApplication::setApplicationName("CaraTesting");
-
-    Authentication::Business::Login login{};
-    QSignalSpy spy{&login, &Authentication::Business::Login::authenticated};
-
-    QVERIFY(spy.isValid());
-
-    Authentication::Data::RestUserAuthentication restAuthenticator{};
-    Authentication::Entity::Credential credentials{};
-    credentials.setUsername("cara");
-    credentials.setPassword("1234");
-    restAuthenticator.setCredentials(credentials);
-    login.setAuthenticator(&restAuthenticator);
-    User::Data::LocalUserStore lus{};
-    login.setStore(&lus);
-
-    login.authenticate();
-    QVERIFY(spy.wait());
-
-    QCOMPARE(spy.count(), 1);
+    LoginHelper::login();
 }
 
 void TestRestOrderRepository::init()

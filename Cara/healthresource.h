@@ -2,7 +2,7 @@
 #define HEALTHRESOURCE_H
 
 #include <QQmlEngine>
-#include "Utils/abstractresource.h"
+#include "abstractresource.h"
 
 class HealthResource : public AbstractResource
 {

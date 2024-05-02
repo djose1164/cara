@@ -1,6 +1,7 @@
+set(CMAKE_INCLUDE_CURRENT_DIR ON)
+
 qt_add_library(AuthenticationLib STATIC)
-target_link_libraries(AuthenticationLib
-    PRIVATE StoreLib)
+
 qt_add_qml_module(AuthenticationLib
     URI Cara.Authentication
     VERSION 1.0
@@ -32,4 +33,5 @@ target_include_directories(AuthenticationLib
         ../utils ../store
 )
 
-
+target_link_libraries(AuthenticationLib
+    PRIVATE StoreLib)

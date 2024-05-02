@@ -1,12 +1,9 @@
-#include "Authentication/data/restuserauthentication.h"
-#include "Authentication/entity/credential.h"
-#include "Authentication/login.h"
-#include "Catalogue/productrepository.h"
-#include "User/data/localuserstore.h"
-#include <QTest>
-#include <QSignalSpy>
+#include "Shopping/productrepository.h"
+#include "loginhelper.h"
 #include <QJsonDocument>
 #include <QJsonObject>
+#include <QSignalSpy>
+#include <QTest>
 
 using namespace Qt::StringLiterals;
 
@@ -36,31 +33,12 @@ TestProductRepository::TestProductRepository(QObject *parent)
 
 void TestProductRepository::initTestCase()
 {
-    QCoreApplication::setOrganizationDomain("cara.com");
-    QCoreApplication::setOrganizationName("Cara");
-    QCoreApplication::setApplicationName("CaraTesting");
+    LoginHelper::login();
 }
 
 void TestProductRepository::init()
 {
-    Authentication::Business::Login login{};
-    QSignalSpy spy{&login, &Authentication::Business::Login::authenticated};
 
-    QVERIFY(spy.isValid());
-
-    Authentication::Data::RestUserAuthentication restAuthenticator{};
-    Authentication::Entity::Credential credentials{};
-    credentials.setUsername("cara");
-    credentials.setPassword("1234");
-    restAuthenticator.setCredentials(credentials);
-    login.setAuthenticator(&restAuthenticator);
-    User::Data::LocalUserStore lus{};
-    login.setStore(&lus);
-
-    login.authenticate();
-    QVERIFY(spy.wait());
-
-    QCOMPARE(spy.count(), 1);
 }
 
 void TestProductRepository::test_shouldEmitAddedIfAddingSuccess() const
@@ -73,12 +51,14 @@ void TestProductRepository::test_shouldEmitAddedIfAddingSuccess() const
     constexpr QLatin1StringView filepath{XSTRING(CURRENT_SOURCE_DIR)};
     constexpr auto filename{"/tesla-model-s.jpeg"_L1};
 
+    QVariantList images{};
+    images.append(QVariantMap{{"image_url"_L1, QUrl::fromLocalFile(filepath + filename)}});
     const QVariantMap map{
         {"name", "Carro rojo"},
         {"description", ""},
         {"buy_price", 200},
         {"sell_price", 300},
-        {"image_url", QUrl::fromLocalFile(filepath + filename)},
+        {"images", images},
         {"category_id", 1}
     };
     repository.add(map);

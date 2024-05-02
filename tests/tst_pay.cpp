@@ -1,14 +1,11 @@
 #include "Billing/business/pay.h"
-#include "Utils/restservice.h"
-#include "User/data/localuserstore.h"
-#include "Authentication/data/restuserauthentication.h"
-#include "Authentication/entity/credential.h"
-#include "Authentication/login.h"
-#include "Utils/restservice.h"
-#include <QTest>
-#include <QSignalSpy>
+#include "restservice.h"
+#include "loginhelper.h"
 #include <QJsonDocument>
 #include <QJsonObject>
+#include <QSignalSpy>
+#include <QTest>
+#include <QRestAccessManager.h>
 
 class TestPay : public QObject
 {
@@ -21,6 +18,9 @@ private slots:
 
     void test_shouldPayDebtIfHasDebt() const;
     void test_shouldEmitErrorOccurredIfPaymentIsntPayable();
+
+private:
+    std::unique_ptr<QNetworkAccessManager> qnam_;
 };
 
 
@@ -33,41 +33,22 @@ TestPay::TestPay(QObject *parent)
 
 void TestPay::initTestCase()
 {
-    QCoreApplication::setOrganizationDomain("cara.com");
-    QCoreApplication::setOrganizationName("Cara");
-    QCoreApplication::setApplicationName("CaraTesting");
-
-    Authentication::Business::Login login{};
-    QSignalSpy spy{&login, &Authentication::Business::Login::authenticated};
-
-    QVERIFY(spy.isValid());
-
-    Authentication::Data::RestUserAuthentication restAuthenticator{};
-    Authentication::Entity::Credential credentials{};
-    credentials.setUsername("josevictoriano");
-    credentials.setPassword("2077120");
-    restAuthenticator.setCredentials(credentials);
-    login.setAuthenticator(&restAuthenticator);
-    User::Data::LocalUserStore lus{};
-    login.setStore(&lus);
-
-    login.authenticate();
-    QVERIFY(spy.wait());
-
-    QCOMPARE(spy.count(), 1);
+    LoginHelper::login();
+    qnam_ = std::make_unique<QNetworkAccessManager>();
 }
 
 
 void TestPay::test_shouldPayDebtIfHasDebt() const
 {
-    Utils::RestService restService{};
+    Cara::RestService restService{};
     Business::Pay pay{};
     pay.setPath("payments");
     restService.append(&pay);
 
     QSignalSpy spy{&pay, &Business::Pay::paid};
 
-    pay.setManager(std::make_shared<QRestAccessManager>());
+    auto &&a{&qnam_};
+    pay.setManager(std::make_shared<QRestAccessManager>(qnam_.get()));
     pay.pay({
         {"paymentId", 329},
         {"amount", 20}
@@ -86,7 +67,7 @@ void TestPay::test_shouldEmitErrorOccurredIfPaymentIsntPayable()
         {"amount", 20}
     };
 
-    pay.setManager(std::make_shared<QRestAccessManager>());
+    pay.setManager(std::make_shared<QRestAccessManager>(qnam_.get()));
     pay.pay(map);
 
     QCOMPARE(spy.count(), 1);

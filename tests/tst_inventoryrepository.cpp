@@ -1,12 +1,9 @@
 #include "Inventory/inventoryrepository.h"
-#include "Authentication/data/restuserauthentication.h"
-#include "Authentication/entity/credential.h"
-#include "Authentication/login.h"
-#include "User/data/localuserstore.h"
-#include <QTest>
-#include <QSignalSpy>
+#include "LoginHelper.h"
 #include <QJsonDocument>
 #include <QJsonObject>
+#include <QSignalSpy>
+#include <QTest>
 
 class TestInventoryRepository : public QObject
 {
@@ -31,26 +28,7 @@ TestInventoryRepository::TestInventoryRepository(QObject *parent)
 
 void TestInventoryRepository::initTestCase()
 {
-    QCoreApplication::setOrganizationDomain("cara.com");
-    QCoreApplication::setOrganizationName("Cara");
-    QCoreApplication::setApplicationName("CaraTesting");
-
-    Authentication::Business::Login login{};
-    Authentication::Entity::Credential c{};
-    c.setUsername("josevictoriano");
-    c.setPassword("2077120");
-    Authentication::Data::RestUserAuthentication auth{};
-    auth.setCredentials(c);
-    login.setAuthenticator(&auth);
-
-    User::Data::LocalUserStore userStore{};
-    login.setStore(&userStore);
-
-    QSignalSpy spy{&login, SIGNAL(authenticated(const QByteArray &))};
-    QVERIFY(spy.isValid());
-
-    login.authenticate();
-    QVERIFY(spy.wait());
+    LoginHelper::login();
 }
 
 void TestInventoryRepository::init()
