@@ -8,6 +8,7 @@ Item {
     id: root
 
     required property CustomerModel customerModel
+    property bool searchEnabled: CustomerManager.state !== "fetching"
 
     property alias searchText: customerProxy.text
 
@@ -15,14 +16,6 @@ Item {
     signal customerClicked(customerId: int)
 
     states: [
-        State {
-            name: "searchDisabled"
-            when: CustomerManager.state === "fetching"
-            PropertyChanges {
-                target: root
-                enabled: false
-            }
-        },
         State {
             name: "contentNotFound"
             when: CustomerManager.state === "contentNotFound"

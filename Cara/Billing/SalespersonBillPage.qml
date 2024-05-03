@@ -18,7 +18,7 @@ Page {
     header: StackLayout {
         id: stackLayout
         implicitHeight: 50
-        enabled: cvItem.enabled
+        enabled: cvItem.searchEnabled
 
         ToolBar {
             RowLayout {
@@ -54,5 +54,6 @@ Page {
         searchText: headerItem.displayText
         customerModel: CustomerManager.model
         onCustomerClicked: customerId => root.stackView.pushItem("qrc:/qt/qml/Cara/Billing/BillHomePage.qml", {customerId})
+        onSearchEnabledChanged: console.log("onSearchEnabled:", cvItem.searchEnabled)
     }
 }
