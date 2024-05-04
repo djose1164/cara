@@ -2,7 +2,7 @@
 
 #include <QRestReply>
 #include <QJsonDocument>
-#include <QRestAccessManager.h>
+#include <QRestAccessManager>.h>
 
 #define checkError(reply)                                                      \
     do {                                                                       \

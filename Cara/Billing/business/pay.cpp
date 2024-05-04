@@ -1,7 +1,7 @@
 #include "pay.h"
 #include <QJsonDocument>
 #include <QJsonObject>
-#include <QRestAccessManager.h>
+#include <QRestAccessManager>.h>
 #include <QRestReply>
 #include <QSettings>
 #include "payment.h"

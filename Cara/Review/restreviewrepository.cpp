@@ -1,7 +1,7 @@
 #include "restreviewrepository.h"
 #include "networkrequestsingleton.h"
 #include "qnamsingleton.h"
-#include <QRestAccessManager.h>
+#include <QRestAccessManager>.h>
 #include <QRestReply>
 #include <QJsonDocument>
 #include <QJsonObject>

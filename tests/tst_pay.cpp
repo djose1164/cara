@@ -5,7 +5,7 @@
 #include <QJsonObject>
 #include <QSignalSpy>
 #include <QTest>
-#include <QRestAccessManager.h>
+#include <QRestAccessManager>.h>
 
 class TestPay : public QObject
 {

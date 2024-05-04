@@ -3,7 +3,7 @@
 #include <QRestReply>
 #include <QJsonDocument>
 #include <QJsonObject>
-#include <QRestAccessManager.h>
+#include <QRestAccessManager>.h>
 
 using namespace Qt::StringLiterals;
 
