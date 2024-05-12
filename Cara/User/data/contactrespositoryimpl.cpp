@@ -1,7 +1,7 @@
 #include "contactrespositoryimpl.h"
 #include "QNAMSingleton.h"
 #include "networkrequestsingleton.h"
-#include <QRestAccessManager>.h>
+#include <QRestAccessManager>
 
 using namespace Qt::StringLiterals;
 

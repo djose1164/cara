@@ -1,7 +1,7 @@
 #include "restservice.h"
 #include "networkrequestsingleton.h"
 #include "qnamsingleton.h"
-#include <QRestAccessManager>.h>
+#include <QRestAccessManager>
 #include <QSettings>
 
 using namespace Qt::StringLiterals;

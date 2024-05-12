@@ -3,7 +3,7 @@
 #include <QJsonObject>
 #include <QJsonDocument>
 #include <QNetworkReply>
-#include <QRestAccessManager>.h>
+#include <QRestAccessManager>
 #include <QRestReply>
 #include <QSettings>
 

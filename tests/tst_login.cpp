@@ -95,7 +95,7 @@ void TestLogin::test_shouldEmitErrorOccurredOnceIfCredentialsAreInvalid() const
     auth.setCredentials(c);
     login->setAuthenticator(&auth);
 
-    QSignalSpy spy{login.get(), SIGNAL(errorOccurred(void))};
+    QSignalSpy spy{login.get(), &Authentication::Business::Login::errorOccurred};
 
     QVERIFY(spy.isValid());
 

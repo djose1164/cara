@@ -1,6 +1,7 @@
 #ifndef AUTHENTICATION_H
 #define AUTHENTICATION_H
 
+#include "Utils/httpstatuscodes.h"
 #include <QQmlEngine>
 
 namespace Authentication::Business
@@ -20,7 +21,7 @@ public slots:
 
 signals:
     void succeeded(const QByteArray &data);
-    void errorOccurred();
+    void errorOccurred(HttpStatus::Code error, const QString &errorString);
     void tokenReady(const QString &token);
 };
 }

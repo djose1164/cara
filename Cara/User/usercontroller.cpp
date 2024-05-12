@@ -36,6 +36,8 @@ UserController::UserController(QObject *parent)
     });
     connect(repository_, &Data::UserRepository::passwordUpdated,
             this, &UserController::passwordUpdated);
+    connect(repository_, &Data::UserRepository::deleted,
+            this, &UserController::userDeleted);
 }
 
 Data::UserRepository *UserController::repository() const
@@ -126,6 +128,18 @@ void UserController::readFavorites(UserId id)
         if (!doc.isEmpty())
             emit fetched(doc.toJson());
     });
+}
+
+void UserController::deleteUser(UserId userId)
+{
+    if (userId < 1)
+    {
+        setErrorString("Invalid userId"_L1);
+        emit errorOccurred();
+        return;
+    }
+
+    repository_->deleteUser(userId);
 }
 
 bool UserController::validatePasswordData(const QVariantMap &data)

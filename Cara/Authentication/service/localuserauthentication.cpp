@@ -1,6 +1,5 @@
 #include "localuserauthentication.h"
 #include "networkrequestsingleton.h"
-#include "business/tokenmanager.h"
 #include <QSettings>
 #include <QNetworkReply>
 #include <QJsonDocument>
@@ -24,8 +23,9 @@ void LocalUserAuthentication::authenticate()
     qInfo() << "Authenticationg user through LocalUserAuthentication...";
     if (refreshToken_.isEmpty())
     {
-        qCritical() << "LocalUserAuthentication::authenticate: refreshToken is empty.";
-        emit errorOccurred();
+        constexpr auto errorString{"LocalUserAuthentication::authenticate: refreshToken is empty."_L1};
+        qCritical() << errorString;
+        emit errorOccurred(HttpStatus::UndefinedStatusCode, errorString);
         return;
     }
 
@@ -48,7 +48,8 @@ void LocalUserAuthentication::authenticate()
         }
         else if (replyError != QNetworkReply::NoError)
         {
-            emit errorOccurred();
+            emit errorOccurred(HttpStatus::networkErrorToStatusCode(reply_->error()),
+                               reply_->errorString());
             return;
         }
 

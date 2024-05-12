@@ -5,7 +5,6 @@ import QtQuick.Layouts
 import QtQuick.Templates as T
 import Cara.User
 import Cara.Salesperson
-import "qrc:/orders" as Orders
 import Cara.Customer
 import Cara.Billing
 import Cara.Authentication
@@ -24,7 +23,7 @@ Page {
     readonly property T.StackView stackView: StackView.view
     readonly property string userHomePath: "qrc:/home/UserHome.qml"
     readonly property url adminHomePath: "qrc:/home/AdminHome.qml"
-    readonly property url adminCartPath: "qrc:/qt/qml/Cara/Billing/NewPurchaseOrder.qml"
+    readonly property url adminCartPath: "qrc:/qt/qml/Billing/NewPurchaseOrder.qml"
     readonly property url userCartPath: "qrc:/cart/Cart.qml"
     readonly property bool canPosteOrder: isAdmin || isSalesperson
     readonly property bool isAdmin: user.isAdmin

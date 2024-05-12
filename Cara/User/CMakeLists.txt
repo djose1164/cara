@@ -39,7 +39,7 @@ qt_add_qml_module(UserLib
 )
 
 target_include_directories(UserLib
-    PRIVATE {CMAKE_CURRENT_SOURCE_DIR} data service ../utils ../authentication ../store)
+    PRIVATE {CMAKE_CURRENT_SOURCE_DIR} data service ../utils ../authentication ../store ../)
 
 target_link_libraries(UserLib
     PRIVATE StoreLib)

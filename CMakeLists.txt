@@ -8,7 +8,7 @@ set(CMAKE_AUTORCC ON)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 find_package(Qt6 6.7 REQUIRED
-    COMPONENTS Qml Quick Core Network Svg Test Concurrent PrintSupport Graphs REQUIRED)
+    COMPONENTS Qml Quick Core Network Svg Test Concurrent PrintSupport Graphs QuickTest REQUIRED)
 
 qt_standard_project_setup(REQUIRES 6.7)
 qt_policy(SET QTP0001 NEW)

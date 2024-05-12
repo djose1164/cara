@@ -8,6 +8,10 @@ qt_add_qml_module(AuthenticationLib
     QML_FILES
         LoginPage.qml
         SignUp.qml
+        PasswordInput.qml
+    RESOURCES
+        eye-crossed.svg
+        eye.svg
     SOURCES
         business/authentication.h business/authentication.cpp
         business/irefreshable.h business/irefreshable.cpp
@@ -20,7 +24,6 @@ qt_add_qml_module(AuthenticationLib
         entity/credential.h entity/credential.cpp
         login.h login.cpp
         service/localuserauthentication.h service/localuserauthentication.cpp
-        networkrequestsingleton.h networkrequestsingleton.cpp
     DEPENDENCIES
         Utils
     IMPORTS
@@ -30,7 +33,8 @@ qt_add_qml_module(AuthenticationLib
 target_include_directories(AuthenticationLib
     PRIVATE
         business data entity service
-        ../utils ../store
+        ../utils ../store ../
+    INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
 target_link_libraries(AuthenticationLib

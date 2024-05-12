@@ -18,7 +18,6 @@ RestUserAuthentication::RestUserAuthentication(QObject *parent)
     , reply_{}
     , api_{NetworkRequestSingleton::instance().api()}
 {
-
 }
 
 QByteArray RestUserAuthentication::data() const
@@ -30,8 +29,9 @@ void RestUserAuthentication::authenticate()
 {
     if (!credentials_.isValid())
     {
-        qCritical() << "RestUserAuthentication::authenticate: credentials not valid";
-        emit errorOccurred();
+        setErrorString("RestUserAuthentication::authenticate: credentials not valid"_L1);
+        qCritical() << errorString_;
+        emit errorOccurred(HttpStatus::UndefinedStatusCode, errorString_);
         return;
     }
 
@@ -40,32 +40,32 @@ void RestUserAuthentication::authenticate()
     reply_ = manager_->post(request, credentials_.toJson());
 
     connect(reply_, &QNetworkReply::finished, this, [&] {
+        reply_->deleteLater();
         data_ = reply_->readAll();
 
         if (reply_->error() != QNetworkReply::NoError)
         {
-            emit errorOccurred();
+            emit errorOccurred(
+                HttpStatus::networkErrorToStatusCode(reply_->error()),
+                reply_->errorString()
+            );
             return;
         }
 
         const auto obj{QJsonDocument::fromJson(data_).object()};
         const QString codeString{obj.value("code").toString()};
 
-        if (codeString == "success" && obj.contains("user"_L1))
+        if (codeString == "success"_L1 && obj.contains("user"_L1))
         {
             emit succeeded(data_);
             emit tokenReady(obj["access_token"_L1].toString());
         }
-        else if (codeString == "invalidCredentials"_L1 || codeString == "notFound"_L1)
-        {
-            emit errorOccurred();
-        }
         else
         {
-            emit errorOccurred();
+            const int code{reply_->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt()};
+            const auto httpCode{static_cast<HttpStatus::Code>(code)};
+            emit errorOccurred(httpCode, HttpStatus::reasonPhrase(httpCode));
         }
-
-        reply_->deleteLater();
     });
 }
 

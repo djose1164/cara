@@ -15,18 +15,19 @@ Login::Login(QObject *parent)
     , authenticator_{}
     , stores_{}
 {
-    // connect(this, &Login::authenticated, this, &Login::userAuthenticated);
 }
 
 void Login::authenticate()
 {
+    if (!authenticator_)
+        return;
+    setStatus(Status::Busy);
     authenticator_->authenticate();
 }
 
 void Login::userAuthenticated(const QByteArray &data)
 {
-    qDebug() << "\nLogin::userAuthenticated: Saving...";
-
+    setStatus(Status::Authenticated);
     for (const auto &store : std::as_const(stores_))
         store->save(data);
 
@@ -35,14 +36,33 @@ void Login::userAuthenticated(const QByteArray &data)
 
 void Login::authenticatorConnection()
 {
-    connections_.append(connect(authenticator_, &Authentication::errorOccurred,
-                                this, &Login::errorOccurred));
-    connections_.append(connect(authenticator_, &Authentication::succeeded,
-                                this, &Login::userAuthenticated));
-    connections_.append(connect(authenticator_, &Business::Authentication::tokenReady,
-                                this, [&](const QString &token) {
-                                    NetworkRequestSingleton::instance().api()->setBearerToken(token.toUtf8());
-                                }));
+    connections_.append(
+        connect(authenticator_,
+            &Authentication::errorOccurred,
+            this,
+            [&](HttpStatus::Code c, const QString &es)
+            {
+                setStatus(c == HttpStatus::Unauthorized ? Status::InvalidCredentials
+                                                            : Status::Error);
+                emit errorOccurred(es);
+            }
+        )
+    );
+    connections_.append(
+        connect(authenticator_, &Authentication::succeeded,
+            this, &Login::userAuthenticated
+        )
+    );
+    connections_.append(
+        connect(authenticator_,
+            &Business::Authentication::tokenReady,
+            this, [&](const QString &token)
+            {
+                NetworkRequestSingleton::instance()
+                    .api()->setBearerToken(token.toUtf8());
+            }
+        )
+    );
 }
 
 void Login::authenticatorDisconnection()
@@ -100,18 +120,4 @@ void Login::setStatus(Status newStatus)
     emit statusChanged();
 }
 
-void Login::classBegin()
-{
-}
-
-void Login::componentComplete()
-{
-    // connect(authenticator_, &Authentication::errorOccurred,
-    //         this, &Login::errorOccurred);
-    // connect(authenticator_, &Authentication::succeeded,
-    //         this, &Login::userAuthenticated);
-    // connect(authenticator_, &Business::Authentication::tokenReady, this, [&](const QString &token) {
-    //     NetworkRequestSingleton::instance().api()->setBearerToken(token.toUtf8());
-    // });
-}
 }

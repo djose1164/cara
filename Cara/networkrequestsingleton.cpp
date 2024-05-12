@@ -1,4 +1,5 @@
 #include "networkrequestsingleton.h"
+#include "apienvironment.h"
 #include <QSettings>
 #include <QNetworkAccessManager>
 #include <QNetworkRequestFactory>
@@ -16,8 +17,11 @@ NetworkRequestSingleton &NetworkRequestSingleton::instance()
 }
 
 NetworkRequestSingleton::NetworkRequestSingleton()
-    : api_{std::make_shared<QNetworkRequestFactory>(QSettings().value("base").toString())}
+    : api_{std::make_shared<QNetworkRequestFactory>(Api::getApiPath().toString())}
 {
+    if (api_->baseUrl().isEmpty())
+        throw std::logic_error{"Base URL cannot be empty."};
+
     const QString token{QSettings().value("Credentials/accessToken"_L1).toString()};
     api_->setBearerToken(token.toUtf8());
 

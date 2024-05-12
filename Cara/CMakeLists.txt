@@ -2,11 +2,10 @@ cmake_minimum_required(VERSION 3.20)
 project(CaraLib LANGUAGES CXX)
 
 set(CMAKE_AUTORCC ON)
-set(CMAKE_AUTOMOC ON)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
-add_library(${PROJECT_NAME} STATIC
-    apienvironment.cpp)
+add_library(${PROJECT_NAME} STATIC)
+
 qt_add_qml_module(CaraLib
     URI Cara
     VERSION 1.0
@@ -22,12 +21,15 @@ qt_add_qml_module(CaraLib
         mail.svg
         logout.svg
         wifi-off.svg
+        cara-logo-v1.png
     SOURCES
         abstractresource.h abstractresource.cpp
-        apienvironment.h
+        apienvironment.h apienvironment.cpp
         config.h.in
         healthresource.h healthresource.cpp
+        networkrequestsingleton.h networkrequestsingleton.cpp
         restservice.h restservice.cpp
+        qnamsingleton.h qnamsingleton.cpp
 )
 
 set(CARA_VERSION ${CMAKE_PROJECT_VERSION})
@@ -53,9 +55,12 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
     UtilsLibplugin
     salespersonplugin
     StoreLibplugin
+    ControlsLibplugin
 )
 
-target_include_directories(CaraLib PRIVATE utils authentication data)
+target_include_directories(CaraLib
+    PRIVATE data authentication
+    INTERFACE ${CMAKE_INCLUDE_CURRENT_DIR})
 
 add_subdirectory(Data)
 add_subdirectory(Shopping)
@@ -70,3 +75,4 @@ add_subdirectory(Product)
 add_subdirectory(Statistics)
 add_subdirectory(store)
 add_subdirectory(Review)
+add_subdirectory(Controls)

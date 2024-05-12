@@ -1,7 +1,5 @@
 <RCC>
     <qresource prefix="/">
-        <file>icons/eye-crossed.svg</file>
-        <file>icons/eye.svg</file>
         <file>icons/home.svg</file>
         <file>icons/settings.svg</file>
         <file>icons/menu-burger.svg</file>
@@ -40,6 +38,5 @@
         <file>icons/product_statistics.svg</file>
         <file>icons/customer_statistics.svg</file>
         <file>icons/hand-bill.svg</file>
-        <file>../../../Users/Daniel Victoriano/Downloads/arrow-forward.svg</file>
     </qresource>
 </RCC>

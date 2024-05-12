@@ -68,7 +68,7 @@ void TestRestUserAuthentication::test_shouldEmitFailedUponUnsuccessfulAuthentica
     credentials.setPassword("12346");
     Authentication::Data::RestUserAuthentication auth{};
     auth.setCredentials(credentials);
-    QSignalSpy spy{&auth, SIGNAL(errorOccurred(void))};
+    QSignalSpy spy{&auth, &Authentication::Data::RestUserAuthentication::errorOccurred};
 
     QVERIFY(spy.isValid());
 

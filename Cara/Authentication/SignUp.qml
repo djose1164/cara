@@ -5,109 +5,185 @@ import QtQuick.Templates as T
 import QtQuick.Dialogs
 import Cara.Utils
 import Cara.User
+import Cara.Controls
 
 Item {
     id: signUp
 
     readonly property T.StackView stackView: StackView.view
+    readonly property bool valid: forenameInput.text.length > 0
+                                  && surnameInput.text.length > 0
+                                  && usernameInput.text.length > 0
+                                  && passwordInput.text.length > 0
+
     property int fontSize: 14
 
-    Image {
-        id: cara
+    implicitWidth: 450
+    implicitHeight: 600
+
+    LinearProgressIndicator {
+        id: indicator
         anchors.top: parent.top
-        anchors.topMargin: 20
         anchors.horizontalCenter: parent.horizontalCenter
-        source: "qrc:/cara-logo-v1.png"
-        sourceSize: "128x128"
+        currentIndex: swipeView.currentIndex
+        count: swipeView.count
+        displayText: internal.titleList[currentIndex]
     }
 
-    Label {
-        id: signUpLbl
-        anchors.top: cara.bottom
-        anchors.topMargin: 50
-        anchors.horizontalCenter: parent.horizontalCenter
-        text: "Registrarse"
-        font.pointSize: 20
-        font.bold: true
+    component NextButton : Button {
+        text: "Siguiente"
+        Material.background: Material.Blue
+        onClicked: swipeView.incrementCurrentIndex()
     }
 
-    GridLayout {
-        id: completeNameRL
-        width: signUp.width*.8 > signUp.height ? signUp.width/2 : signUp.width
-        height: signUp.height/2
-        anchors.centerIn: parent
-        columns: 2
+    component BackButton : Button {
+        text: "Atras"
+        Material.background: Material.Blue
+        onClicked: swipeView.decrementCurrentIndex()
+    }
 
-        TextField {
-            id: forenameInput
-            placeholderText: "Nombre(s)"
-            Layout.fillWidth: true
-            Layout.leftMargin: 15
-            Layout.rightMargin: 15
-            font.pointSize: fontSize
-            EnterKey.type: Qt.EnterKeyNext
+    SwipeView {
+        id: swipeView
+        anchors {
+            top: indicator.top
+            topMargin: 5
+            left: parent.left
+            right: parent.right
+            bottom: parent.bottom
         }
 
-        TextField {
-            id: surnameInput
-            placeholderText: "Apellido(s)"
-            Layout.fillWidth: true
-            Layout.alignment: Qt.AlignRight
-            Layout.leftMargin: 15
-            Layout.rightMargin: 15
-            font.pointSize: fontSize
-            EnterKey.type: Qt.EnterKeyNext
+        Item {
+            ColumnLayout {
+                anchors.fill: parent
+
+                TextField {
+                    id: forenameInput
+                    objectName: "forenameField"
+                    placeholderText: "Nombre(s)"
+                    Layout.fillWidth: true
+                    Layout.leftMargin: 15
+                    Layout.rightMargin: 15
+                    font.pointSize: fontSize
+                    EnterKey.type: Qt.EnterKeyNext
+                }
+
+                TextField {
+                    id: surnameInput
+                    objectName: "surnameField"
+                    placeholderText: "Apellido(s)"
+                    Layout.fillWidth: true
+                    Layout.alignment: Qt.AlignRight
+                    Layout.leftMargin: 15
+                    Layout.rightMargin: 15
+                    font.pointSize: fontSize
+                    EnterKey.type: Qt.EnterKeyNext
+                }
+
+                NextButton {
+                    Layout.alignment: Qt.AlignCenter
+                }
+
+                Label {
+                    text: '¿Ya tienes una cuenta? [Inicia sesion](LoginPage.qml)'
+                    onLinkActivated: link => stackView.replaceCurrentItem(link)
+                    textFormat: Label.MarkdownText
+                    font.pointSize: 12
+                    Layout.alignment: Qt.AlignCenter
+                }
+
+                Label {
+                    text: '[Continuar sin registrarme](url)'
+                    onLinkActivated: stackView.popCurrentItem()
+                    textFormat: Label.MarkdownText
+                    font.pointSize: 12
+                    Layout.alignment: Qt.AlignCenter
+                }
+            }
+
+            function validate() {
+                const msgTemplate = "El campo de %1 no puede estar vacio.";
+                if (forenameInput.text.length === 0)
+                    throw new Error(msgTemplate.arg("nombre"), {index: swipeView.currentIndex});
+                else if (surnameInput.text.length === 0)
+                    throw new Error(msgTemplate.arg("apellido"), {index: swipeView.currentIndex});
+            }
         }
 
-    TextField {
-        id: usernameInput
-        Layout.fillWidth: true
-        placeholderText: "Usuario"
-        inputMethodHints: Qt.ImhEmailCharactersOnly | Qt.ImhPreferLowercase | Qt.ImhNoAutoUppercase
-        Layout.leftMargin: 15
-        Layout.rightMargin: 15
-        Layout.columnSpan: 2
-        font.pointSize: fontSize
-        EnterKey.type: Qt.EnterKeyNext
-    }
+        Item {
+            width: swipeView.width
+            height: swipeView.height
 
-    PasswordInput {
-        id: passwordInput
-        Layout.fillWidth: true
-        Layout.leftMargin: 15
-        Layout.rightMargin: 15
-        font.pointSize: fontSize
-        Layout.columnSpan: 2
-    }
-    }
-    ColumnLayout {
-        id: footerRL
-        width: parent.width
-        anchors.bottom: parent.bottom
-        anchors.bottomMargin: 50
-        spacing: 20
+            ColumnLayout {
+                anchors.fill: parent
 
-        Button {
-            Layout.alignment: Qt.AlignCenter
-            text: "Registrarse"
-            font.pointSize: fontSize
-            onClicked: onOk()
+                TextField {
+                    id: usernameInput
+                    objectName: "usernameField"
+                    Layout.fillWidth: true
+                    placeholderText: "Usuario"
+                    inputMethodHints: Qt.ImhEmailCharactersOnly | Qt.ImhPreferLowercase | Qt.ImhNoAutoUppercase
+                    Layout.leftMargin: 15
+                    Layout.rightMargin: 15
+                    Layout.columnSpan: 2
+                    font.pointSize: fontSize
+                    EnterKey.type: Qt.EnterKeyNext
+                }
+
+                PasswordInput {
+                    id: passwordInput
+                    objectName: "passwordField"
+                    Layout.fillWidth: true
+                    Layout.leftMargin: 15
+                    Layout.rightMargin: 15
+                    font.pointSize: fontSize
+                    Layout.columnSpan: 2
+                }
+
+                RowLayout {
+                    Layout.fillWidth: true
+
+                    BackButton {}
+
+                    NextButton {
+                        Layout.alignment: Qt.AlignRight
+                    }
+                }
+            }
+
+            function validate() {
+                const msgTemplate = "El campo de %1 no puede estar vacio.";
+                if (usernameInput.text.length === 0)
+                    throw new Error(msgTemplate.arg("usuario"), {index: swipeView.currentIndex});
+                else if (passwordInput.text.length === 0)
+                    throw new Error(msgTemplate.arg("contraseña"), {index: swipeView.currentIndex});
+            }
         }
 
-        Label {
-            text: '¿Ya tienes una cuenta? [Inicia sesion](LoginPage.qml)'
-            onLinkActivated: link => stackView.replaceCurrentItem(link)
-            textFormat: Label.MarkdownText
-            Layout.alignment: Qt.AlignCenter
-            font.pointSize: 12
-        }
+        Item {
+            ColumnLayout {
+                anchors.fill: parent
+                spacing: 20
 
-        Label {
-            text: '[Continuar sin registrarme](url)'
-            onLinkActivated: stackView.popCurrentItem()
-            textFormat: Label.MarkdownText
-            Layout.alignment: Qt.AlignCenter
-            font.pointSize: 12
+                Button {
+                    objectName: "signUpBtn"
+                    Layout.alignment: Qt.AlignCenter
+                    text: "Registrarse"
+                    font.pointSize: fontSize
+                    onClicked: onOk()
+                }
+
+                RowLayout {
+                    Layout.fillWidth: true
+
+                    BackButton {}
+
+                    Button {
+                        text: "Registrarse"
+                        onClicked: signUp.onOk()
+                        Layout.alignment: Qt.AlignRight
+                    }
+                }
+            }
         }
     }
 
@@ -121,10 +197,17 @@ Item {
 
     MessageDialog {
         id: successMsg
-        text: "Te has registrado existosamente"
+        objectName: "successMsg"
+        text: "Te has registrado exitosamente"
         informativeText: "Favor de iniciar sesion"
         buttons: MessageDialog.Ok
         onAccepted: stackView.replaceCurrentItem(Qt.resolvedUrl("LoginPage.qml"))
+    }
+
+    MessageDialog {
+        id: messageDialog
+        objectName: "messageDialog"
+        buttons: MessageDialog.Ok
     }
 
     CaraApi {
@@ -154,17 +237,43 @@ Item {
         }
     }
 
+    QtObject {
+        id: internal
+        readonly property list<string> titleList: ["View A", "View B", "View C"]
+    }
+
     function onOk() {
-        const newUser = {
-            contact: {
-                "forename": forenameInput.text,
-                "surname": surnameInput.text,
-            },
-            "username": usernameInput.text,
-            "password": passwordInput.text,
-        };
-        print(`OnNewUser: ${JSON.stringify(newUser, null, 2)}`);
-        busyIndicator.open();
+        try {
+            signUp.validate();
+            const newUser = {
+                contact: {
+                    "forename": forenameInput.text,
+                    "surname": surnameInput.text,
+                },
+                "username": usernameInput.text,
+                "password": passwordInput.text,
+            };
+            print(`OnNewUser: ${JSON.stringify(newUser, null, 2)}`);
+            busyIndicator.open();
         request.post("/", newUser);
+        } catch (err) {
+            console.error(err);
+            swipeView.setCurrentIndex(err.index);
+            messageDialog.title = "Campos invalidos";
+            messageDialog.text = err.message;
+            messageDialog.open();
+        }
+    }
+
+    function validate() {
+        const msgTemplate = "El campo de %1 no puede estar vacio.";
+        if (forenameInput.text.length === 0)
+            throw new Error(msgTemplate.arg("nombre"), {index: swipeView.currentIndex});
+        else if (surnameInput.text.length === 0)
+            throw new Error(msgTemplate.arg("apellido"), {index: swipeView.currentIndex});
+        else if (usernameInput.text.length === 0)
+            throw new Error(msgTemplate.arg("usuario"), {index: swipeView.currentIndex});
+        else if (passwordInput.text.length === 0)
+            throw new Error(msgTemplate.arg("contraseña"), {index: swipeView.currentIndex});
     }
 }

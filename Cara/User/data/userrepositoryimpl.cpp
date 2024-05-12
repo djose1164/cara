@@ -1,9 +1,9 @@
 #include "userrepositoryimpl.h"
 #include "networkrequestsingleton.h"
-#include "httpstatuscodes.h"
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QNetworkReply>
+#include <QRestReply>
 #include <QSettings>
 
 using namespace Qt::StringLiterals;
@@ -69,28 +69,42 @@ void UserRepositoryImpl::updatePassword(UserId userId, const QVariantMap &data)
     );
 
     connect(reply_, &QNetworkReply::finished, this, [&] {
-        const int httpCode{
-            reply_->attribute(QNetworkRequest::HttpStatusCodeAttribute)
-                .toInt()
-        };
-        if (!HttpStatus::isSuccessful(httpCode))
+        if (!QRestReply{reply_}.isSuccess())
         {
             if (const auto doc{QJsonDocument::fromJson(reply_->readAll())};
                 doc.isObject() && doc.object().contains(messageField))
             {
-                setErrorString(doc[messageField].toString());
+                auto &&errMessage{doc[messageField].toString()};
+                setErrorString(
+                    errMessage.isEmpty() ? reply_->errorString() : errMessage
+                );
                 emit errorOccurred();
             }
             return;
         }
-        else if (reply_->error() != QNetworkReply::NoError)
+
+        emit passwordUpdated();
+        reply_->deleteLater();
+    });
+}
+
+void UserRepositoryImpl::deleteUser(UserId userId)
+{
+    reply_ = manager_->deleteResource(
+        api_->createRequest(path_
+                            + resourceIdentificator.arg(QString::number(userId)))
+        );
+
+    connect(reply_, &QNetworkReply::finished, this, [&] {
+        if (!QRestReply{reply_}.isSuccess())
         {
             setErrorString(reply_->errorString());
             emit errorOccurred();
             return;
         }
 
-        emit passwordUpdated();
+        emit deleted();
+        reply_->deleteLater();
     });
 }
 
@@ -103,4 +117,5 @@ void UserRepositoryImpl::setPath(const QString &newPath)
 {
     path_ = newPath;
 }
+
 }

@@ -20,7 +20,7 @@ TextField {
         anchors.right: textField.right
         anchors.verticalCenter: textField.verticalCenter
         flat: true
-        icon.source: showText ? "qrc:/icons/eye-crossed.svg" : "qrc:/icons/eye.svg"
+        icon.source: showText ? "eye-crossed.svg" : "eye.svg"
         onClicked: if (textField.text.length) showText = !showText
     }
 }

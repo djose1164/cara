@@ -41,11 +41,14 @@ public slots:
 
     void readFavorites(UserId id);
 
+    void deleteUser(UserId userId);
+
 signals:
     void fetched(const QByteArray &data);
     void updated();
     void contactUpdated();
     void errorOccurred();
+    void userDeleted();
 
     void errorStringChanged();
 

@@ -10,7 +10,6 @@ qt_add_qml_module(UtilsLib
         httpstatuscodes.h
         internetstatus.h internetstatus.cpp
         notimplementated.h
-        qnamsingleton.h qnamsingleton.cpp
         shareplataform.h shareplataform.cpp
         shareutils.h shareutils.cpp
         utils.h utils.cpp
@@ -33,7 +32,6 @@ qt_add_qml_module(UtilsLib
         MessagePane.qml
         MoreVertButton.qml
         NumberTextField.qml
-        PasswordInput.qml
         ProcessingIndicator.qml
         RedirectGroupBox.qml
         RedirectLabel.qml
@@ -64,3 +62,5 @@ if(ANDROID)
 endif()
 
 target_link_libraries(UtilsLib PRIVATE Qt6::Core Qt6::Network)
+
+target_include_directories(UtilsLib INTERFACE ${CMAKE_CURRENT_SOURCE_DIR})

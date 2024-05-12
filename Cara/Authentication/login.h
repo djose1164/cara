@@ -10,7 +10,7 @@
 namespace Authentication::Data { class TokenStore; }
 namespace Authentication::Business
 {
-class Login : public QObject, public QQmlParserStatus
+class Login : public QObject
 {
     Q_OBJECT
     QML_ELEMENT
@@ -25,6 +25,7 @@ public:
         Authenticated,
         UnAuthenticated,
         InvalidCredentials,
+        Busy,
         Error
     };
     Q_ENUM(Status)
@@ -45,9 +46,6 @@ public:
     AuthenticationMode mode() const;
     void setMode(AuthenticationMode newMode);
 
-    void classBegin() override;
-    void componentComplete() override;
-
     Authentication *authenticator() const;
     void setAuthenticator(Authentication *newAuthenticator);
 
@@ -55,7 +53,7 @@ public:
 
 signals:
     void authenticated(const QByteArray &data);
-    void errorOccurred();
+    void errorOccurred(const QString &errorString);
 
     void statusChanged();
 

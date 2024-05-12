@@ -1,6 +1,7 @@
-project(Tests VERSION 0.18.0 LANGUAGES CXX)
+project(Tests)
 
 enable_testing()
+add_definitions(-DQUICK_TEST_SOURCE_DIR="${CMAKE_CURRENT_SOURCE_DIR}")
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
@@ -52,3 +53,5 @@ qt_add_resources(restorderrepository "sample_data"
 target_compile_definitions(productrepository
     PRIVATE CURRENT_SOURCE_DIR=${CMAKE_CURRENT_SOURCE_DIR}
 )
+
+add_subdirectory(UnitQMLTests)

@@ -20,11 +20,13 @@ public:
 
     virtual void read(int id) = 0;
 
-    virtual QNetworkReply *readFavorites(UserId id) = 0;
+    [[nodiscard]] virtual QNetworkReply *readFavorites(UserId id) = 0;
 
     virtual void update(const Entity::UserEntity &user) = 0;
 
     virtual void updatePassword(UserId userId, const QVariantMap &data) = 0;
+
+    virtual void deleteUser(UserId userId) = 0;
 
     QString base() const;
     void setBase(const QString &newBase);
@@ -40,6 +42,7 @@ signals:
     void updated();
     void errorOccurred();
     void passwordUpdated();
+    void deleted();
 
 private:
     QString base_;

@@ -1,4 +1,5 @@
 qt_add_library(BillingLib STATIC)
+add_library(Cara::Billing ALIAS BillingLib)
 
 set_source_files_properties(BillingSettings.qml
     PROPERTIES
