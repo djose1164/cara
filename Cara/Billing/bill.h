@@ -1,7 +1,7 @@
 #ifndef BILLENTITY_H
 #define BILLENTITY_H
 
-#include "entity/payment.h"
+#include "payment.h"
 #include "model/ordermodel.h"
 #include "Customer/entity/customer.h"
 #include "orderstatus.h"
