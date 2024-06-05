@@ -164,12 +164,6 @@ Home {
         }
 
         ListElement {
-            source: "qrc:/qt/qml/Cara/Billing/pdf-icon.svg"
-            path: "qrc:/qt/qml/Cara/Billing/PdfBillListing.qml"
-            name: "Facturas exportadas"
-        }
-
-        ListElement {
             source: "qrc:/qt/qml/Cara/Billing/orders.svg"
             path: "qrc:/qt/qml/Cara/Billing/OrderQueue.qml"
             name: "Cola"

@@ -116,6 +116,16 @@ Drawer {
             }
 
             Button {
+                icon.source: "qrc:/qt/qml/Cara/Billing/pdf-icon.svg"
+                text: "Facturas exportadas"
+                flat: true
+                onClicked: {
+                    close();
+                    stackView.pushItem("qrc:/qt/qml/Cara/Billing/PdfBillListing.qml")
+                }
+            }
+
+            Button {
                 text: "Configuraciones"
                 icon.source: "qrc:/icons/settings.svg"
                 flat: true
