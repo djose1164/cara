@@ -1,6 +1,7 @@
 #ifndef USERENTITY_H
 #define USERENTITY_H
 
+#include "address.h"
 #include <QObject>
 #include <QQmlEngine>
 
@@ -24,6 +25,8 @@ class UserEntity
     Q_PROPERTY(bool isCustomer READ isCustomer)
     Q_PROPERTY(int salespersonId READ salespersonId WRITE setSalespersonId FINAL)
     Q_PROPERTY(QString phoneNumber READ phoneNumber WRITE setPhoneNumber FINAL)
+    Q_PROPERTY(QDate birthday READ birthday WRITE setBirthday FINAL)
+    Q_PROPERTY(Address address READ address WRITE setAddress FINAL)
 public:
     using UserId = int;
     using SalespersonId = int;
@@ -86,6 +89,14 @@ public:
     QString phoneNumber() const;
     void setPhoneNumber(const QString &newPhoneNumber);
 
+    QByteArray toJson() const;
+
+    QDate birthday() const;
+    void setBirthday(const QDate &newBirthday);
+
+    Address address() const;
+    void setAddress(const Address &newAddress);
+
 private:
     QString username_;
     QString password_;
@@ -100,6 +111,8 @@ private:
     SalespersonId salespersonId_;
 
     UserTypes userType_;
+    QDate birthday_;
+    Address address_;
 };
 }
 
