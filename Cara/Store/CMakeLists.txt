@@ -8,4 +8,6 @@ qt_add_qml_module(StoreLib
 )
 
 target_link_libraries(StoreLib
-    PRIVATE Qt6::Qml)
+    PRIVATE Qt6::Qml
+    INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}
+)
