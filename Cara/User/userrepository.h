@@ -28,6 +28,8 @@ public:
 
     virtual void deleteUser(UserId userId) = 0;
 
+    virtual void createUser(const QVariantMap &newUser) = 0;
+
     QString base() const;
     void setBase(const QString &newBase);
 
@@ -43,6 +45,7 @@ signals:
     void errorOccurred();
     void passwordUpdated();
     void deleted();
+    void userCreated();
 
 private:
     QString base_;
