@@ -10,7 +10,9 @@ qt_add_qml_module(UserLib
     VERSION 1.0
     QML_FILES
         AddressForm.qml
+        AddressItem.qml
         ContactForm.qml
+        ContactInfoItem.qml
         PerfilPage.qml
         UpdatePasswordPage.qml
         UserCredentialsForm.qml
@@ -22,6 +24,7 @@ qt_add_qml_module(UserLib
         data/contactrespositoryimpl.h data/contactrespositoryimpl.cpp
         data/localuserstore.h data/localuserstore.cpp
         data/userrepositoryimpl.h data/userrepositoryimpl.cpp
+        loginmanager.h loginmanager.cpp
         service/userservice.h service/userservice.cpp
         session.h session.cpp
         usercontroller.h usercontroller.cpp
@@ -29,17 +32,18 @@ qt_add_qml_module(UserLib
         usermodel.h usermodel.cpp
         userrepository.h userrepository.cpp
         usersession.h usersession.cpp
-        loginmanager.h loginmanager.cpp
     RESOURCES
         password.svg
     DEPENDENCIES
-        Utils
-        Authentication
-        Store
+        Cara.Utils
+        Cara.Authentication
+        Cara.Store
 )
 
 target_include_directories(UserLib
-    PRIVATE {CMAKE_CURRENT_SOURCE_DIR} data service ../utils ../authentication ../store ../)
+    PRIVATE data service ../Utils ../
+    INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}
+)
 
 target_link_libraries(UserLib
-    PRIVATE StoreLib)
+    PRIVATE StoreLib AuthenticationLib)
