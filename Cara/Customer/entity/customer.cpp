@@ -1,17 +1,28 @@
 #include "customer.h"
 #include <QJsonObject>
 
+using namespace Qt::StringLiterals;
+
+namespace
+{
+constexpr auto idField{"id"_L1};
+constexpr auto forenameField{"forename"_L1};
+constexpr auto surnameField{"surname"_L1};
+constexpr auto telephoneField{"telephone"_L1};
+constexpr auto personField{"person"_L1};
+}
+
 namespace Entity
 {
 Customer Customer::fromJson(const QJsonObject &customerObject)
 {
-    const auto contactObject{customerObject["contact"].toObject()};
+    const auto personObject{customerObject[personField].toObject()};
 
     Customer c{};
-    c.setCustomerId(customerObject["id"].toInt());
-    c.setForename(contactObject["forename"].toString());
-    c.setSurname(contactObject["surname"].toString());
-    c.setPhoneNumber(contactObject["telephone"].toString());
+    c.setCustomerId(customerObject[idField].toInt());
+    c.setForename(personObject[forenameField].toString());
+    c.setSurname(personObject[surnameField].toString());
+    c.setPhoneNumber(personObject[telephoneField].toString());
     return c;
 }
 

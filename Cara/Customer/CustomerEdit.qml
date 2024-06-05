@@ -102,13 +102,12 @@ Drawer {
             busyIndicator.close();
             dialog.open();
         }
-        onCustomerFetched: function(customer) {
-            personalInfoForm.forename = customer.forename;
-            personalInfoForm.surname = customer.surname;
 
-            if (customer)
-                contactForm.fillFields(customer);
-            if (customer.address)
+        onCustomerFetched: function(customer) {
+            personalInfoForm.fillFields(customer);
+            if (customer?.contact)
+                contactForm.fillFields(customer.contact);
+            if (customer?.address)
                 addressForm.fillFields(customer.address);
         }
     }

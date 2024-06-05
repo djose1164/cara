@@ -26,6 +26,7 @@ qt_add_qml_module(CustomerLib
         Customers.qml
         PersonalInformationForm.qml
         SelectedCustomer.qml
+        PersonalInfoItem.qml
     SOURCES
         customermodel.h customermodel.cpp
         customerrepository.h customerrepository.cpp
@@ -46,7 +47,7 @@ target_include_directories(CustomerLib PRIVATE
     model
     business
     ../Salesperson
-    ../utils
+    ../Utils
     ../
 )
 
