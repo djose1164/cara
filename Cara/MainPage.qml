@@ -23,7 +23,7 @@ Page {
     readonly property T.StackView stackView: StackView.view
     readonly property string userHomePath: "qrc:/home/UserHome.qml"
     readonly property url adminHomePath: "qrc:/home/AdminHome.qml"
-    readonly property url adminCartPath: "qrc:/qt/qml/Billing/NewPurchaseOrder.qml"
+    readonly property url adminCartPath: "qrc:/qt/qml/Cara/Billing/NewPurchaseOrder.qml"
     readonly property url userCartPath: "qrc:/cart/Cart.qml"
     readonly property bool canPosteOrder: isAdmin || isSalesperson
     readonly property bool isAdmin: user.isAdmin
@@ -108,7 +108,7 @@ Page {
             }
 
             Label {
-                text: "Verifica tu conexion de internet. Intenta verificar que"
+                text: "Verifica tu conexión de internet. Intenta verificar que"
                       + " tu WiFi o datos mobiles esten activiados."
                 font.pointSize: 14
                 wrapMode: Label.Wrap

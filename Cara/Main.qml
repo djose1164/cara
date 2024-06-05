@@ -8,7 +8,7 @@ import Cara.Utils
 import Cara.Salesperson
 import Cara
 import Cara.Customer
-import QtNetwork
+import Cara.Store
 
 ApplicationWindow {
     id: app
@@ -77,7 +77,7 @@ ApplicationWindow {
                 timeoutDialog.open();
             }
             onConnectionRefused: {
-                const message = "No se ha podido establecer una conexion con el servidor. "
+                const message = "No se ha podido establecer una conexión con el servidor. "
                               + "Intenta de nuevo mas tarde.";
                 appStack.replace("qrc:/errors/ErrorPage.qml", {message});
             }
