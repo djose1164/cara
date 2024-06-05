@@ -6,15 +6,12 @@ import QtQuick.Dialogs
 import Cara.Utils
 import Cara.User
 import Cara.Controls
+import Cara.Customer
 
 Item {
     id: signUp
 
     readonly property T.StackView stackView: StackView.view
-    readonly property bool valid: forenameInput.text.length > 0
-                                  && surnameInput.text.length > 0
-                                  && usernameInput.text.length > 0
-                                  && passwordInput.text.length > 0
 
     property int fontSize: 14
 
@@ -23,124 +20,99 @@ Item {
 
     LinearProgressIndicator {
         id: indicator
+        width: signUp.width * .8
         anchors.top: parent.top
         anchors.horizontalCenter: parent.horizontalCenter
         currentIndex: swipeView.currentIndex
         count: swipeView.count
-        displayText: internal.titleList[currentIndex]
+        displayText: swipeView.currentItem?.title ?? ""
     }
 
     component NextButton : Button {
         text: "Siguiente"
+        Layout.fillWidth: true
         Material.background: Material.Blue
-        onClicked: swipeView.incrementCurrentIndex()
+        onClicked: {
+            try {
+                swipeView.currentItem.validate();
+                swipeView.incrementCurrentIndex();
+            } catch (err) {
+                messageDialog.showErrorString(err.message);
+            }
+        }
     }
 
     component BackButton : Button {
         text: "Atras"
-        Material.background: Material.Blue
         onClicked: swipeView.decrementCurrentIndex()
     }
 
     SwipeView {
         id: swipeView
         anchors {
-            top: indicator.top
-            topMargin: 5
+            top: indicator.bottom
             left: parent.left
             right: parent.right
             bottom: parent.bottom
         }
+        interactive: false
 
-        Item {
-            ColumnLayout {
-                anchors.fill: parent
+        PersonalInfoItem {
+            id: personalInfoForm
 
-                TextField {
-                    id: forenameInput
-                    objectName: "forenameField"
-                    placeholderText: "Nombre(s)"
-                    Layout.fillWidth: true
-                    Layout.leftMargin: 15
-                    Layout.rightMargin: 15
-                    font.pointSize: fontSize
-                    EnterKey.type: Qt.EnterKeyNext
-                }
+            readonly property string title: "Informacion Personal"
 
-                TextField {
-                    id: surnameInput
-                    objectName: "surnameField"
-                    placeholderText: "Apellido(s)"
-                    Layout.fillWidth: true
-                    Layout.alignment: Qt.AlignRight
-                    Layout.leftMargin: 15
-                    Layout.rightMargin: 15
-                    font.pointSize: fontSize
-                    EnterKey.type: Qt.EnterKeyNext
-                }
-
-                NextButton {
-                    Layout.alignment: Qt.AlignCenter
-                }
-
-                Label {
-                    text: '¿Ya tienes una cuenta? [Inicia sesion](LoginPage.qml)'
-                    onLinkActivated: link => stackView.replaceCurrentItem(link)
-                    textFormat: Label.MarkdownText
-                    font.pointSize: 12
-                    Layout.alignment: Qt.AlignCenter
-                }
-
-                Label {
-                    text: '[Continuar sin registrarme](url)'
-                    onLinkActivated: stackView.popCurrentItem()
-                    textFormat: Label.MarkdownText
-                    font.pointSize: 12
-                    Layout.alignment: Qt.AlignCenter
-                }
+            NextButton {
+                Layout.alignment: Qt.AlignCenter
             }
 
-            function validate() {
-                const msgTemplate = "El campo de %1 no puede estar vacio.";
-                if (forenameInput.text.length === 0)
-                    throw new Error(msgTemplate.arg("nombre"), {index: swipeView.currentIndex});
-                else if (surnameInput.text.length === 0)
-                    throw new Error(msgTemplate.arg("apellido"), {index: swipeView.currentIndex});
+            Label {
+                text: '¿Ya tienes una cuenta? [Inicia sesion](LoginPage.qml)'
+                onLinkActivated: link => stackView.replaceCurrentItem(Qt.resolvedUrl(link))
+                textFormat: Label.MarkdownText
+                font.pointSize: 12
+                Layout.alignment: Qt.AlignCenter
+            }
+
+            Label {
+                text: '[Continuar sin registrarme](url)'
+                onLinkActivated: stackView.popCurrentItem()
+                textFormat: Label.MarkdownText
+                font.pointSize: 12
+                Layout.alignment: Qt.AlignCenter
             }
         }
 
-        Item {
-            width: swipeView.width
-            height: swipeView.height
+        ContactInfoItem {
+            id: contactInfo
 
-            ColumnLayout {
-                anchors.fill: parent
+            RowLayout {
+                width: contactInfo.width
+                spacing: 30
 
-                TextField {
-                    id: usernameInput
-                    objectName: "usernameField"
-                    Layout.fillWidth: true
-                    placeholderText: "Usuario"
-                    inputMethodHints: Qt.ImhEmailCharactersOnly | Qt.ImhPreferLowercase | Qt.ImhNoAutoUppercase
-                    Layout.leftMargin: 15
-                    Layout.rightMargin: 15
-                    Layout.columnSpan: 2
-                    font.pointSize: fontSize
-                    EnterKey.type: Qt.EnterKeyNext
+                BackButton {}
+
+                NextButton {
+                    Layout.alignment: Qt.AlignRight
                 }
+            }
+        }
 
-                PasswordInput {
-                    id: passwordInput
-                    objectName: "passwordField"
-                    Layout.fillWidth: true
-                    Layout.leftMargin: 15
-                    Layout.rightMargin: 15
-                    font.pointSize: fontSize
-                    Layout.columnSpan: 2
-                }
+        ScrollView {
+            id: scrollView
+
+            readonly property string title: "Direccion"
+
+            contentWidth: availableWidth
+
+            AddressItem {
+                id: addressItem
+                width: scrollView.availableWidth - scrollView.effectiveScrollBarWidth*2
+                anchors.horizontalCenter: parent.horizontalCenter
 
                 RowLayout {
-                    Layout.fillWidth: true
+                    width: addressItem.width
+                    spacing: 30
 
                     BackButton {}
 
@@ -151,37 +123,73 @@ Item {
             }
 
             function validate() {
-                const msgTemplate = "El campo de %1 no puede estar vacio.";
-                if (usernameInput.text.length === 0)
-                    throw new Error(msgTemplate.arg("usuario"), {index: swipeView.currentIndex});
-                else if (passwordInput.text.length === 0)
-                    throw new Error(msgTemplate.arg("contraseña"), {index: swipeView.currentIndex});
+                addressItem.validate();
+                console.log(addressItem.toJson())
+            }
+
+            function toJson() {
+                addressItem.toJson();
             }
         }
 
         Item {
+            id: credentialForm
+            readonly property string title: "Credenciales"
+
             ColumnLayout {
                 anchors.fill: parent
-                spacing: 20
+                anchors.leftMargin: 15
+                anchors.rightMargin: 15
+                anchors.topMargin: 30
+                anchors.bottomMargin: 30
+                spacing: 30
 
-                Button {
-                    objectName: "signUpBtn"
-                    Layout.alignment: Qt.AlignCenter
-                    text: "Registrarse"
+                TextField {
+                    id: usernameInput
+                    objectName: "usernameField"
+                    Layout.fillWidth: true
+                    placeholderText: "Usuario"
+                    inputMethodHints: Qt.ImhEmailCharactersOnly | Qt.ImhPreferLowercase | Qt.ImhNoAutoUppercase
+
+                    Layout.columnSpan: 2
                     font.pointSize: fontSize
-                    onClicked: onOk()
+                    EnterKey.type: Qt.EnterKeyNext
+                }
+
+                PasswordItem {
+                    id: passwordItem
+                    objectName: "passwordItem"
+                    Layout.fillWidth: true
+                    Layout.fillHeight: true
                 }
 
                 RowLayout {
                     Layout.fillWidth: true
+                    spacing: 30
 
                     BackButton {}
 
                     Button {
                         text: "Registrarse"
+                        Layout.fillWidth: true
+                        Material.background: Material.Blue
                         onClicked: signUp.onOk()
-                        Layout.alignment: Qt.AlignRight
                     }
+                }
+            }
+
+            function validate() {
+                const msgTemplate = "El campo de %1 no puede estar vacio.";
+                if (usernameInput.text.length === 0)
+                    throw new Error(msgTemplate.arg("usuario"));
+                else if (passwordInput.text.length === 0)
+                    throw new Error(msgTemplate.arg("contraseña"));
+            }
+
+            function toJson() {
+                return {
+                    username: usernameInput.text,
+                    password: passwordItem.text
                 }
             }
         }
@@ -208,16 +216,30 @@ Item {
         id: messageDialog
         objectName: "messageDialog"
         buttons: MessageDialog.Ok
+
+        function showErrorString(err: string) {
+            console.error(err);
+            messageDialog.title = "Campos invalidos";
+            messageDialog.text = err;
+            messageDialog.open();
+        }
     }
 
-    CaraApi {
-        id: request
-        endpoint:  "/users"
-        onSucceeded: successMsg.open()
+    UserController {
+        id: userController
+        onUserRegistered: {
+            busyIndicator.close();
+            successMsg.open();
+        }
+
+        onErrorOccurred: {
+            busyIndicator.close();
+            messageDialog.showErrorString(errorString);
+        }
     }
 
     Connections {
-        target: request
+        target: null
 
         function noInternetHandler() {
             popup.text = "Necesitas conectarte a internet.";
@@ -237,28 +259,22 @@ Item {
         }
     }
 
-    QtObject {
-        id: internal
-        readonly property list<string> titleList: ["View A", "View B", "View C"]
-    }
-
     function onOk() {
         try {
-            signUp.validate();
-            const newUser = {
-                contact: {
-                    "forename": forenameInput.text,
-                    "surname": surnameInput.text,
-                },
-                "username": usernameInput.text,
-                "password": passwordInput.text,
-            };
-            print(`OnNewUser: ${JSON.stringify(newUser, null, 2)}`);
+            let signupObj = credentialForm.toJson();
+            signupObj.person = personalInfoForm.toJson();
+            const person = signupObj.person;
+            person.contact = contactInfo.toJson();
+            const contact = person.contact;
+            contact.address = addressItem.toJson();
+            console.log(JSON.stringify(signupObj, null, 2));
+
             busyIndicator.open();
-        request.post("/", newUser);
+
+            userController.signUp(signupObj);
+
         } catch (err) {
             console.error(err);
-            swipeView.setCurrentIndex(err.index);
             messageDialog.title = "Campos invalidos";
             messageDialog.text = err.message;
             messageDialog.open();
@@ -268,12 +284,32 @@ Item {
     function validate() {
         const msgTemplate = "El campo de %1 no puede estar vacio.";
         if (forenameInput.text.length === 0)
-            throw new Error(msgTemplate.arg("nombre"), {index: swipeView.currentIndex});
+            throw new Error(msgTemplate.arg("nombre"));
         else if (surnameInput.text.length === 0)
-            throw new Error(msgTemplate.arg("apellido"), {index: swipeView.currentIndex});
+            throw new Error(msgTemplate.arg("apellido"));
         else if (usernameInput.text.length === 0)
-            throw new Error(msgTemplate.arg("usuario"), {index: swipeView.currentIndex});
+            throw new Error(msgTemplate.arg("usuario"));
         else if (passwordInput.text.length === 0)
-            throw new Error(msgTemplate.arg("contraseña"), {index: swipeView.currentIndex});
+            throw new Error(msgTemplate.arg("contraseña"));
+    }
+
+    function getUser({
+        username,
+        forename,
+        surname,
+        userType,
+        email,
+        birthday,
+        address
+    }): user {
+        return {
+            username,
+            forename,
+            surname,
+            userType,
+            email,
+            birthday,
+            address
+        };
     }
 }

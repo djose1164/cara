@@ -7,6 +7,7 @@ import Cara.User
 import Cara.Authentication
 import Cara.Salesperson
 import Cara.Utils
+import Cara.Store
 
 Item {
     id: root
@@ -57,7 +58,7 @@ Item {
             Layout.alignment: Qt.AlignCenter
             Layout.topMargin: 5
             font.pointSize: 15
-            Keys.onReturnPressed: if (internal.areInputsValid) internal.requestAuthentication()
+            Keys.onReturnPressed: if (internal.areInputsValid) root.requestAuthentication()
 
             ToolTip {
                 id: passwordToolTip
@@ -98,7 +99,7 @@ Item {
 
                 Label {
                     text: '¿Aun no tienes una cuenta? [Registrate](SignUp.qml)'
-                    onLinkActivated: link => root.stackView.replaceCurrentItem(link);
+                    onLinkActivated: link => root.stackView.replaceCurrentItem(Qt.resolvedUrl(link));
                     textFormat: Label.MarkdownText
                     Layout.alignment: Qt.AlignCenter
                     font.pointSize: 12
@@ -198,5 +199,9 @@ Item {
             const salesperson = spController.fromJsonObject(salespersonJson);
             SalespersonSettings.setEntity(salesperson);
         }
+    }
+
+    function requestAuthentication() {
+
     }
 }

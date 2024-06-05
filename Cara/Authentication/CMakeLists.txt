@@ -9,6 +9,7 @@ qt_add_qml_module(AuthenticationLib
         LoginPage.qml
         SignUp.qml
         PasswordInput.qml
+        PasswordItem.qml
     RESOURCES
         eye-crossed.svg
         eye.svg
@@ -26,14 +27,12 @@ qt_add_qml_module(AuthenticationLib
         service/localuserauthentication.h service/localuserauthentication.cpp
     DEPENDENCIES
         Utils
-    IMPORTS
-        Cara.Store
 )
 
 target_include_directories(AuthenticationLib
     PRIVATE
         business data entity service
-        ../utils ../store ../
+        ../Utils ../
     INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
