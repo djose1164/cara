@@ -2,7 +2,7 @@
 #define CARTCONTROLLER_H
 
 #include "userentity.h"
-#include "entity/orderentity.h"
+#include "orderentity.h"
 #include "model/ordermodel.h"
 #include "abstractresource.h"
 #include "productentity.h"
