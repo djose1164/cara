@@ -6,7 +6,7 @@
 #include <QQmlEngine>
 #include <QSettings>
 #include <QTimer>
-#include <istore.h>
+#include "Store/istore.h"
 
 namespace Authentication::Business {
 class IRefreshable;

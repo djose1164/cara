@@ -1,7 +1,7 @@
 #ifndef TOKENSTORE_H
 #define TOKENSTORE_H
 
-#include "istore.h"
+#include "Store/istore.h"
 
 namespace Authentication::Data
 {
