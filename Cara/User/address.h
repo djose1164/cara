@@ -6,21 +6,22 @@
 
 namespace Entity
 {
-class Address : public QObject
+class Address
 {
-    Q_OBJECT
-    QML_ELEMENT
-    Q_PROPERTY(int addressId READ addressId WRITE setAddressId NOTIFY addressIdChanged FINAL)
-    Q_PROPERTY(int houseNumber READ houseNumber WRITE setHouseNumber NOTIFY houseNumberChanged FINAL)
-    Q_PROPERTY(int countryId READ countryId WRITE setCountryId NOTIFY countryIdChanged FINAL)
-    Q_PROPERTY(int provinceId READ provinceId WRITE setProvinceId NOTIFY provinceIdChanged FINAL)
-    Q_PROPERTY(int municipalityId READ municipalityId WRITE setMunicipalityId NOTIFY municipalityIdChanged FINAL)
-    Q_PROPERTY(int sectorId READ sectorId WRITE setSectorId NOTIFY sectorIdChanged FINAL)
-    Q_PROPERTY(QString street READ street WRITE setStreet NOTIFY streetChanged FINAL)
+    Q_GADGET
+    Q_PROPERTY(int addressId READ addressId WRITE setAddressId FINAL)
+    Q_PROPERTY(int houseNumber READ houseNumber WRITE setHouseNumber FINAL)
+    Q_PROPERTY(int countryId READ countryId WRITE setCountryId FINAL)
+    Q_PROPERTY(int provinceId READ provinceId WRITE setProvinceId FINAL)
+    Q_PROPERTY(int municipalityId READ municipalityId WRITE setMunicipalityId FINAL)
+    Q_PROPERTY(int sectorId READ sectorId WRITE setSectorId FINAL)
+    Q_PROPERTY(QString street READ street WRITE setStreet FINAL)
+    QML_VALUE_TYPE(address)
+    QML_CONSTRUCTIBLE_VALUE
 public:
     static Address *fromMap(const QByteArray &data);
 
-    explicit Address(QObject *parent = nullptr);
+    Address();
 
     int addressId() const;
     void setAddressId(int newAddressId);
@@ -42,20 +43,6 @@ public:
 
     QString street() const;
     void setStreet(const QString &newStreet);
-
-signals:
-    void addressIdChanged();
-    void houseNumberChanged();
-
-    void countryIdChanged();
-
-    void provinceIdChanged();
-
-    void municipalityIdChanged();
-
-    void sectorIdChanged();
-
-    void streetChanged();
 
 private:
     int addressId_;
