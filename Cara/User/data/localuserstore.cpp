@@ -37,11 +37,11 @@ bool LocalUserStore::save(const QByteArray &data)
     settings.endGroup();
 
     settings.beginGroup("Contact");
-    const auto contactData{obj["user"]["contact"].toObject()};
+    const auto contactData{obj["user"]["person"].toObject()};
 
     settings.setValue("forename", contactData["forename"].toString());
     settings.setValue("surname", contactData["surname"].toString());
-    settings.setValue("email", contactData["email"].toString());
+    settings.setValue("email", contactData["contact"]["email"].toString());
     settings.endGroup();
 
     Authentication::Data::TokenStore{}.save(data);

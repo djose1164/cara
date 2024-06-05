@@ -43,12 +43,15 @@ public slots:
 
     void deleteUser(UserId userId);
 
+    void signUp(const QVariantMap &newUser);
+
 signals:
     void fetched(const QByteArray &data);
     void updated();
     void contactUpdated();
     void errorOccurred();
     void userDeleted();
+    void userRegistered();
 
     void errorStringChanged();
 

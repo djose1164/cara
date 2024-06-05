@@ -1,6 +1,7 @@
 #include "usercontroller.h"
 #include "contactrespositoryimpl.h"
 #include "data/userrepositoryimpl.h"
+#include "utils.h"
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QNetworkReply>
@@ -38,6 +39,8 @@ UserController::UserController(QObject *parent)
             this, &UserController::passwordUpdated);
     connect(repository_, &Data::UserRepository::deleted,
             this, &UserController::userDeleted);
+    connect(repository_, &Data::UserRepository::userCreated,
+            this, &UserController::userRegistered);
 }
 
 Data::UserRepository *UserController::repository() const
@@ -140,6 +143,11 @@ void UserController::deleteUser(UserId userId)
     }
 
     repository_->deleteUser(userId);
+}
+
+void UserController::signUp(const QVariantMap &newUser)
+{
+    repository_->createUser(newUser);
 }
 
 bool UserController::validatePasswordData(const QVariantMap &data)

@@ -3,6 +3,7 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QNetworkReply>
+#include <QRestAccessManager>
 #include <QRestReply>
 #include <QSettings>
 
@@ -13,7 +14,8 @@ namespace
 constexpr auto resourceIdentificator{"/%1"_L1};
 constexpr auto userIdField{"userId"_L1};
 constexpr auto messageField{"message"_L1};
-const auto patchVerb{"PATCH"_ba};
+constexpr auto signupPath{"/signup"_L1};
+constexpr auto patchVerb{QByteArrayView{"PATCH"}};
 }
 
 namespace Data
@@ -64,7 +66,7 @@ void UserRepositoryImpl::updatePassword(UserId userId, const QVariantMap &data)
 {
     reply_ = manager_->sendCustomRequest(
         api_->createRequest(path_ + resourceIdentificator.arg(QString::number(userId))),
-        patchVerb,
+        patchVerb.toByteArray(),
         QJsonDocument::fromVariant(data).toJson()
     );
 
@@ -106,6 +108,30 @@ void UserRepositoryImpl::deleteUser(UserId userId)
         emit deleted();
         reply_->deleteLater();
     });
+}
+
+void UserRepositoryImpl::createUser(const QVariantMap &newUser)
+{
+    const auto restManager{ new QRestAccessManager{manager_} };
+    restManager->post(api_->createRequest(path_ + signupPath),
+                     newUser,
+                     this,
+                     [this, restManager](QRestReply &reply){
+                          restManager->deleteLater();
+
+                         if (reply.isSuccess())
+                         {
+                             emit userCreated();
+                             return;
+                         }
+
+                         if (const auto json{reply.readJson()};
+                             json && json->isObject() && json->object().contains(messageField))
+                         {
+                             setErrorString((*json)[messageField].toString());
+                             emit errorOccurred();
+                         }
+                     });
 }
 
 QString UserRepositoryImpl::path() const

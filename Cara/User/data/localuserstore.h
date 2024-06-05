@@ -1,7 +1,7 @@
 #ifndef LOCALUSERSTORE_H
 #define LOCALUSERSTORE_H
 
-#include "istore.h"
+#include "Store/istore.h"
 #include "userentity.h"
 #include "entity/credential.h"
 #include <QObject>
