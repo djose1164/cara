@@ -5,7 +5,9 @@ Item {
     id: root
 
     property alias text: label.text
+    property alias currentIndex: comboBox.currentIndex
     readonly property alias comboBox: comboBox
+    readonly property alias currentValue: comboBox.currentValue
     readonly property alias model: listModel
 
     width: 250

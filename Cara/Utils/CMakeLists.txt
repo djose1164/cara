@@ -8,7 +8,6 @@ qt_add_qml_module(UtilsLib
     SOURCES
         fileutils.h fileutils.cpp
         httpstatuscodes.h
-        internetstatus.h internetstatus.cpp
         notimplementated.h
         shareplataform.h shareplataform.cpp
         shareutils.h shareutils.cpp
@@ -31,7 +30,6 @@ qt_add_qml_module(UtilsLib
         Message.qml
         MessagePane.qml
         MoreVertButton.qml
-        NumberTextField.qml
         ProcessingIndicator.qml
         RedirectGroupBox.qml
         RedirectLabel.qml
@@ -48,11 +46,11 @@ qt_add_qml_module(UtilsLib
         PicSwipeView.qml
         EmailField.qml
         SearchHeader.qml
+        SelectorHeaderItem.qml
     RESOURCES
         utils.js
         star.png
         star-unfilled.png
-        QML_FILES SelectorHeaderItem.qml
 )
 
 if(ANDROID)
