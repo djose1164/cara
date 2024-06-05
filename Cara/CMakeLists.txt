@@ -22,6 +22,8 @@ qt_add_qml_module(CaraLib
         logout.svg
         wifi-off.svg
         cara-logo-v1.png
+        cara-mobile-icon.ico
+        cara-mobile-icon.png
     SOURCES
         abstractresource.h abstractresource.cpp
         apienvironment.h apienvironment.cpp
@@ -59,20 +61,20 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
 )
 
 target_include_directories(CaraLib
-    PRIVATE data authentication
+    PRIVATE ./Data ./Authentication
     INTERFACE ${CMAKE_INCLUDE_CURRENT_DIR})
 
+add_subdirectory(Utils)
 add_subdirectory(Data)
+add_subdirectory(Controls)
+add_subdirectory(Statistics)
+add_subdirectory(Store)
+add_subdirectory(Product)
+add_subdirectory(Authentication)
 add_subdirectory(Shopping)
 add_subdirectory(Inventory)
 add_subdirectory(Salesperson)
 add_subdirectory(User)
-add_subdirectory(Authentication)
-add_subdirectory(Utils)
 add_subdirectory(Billing)
 add_subdirectory(Customer)
-add_subdirectory(Product)
-add_subdirectory(Statistics)
-add_subdirectory(store)
 add_subdirectory(Review)
-add_subdirectory(Controls)

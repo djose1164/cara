@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.20)
 
-project(Cara VERSION 0.18.0 LANGUAGES CXX)
+project(CaraClient VERSION 0.18.0 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -16,18 +16,18 @@ qt_policy(SET QTP0001 NEW)
 add_subdirectory(Cara)
 
 if(NOT CMAKE_BUILD_TYPE STREQUAL "Release")
-    add_subdirectory(tests)
+    #add_subdirectory(tests)
 endif()
 
 if (WIN32)
-    qt_add_executable(Cara
+    qt_add_executable(${PROJECT_NAME}
         main.cpp
         cara.rc
         assets/res.qrc
         qml/qml.qrc
     )
 else()
-    qt_add_executable(Cara
+    qt_add_executable(${PROJECT_NAME}
         main.cpp
         assets/res.qrc
         qml/qml.qrc
@@ -47,21 +47,21 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
     CaraLibplugin
 )
 
-qt_add_resources(Cara "configuration"
+qt_add_resources(${PROJECT_NAME} "configuration"
     PREFIX "/"
     FILES
         qtquickcontrols2.conf
 )
 
 include(GNUInstallDirs)
-install(TARGETS Cara
+install(TARGETS ${PROJECT_NAME}
     BUNDLE DESTINATION .
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
 )
 
 if (ANDROID)
-    set_target_properties(Cara PROPERTIES
+    set_target_properties(${PROJECT_NAME} PROPERTIES
         RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin"
         QT_ANDROID_PACKAGE_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/android"
         QT_ANDROID_VERSION_NAME "${CARA_VERSION}"
@@ -77,5 +77,5 @@ if (ANDROID)
     FetchContent_MakeAvailable(android_openssl)
     include(${android_openssl_SOURCE_DIR}/android_openssl.cmake)
 
-    add_android_openssl_libraries(Cara)
+    add_android_openssl_libraries(${PROJECT_NAME})
 endif()

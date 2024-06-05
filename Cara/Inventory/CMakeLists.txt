@@ -17,8 +17,8 @@ qt_add_qml_module(InventoryLib
         model/productmodel.h model/productmodel.cpp
         model/productproxymodel.h model/productproxymodel.cpp
     DEPENDENCIES
-        Product
+        Cara.Product
 )
 
 target_include_directories(InventoryLib
-    PRIVATE model ../product ../authentication ../)
+    PRIVATE model ../Product ../Authentication ../)

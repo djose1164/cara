@@ -9,7 +9,7 @@ qt_add_qml_module(DataLib
 )
 
 target_include_directories(DataLib
-    PRIVATE ../utils ..
+    PRIVATE ../Utils ..
     INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}
 )
 

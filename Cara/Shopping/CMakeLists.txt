@@ -34,13 +34,12 @@ qt_add_qml_module(${PROJECT_NAME}
 )
 
 target_include_directories(${PROJECT_NAME} PRIVATE
-    ../data
-    ../utils
-    ../user
-    ../billing
-    ../product
+    ../Data
+    ../Utils
+    ../Billing
+
     ../authentication
     ../
 )
 
-target_link_libraries(${PROJECT_NAME} PRIVATE UtilsLib AuthenticationLib)
+target_link_libraries(${PROJECT_NAME} PRIVATE UtilsLib AuthenticationLib UserLib BillingLib ProductLib)
