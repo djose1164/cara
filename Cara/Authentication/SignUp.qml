@@ -265,8 +265,7 @@ Item {
             signupObj.person = personalInfoForm.toJson();
             const person = signupObj.person;
             person.contact = contactInfo.toJson();
-            const contact = person.contact;
-            contact.address = addressItem.toJson();
+            person.address = addressItem.toJson();
             console.log(JSON.stringify(signupObj, null, 2));
 
             busyIndicator.open();
