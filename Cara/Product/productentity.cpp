@@ -181,6 +181,11 @@ void Product::setupPictures(const QJsonArray &pics)
     setImages(std::move(imageList));
 }
 
+bool Product::hasImages() const
+{
+    return !images_.isEmpty();
+}
+
 QString Product::imageUrl() const
 {
     return imageUrl_;

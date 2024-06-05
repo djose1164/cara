@@ -29,4 +29,6 @@ qt_add_qml_module(ProductLib
         data
 )
 
-target_include_directories(ProductLib PRIVATE ../data ../utils ..)
+target_include_directories(ProductLib
+    PRIVATE ../Data ../Utils ..
+    INTERFACE ${CMAKE_CURRENT_SOURCE_DIR})

@@ -23,6 +23,7 @@ class Product
     Q_PROPERTY(int selectedQty READ selectedQty WRITE setSelectedQty FINAL)
     Q_PROPERTY(QJsonArray images READ images WRITE setImages FINAL)
     Q_PROPERTY(QString imageUrl READ imageUrl WRITE setImageUrl FINAL)
+    Q_PROPERTY(bool hasImages READ hasImages FINAL)
 public:
     Product();
 
@@ -70,6 +71,8 @@ public:
     QString imageUrl() const;
     void setImageUrl(const QString &newCoverImage);
 
+    bool hasImages() const;
+
 public slots:
     void setName(const QString &name);
     void setDescription(const QString &description);
@@ -93,6 +96,7 @@ private:
     int quantityAvailable_;
     int reorderPoint_;
     int selectedQty_;
+    bool hasImages_;
 };
 }
 

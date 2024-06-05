@@ -7,12 +7,12 @@ import Cara.Data
 
 Item {
     id: root
-    required property int id
-    readonly property int productId: id
-    required property string name
-    required property var images
-    required property string description
-    required property int sell_price
+    required property var modelData
+    readonly property int productId: modelData.id
+    property string name: modelData.name
+    property var images: modelData.images
+    property string description: modelData.description
+    property int sell_price: modelData.sell_price
     readonly property T.StackView stackView: ListView.view.stackView
 
     width: ListView.view.width
@@ -39,7 +39,7 @@ Item {
             ProductImage {
                 id: img
 
-                source: images ? Constants.uploadsPath + images[0].image_url : ""
+                source: root.images && root.images.length ? Constants.uploadsPath + images[0].image_url : "qrc:/cara-logo-v1.png"
                 sourceSize: "128x128"
                 onReady: stackLayout.currentIndex = 1
             }
