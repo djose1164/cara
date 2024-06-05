@@ -33,5 +33,5 @@ qt_add_qml_module(salesperson
 )
 
 target_include_directories(salesperson
-    PRIVATE business data ../data ../user ../utils ../authentication ../
+    PRIVATE business data ../Data ../User ../Utils ../authentication ../
 )

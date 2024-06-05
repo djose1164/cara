@@ -105,7 +105,7 @@ Page {
 
             Label {
                 id: label
-                text: user.contact.forename +" "+ user.contact.surname + `\nID #${id}`
+                text: user.forename +" "+ user.surname + `\nID #${id}`
                 padding: 12
                 font.pointSize: 12
             }
