@@ -1,6 +1,6 @@
 #include "billmodel.h"
 #include "ordermodel.h"
-#include "entity/bill.h"
+#include "bill.h"
 
 namespace Model
 {

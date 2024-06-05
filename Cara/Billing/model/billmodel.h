@@ -1,7 +1,7 @@
 #ifndef BILLMODEL_H
 #define BILLMODEL_H
 
-#include "entity/bill.h"
+#include "bill.h"
 #include <QAbstractListModel>
 #include <QtQml>
 

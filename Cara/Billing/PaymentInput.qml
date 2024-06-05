@@ -3,7 +3,7 @@ import QtQuick.Controls
 import QtQuick.Layouts
 import Cara.Billing
 import Cara.Product
-import Cara.Utils
+import Cara.Controls
 
 Item {
     id: root

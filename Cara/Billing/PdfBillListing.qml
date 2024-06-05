@@ -64,7 +64,7 @@ Page {
                     spacing: 10
                     Image {
                         id: img
-                        source: "pdf-icon.svg"
+                        source: "pdf-icon-colored.svg"
                         sourceSize: "32x32"
                     }
 

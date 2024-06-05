@@ -22,7 +22,6 @@ qt_add_qml_module(BillingLib
         BillingSettingsItem.qml
         CreditedView.qml
         CustomerBillDelegate.qml
-        CustomerBillPage.qml
         CustomerBills.qml
         CustomerBillsHome.qml
         NewPurchaseOrder.qml
@@ -56,9 +55,9 @@ qt_add_qml_module(BillingLib
         data/restorderrepository.h data/restorderrepository.cpp
         detailsentity.h detailsentity.cpp
         document.h document.cpp
-        entity/bill.h entity/bill.cpp
-        entity/orderentity.h entity/orderentity.cpp
-        entity/payment.h entity/payment.cpp
+        bill.h bill.cpp
+        orderentity.h orderentity.cpp
+        payment.h payment.cpp
         ibillrepository.h ibillrepository.cpp
         model/abstractsortfiltermodel.h model/abstractsortfiltermodel.cpp
         model/billmodel.h model/billmodel.cpp
@@ -72,6 +71,7 @@ qt_add_qml_module(BillingLib
     RESOURCES
         order-model.html style.css
         pdf-icon.svg
+        pdf-icon-colored.svg
         orders.svg
         done_all.svg
         check_circle_fill.svg
@@ -84,8 +84,8 @@ qt_add_qml_module(BillingLib
 target_include_directories(BillingLib
     PRIVATE
         business entity model data
-        ../Customer ../data ../product ../authentication ../utils ../
+        ../Customer ../Data ../authentication ../Utils ../ ../Product
 )
 
 target_link_libraries(BillingLib
-    PRIVATE Qt6::Concurrent Qt6::PrintSupport Qt6::Network UtilsLib InventoryLib CustomerLib)
+    PRIVATE Qt6::Concurrent Qt6::PrintSupport Qt6::Network UtilsLib InventoryLib CustomerLib ProductLib ProductLibplugin)
