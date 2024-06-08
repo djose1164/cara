@@ -34,6 +34,7 @@ TestPay::TestPay(QObject *parent)
 void TestPay::initTestCase()
 {
     LoginHelper::login();
+
     qnam_ = std::make_unique<QNetworkAccessManager>();
 }
 
