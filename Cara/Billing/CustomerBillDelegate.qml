@@ -22,35 +22,37 @@ Item {
         anchors.centerIn: parent
         Material.elevation: 8
 
-        ColumnLayout {
+        GridLayout {
             anchors.fill: parent
-            RowLayout {
+            columns: 2
+
+            Label {
+                text: `Orden #${root.orderId}`
+                font.pointSize: 15
                 Layout.fillWidth: true
-                Label {
-                    text: `Orden #${root.orderId}`
-                    font.pointSize: 15
-                    Layout.fillWidth: true
-                }
-                Label {
-                    leftPadding: 14
-                    Layout.alignment: Qt.AlignTrailing
-                    text: `**Fecha:** ${root.orderDate.toLocaleDateString(Qt.locale(), Locale.ShortFormat)}`
-                    textFormat: Label.MarkdownText
-                    wrapMode: Label.Wrap
-                }
+            }
+
+            Label {
+                leftPadding: 14
+                Layout.alignment: Qt.AlignTrailing
+                text: `**Fecha:** ${root.orderDate.toLocaleDateString(Qt.locale(), Locale.ShortFormat)}`
+                textFormat: Label.MarkdownText
+                wrapMode: Label.Wrap
             }
 
             Label {
                 visible: UserSettings.userTypeId !== UserEntity.Customer
                 text: `
-                    <strong>Cliente:</strong> ${customer.forename} ${customer.surname}
+                <strong>Cliente:</strong> ${customer.forename} ${customer.surname}
                 `
                 leftPadding: 14
+                Layout.columnSpan: 2
             }
 
             Label {
                 text: `<strong>Estado de pago: </strong>${payment.statusString}`
                 leftPadding: 14
+                Layout.columnSpan: 2
             }
         }
 
