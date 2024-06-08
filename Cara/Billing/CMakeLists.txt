@@ -85,7 +85,8 @@ target_include_directories(BillingLib
     PRIVATE
         business entity model data
         ../Customer ../Data ../authentication ../Utils ../ ../Product
+    INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
 target_link_libraries(BillingLib
-    PRIVATE Qt6::Concurrent Qt6::PrintSupport Qt6::Network UtilsLib InventoryLib CustomerLib ProductLib ProductLibplugin)
+    PRIVATE Qt6::Concurrent Qt6::PrintSupport Qt6::Network UtilsLib InventoryLib CustomerLib ProductLib)

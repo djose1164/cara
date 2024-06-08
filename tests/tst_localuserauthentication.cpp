@@ -1,7 +1,7 @@
 #include "Authentication/data/tokenstore.h"
 #include "Authentication/login.h"
 #include "Authentication/service/localuserauthentication.h"
-#include "LoginHelper.h"
+#include "loginhelper.h"
 #include <QSignalSpy>
 #include <QtTest>
 

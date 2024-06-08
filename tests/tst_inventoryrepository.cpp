@@ -1,5 +1,5 @@
 #include "Inventory/inventoryrepository.h"
-#include "LoginHelper.h"
+#include "loginhelper.h"
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QSignalSpy>

@@ -1,6 +1,6 @@
 #include "Authentication/data/restuserauthentication.h"
 #include "Authentication/login.h"
-#include "authentication/entity/credential.h"
+#include "Authentication/entity/credential.h"
 #include "loginhelper.h"
 #include <QtTest>
 

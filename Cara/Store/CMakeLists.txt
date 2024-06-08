@@ -1,6 +1,6 @@
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
-add_library(StoreLib STATIC)
+qt_add_library(StoreLib STATIC)
 qt_add_qml_module(StoreLib
     URI Cara.Store
     SOURCES
@@ -9,5 +9,6 @@ qt_add_qml_module(StoreLib
 
 target_link_libraries(StoreLib
     PRIVATE Qt6::Qml
-    INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}
 )
+
+target_include_directories(StoreLib INTERFACE ${CMAKE_CURRENT_SOURCE_DIR})

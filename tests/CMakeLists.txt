@@ -5,29 +5,29 @@ add_definitions(-DQUICK_TEST_SOURCE_DIR="${CMAKE_CURRENT_SOURCE_DIR}")
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
+add_library(LoginHelper STATIC
+    loginhelper.h loginhelper.cpp)
+
+qt_add_library(EnvHelper STATIC
+    dotenv.h)
+
+target_link_libraries(LoginHelper PRIVATE Qt6::Test Qt6::Qml AuthenticationLib StoreLib UserLib)
+target_include_directories(LoginHelper INTERFACE ${CMAKE_CURRENT_SOURCE_DIR})
+
 function(SETUP_TESTS)
        foreach(_testname ${ARGN})
            add_executable(${_testname} tst_${_testname}.cpp )
            add_test(NAME ${_testname} COMMAND ${_testname})
-           target_link_libraries(${_testname} PRIVATE Qt6::Test Qt6::Qml CaraLibplugin LoginHelper)
+           target_link_libraries(${_testname} PRIVATE Qt6::Test Qt6::Qml CaraLibplugin AuthenticationLibplugin LoginHelper)
        endforeach()
 endfunction()
 
-add_library(LoginHelper STATIC
-    loginhelper.h loginhelper.cpp)
-
-target_link_libraries(LoginHelper PRIVATE Qt6::Test Qt6::Qml CaraLibplugin)
-
-include_directories(
-    ../cara
-    ../cara/store
-    ../cara/authentication
-    ../cara/user
-    ../cara/customer
-    ../cara/product
-    ../cara/shopping
-    ../cara/billing
-)
+include_directories(../Cara/Product)
+include_directories(../Cara/Customer)
+include_directories(../Cara/User)
+include_directories(../Cara/Billing)
+include_directories(../Cara/Authentication)
+include_directories(../Cara)
 
 SETUP_TESTS(
    customerresource
@@ -35,19 +35,12 @@ SETUP_TESTS(
    localuserauthentication
    localuserstore
    login
-   pay
-   payment
    productmodel
    productrepository
-   restorderrepository
    restuserauthentication
    salespersoncontroller
    salespersonrepositoryimp
    usercredential
-)
-
-qt_add_resources(restorderrepository "sample_data"
-    FILES good_order.json bad_order.json
 )
 
 target_compile_definitions(productrepository
@@ -55,3 +48,4 @@ target_compile_definitions(productrepository
 )
 
 add_subdirectory(UnitQMLTests)
+add_subdirectory(Billing)

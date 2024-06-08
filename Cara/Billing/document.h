@@ -1,8 +1,8 @@
 #ifndef DOCUMENT_H
 #define DOCUMENT_H
 
+#include "abstractdocument.h"
 #include <QQmlEngine>
-#include <abstractdocument.h>
 
 namespace Billing
 {

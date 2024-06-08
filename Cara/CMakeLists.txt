@@ -4,9 +4,9 @@ project(CaraLib LANGUAGES CXX)
 set(CMAKE_AUTORCC ON)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
-add_library(${PROJECT_NAME} STATIC)
+qt_add_library(${PROJECT_NAME} STATIC)
 
-qt_add_qml_module(CaraLib
+qt_add_qml_module(${PROJECT_NAME}
     URI Cara
     VERSION 1.0
     QML_FILES
@@ -24,6 +24,7 @@ qt_add_qml_module(CaraLib
         cara-logo-v1.png
         cara-mobile-icon.ico
         cara-mobile-icon.png
+        .env
     SOURCES
         abstractresource.h abstractresource.cpp
         apienvironment.h apienvironment.cpp
@@ -62,7 +63,7 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
 
 target_include_directories(CaraLib
     PRIVATE ./Data ./Authentication
-    INTERFACE ${CMAKE_INCLUDE_CURRENT_DIR})
+    INTERFACE ${CMAKE_CURRENT_SOURCE_DIR})
 
 add_subdirectory(Utils)
 add_subdirectory(Data)

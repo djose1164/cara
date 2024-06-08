@@ -4,7 +4,7 @@
 #include "Authentication/login.h"
 #include "Authentication/service/localuserauthentication.h"
 #include "User/data/localuserstore.h"
-#include "LoginHelper.h"
+#include "loginhelper.h"
 #include <QSettings>
 #include <QSignalSpy>
 #include <QtTest>

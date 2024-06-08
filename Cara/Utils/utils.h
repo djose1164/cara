@@ -2,6 +2,7 @@
 #define UTILS_H
 
 #include <QJsonObject>
+#include <QMetaProperty>
 
 class QRestReply;
 namespace Utils
@@ -18,5 +19,31 @@ consteval bool runningOnAndroid()
 }
 
 bool isOperationCanceledError(const QRestReply &reply);
+
+template <typename T>
+concept HasStaticMetaObject = requires(T)
+{
+    {T::staticMetaObject} -> std::convertible_to<const QMetaObject *>;
+};
+
+template <typename T>
+    //requires HasStaticMetaObject<T>
+QJsonObject toJson(const void *entity)
+{
+    QJsonObject obj;
+    const QMetaObject *metaObj = &T::staticMetaObject;
+    for (int i{metaObj->propertyOffset()}; i < metaObj->propertyCount(); ++i)
+    {
+        auto &&prop{metaObj->property(i)};
+        if (auto&& propValue{prop.readOnGadget(entity)}; prop.isReadable())
+        {
+            const auto propertyName{QString::fromLatin1(prop.name())};
+            obj[propertyName] = QJsonValue::fromVariant(propValue);
+        }
+    }
+
+    return obj;
+}
+
 }
 #endif // UTILS_H

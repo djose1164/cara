@@ -1,10 +1,12 @@
 #include "loginhelper.h"
-#include "Authentication/data/restuserauthentication.h"
-#include "Authentication/data/tokenstore.h"
+//#include "Authentication/data/restuserauthentication.h"
+#include "data/tokenstore.h"
 #include "Authentication/login.h"
 #include <QCoreApplication>
 #include <QtTest>
 #include "User/data/localuserstore.h"
+#include "data/restuserauthentication.h"
+#include "dotenv.h"
 
 void LoginHelper::login()
 {
@@ -14,9 +16,13 @@ void LoginHelper::login()
 
 void LoginHelper::loginWithoutAppConf()
 {
+    dotenv::init();
+
     Authentication::Entity::Credential c{};
-    c.setUsername("cara");
-    c.setPassword("1234");
+    c.setUsername(QString::fromStdString(dotenv::getenv("USER_TEST")));
+    c.setPassword(QString::fromStdString(dotenv::getenv("PASSWORD_TEST")));
+    qInfo() << dotenv::getenv("USER_TEST");
+    qInfo() << c;
 
     Authentication::Data::RestUserAuthentication auth{};
     auth.setCredentials(c);
