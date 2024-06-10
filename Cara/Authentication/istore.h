@@ -15,12 +15,13 @@ class IStore : public QObject
 public:
     using QObject::QObject;
 
-    virtual ~IStore();
+    virtual ~IStore() = default;
 
     virtual bool save(const QByteArray &data) = 0;
     virtual void restore() = 0;
     virtual void clear() = 0;
     virtual QString refresh() const = 0;
+    virtual QBindable<QString> bindableRefreshToken() const = 0;
 };
 }
 
