@@ -1,7 +1,7 @@
 #ifndef RESTUSERAUTHENTICATION_H
 #define RESTUSERAUTHENTICATION_H
 
-#include "business/authentication.h"
+#include "business/authenticator.h"
 #include "entity/credential.h"
 #include <QObject>
 #include <QNetworkAccessManager>
@@ -9,7 +9,7 @@
 
 namespace Authentication::Data
 {
-class RestUserAuthentication : public Business::Authentication
+class RestUserAuthentication : public Business::Authenticator
 {
     Q_OBJECT
     QML_ELEMENT

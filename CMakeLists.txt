@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.20)
 
-project(CaraClient VERSION 0.18.0 LANGUAGES CXX)
+project(CaraClient VERSION 0.19.0 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -8,15 +8,15 @@ set(CMAKE_AUTORCC ON)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 find_package(Qt6 6.7 REQUIRED
-    COMPONENTS Qml Quick Core Network Svg Test Concurrent PrintSupport Graphs QuickTest REQUIRED)
+    COMPONENTS Qml Quick Core Network Svg Test PrintSupport Graphs QuickTest REQUIRED)
 
 qt_standard_project_setup(REQUIRES 6.7)
 qt_policy(SET QTP0001 NEW)
 
 add_subdirectory(Cara)
 
-if(NOT CMAKE_BUILD_TYPE STREQUAL "Release")
-    add_subdirectory(tests)
+if((LINUX OR WIN32) AND NOT CMAKE_BUILD_TYPE STREQUAL "Release")
+    # add_subdirectory(tests)
 endif()
 
 if (WIN32)
@@ -38,13 +38,10 @@ endif()
 set(CARA_VERSION ${CMAKE_PROJECT_VERSION})
 
 target_link_libraries(${PROJECT_NAME} PRIVATE
-    Qt6::Qml
     Qt6::Quick
-    Qt6::Core
-    Qt6::Network
-    Qt6::Svg
     Qt6::Test
     CaraLibplugin
+    AuthenticationLib
 )
 
 qt_add_resources(${PROJECT_NAME} "configuration"

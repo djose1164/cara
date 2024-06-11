@@ -8,7 +8,6 @@ import Cara.Utils
 import Cara.Salesperson
 import Cara
 import Cara.Customer
-import Cara.Store
 
 ApplicationWindow {
     id: app
@@ -104,33 +103,29 @@ ApplicationWindow {
     // This' not supposod to handle authentication from credentials, only from refresh token.
     Auth.Login {
         id: login
-        authenticator: localAuthenticator
-        stores: Auth.TokenStore
+        authenticator: Auth.LocalUserAuthentication {
+            id: localAuthenticator
+            refreshToken: Auth.TokenManager.refreshToken
+            onTokenExpired: {
+                print("Token is expired");
+                clearSavedSettings();
+                stackView.replaceCurrentItem(mainPage);
+            }
+        }
+        store: Auth.TokenStore
         onAuthenticated: {
             print("Login: authenticated: ");
             userController.getUserById(UserSettings.userId);
         }
     }
 
-    Auth.LocalUserAuthentication {
-        id: localAuthenticator
-        refreshToken: Auth.TokenStore.refresh
-        onTokenExpired: {
-            print("Token is expired");
-            clearSavedSettings();
-            stackView.replaceCurrentItem(mainPage);
-        }
-    }
-
     function setup() {
-        Auth.TokenManager.store = Auth.TokenStore;
         LoginManager.session = UserSession.session;
-        Auth.TokenStore.restore();
         healthResource.readStatus();
     }
 
     function loginSetup() {
-        if (Auth.TokenStore.refresh && UserSettings.userId > 0) {
+        if (Auth.TokenManager.refreshToken && UserSettings.userId > 0) {
             login.authenticate();
         } else {
             clearSavedSettings();
@@ -140,7 +135,7 @@ ApplicationWindow {
 
     function closingHandler(close: CloseEvent) {
         // Manages Android Back-button
-        if(Qt.platform.os === "android") {
+        if (Qt.platform.os === "android") {
             if (appStack.depth > 1) {
                 close.accepted = false;
                 appStack.pop();

@@ -13,7 +13,8 @@ Login::Login(QObject *parent)
     , status_{Status::UnAuthenticated}
     , mode_{AuthenticationMode::Undefined}
     , authenticator_{}
-    , stores_{}
+    , store_{}
+    , token_{&NetworkRequestSingleton::instance()}
 {
 }
 
@@ -28,8 +29,8 @@ void Login::authenticate()
 void Login::userAuthenticated(const QByteArray &data)
 {
     setStatus(Status::Authenticated);
-    for (const auto &store : std::as_const(stores_))
-        store->save(data);
+    if (store_)
+        store_->save(data);
 
     emit authenticated(data);
 }
@@ -38,28 +39,22 @@ void Login::authenticatorConnection()
 {
     connections_.append(
         connect(authenticator_,
-            &Authentication::errorOccurred,
-            this,
-            [&](HttpStatus::Code c, const QString &es)
-            {
-                setStatus(c == HttpStatus::Unauthorized ? Status::InvalidCredentials
-                                                            : Status::Error);
-                emit errorOccurred(es);
-            }
+                &Authenticator::errorOccurred,
+                this,
+                &Login::authenticationFailed
         )
     );
     connections_.append(
-        connect(authenticator_, &Authentication::succeeded,
+        connect(authenticator_, &Authenticator::succeeded,
             this, &Login::userAuthenticated
         )
     );
     connections_.append(
         connect(authenticator_,
-            &Business::Authentication::tokenReady,
+            &Business::Authenticator::tokenReady,
             this, [&](const QString &token)
             {
-                NetworkRequestSingleton::instance()
-                    .api()->setBearerToken(token.toUtf8());
+                token_->setAccessToken(token);
             }
         )
     );
@@ -74,17 +69,45 @@ void Login::authenticatorDisconnection()
     connections_.clear();
 }
 
-QQmlListProperty<Store::IStore> Login::stores()
+void Login::authenticationFailed(Authenticator::Error error, const QString &errorString)
 {
-    return {this, &stores_};
+    qWarning() << "Login::authenticationFailed: " << QVariant::fromValue(error);
+    using enum Authenticator::Error;
+    errorString_ = errorString;
+    if (error == InvalidCredentials)
+    {
+        setStatus(Status::InvalidCredentials);
+        error_ = InvalidCredentials;
+    }
+    emit errorOccurred(errorString);
 }
 
-Authentication *Login::authenticator() const
+Store::IStore *Login::store()
+{
+    return store_;
+}
+
+void Login::setStore(Store::IStore *newStore)
+{
+    store_ = newStore;
+}
+
+QBindable<Authenticator::Error> Login::bindableError() const
+{
+    return &error_;
+}
+
+QBindable<QString> Login::bindableErrorString() const
+{
+    return &errorString_;
+}
+
+Authenticator *Login::authenticator() const
 {
     return authenticator_;
 }
 
-void Login::setAuthenticator(Authentication *newAuthenticator)
+void Login::setAuthenticator(Authenticator *newAuthenticator)
 {
     if (authenticator_ == newAuthenticator)
         return;

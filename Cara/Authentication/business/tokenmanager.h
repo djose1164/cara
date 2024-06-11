@@ -1,12 +1,13 @@
 #ifndef TOKENMANAGER_H
 #define TOKENMANAGER_H
 
+#include "istore.h"
 #include <QNetworkReply>
 #include <QObject>
+#include <QProperty>
 #include <QQmlEngine>
 #include <QSettings>
 #include <QTimer>
-#include "Store/istore.h"
 
 namespace Authentication::Business {
 class IRefreshable;
@@ -15,13 +16,16 @@ class IToken;
 class TokenManager : public QObject
 {
     Q_OBJECT
+    Q_PROPERTY(Store::IStore *store READ store NOTIFY storeChanged FINAL)
+    Q_PROPERTY(bool refreshing READ refreshing WRITE setRefreshing NOTIFY refreshingChanged FINAL)
+    Q_PROPERTY(QString accessToken READ accessToken NOTIFY accessTokenChanged FINAL)
+    Q_PROPERTY(QString refreshToken READ refreshToken NOTIFY refreshTokenChanged BINDABLE bindableRefreshToken FINAL)
     QML_ELEMENT
     QML_SINGLETON
-    Q_PROPERTY(Store::IStore *store READ store WRITE setStore NOTIFY storeChanged FINAL)
-    Q_PROPERTY(bool refreshing READ refreshing WRITE setRefreshing NOTIFY refreshingChanged FINAL)
 public:
     QString refreshToken() const;
     void setRefreshToken(const QString &newRefreshToken);
+    QBindable<QString> bindableRefreshToken() const;
 
     static TokenManager *create(QQmlEngine *qmlEngine, QJSEngine *jsEngine);
     static TokenManager *instance();
@@ -37,6 +41,11 @@ public:
 
     Store::IStore *store() const;
     void setStore(Store::IStore *newStore);
+
+    QString accessToken() const;
+    void setAccessToken(const QString &newAccessToken);
+
+    void setToken(IToken *newToken);
 
 public slots:
     void clear();
@@ -64,7 +73,8 @@ private:
     explicit TokenManager(QObject *parent = nullptr);
     void refreshAccessToken();
 
-    QString refreshToken_;
+    QProperty<QString> refreshToken_;
+    QString accessToken_;
     QTimer *timer_;
     QNetworkReply *reply_;
     QString errorString_;

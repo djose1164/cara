@@ -1,5 +1,6 @@
 #include "localuserauthentication.h"
 #include "networkrequestsingleton.h"
+#include "tokenstore.h"
 #include <QSettings>
 #include <QNetworkReply>
 #include <QJsonDocument>
@@ -10,12 +11,15 @@ using namespace Qt::StringLiterals;
 
 namespace Authentication::Service {
 LocalUserAuthentication::LocalUserAuthentication(QObject *parent)
-    : Business::Authentication{parent}
+    : Business::Authenticator{parent}
     , refreshToken_{}
     , isAuthenticated_{}
     , manager_{new QNetworkAccessManager(this)}
     , reply_{}
 {
+    Data::TokenStore ts{};
+    ts.restore();
+    setRefreshToken(ts.refresh());
 }
 
 void LocalUserAuthentication::authenticate()
@@ -23,9 +27,9 @@ void LocalUserAuthentication::authenticate()
     qInfo() << "Authenticationg user through LocalUserAuthentication...";
     if (refreshToken_.isEmpty())
     {
-        constexpr auto errorString{"LocalUserAuthentication::authenticate: refreshToken is empty."_L1};
-        qCritical() << errorString;
-        emit errorOccurred(HttpStatus::UndefinedStatusCode, errorString);
+        constexpr auto errorString{"refreshToken is empty."_L1};
+        qCritical() << "LocalUserAuthentication::authenticate: " << errorString;
+        emit errorOccurred(Authenticator::Error::EmptyToken, errorString);
         return;
     }
 
@@ -48,7 +52,7 @@ void LocalUserAuthentication::authenticate()
         }
         else if (replyError != QNetworkReply::NoError)
         {
-            emit errorOccurred(HttpStatus::networkErrorToStatusCode(reply_->error()),
+            emit errorOccurred(Authenticator::Error::Unknown,
                                reply_->errorString());
             return;
         }

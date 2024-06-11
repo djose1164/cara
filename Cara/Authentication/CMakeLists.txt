@@ -1,7 +1,3 @@
-set(CMAKE_INCLUDE_CURRENT_DIR ON)
-
-qt_add_library(AuthenticationLib STATIC)
-
 qt_add_qml_module(AuthenticationLib
     URI Cara.Authentication
     VERSION 1.0
@@ -14,7 +10,7 @@ qt_add_qml_module(AuthenticationLib
         eye-crossed.svg
         eye.svg
     SOURCES
-        business/authentication.h business/authentication.cpp
+    business/authenticator.h business/authenticator.cpp
         business/irefreshable.h business/irefreshable.cpp
         business/itoken.h
         business/tokenmanager.h business/tokenmanager.cpp
@@ -25,6 +21,7 @@ qt_add_qml_module(AuthenticationLib
         entity/credential.h entity/credential.cpp
         login.h login.cpp
         service/localuserauthentication.h service/localuserauthentication.cpp
+        istore.h
     DEPENDENCIES
         Utils
 )
@@ -35,6 +32,3 @@ target_include_directories(AuthenticationLib
         ../Utils ../
     INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}
 )
-
-target_link_libraries(AuthenticationLib
-    PRIVATE StoreLib)

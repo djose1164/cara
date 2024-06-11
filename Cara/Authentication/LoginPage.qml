@@ -7,7 +7,6 @@ import Cara.User
 import Cara.Authentication
 import Cara.Salesperson
 import Cara.Utils
-import Cara.Store
 
 Item {
     id: root
@@ -145,35 +144,37 @@ Item {
 
     Login {
         id: login
-        stores: [
-            LocalUserStore {
-                id: localUserStore
-            }
-        ]
-        authenticator: auth
-        onAuthenticated: {
-            // MainPage.qml is already in stack. No need to replace.
-            if (root.stackView)
-                root.stackView.popCurrentItem();
+        store: LocalUserStore {
+            id: localUserStore
         }
-        onErrorOccurred: errorString => {
-            popup.open();
-            root.errorOccurred(errorString);
-        }
-    }
 
-    RestUserAuthentication {
-        id: auth
-        credentials {
-            username: internal.username
-            password: internal.password
+        authenticator: RestUserAuthentication {
+            id: auth
+            credentials {
+                username: internal.username
+                password: internal.password
+            }
         }
-        onSucceeded: data => {
+
+        onAuthenticated: data => {
+            const jsonData = JSON.parse(data);
             LoginManager.loggingIn();
             internal.saveSalespersonSettings(data);
             UserSettings.setEntity(userController.create(data));
             LoginManager.loggedIn();
+            TokenStore.access = jsonData.access_token;
+            TokenStore.refresh = jsonData.refresh_token;
             root.loggedIn();
+
+            // MainPage.qml is already in stack. No need to replace.
+            if (root.stackView)
+                root.stackView.popCurrentItem();
+            console.log("TokenStore.access:",TokenStore.access);
+        }
+
+        onErrorOccurred: errorString => {
+            popup.open();
+            root.errorOccurred(errorString);
         }
     }
 

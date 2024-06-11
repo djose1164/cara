@@ -40,6 +40,7 @@ QString NetworkRequestSingleton::accessToken() const
 
 void NetworkRequestSingleton::setAccessToken(const QString &newAccessToken)
 {
+    qDebug() << "NetworkRequestSingleton::setAccessToken: setting newAccessToken";
     api_->setBearerToken(newAccessToken.toUtf8());
 }
 

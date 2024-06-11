@@ -123,4 +123,9 @@ QString LocalUserStore::refresh() const
     return settings.value(credentialsField).toString();
 }
 
+QBindable<QString> LocalUserStore::bindableRefreshToken() const
+{
+    return {};
+}
+
 }

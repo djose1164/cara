@@ -1,24 +1,27 @@
 #ifndef BUSINESS_LOGIN_H
 #define BUSINESS_LOGIN_H
 
-#include "Store/istore.h"
-#include "business/authentication.h"
+#include "business/authenticator.h"
+#include "istore.h"
 #include <QObject>
 #include <QQmlEngine>
 #include <QByteArray>
+#include <QProperty>
 
-namespace Authentication::Data { class TokenStore; }
 namespace Authentication::Business
 {
+class IToken;
+
 class Login : public QObject
 {
     Q_OBJECT
-    QML_ELEMENT
-
     Q_PROPERTY(Status status READ status WRITE setStatus NOTIFY statusChanged FINAL)
     Q_PROPERTY(AuthenticationMode mode READ mode WRITE setMode NOTIFY modeChanged FINAL)
     Q_PROPERTY(Authentication *authenticator READ authenticator WRITE setAuthenticator NOTIFY authenticatorChanged FINAL REQUIRED)
-    Q_PROPERTY(QQmlListProperty<Store::IStore> stores READ stores CONSTANT FINAL)
+    Q_PROPERTY(Store::IStore *store READ store WRITE setStore FINAL)
+    Q_PROPERTY(Authentication::Error error BINDABLE bindableError)
+    Q_PROPERTY(QString errorString BINDABLE bindableErrorString)
+    QML_ELEMENT
 public:
     enum class Status
     {
@@ -46,10 +49,15 @@ public:
     AuthenticationMode mode() const;
     void setMode(AuthenticationMode newMode);
 
-    Authentication *authenticator() const;
-    void setAuthenticator(Authentication *newAuthenticator);
+    Authenticator *authenticator() const;
+    void setAuthenticator(Authenticator *newAuthenticator);
 
-    QQmlListProperty<Store::IStore> stores();
+    Store::IStore *store();
+    void setStore(Store::IStore *newStore);
+
+    QBindable<Authenticator::Error> bindableError() const;
+
+    QBindable<QString> bindableErrorString() const;
 
 signals:
     void authenticated(const QByteArray &data);
@@ -68,13 +76,17 @@ private slots:
     void userAuthenticated(const QByteArray &data);
     void authenticatorConnection();
     void authenticatorDisconnection();
+    void authenticationFailed(Authenticator::Error error, const QString &errorString);
 
 private:
     Status status_;
     AuthenticationMode mode_;
-    Authentication *authenticator_;
-    QList<Store::IStore *> stores_;
+    Authenticator *authenticator_;
+    Store::IStore *store_;
     QList<QMetaObject::Connection> connections_;
+    QProperty<Authenticator::Error> error_;
+    QProperty<QString> errorString_;
+    IToken *token_;
 };
 }
 
