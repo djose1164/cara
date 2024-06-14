@@ -9,7 +9,7 @@ Item {
     property string displayText
 
     implicitWidth: implicitHeight*root.count
-    implicitHeight: 60
+    implicitHeight: 50
 
     PageIndicator {
         id: pageIndicator
@@ -29,8 +29,7 @@ Item {
 
             Label {
                 id: label
-                width: parent.width * .8
-                //anchors.bottom: parent.bottom
+                width: parent.width * .85
                 anchors.horizontalCenter: parent.horizontalCenter
                 visible: index === pageIndicator.currentIndex
                 text: root.displayText

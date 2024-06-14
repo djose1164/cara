@@ -22,7 +22,6 @@ Item {
         id: textField
         anchors.fill: parent
         inputMask: "99/99/9999"
-        placeholderText: "dia/mes/año"
         text: if (root.currentDate) root.currentDate.toLocaleDateString(Qt.locale(), "dd/MM/yyyy")
     }
 }
