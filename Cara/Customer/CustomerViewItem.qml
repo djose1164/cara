@@ -23,11 +23,17 @@ Item {
                 target: errorPane
                 visible: true
             }
+        },
+        State {
+            when: CustomerManager.state === "errorOccurred"
+            PropertyChanges {
+                target: errorPane
+                visible: true
+                text: CustomerManager.errorString
+            }
         }
-
     ]
 
-    //customerModel.onUpdated: busyIndicator.visible = false;
     ListView {
         id: listView
         anchors.fill: parent
