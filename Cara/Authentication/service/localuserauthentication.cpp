@@ -1,5 +1,5 @@
 #include "localuserauthentication.h"
-#include "networkrequestsingleton.h"
+#include "Network/networkrequestsingleton.h"
 #include "tokenstore.h"
 #include <QSettings>
 #include <QNetworkReply>
@@ -33,7 +33,7 @@ void LocalUserAuthentication::authenticate()
         return;
     }
 
-    const auto api{NetworkRequestSingleton::instance().api()};
+    const auto api{Network::NetworkRequestSingleton::instance().api()};
 
     QNetworkRequest request{api->createRequest("/users/refresh/"_L1)};
     request.setRawHeader("Authorization"_ba, "Bearer "_ba + refreshToken_.toUtf8());

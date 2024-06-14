@@ -1,5 +1,5 @@
 #include "restuserauthentication.h"
-#include "networkrequestsingleton.h"
+#include "Network/networkrequestsingleton.h"
 #include <QSettings>
 #include <QNetworkReply>
 #include <QJsonDocument>
@@ -16,7 +16,7 @@ RestUserAuthentication::RestUserAuthentication(QObject *parent)
     , data_{}
     , manager_{new QNetworkAccessManager(this)}
     , reply_{}
-    , api_{NetworkRequestSingleton::instance().api()}
+    , api_{Network::NetworkRequestSingleton::instance().api()}
 {
 }
 

@@ -1,6 +1,6 @@
 #include "restservice.h"
-#include "networkrequestsingleton.h"
-#include "qnamsingleton.h"
+#include "Network/networkrequestsingleton.h"
+#include "Network/qnamsingleton.h"
 #include <QRestAccessManager>
 #include <QSettings>
 
@@ -14,7 +14,7 @@ RestService::RestService(QObject *parent)
     , resources_{}
     , accessManager_{QNAMSingleton::instance().qnam()}
     , manager_{std::make_shared<QRestAccessManager>(accessManager_)}
-    , api_{Authentication::NetworkRequestSingleton::instance().api()}
+    , api_{Network::NetworkRequestSingleton::instance().api()}
 {
 }
 

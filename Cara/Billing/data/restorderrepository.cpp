@@ -1,5 +1,5 @@
 #include "restorderrepository.h"
-#include "networkrequestsingleton.h"
+#include "Network/networkrequestsingleton.h"
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QSettings>
@@ -28,7 +28,7 @@ void RestOrderRepository::setErrorString(const QString &newErrorString)
 
 void RestOrderRepository::add(const QVariantMap &payload)
 {
-    const auto api{Authentication::NetworkRequestSingleton::instance().api()};
+    const auto api{Network::NetworkRequestSingleton::instance().api()};
     const auto req{api->createRequest("orders/"_L1)};
 
     const auto jsonPayload{QJsonDocument::fromVariant(payload)};

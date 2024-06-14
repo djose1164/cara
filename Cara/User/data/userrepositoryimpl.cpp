@@ -1,5 +1,5 @@
 #include "userrepositoryimpl.h"
-#include "networkrequestsingleton.h"
+#include "Network/networkrequestsingleton.h"
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QNetworkReply>
@@ -25,7 +25,7 @@ UserRepositoryImpl::UserRepositoryImpl(QObject *parent)
     , manager_{new QNetworkAccessManager(this)}
     , reply_{}
     , path_{}
-    , api_{Authentication::NetworkRequestSingleton::instance().api()}
+    , api_{Network::NetworkRequestSingleton::instance().api()}
 {
 
 }

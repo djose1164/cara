@@ -1,5 +1,5 @@
 #include "tokenstore.h"
-#include "networkrequestsingleton.h"
+#include "Network/networkrequestsingleton.h"
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QSettings>
@@ -46,7 +46,7 @@ bool TokenStore::save(const QByteArray &data)
 
     // TODO: I think this should be deleted.
     Q_ASSERT(!access_.isEmpty());
-    const auto api{NetworkRequestSingleton::instance().api()};
+    const auto api{Network::NetworkRequestSingleton::instance().api()};
     api->setBearerToken(access_.toUtf8());
     return true;
 }

@@ -1,6 +1,5 @@
 #include "restreviewrepository.h"
-#include "networkrequestsingleton.h"
-#include "qnamsingleton.h"
+#include "Network/networkrequestsingleton.h"
 #include <QRestAccessManager>
 #include <QRestReply>
 #include <QJsonDocument>
@@ -24,8 +23,9 @@ namespace Review
 {
 RestReviewRepository::RestReviewRepository(QObject *parent)
     : ReviewRepository{parent}
-    , api_{Authentication::NetworkRequestSingleton::instance().api()}
-    , manager_{new QRestAccessManager{QNAMSingleton::instance().qnam(), this}}
+    , api_{Network::NetworkRequestSingleton::instance().api()}
+    , qnam_{}
+    , manager_{new QRestAccessManager{&qnam_, this}}
 {
 }
 

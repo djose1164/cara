@@ -1,5 +1,5 @@
 #include "refresher.h"
-#include "networkrequestsingleton.h"
+#include "Network/networkrequestsingleton.h"
 #include <QJsonDocument>
 #include <QNetworkReply>
 #include <QJsonObject>
@@ -14,7 +14,7 @@ Refresher::Refresher(QObject *parent)
     , reply_{nullptr}
     , refreshToken_{}
     , timer_{new QTimer(this)}
-    , api_{NetworkRequestSingleton::instance().api()}
+    , api_{Network::NetworkRequestSingleton::instance().api()}
 {
 }
 

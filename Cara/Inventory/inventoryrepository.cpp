@@ -1,5 +1,5 @@
 #include "inventoryrepository.h"
-#include "networkrequestsingleton.h"
+#include "Network/networkrequestsingleton.h"
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
 #include <QJsonDocument>
@@ -20,7 +20,7 @@ InventoryRepository::InventoryRepository(QObject *parent)
     , manager_{new QNetworkAccessManager(this)}
     , reply_{}
     , path_{"inventory/"_L1}
-    , api_{Authentication::NetworkRequestSingleton::instance().api()}
+    , api_{Network::NetworkRequestSingleton::instance().api()}
 {
 
 }
