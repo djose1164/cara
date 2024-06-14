@@ -3,7 +3,7 @@
 
 class QString;
 
-namespace Authentication::Business
+namespace Network
 {
 class IToken
 {
@@ -12,6 +12,6 @@ public:
 
     virtual void setAccessToken(const QString &newAccessToken) = 0;
 };
-} // namespace User::Business
+} // namespace Network
 
 #endif // ITOKEN_H

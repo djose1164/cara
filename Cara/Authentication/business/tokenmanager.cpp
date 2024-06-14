@@ -1,5 +1,5 @@
 #include "tokenmanager.h"
-#include "business/itoken.h"
+#include "Network/itoken.h"
 #include "irefreshable.h"
 #include "refresher.h"
 #include "tokenstore.h"
@@ -52,7 +52,7 @@ void TokenManager::refreshAccessToken()
     connect(reply_, &QNetworkReply::finished, this, &TokenManager::replyReady);
 }
 
-void TokenManager::setToken(IToken *newToken)
+void TokenManager::setToken(Network::IToken *newToken)
 {
     token_ = newToken;
 }

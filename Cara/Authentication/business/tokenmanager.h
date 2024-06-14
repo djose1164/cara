@@ -9,10 +9,10 @@
 #include <QSettings>
 #include <QTimer>
 
+namespace Network { class IToken; };
+
 namespace Authentication::Business {
 class IRefreshable;
-class IToken;
-
 class TokenManager : public QObject
 {
     Q_OBJECT
@@ -45,7 +45,7 @@ public:
     QString accessToken() const;
     void setAccessToken(const QString &newAccessToken);
 
-    void setToken(IToken *newToken);
+    void setToken(Network::IToken *newToken);
 
 public slots:
     void clear();
@@ -81,7 +81,7 @@ private:
     Store::IStore *store_;
 
     IRefreshable *refresher_;
-    IToken *token_;
+    Network::IToken *token_;
 
     bool refreshing_;
 
