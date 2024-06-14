@@ -1,3 +1,7 @@
+if (NOT EMSCRIPTEN)
+    find_package(Qt6 6.7 REQUIRED Concurrent)
+endif()
+
 qt_add_library(BillingLib STATIC)
 add_library(Cara::Billing ALIAS BillingLib)
 
@@ -88,5 +92,11 @@ target_include_directories(BillingLib
     INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
-target_link_libraries(BillingLib
-    PRIVATE Qt6::Concurrent Qt6::PrintSupport Qt6::Network UtilsLib InventoryLib CustomerLib ProductLib)
+if (NOT EMSCRIPTEN)
+    target_link_libraries(BillingLib
+        PRIVATE Qt6::Concurrent Qt6::PrintSupport Qt6::Network UtilsLib InventoryLib CustomerLib ProductLib)
+else()
+    target_link_libraries(BillingLib
+        PRIVATE Qt6::PrintSupport Qt6::Network UtilsLib InventoryLib CustomerLib ProductLib)
+endif()
+

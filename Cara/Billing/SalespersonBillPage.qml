@@ -4,6 +4,7 @@ import QtQuick.Layouts
 import QtQuick.Templates as T
 import Cara.Utils
 import Cara.Customer
+import Cara.Salesperson
 
 Page {
     id: root
@@ -48,12 +49,15 @@ Page {
         }
     }
 
+    Component.onCompleted: {
+        CustomerManager.populate(SalespersonSettings.salespersonId);
+    }
+
     CustomerViewItem {
         id: cvItem
         anchors.fill: parent
         searchText: headerItem.displayText
         customerModel: CustomerManager.model
         onCustomerClicked: customerId => root.stackView.pushItem("qrc:/qt/qml/Cara/Billing/BillHomePage.qml", {customerId})
-        onSearchEnabledChanged: console.log("onSearchEnabled:", cvItem.searchEnabled)
     }
 }
