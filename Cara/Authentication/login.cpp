@@ -1,10 +1,15 @@
 #include "login.h"
-#include "networkrequestsingleton.h"
+#include "Network/networkrequestsingleton.h"
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QSettings>
 
 using namespace Qt::StringLiterals;
+
+namespace
+{
+constexpr auto accessTokenField{"access_token"_L1};
+}
 
 namespace Authentication::Business
 {
@@ -14,7 +19,8 @@ Login::Login(QObject *parent)
     , mode_{AuthenticationMode::Undefined}
     , authenticator_{}
     , store_{}
-    , token_{&NetworkRequestSingleton::instance()}
+    , token_{&Network::NetworkRequestSingleton::instance()}
+    , tokenManager_{}
 {
 }
 
@@ -29,6 +35,14 @@ void Login::authenticate()
 void Login::userAuthenticated(const QByteArray &data)
 {
     setStatus(Status::Authenticated);
+
+    if (const auto json{QJsonDocument::fromJson(data)};
+        tokenManager() and json.isObject() and json.object().contains(accessTokenField))
+    {
+        tokenManager()->setAccessToken(json[accessTokenField].toString());
+        qDebug() << "Login::userAuthenticated: updating TokenManager.accessToken";
+    }
+
     if (store_)
         store_->save(data);
 
@@ -80,6 +94,19 @@ void Login::authenticationFailed(Authenticator::Error error, const QString &erro
         error_ = InvalidCredentials;
     }
     emit errorOccurred(errorString);
+}
+
+TokenManager *Login::tokenManager() const
+{
+    return tokenManager_;
+}
+
+void Login::setTokenManager(TokenManager *newTokenManager)
+{
+    if (tokenManager_ == newTokenManager)
+        return;
+    tokenManager_ = newTokenManager;
+    emit tokenManagerChanged();
 }
 
 Store::IStore *Login::store()

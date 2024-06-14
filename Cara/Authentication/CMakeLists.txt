@@ -12,7 +12,6 @@ qt_add_qml_module(AuthenticationLib
     SOURCES
     business/authenticator.h business/authenticator.cpp
         business/irefreshable.h business/irefreshable.cpp
-        business/itoken.h
         business/tokenmanager.h business/tokenmanager.cpp
         business/tokennotpresent.h business/tokennotpresent.cpp
         data/refresher.h data/refresher.cpp
@@ -23,7 +22,7 @@ qt_add_qml_module(AuthenticationLib
         service/localuserauthentication.h service/localuserauthentication.cpp
         istore.h
     DEPENDENCIES
-        Utils
+        Utils Cara.Network
 )
 
 target_include_directories(AuthenticationLib
@@ -32,3 +31,5 @@ target_include_directories(AuthenticationLib
         ../Utils ../
     INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}
 )
+
+target_link_libraries(AuthenticationLib PUBLIC NetworkLib)
