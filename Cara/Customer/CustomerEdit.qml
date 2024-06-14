@@ -71,9 +71,29 @@ Drawer {
                 onClicked: {
                     busyIndicator.open();
 
-                    contactForm.removeEmptyFields();
+                    const infoJson = personalInfoForm.toJson();
+                    const contactJson = contactForm.toJson();
+                    const addressJson = addressForm.toJson();
 
-                    customerApi.updateCustomer(customerId, customer);
+                    removeBlankFields(infoJson);
+                    removeBlankFields(contactJson);
+                    removeBlankFields(addressJson);
+
+                    const customer = {
+                        address: addressJson,
+                        contact: contactJson
+                    };
+
+                    if (isObjectEmpty(customer.contact))
+                        delete customer.contact;
+
+                    Object.assign(customer, infoJson)
+
+                    removeBlankFields(customer);
+
+                    console.log(JSON.stringify(customer));
+
+                    customerApi.updateCustomer(root.customerId, customer);
                 }
             }
         }
@@ -110,5 +130,13 @@ Drawer {
             if (customer?.address)
                 addressForm.fillFields(customer.address);
         }
+    }
+
+    function removeBlankFields(obj) {
+        Object.keys(obj).forEach((k) => (obj[k] === null || obj[k] === "") && delete obj[k]);
+    }
+
+    function isObjectEmpty(obj) {
+        return obj === null || Object.keys(obj).length === 0;
     }
 }
