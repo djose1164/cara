@@ -14,6 +14,7 @@ Item {
     property alias surname: surname.text
     property alias birthday: dateField.currentDate
     property alias columnLayout: columnLayout
+    property bool dateRequired
 
     implicitWidth: columnLayout.implicitWidth
     implicitHeight: columnLayout.implicitHeight
@@ -39,6 +40,7 @@ Item {
 
         DateField {
             id: dateField
+            placeholderText: "dia/mes/año (Fecha de nacimiento)"
             validator: DateValidator {
                 from: {
                     const now = new Date();
@@ -58,7 +60,7 @@ Item {
             throw new Error("El nombre no puede estar vacio.");
         else if (JS.isEmpty(surname.text))
             throw new Error("El apellido no puede estar vacio.");
-        else if (!dateField.empty && !dateField.acceptableInput)
+        else if (root.dateRequired && dateField.empty && !dateField.acceptableInput)
             throw new Error("Fecha de nacimiento invalida.")
     }
 
@@ -71,7 +73,7 @@ Item {
         return {
             forename: root.forename,
             surname: root.surname,
-            birthday: dateField.displayDate.toISOString()
+            birthday: !dateField.empty ? dateField.displayDate.toISOString() : null
         };
     }
 

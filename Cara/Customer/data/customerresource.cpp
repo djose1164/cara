@@ -41,6 +41,14 @@ void CustomerResource::setData(const QByteArray &newData)
 
 void CustomerResource::readBySalespersonId(SalespersonId salespersonId)
 {
+    if (salespersonId < 1)
+    {
+        setErrorString("invalid salespersonId"_L1);
+        qWarning() << "CustomerResource::readBySalespersonId: " << errorString_;
+        emit errorOccurred();
+        return;
+    }
+
     const auto req{api_->createRequest(path_
         + QString("/?salesperson_id=%1").arg(salespersonId))};
 
