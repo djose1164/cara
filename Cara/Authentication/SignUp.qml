@@ -20,7 +20,7 @@ Item {
 
     LinearProgressIndicator {
         id: indicator
-        width: signUp.width * .8
+        width: signUp.width * .6
         anchors.top: parent.top
         anchors.horizontalCenter: parent.horizontalCenter
         currentIndex: swipeView.currentIndex
@@ -55,12 +55,14 @@ Item {
             right: parent.right
             bottom: parent.bottom
         }
-        interactive: false
+        //interactive: false
 
         PersonalInfoItem {
             id: personalInfoForm
 
             readonly property string title: "Informacion Personal"
+
+            dateRequired: true
 
             NextButton {
                 Layout.alignment: Qt.AlignCenter
@@ -85,7 +87,7 @@ Item {
 
         ContactInfoItem {
             id: contactInfo
-
+            readonly property string title: "Informacion de Contacto"
             RowLayout {
                 width: contactInfo.width
                 spacing: 30
@@ -101,14 +103,25 @@ Item {
         ScrollView {
             id: scrollView
 
-            readonly property string title: "Direccion"
+            readonly property string title: "Dirección"
+            readonly property ScrollBar verticalBar: scrollView.ScrollBar.vertical
 
             contentWidth: availableWidth
+
+            Binding {
+                when: Qt.inputMethod.visible
+                scrollView.ScrollBar.vertical.position: .33
+            }
 
             AddressItem {
                 id: addressItem
                 width: scrollView.availableWidth - scrollView.effectiveScrollBarWidth*2
+                height: scrollView.availableHeight
                 anchors.horizontalCenter: parent.horizontalCenter
+                onDonePressed: {
+                    validate();
+                    swipeView.incrementCurrentIndex();
+                }
 
                 RowLayout {
                     width: addressItem.width
