@@ -1,7 +1,7 @@
 #include "productentity.h"
 #include "restconfig.h"
 #include "utils.h"
-#include "apienvironment.h"
+#include "Network/apienvironment.h"
 
 using namespace Qt::StringLiterals;
 
@@ -26,15 +26,15 @@ consteval QLatin1StringView getPicIdentificator()
     }
 }
 
-const auto imageUrlField{"image_url"_L1};
-const auto imageUrlProperty{"imageUrl"_L1};
-const auto imagesField{"images"_L1};
-const auto nameField{"name"_L1};
-const auto sellPriceField{"sell_price"_L1};
-const auto buyPriceField{"buy_price"_L1};
-const auto idField{"id"_L1};
-const auto productField{"product"_L1};
-const auto descriptionField{"description"_L1};
+constexpr auto imageUrlField{"image_url"_L1};
+constexpr auto imageUrlProperty{"imageUrl"_L1};
+constexpr auto imagesField{"images"_L1};
+constexpr auto nameField{"name"_L1};
+constexpr auto sellPriceField{"sell_price"_L1};
+constexpr auto buyPriceField{"buy_price"_L1};
+constexpr auto idField{"id"_L1};
+constexpr auto productField{"product"_L1};
+constexpr auto descriptionField{"description"_L1};
 constexpr auto maximumStockLevelField{"maximum_stock_level"_L1};
 constexpr auto minimumStockLevelField{"minimum_stock_level"_L1};
 constexpr auto reorderPointField{"reorder_point"_L1};
@@ -56,6 +56,7 @@ Product::Product()
     , quantityAvailable_{}
     , reorderPoint_{}
     , selectedQty_{}
+    , categoryId_{}
 {
 }
 
@@ -77,7 +78,19 @@ Product Product::fromMap(const QVariantMap &map)
 Product Product::fromJson(const QByteArray &data)
 {
     const auto inventoryObj{QJsonDocument::fromJson(data).object()};
-    const auto productObj = inventoryObj.value(productField).toObject();
+    QJsonObject productObj;
+    bool isFromInventory{};
+
+    if (const auto json{QJsonDocument::fromJson(data)};
+        json.isObject() and json.object().contains(productField))
+    {
+        productObj = std::move(inventoryObj.value(productField).toObject());
+        isFromInventory = true;
+    }
+    else
+    {
+        productObj = std::move(json.object());
+    }
 
     Product product{};
     product.setProductId(productObj.value(idField).toInt());
@@ -88,12 +101,16 @@ Product Product::fromJson(const QByteArray &data)
     product.setPrice(productObj.value(sellPriceField).toInt());
     product.setBuyPrice(productObj.value(buyPriceField).toInt());
 
+    Q_ASSERT(product.price() > 0);
+
+    if (not isFromInventory)
+        return product;
+
     product.setMaximumStockLevel(inventoryObj.value(maximumStockLevelField).toInt());
     product.setMinimumStockLevel(inventoryObj.value(minimumStockLevelField).toInt());
     product.setReorderPoint(inventoryObj.value(reorderPointField).toInt());
     product.setQuantityAvailable(inventoryObj.value(quantityAvailableField).toInt());
 
-    Q_ASSERT(product.price() > 0);
     return product;
 }
 
@@ -168,6 +185,8 @@ void Product::setProductId(int productId)
     }
 }
 
+
+
 void Product::setupPictures(const QJsonArray &pics)
 {
     QJsonArray imageList;
@@ -179,6 +198,20 @@ void Product::setupPictures(const QJsonArray &pics)
     }
     setImageUrl(imageList.first().toObject()[imageUrlProperty].toString());
     setImages(std::move(imageList));
+}
+
+
+
+
+
+int Product::categoryId() const
+{
+    return categoryId_;
+}
+
+void Product::setCategoryId(int newCategoryId)
+{
+    categoryId_ = newCategoryId;
 }
 
 bool Product::hasImages() const
@@ -289,6 +322,7 @@ void Product::setBuyPrice(int newBuyPrice)
         return;
     buyPrice_ = newBuyPrice;
 }
+
 }
 
 QDebug operator<<(QDebug dbg, const EntityLayer::Product &p) {
