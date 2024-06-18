@@ -8,7 +8,7 @@ using namespace Qt::StringLiterals;
 
 static constexpr auto TRANSFER_TIMEOUT{std::chrono::minutes(1)};
 
-namespace Authentication
+namespace Network
 {
 NetworkRequestSingleton &NetworkRequestSingleton::instance()
 {

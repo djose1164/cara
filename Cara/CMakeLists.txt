@@ -27,12 +27,9 @@ qt_add_qml_module(${PROJECT_NAME}
         .env
     SOURCES
         abstractresource.h abstractresource.cpp
-        apienvironment.h apienvironment.cpp
         config.h.in
         healthresource.h healthresource.cpp
-        networkrequestsingleton.h networkrequestsingleton.cpp
         restservice.h restservice.cpp
-        qnamsingleton.h qnamsingleton.cpp
 )
 
 set(CARA_VERSION ${CMAKE_PROJECT_VERSION})
@@ -44,7 +41,6 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
     Qt6::Core
     Qt6::Network
     Qt6::Svg
-    Qt6::Test
     AuthenticationLibplugin
     BillingLibplugin
     CustomerLibplugin
@@ -57,8 +53,8 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
     UserLibplugin
     UtilsLibplugin
     salespersonplugin
-    StoreLibplugin
     ControlsLibplugin
+    NetworkLibplugin
 )
 
 target_include_directories(CaraLib
@@ -67,9 +63,9 @@ target_include_directories(CaraLib
 
 add_subdirectory(Utils)
 add_subdirectory(Data)
+add_subdirectory(Network)
 add_subdirectory(Controls)
 add_subdirectory(Statistics)
-add_subdirectory(Store)
 add_subdirectory(Product)
 add_subdirectory(Authentication)
 add_subdirectory(Shopping)

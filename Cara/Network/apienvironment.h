@@ -10,6 +10,7 @@ class Api : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(ApiEnvironment apiEnvironment READ getApiEnvironment CONSTANT FINAL)
+    Q_PROPERTY(QString uploadsPath READ uploadsPath CONSTANT FINAL)
     QML_ELEMENT
     QML_SINGLETON
 public:
@@ -47,6 +48,8 @@ public:
     }
 
     Api(QObject *parent = nullptr);
+
+    QString uploadsPath() const;
 };
 
 

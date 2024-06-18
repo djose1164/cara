@@ -1,13 +1,13 @@
 #ifndef NETWORKREQUESTSINGLETON_H
 #define NETWORKREQUESTSINGLETON_H
 
-#include "Authentication/business/itoken.h"
+#include "itoken.h"
 #include <QNetworkAccessManager>
 #include <QNetworkRequestFactory>
 
-namespace Authentication
+namespace Network
 {
-class NetworkRequestSingleton : public Business::IToken
+class NetworkRequestSingleton : public IToken
 {
 public:
     static NetworkRequestSingleton &instance();
