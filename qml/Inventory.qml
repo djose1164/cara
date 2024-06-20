@@ -4,7 +4,7 @@ import QtQuick.Layouts
 import QtQuick.Templates as T
 import Cara.Utils
 import Cara.Product
-import Cara.Data
+import Cara.Network
 
 Page {
     id: root
@@ -77,7 +77,7 @@ Page {
                     width: parent.width
                     height: 100
                     detailed: `Disponible ${quantity_available}`
-                    source: item.hasImages ? Constants.uploadsPath + item.product.images[0].image_url : "qrc:/cara-logo-v1.png" //root.images && root.images.length ? Constants.uploadsPath + images[0].image_url : "qrc:/cara-logo-v1.png"
+                    source: item.hasImages ? Api.uploadsPath + item.product.images[0].image_url : "qrc:/cara-logo-v1.png" //root.images && root.images.length ? Constants.uploadsPath + images[0].image_url : "qrc:/cara-logo-v1.png"
                     name: item.product.name
                 }
             }
