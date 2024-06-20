@@ -1,9 +1,10 @@
 #include "productrepository.h"
-#include "networkrequestsingleton.h"
+#include "Network/networkrequestsingleton.h"
 #include <QHttpMultiPart>
 #include <QJsonDocument>
 #include <QFile>
 #include <QFileInfo>
+#include <QJsonArray>
 
 using namespace Qt::Literals::StringLiterals;
 
@@ -11,6 +12,7 @@ namespace
 {
 constexpr auto resourceID{"/%1"_L1};
 constexpr auto pictureEndpoint{"/picture"_L1};
+constexpr auto productsField{"products"_L1};
 }
 
 namespace Catalogue {
@@ -21,7 +23,7 @@ ProductRepository::ProductRepository(QObject *parent)
     , multiPart_{nullptr}
     , path_{"products"_L1}
     , errorString_{}
-    , api_{Authentication::NetworkRequestSingleton::instance().api()}
+    , api_{Network::NetworkRequestSingleton::instance().api()}
 {
 }
 
@@ -91,7 +93,25 @@ void ProductRepository::fetchAll()
     reply_ = manager_->get(request);
 
     connect(reply_, &QNetworkReply::finished, this, [&] {
-        emit allFetched(reply_->readAll());
+        auto &&data{reply_->readAll()};
+        emit allFetched(data);
+
+        if (const auto json{QJsonDocument::fromJson(data)};
+            json.isObject() && json[productsField].isArray())
+        {
+            const auto productArray = json[productsField].toArray();
+            QList<EntityLayer::Product> productList{productArray.size()};
+
+            std::ranges::transform(productArray.begin(),
+                                   productArray.end(),
+                                   productList.begin(),
+                                   [](const auto &jsonValue) -> EntityLayer::Product
+                                   {
+                                       return EntityLayer::Product::fromJson(QJsonDocument{jsonValue.toObject()}.toJson());
+                                   });
+            emit allProductsFetched(productList);
+
+        }
 
         reply_->deleteLater();
     });

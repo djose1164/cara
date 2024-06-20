@@ -2,6 +2,7 @@
 #define PRODUCTREPOSITORY_H
 
 #include "iproductrepository.h"
+#include "productentity.h"
 
 #include <QNetworkReply>
 #include <QObject>
@@ -41,6 +42,7 @@ signals:
     void updated();
     void allFetched(const QByteArray &data);
     void errorOccurred(const QByteArray &data);
+    void allProductsFetched(const QList<EntityLayer::Product> &products);
 
 private:
     void prepareImagePart(const QVariantList &pictureList);

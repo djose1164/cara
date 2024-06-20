@@ -1,5 +1,5 @@
 #include "cartcontroller.h"
-#include "networkrequestsingleton.h"
+#include "Network/networkrequestsingleton.h"
 #include <QSettings>
 
 using namespace Qt::StringLiterals;
@@ -9,7 +9,7 @@ static constexpr auto path{"shopping"_L1};
 namespace Shopping {
 CartController::CartController(QObject *parent)
     : QObject{parent}
-    , api_{Authentication::NetworkRequestSingleton::instance().api()}
+    , api_{Network::NetworkRequestSingleton::instance().api()}
     , manager_{std::make_shared<QRestAccessManager>(new QNetworkAccessManager{this})}
     , order_{new EntityLayer::OrderEntity(this)}
     , model_{new Model::OrderModel(this)}

@@ -2,10 +2,11 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 import QtQuick.Templates as T
-import Cara.Shopping as Catalogue
+import Cara.Shopping
 import Cara.Utils
 import Cara.Product
-import Cara.Data
+import Cara.Inventory
+import Cara.Network
 
 Page {
     id: root
@@ -28,34 +29,35 @@ Page {
         // FIXME: A new component `InventoryView` must be created.
         ListView {
             id: productView
-            model: listModel
+            model: productModel
             delegate: ItemDelegate {
                 id: item
-                required property int id
-                required property int category_id
+                required property int productId
+                required property int categoryId
                 required property var images
                 required property string description
-                required property string name
-                required property int sell_price
-                required property int buy_price
+                required property string productName
+                required property int sellPrice
+                required property int buyPrice
+                required property url imageUrl
                 required property var model
+
+                width: root.width
+                height: 100
 
                 onClicked: {
                     stackView.push("qrc:/qt/qml/Cara/Product/ProductForm.qml", {
-                        productId: id,
-                        name,
+                        productId,
+                        name: productName,
                         images,
-                        categoryId: category_id,
+                        categoryId,
                         description,
-                        buyPrice: buy_price,
-                        sellPrice: sell_price,
+                        buyPrice,
+                        sellPrice,
                         product: item.model,
                         mode: "edit"
                    });
                 }
-
-                width: root.width
-                height: 100
 
                 ProductThumbnail {
                     anchors.left: parent.left
@@ -65,8 +67,8 @@ Page {
 
                     width: parent.width
                     height: 100
-                    source: item.images.get(0)?.image_url ? (Constants.uploadsPath + item.images.get(0).image_url) : "qrc:/cara-logo-v1.png"
-                    name: item.name
+                    source: imageUrl.toString() ? imageUrl : "qrc:/cara-logo-v1.png"
+                    name: productName
                     detailed: description
                 }
             }
@@ -87,15 +89,17 @@ Page {
         }
     }
 
-    ListModel { id: listModel }
-
-    Catalogue.CatalogueRepository {
+    CatalogueRepository {
         id: catalogueRepository
-        onProductsFetched: data => listModel.append(JSON.parse(data).products)
+        onAllProductsFetched: products => productModel.updateFromList(products)
+    }
+
+    ProductModel {
+        id: productModel
     }
 
     RoundButton {
-        onClicked: stackView.push("qrc:/qt/qml/Cara/Product/ProductForm.qml")
+        onClicked: stackView.pushItem("qrc:/qt/qml/Cara/Product/ProductForm.qml", {productModel: listModel})
         anchors {
             bottom: parent.bottom
             bottomMargin: 15

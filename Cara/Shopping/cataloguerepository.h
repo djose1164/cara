@@ -3,6 +3,7 @@
 
 #include "iproductcategoryrepository.h"
 #include "iproductrepository.h"
+#include "productentity.h"
 #include <QObject>
 #include <QQmlEngine>
 
@@ -44,6 +45,7 @@ signals:
     void categoriesFetched(const QByteArray &data);
     void productsFetched(const QByteArray &data);
     void productFetched(const QByteArray &data);
+    void allProductsFetched(const QList<EntityLayer::Product> &products);
 
     void productAdded(const QByteArray &data);
 

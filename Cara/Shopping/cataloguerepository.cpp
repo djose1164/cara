@@ -3,6 +3,8 @@
 #include "productcategoryrepository.h"
 #include <QJsonDocument>
 
+using namespace Qt::StringLiterals;
+
 namespace Catalogue {
 CatalogueRepository::CatalogueRepository(QObject *parent)
     : QObject{parent}
@@ -43,6 +45,14 @@ void CatalogueRepository::addPicture(ProductId productId, const QVariantList &pi
 
 void CatalogueRepository::deletePicture(IProductRepository::PictureId pictureId)
 {
+    if (pictureId < 1)
+    {
+        emit errorOccurred("Invalid pictureId: %1"_L1
+                               .arg(QString::number(pictureId))
+                               .toUtf8());
+        return;
+    }
+
     const auto reply{productRepository_->deletePicture(pictureId)};
 
     connect(reply, &QNetworkReply::finished, this, [this, reply] {
@@ -81,9 +91,11 @@ void CatalogueRepository::fetchProducts()
     productRepository_->fetchAll();
     const auto productRepository{dynamic_cast<ProductRepository *>(productRepository_)};
 
-    connect(productRepository, &ProductRepository::allFetched, this, [&](const QByteArray &data) {
-        emit productsFetched(data);
-    });
+    connect(productRepository, &ProductRepository::allFetched,
+            this, &CatalogueRepository::productsFetched);
+
+    connect(productRepository, &ProductRepository::allProductsFetched,
+            this, &CatalogueRepository::allProductsFetched);
 }
 
 void CatalogueRepository::deleteProduct(int productId)
