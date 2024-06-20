@@ -3,6 +3,7 @@ import QtQuick.Controls
 import QtQuick.Layouts
 import Cara.Salesperson
 import Cara.User
+import Cara.Authentication
 
 Drawer {
     id: root
@@ -65,7 +66,7 @@ Drawer {
                 UserSettings.clear();
                 SalespersonSettings.clear();
                 LoginManager.logOut();
-                close();
+                root.close();
             }
         }
 
