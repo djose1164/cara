@@ -41,14 +41,14 @@ ToolBar {
             readonly property string newNotifications: "qrc:/icons/new_notifications.svg"
             readonly property string nonNotifications: "qrc:/icons/notifications_black_24dp.svg"
             onClicked: {
-                iconImage.source = nonNotifications;
+                Image.source = nonNotifications;
                 menu.open();
             }
             Layout.alignment: Qt.AlignRight
             flat: true
 
-            IconImage {
-                id: iconImage
+            Image {
+                id: Image
                 anchors.centerIn: parent
                 source: btn.newNotifications
             }

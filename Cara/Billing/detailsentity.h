@@ -4,6 +4,7 @@
 #include "productentity.h"
 #include <QObject>
 #include <QtQml>
+#include <QBindable>
 
 namespace EntityLayer {
 class DetailsEntity : public QObject

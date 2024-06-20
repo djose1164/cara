@@ -1,30 +1,37 @@
 #ifndef BUSINESS_LOGIN_H
 #define BUSINESS_LOGIN_H
 
+#include "business/authenticator.h"
 #include "istore.h"
-#include "business/authentication.h"
+#include "tokenmanager.h"
 #include <QObject>
 #include <QQmlEngine>
 #include <QByteArray>
+#include <QProperty>
 
-namespace Authentication::Data { class TokenStore; }
+namespace Network { class IToken; };
+
 namespace Authentication::Business
 {
-class Login : public QObject, public QQmlParserStatus
+
+class Login : public QObject
 {
     Q_OBJECT
-    QML_ELEMENT
-
     Q_PROPERTY(Status status READ status WRITE setStatus NOTIFY statusChanged FINAL)
     Q_PROPERTY(AuthenticationMode mode READ mode WRITE setMode NOTIFY modeChanged FINAL)
-    Q_PROPERTY(Authentication *authenticator READ authenticator WRITE setAuthenticator NOTIFY authenticatorChanged FINAL REQUIRED)
-    Q_PROPERTY(QQmlListProperty<Store::IStore> stores READ stores CONSTANT FINAL)
+    Q_PROPERTY(Authenticator *authenticator READ authenticator WRITE setAuthenticator NOTIFY authenticatorChanged FINAL REQUIRED)
+    Q_PROPERTY(Store::IStore *store READ store WRITE setStore FINAL)
+    Q_PROPERTY(Authenticator::Error error BINDABLE bindableError)
+    Q_PROPERTY(QString errorString BINDABLE bindableErrorString)
+    Q_PROPERTY(TokenManager *tokenManager READ tokenManager WRITE setTokenManager NOTIFY tokenManagerChanged FINAL)
+    QML_ELEMENT
 public:
     enum class Status
     {
         Authenticated,
         UnAuthenticated,
         InvalidCredentials,
+        Busy,
         Error
     };
     Q_ENUM(Status)
@@ -41,28 +48,26 @@ public:
 
     Status status() const;
     void setStatus(Status newStatus);
-    
-    Store::IStore *store() const;
-    void setStore(Store::IStore *newUserStore);
 
     AuthenticationMode mode() const;
     void setMode(AuthenticationMode newMode);
 
-    void classBegin() override;
-    void componentComplete() override;
+    Authenticator *authenticator() const;
+    void setAuthenticator(Authenticator *newAuthenticator);
 
-    Authentication *authenticator() const;
-    void setAuthenticator(Authentication *newAuthenticator);
+    Store::IStore *store();
+    void setStore(Store::IStore *newStore);
 
-    Data::TokenStore *tokenStore() const;
+    QBindable<Authenticator::Error> bindableError() const;
 
-    void setTokenStore(Data::TokenStore *newTokenStore);
+    QBindable<QString> bindableErrorString() const;
 
-    QQmlListProperty<Store::IStore> stores();
+    TokenManager *tokenManager() const;
+    void setTokenManager(TokenManager *newTokenManager);
 
 signals:
     void authenticated(const QByteArray &data);
-    void errorOccurred();
+    void errorOccurred(const QString &errorString);
 
     void statusChanged();
 
@@ -70,17 +75,27 @@ signals:
 
     void authenticatorChanged();
 
+    void tokenManagerChanged();
+
 public slots:
     void authenticate();
 
 private slots:
     void userAuthenticated(const QByteArray &data);
+    void authenticatorConnection();
+    void authenticatorDisconnection();
+    void authenticationFailed(Authenticator::Error error, const QString &errorString);
 
 private:
     Status status_;
     AuthenticationMode mode_;
-    Authentication *authenticator_;
-    QList<Store::IStore *> stores_;
+    Authenticator *authenticator_;
+    Store::IStore *store_;
+    QList<QMetaObject::Connection> connections_;
+    QProperty<Authenticator::Error> error_;
+    QProperty<QString> errorString_;
+    Network::IToken *token_;
+    TokenManager *tokenManager_;
 };
 }
 

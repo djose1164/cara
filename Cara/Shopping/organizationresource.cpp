@@ -2,7 +2,7 @@
 #include "utils.h"
 
 #include <QRestReply>
-#include <QRestAccessManager.h>
+#include <QRestAccessManager>
 #include <QJsonDocument>
 
 using namespace Qt::StringLiterals;

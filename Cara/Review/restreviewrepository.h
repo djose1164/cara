@@ -3,6 +3,7 @@
 
 #include "reviewrepository.h"
 
+#include <QNetworkAccessManager>
 #include <QQmlEngine>
 
 class QNetworkRequestFactory;
@@ -30,6 +31,7 @@ public:
 
 private:
     std::shared_ptr<QNetworkRequestFactory> api_;
+    QNetworkAccessManager qnam_;
     QRestAccessManager *manager_;
 };
 

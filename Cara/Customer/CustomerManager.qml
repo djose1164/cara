@@ -8,6 +8,7 @@ Item {
 
     readonly property alias model: model
     readonly property bool isEmpty: model.count === 0
+    property string errorString
 
     signal populating
 
@@ -22,6 +23,8 @@ Item {
             path: "customers"
             onFetched: resp => model.set(JSON.parse(resp).customers)
             onContentNotFound: root.state = "contentNotFound"
+            onErrorOccurred: root.state = "errorOccurred"
+            onErrorStringChanged: root.errorString = errorString
         }
     }
 

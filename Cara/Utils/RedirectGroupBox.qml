@@ -28,7 +28,7 @@ Item {
                     font.pointSize: 14
                 }
 
-                IconImage {
+                Image {
                     id: icon
                     anchors.verticalCenter: parent.verticalCenter
                     anchors.right: parent.right

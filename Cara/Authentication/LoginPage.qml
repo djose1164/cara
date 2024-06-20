@@ -12,33 +12,43 @@ Item {
     id: root
 
     readonly property T.StackView stackView: StackView.view
+    readonly property alias usernameField: usernameInput
+    readonly property alias passwordField: passwordInput
+    readonly property alias loginBtn: loginBtn
 
-    Image {
-        id:loginLbl
-        anchors.top:  parent.top
-        anchors.topMargin: 20
-        anchors.horizontalCenter: parent.horizontalCenter
-        source: "qrc:/cara-logo-v1.png"
-        sourceSize: "128x128"
-    }
+    signal loggedIn
+    signal errorOccurred(errorString: string)
 
     ColumnLayout {
         id: loginInfo
-        width: parent.width > root.height ? root.width/2 : root.width*.9
-        height: parent.height * .3
-        anchors.centerIn: parent
+        anchors.fill: parent
+        anchors.margins: spacing
         spacing: 20
+
+        Image {
+            id:loginLbl
+            anchors.topMargin: 20
+            source: "qrc:/cara-logo-v1.png"
+            sourceSize: "128x128"
+            Layout.alignment: Qt.AlignTop | Qt.AlignHCenter
+        }
 
         TextField {
             id: usernameInput
+            placeholderText: "Usuario"
+            inputMethodHints: Qt.ImhLowercaseOnly
+            focus: true
+            font.pointSize: 15
             Layout.fillWidth: true
             Layout.alignment: Qt.AlignCenter
             Layout.topMargin: 5
-            placeholderText: "Usuario"
-            inputMethodHints: Qt.ImhLowercaseOnly
-            font.pointSize: 15
             EnterKey.type: Qt.EnterKeyNext
-            focus: true
+
+            ToolTip {
+                id: usernameToolTip
+                objectName: "usernameToolTip"
+                y: usernameInput.height
+            }
         }
 
         PasswordInput {
@@ -47,56 +57,67 @@ Item {
             Layout.alignment: Qt.AlignCenter
             Layout.topMargin: 5
             font.pointSize: 15
-            Keys.onReturnPressed: internal.requestAuthentication()
+            Keys.onReturnPressed: if (internal.areInputsValid) root.requestAuthentication()
+
+            ToolTip {
+                id: passwordToolTip
+                objectName: "passwordToolTip"
+                y: passwordInput.height
+            }
         }
-    }
 
-    ColumnLayout {
-        id: buttonsRowLayout
-        width: parent.width
-        height: 100
-        anchors.top: loginInfo.bottom
-        anchors.topMargin: 50
-        anchors.horizontalCenter: parent.horizontalCenter
-        spacing: 20
+        Item {
+            implicitWidth: buttonsRowLayout.implicitWidth
+            implicitHeight: buttonsRowLayout.implicitHeight
+            Layout.alignment: Qt.AlignHCenter
 
-        Button {
-            id: loginBtn
+            ColumnLayout {
+                id: buttonsRowLayout
+                anchors.centerIn: parent
+                spacing: 20
 
-            onClicked: {
-                if (internal.areInputsValid) {
-                    internal.requestAuthentication();
-                } else {
-                    usernameInput.focus = true;
+                Button {
+                    id: loginBtn
+                    text: "Iniciar Sesion"
+                    font.pointSize: 12
+                    Layout.alignment: Qt.AlignCenter
+                    font.capitalization: Font.MixedCase
+                    Material.background: Material.Blue
+                    Material.foreground: "white"
+                    onClicked: {
+                        if (internal.areInputsValid) {
+                            login.authenticate();
+                            return;
+                        }
+                        if (internal.isUsernameEmpty)
+                            usernameToolTip.show("* El usuario es requerido", 1000);
+                        if (internal.isPasswordEmpty)
+                            passwordToolTip.show("* La contraseña es requerida", 1000);
+                    }
+                }
+
+                Label {
+                    text: '¿Aun no tienes una cuenta? [Registrate](SignUp.qml)'
+                    onLinkActivated: link => root.stackView.replaceCurrentItem(Qt.resolvedUrl(link));
+                    textFormat: Label.MarkdownText
+                    Layout.alignment: Qt.AlignCenter
+                    font.pointSize: 12
+                }
+
+                Label {
+                    text: '[Continuar sin registrarte](qrc:/qt/qml/Cara/MainPage.qml)'
+                    onLinkActivated: link => root.stackView.popCurrentItem();
+                    textFormat: Label.MarkdownText
+                    Layout.alignment: Qt.AlignCenter
+                    font.pointSize: 12
                 }
             }
-            text: "Iniciar Sesion"
-            font.pointSize: 12
-            Layout.alignment: Qt.AlignCenter
-            font.capitalization: Font.MixedCase
-            Material.background: Material.Blue
-            Material.foreground: "white"
-        }
-
-        Label {
-            text: '¿Aun no tienes una cuenta? [Registrate](SignUp.qml)'
-            onLinkActivated: link => appStack.replace(link)
-            textFormat: Label.MarkdownText
-            Layout.alignment: Qt.AlignCenter
-            font.pointSize: 12
-        }
-
-        Label {
-            text: '[Continuar sin registrarte](qrc:/qt/qml/Cara/MainPage.qml)'
-            onLinkActivated: link => appStack.pop()
-            textFormat: Label.MarkdownText
-            Layout.alignment: Qt.AlignCenter
-            font.pointSize: 12
         }
     }
 
     MessageDialog {
         id: popup
+        objectName: "popup"
         text: switch (login.status) {
             case Login.InvalidCredentials:
                 return "Usuario o contraseña incorrecta.";
@@ -106,7 +127,12 @@ Item {
         onButtonClicked: close()
     }
 
-    BusyPopup { id: busyIndicator }
+    BusyPopup {
+        objectName: "busyIndicator"
+        width: root.width * .7
+        height: root.height/2
+        visible: login.status === Login.Busy
+    }
 
     TapHandler {
         onTapped: {
@@ -118,35 +144,34 @@ Item {
 
     Login {
         id: login
-        stores: [
-            LocalUserStore {
-                id: localUserStore
-            }
-        ]
-        authenticator: auth
-        onAuthenticated: {
-            // MainPage.qml is already in stack. No need to replace.
-            stackView.popCurrentItem();
+        store: LocalUserStore {
+            id: localUserStore
         }
-        onErrorOccurred: {
-            busyIndicator.close();
-            popup.open();
-        }
-    }
 
-    RestUserAuthentication {
-        id: auth
-        credentials {
-            username: internal.username
-            password: internal.password
+        authenticator: RestUserAuthentication {
+            id: auth
+            credentials {
+                username: internal.username
+                password: internal.password
+            }
         }
-        onSucceeded: data => {
+
+        onAuthenticated: data => {
+            const jsonData = JSON.parse(data);
             LoginManager.loggingIn();
             internal.saveSalespersonSettings(data);
-            const user = userController.create(data);
-            busyIndicator.close();
-            UserSettings.setEntity(user);
+            UserSettings.setEntity(userController.create(data));
             LoginManager.loggedIn();
+            root.loggedIn();
+
+            // MainPage.qml is already in stack. No need to replace.
+            if (root.stackView)
+                root.stackView.popCurrentItem();
+        }
+
+        onErrorOccurred: errorString => {
+            popup.open();
+            root.errorOccurred(errorString);
         }
     }
 
@@ -163,18 +188,18 @@ Item {
         readonly property url mainPage: "qrc:/qt/qml/Cara/MainPage.qml"
         readonly property string username: usernameInput.text
         readonly property string password: passwordInput.text
-        readonly property bool areInputsValid: usernameInput.text !== ""
-                                               && passwordInput.text !== ""
-
-        function requestAuthentication() {
-            busyIndicator.open();
-            login.authenticate();
-        }
+        readonly property bool areInputsValid: !isUsernameEmpty && !isPasswordEmpty
+        readonly property bool isUsernameEmpty: usernameInput.text === ""
+        readonly property bool isPasswordEmpty: passwordInput.text === ""
 
         function saveSalespersonSettings(data) {
             const salespersonJson = JSON.parse(data).user.salesperson;
             const salesperson = spController.fromJsonObject(salespersonJson);
             SalespersonSettings.setEntity(salesperson);
         }
+    }
+
+    function requestAuthentication() {
+
     }
 }

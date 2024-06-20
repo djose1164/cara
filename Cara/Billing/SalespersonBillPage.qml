@@ -4,6 +4,7 @@ import QtQuick.Layouts
 import QtQuick.Templates as T
 import Cara.Utils
 import Cara.Customer
+import Cara.Salesperson
 
 Page {
     id: root
@@ -18,7 +19,7 @@ Page {
     header: StackLayout {
         id: stackLayout
         implicitHeight: 50
-        enabled: cvItem.enabled
+        enabled: cvItem.searchEnabled
 
         ToolBar {
             RowLayout {
@@ -46,6 +47,10 @@ Page {
             id: headerItem
             onSearchClosed: stackLayout.currentIndex = CustomerSelector.TitleView
         }
+    }
+
+    Component.onCompleted: {
+        CustomerManager.populate(SalespersonSettings.salespersonId);
     }
 
     CustomerViewItem {

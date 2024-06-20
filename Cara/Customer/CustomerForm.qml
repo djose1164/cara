@@ -82,20 +82,20 @@ Page {
             validate();
             busyIndicator.open();
 
-            contactForm.removeEmptyFields();
-            const contact = {
-                address: addressForm.address,
-                "forename": nameForm.forename,
-                "surname": nameForm.surname,
+            let person = {
+                contact: contactForm.toJson(),
+                address: addressForm.address
             };
-            Object.assign(contact, contactForm.contact);
+
+            Object.assign(person, nameForm.toJson());
             const client = {
-                "contact": contact,
+                person,
                 "salesperson_id": SalespersonSettings.salespersonId
             };
 
             clientRequest.create(client);
         } catch (err) {
+            console.error(err);
             messageDialog.text = "Datos invalidos";
             messageDialog.informativeText = err;
             messageDialog.open();

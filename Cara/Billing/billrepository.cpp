@@ -1,6 +1,6 @@
 #include "billrepository.h"
 #include <QNetworkReply>
-#include "networkrequestsingleton.h"
+#include "Network/networkrequestsingleton.h"
 #include "notimplementated.h"
 #include "payment.h"
 
@@ -11,7 +11,7 @@ BillRepository::BillRepository(QObject *parent)
     : QObject{parent}
     , manager_{new QNetworkAccessManager(this)}
     , reply_{nullptr}
-    , api_{Authentication::NetworkRequestSingleton::instance().api()}
+    , api_{Network::NetworkRequestSingleton::instance().api()}
 {
 
 }
@@ -63,7 +63,7 @@ QNetworkReply *BillRepository::fetchUnpaidBills()
 {
     qDebug() << "BillRepository::fetchUnpaidBills: issuing request...";
     using enum Entity::Payment::Status;
-    constexpr int paymentStatusId{std::to_underlying(Unpaid)};
+    constexpr int paymentStatusId{int(Unpaid)};
 
     QUrlQuery query;
     query.addQueryItem("payment_status_id"_L1, QString::number(paymentStatusId));

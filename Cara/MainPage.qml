@@ -5,10 +5,7 @@ import QtQuick.Layouts
 import QtQuick.Templates as T
 import Cara.User
 import Cara.Salesperson
-import "qrc:/orders" as Orders
 import Cara.Customer
-import Cara.Billing
-import Cara.Authentication
 import QtNetwork
 
 // TODO: MaiPage should be deleted in a future release.
@@ -109,7 +106,7 @@ Page {
             }
 
             Label {
-                text: "Verifica tu conexion de internet. Intenta verificar que"
+                text: "Verifica tu conexión de internet. Intenta verificar que"
                       + " tu WiFi o datos mobiles esten activiados."
                 font.pointSize: 14
                 wrapMode: Label.Wrap
@@ -207,7 +204,6 @@ Page {
         switch (userType) {
         case UserEntity.Admin:
         case UserEntity.Salesperson:
-            CustomerManager.populate(SalespersonSettings.salespersonId);
             if (CustomerManager.isEmpty) spService.fetchCustomers();
             homeStack.replace(adminHomePath);
             orderStackView.replace(adminCartPath);

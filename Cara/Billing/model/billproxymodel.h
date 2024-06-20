@@ -2,7 +2,7 @@
 #define BILLPROXYMODEL_H
 
 #include "abstractsortfiltermodel.h"
-#include "entity/payment.h"
+#include "payment.h"
 #include "orderstatus.h"
 #include <QObject>
 #include <QQmlEngine>

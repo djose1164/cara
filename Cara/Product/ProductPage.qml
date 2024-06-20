@@ -8,6 +8,7 @@ import Cara.Utils
 import Cara.Shopping
 import Cara.User
 import Cara.Review
+import Cara.Inventory
 import "qrc:/inventory"
 
 Page {
@@ -39,7 +40,8 @@ Page {
 
     Component.onCompleted: {
         organizationResource.readById(internal.caraId);
-        inventoryApi.fetchByProductId(root.productId);
+        inventoryRepository.fetchAnyByProductId(root.productId);
+        //inventoryApi.fetchByProductId(root.productId);
         reviewModel.fetchReviewsByProductId(root.productId);
         ReviewController.canCustomerReview(UserSettings.customerId, root.productId);
     }
@@ -120,6 +122,26 @@ Page {
                 totalStock += qty;
 
                 if (qty > 0)
+                    shopProduct.locations.push(inventory.warehouse.name)
+            }
+
+            inStock = totalStock;
+        }
+    }
+
+    InventoryRepository {
+        id: inventoryRepository
+        onAnyFetched: {
+            const inventories = JSON.parse(data).inventories;
+
+            let totalStock = 0;
+            let locations = "";
+
+            for (let inventory of inventories) {
+                const qty = inventory.quantity_available;
+                totalStock += qty;
+
+                if (qty > 0 && inventory.warehouse)
                     shopProduct.locations.push(inventory.warehouse.name)
             }
 

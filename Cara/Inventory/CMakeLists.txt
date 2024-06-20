@@ -1,3 +1,5 @@
+set(CMAKE_INCLUDE_CURRENT_DIR ON)
+
 qt_add_library(InventoryLib STATIC)
 qt_add_qml_module(InventoryLib
     URI Cara.Inventory
@@ -15,8 +17,10 @@ qt_add_qml_module(InventoryLib
         model/productmodel.h model/productmodel.cpp
         model/productproxymodel.h model/productproxymodel.cpp
     DEPENDENCIES
-        Product
+        Cara.Product
 )
 
 target_include_directories(InventoryLib
-    PRIVATE model ../product ../authentication)
+    PRIVATE model ../Product ../Authentication ../)
+
+target_link_libraries(InventoryLib PRIVATE NetworkLib)

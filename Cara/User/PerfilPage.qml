@@ -110,7 +110,7 @@ Page {
         id: userController
         onFetched: resp =>{
             const user = JSON.parse(resp).user;
-            const address = user.contact.address;
+            const address = user.person.contact.address;
             if (address)
                 addressForm.fillFields(address);
         }

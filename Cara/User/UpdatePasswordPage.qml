@@ -3,6 +3,7 @@ import QtQuick.Controls
 import QtQuick.Dialogs
 import Cara.Utils
 import Cara.User
+import Cara.Authentication
 
 BackPage {
     id: root
@@ -22,35 +23,20 @@ BackPage {
             eyeBtn.visible: false
         }
 
-        PasswordInput {
-            id: firstPassword
-            width: column.width
-            placeholderText: "Nueva contraseña"
-        }
-
-        PasswordInput {
-            id: secondPassword
-            width: column.width
-            placeholderText: "Confirmar contraseña"
-            ToolTip {
-                x: secondPassword.leftPadding
-                y: secondPassword.height
-                width: secondPassword.width * .8
-                visible: firstPassword.text !== secondPassword.text
-                text: "Las contraseñas no coinciden"
-            }
+        PasswordItem {
+            id: passwordItem
         }
 
         Button {
             id: btn
             width: column.width
-            enabled: firstPassword.text && firstPassword.text === secondPassword.text
+            enabled: passwordItem.acceptable
             text: "Aceptar"
             onClicked: {
                 const payload = {
                     password: {
                         current_password: currentPassword.text,
-                        new_password: firstPassword.text
+                        new_password: passwordItem.text
                     }
                 };
                 userController.updatePassword(UserSettings.userId, payload);

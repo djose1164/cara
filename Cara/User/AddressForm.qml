@@ -7,63 +7,18 @@ import "qrc:/address"
 GroupBox {
     id: root
 
-    readonly property var address: {
-        "country_id": country.comboBox.currentValue,
-        "province_id": province.comboBox.currentValue,
-        "municipality_id": municipality.comboBox.currentValue,
-        "sector_id": sector.comboBox.currentValue,
-        "street": street.text,
-        "house_number": parseInt(house_num.text)
-    }
-    readonly property bool same: internal.oldCountryId === country.comboBox.currentValue
-                                 && internal.oldProvinceId === province.comboBox.currentValue
-                                 && internal.oldMunicipalityId === municipality.comboBox.currentValue
-                                 && internal.oldSectorId === sector.comboBox.currentValue
-                                 && internal.oldStreet === street.text
-                                 && internal.oldHouseNumber === parseInt(house_num.text)
+    readonly property var address: addressItem.toJson()
+    readonly property bool same: internal.oldCountryId === addressItem.countryValue
+                                 && internal.oldProvinceId === addressItem.provinceValue
+                                 && internal.oldMunicipalityId === addressItem.municipalityValue
+                                 && internal.oldSectorId === addressItem.sectorValue
+                                 && internal.oldStreet === addressItem.streetText
+                                 && internal.oldHouseNumber === parseInt(addressItem.houseNumberText)
     title: "Direccion"
 
-    ColumnLayout {
+    AddressItem {
+        id: addressItem
         anchors.fill: parent
-        spacing: 20
-
-        CountryComboBox {
-            id: country
-            Layout.columnSpan: 2
-            Layout.fillWidth: true
-        }
-
-        ProvinceComboBox {
-            id: province
-            Layout.columnSpan: 2
-            Layout.fillWidth: true
-        }
-
-        MunicipalityComboBox {
-            id: municipality
-            Layout.columnSpan: 2
-            Layout.fillWidth: true
-        }
-
-        SectorCombBox {
-            id: sector
-            Layout.columnSpan: 2
-            Layout.fillWidth: true
-        }
-
-        TextField {
-            id: street
-            placeholderText: "Calle"
-            Layout.columnSpan: 2
-            Layout.fillWidth: true
-        }
-
-        NumberTextField {
-            id: house_num
-            placeholderText: "Numero de casa"
-            Layout.columnSpan: 2
-            Layout.fillWidth: true
-        }
     }
 
     QtObject {
@@ -77,12 +32,7 @@ GroupBox {
     }
 
     function fillFields(address: var) {
-        country.comboBox.currentIndex = address.country_id - 1;
-        province.comboBox.currentIndex = address.province_id - 1;
-        municipality.comboBox.currentIndex = address.municipality_id - 1;
-        sector.comboBox.currentIndex = address.sector_id - 1;
-        street.text = address.street;
-        house_num.text = address.house_number;
+        addressItem.fillFields(address);
 
         fillOldProperties(address);
     }
@@ -93,10 +43,14 @@ GroupBox {
         internal.oldMunicipalityId = address.municipality_id;
         internal.oldSectorId = address.sector_id;
         internal.oldStreet = address.street;
-        internal.oldHouseNumber = parseInt(house_num.text);
+        internal.oldHouseNumber = parseInt(addressItem.houseNumberText);
     }
 
     function resetSame() {
         fillOldProperties(root.address);
+    }
+
+    function toJson() {
+        return addressItem.toJson();
     }
 }

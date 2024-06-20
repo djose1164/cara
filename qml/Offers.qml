@@ -23,7 +23,6 @@ Item {
             readonly property T.StackView stackView: root.stackView
 
             spacing: 10
-            model: model
             clip: true
             delegate: ProductDelegate {}
             section.property: "category_name"
@@ -51,10 +50,8 @@ Item {
     ProductRequest {
         id: productRequest
         onSucceeded: function (products) {
-            products.forEach(e => model.append(e));
+            listView.model = products;
             offerStackLayout.currentIndex = 1;
         }
     }
-
-    ListModel { id: model }
 }

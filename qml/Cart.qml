@@ -32,9 +32,12 @@ Page {
             }
 
             Checkout {
-                onPayClicked: CartController.checkout(root.buyer)
-                Layout.fillWidth: true
                 total: CartController.totalToPay
+                Layout.fillWidth: true
+                onPayClicked: {
+                    CartController.checkout(root.buyer);
+                    cartContent.clear();
+                }
             }
         }
     }

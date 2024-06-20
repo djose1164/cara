@@ -109,7 +109,9 @@ void OrderModel::remove(int index)
 
 void OrderModel::clear()
 {
+    beginResetModel();
     data_.clear();
+    endResetModel();
 }
 
 bool OrderModel::setData(const QModelIndex &index, const QVariant &value, int role)

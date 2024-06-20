@@ -4,13 +4,13 @@ import QtQuick.Layouts
 import QtQuick.Dialogs
 import Cara.Utils
 import Cara.Customer
-import "qrc:/qt/qml/Cara/Utils/utils.js" as JS
+
 
 GroupBox {
     id: root
 
-    property alias forename: forename.text
-    property alias surname: surname.text
+    property alias forename: personalInfo.forename
+    property alias surname: personalInfo.surname
     readonly property bool same: internal.oldForename === root.forename
                                  && internal.oldSurname === root.surname
 
@@ -20,21 +20,9 @@ GroupBox {
         root.setOldProperties();
     }
 
-    ColumnLayout {
+    PersonalInfoItem {
+        id: personalInfo
         anchors.fill: parent
-        spacing: 20
-
-        TextField {
-            id: forename
-            placeholderText: "Nombre"
-            Layout.fillWidth: true
-        }
-
-        TextField {
-            id: surname
-            placeholderText: "Apellido"
-            Layout.fillWidth: true
-        }
     }
 
     QtObject {
@@ -44,15 +32,11 @@ GroupBox {
     }
 
     function validate(): void {
-        if (JS.isEmpty(forename.text))
-            throw "El nombre no puede estar vacio.";
-        else if (JS.isEmpty(surname.text))
-            throw "El apellido no puede estar vacio.";
+        personalInfo.validate();
     }
 
     function clear(): void {
-        forename.clear();
-        surname.clear();
+        personalInfo.clear();
     }
 
     function resetSame() {
@@ -62,6 +46,14 @@ GroupBox {
     function setOldProperties() {
         internal.oldForename = root.forename;
         internal.oldSurname = root.surname;
+    }
+
+    function toJson() {
+        return personalInfo.toJson();
+    }
+
+    function fillFields(person: var) {
+        personalInfo.fillFields(person);
     }
 }
 

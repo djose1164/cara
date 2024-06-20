@@ -37,8 +37,8 @@ QtObject {
     }
 
     function updateCustomer(customerId: int, customer: var) {
-        rest.succeeded.connect(customerUpdated);
-        rest.put(customer);
+        rest.succeeded.connect(root.customerUpdated);
+        rest.put(`/${customerId}`,customer);
     }
 
     function fetchCustomerById(customerId: int) {

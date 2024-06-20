@@ -23,6 +23,8 @@ class Product
     Q_PROPERTY(int selectedQty READ selectedQty WRITE setSelectedQty FINAL)
     Q_PROPERTY(QJsonArray images READ images WRITE setImages FINAL)
     Q_PROPERTY(QString imageUrl READ imageUrl WRITE setImageUrl FINAL)
+    Q_PROPERTY(bool hasImages READ hasImages FINAL)
+    Q_PROPERTY(int categoryId READ categoryId WRITE setCategoryId FINAL)
 public:
     Product();
 
@@ -63,14 +65,19 @@ public:
 
     bool valid() const;
 
-    QJsonArray images() const;
+    QJsonArray &images();
+    const QJsonArray &images() const;
     void setImages(const QJsonArray &newImages);
     void setImages(QJsonArray &&newImages);
 
     QString imageUrl() const;
     void setImageUrl(const QString &newCoverImage);
 
-public slots:
+    bool hasImages() const;
+
+    int categoryId() const;
+    void setCategoryId(int newCategoryId);
+
     void setName(const QString &name);
     void setDescription(const QString &description);
 
@@ -86,6 +93,7 @@ private:
     int buyPrice_;
     int productId_;
 
+    // TODO: Change to QList<>
     QJsonArray images_;
     QString imageUrl_;
     int maximumStockLevel_;
@@ -93,6 +101,8 @@ private:
     int quantityAvailable_;
     int reorderPoint_;
     int selectedQty_;
+    bool hasImages_;
+    int categoryId_;
 };
 }
 

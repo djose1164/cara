@@ -37,11 +37,11 @@ bool LocalUserStore::save(const QByteArray &data)
     settings.endGroup();
 
     settings.beginGroup("Contact");
-    const auto contactData{obj["user"]["contact"].toObject()};
+    const auto contactData{obj["user"]["person"].toObject()};
 
     settings.setValue("forename", contactData["forename"].toString());
     settings.setValue("surname", contactData["surname"].toString());
-    settings.setValue("email", contactData["email"].toString());
+    settings.setValue("email", contactData["contact"]["email"].toString());
     settings.endGroup();
 
     Authentication::Data::TokenStore{}.save(data);
@@ -112,14 +112,20 @@ void LocalUserStore::setUser(const Entity::UserEntity &newUser)
 
 bool LocalUserStore::hasUser() const
 {
-    QSettings settings;
-    return settings.contains("User/userId") && settings.contains("User/refreshToken");
+    qDebug() << (user_.userId() > 0);
+    qDebug() << not user_.username().isEmpty();
+    return user_.userId() > 0 and not user_.username().isEmpty();
 }
 
 QString LocalUserStore::refresh() const
 {
     QSettings settings;
     return settings.value(credentialsField).toString();
+}
+
+QBindable<QString> LocalUserStore::bindableRefreshToken() const
+{
+    return {};
 }
 
 }

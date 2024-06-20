@@ -1,6 +1,6 @@
 #include "localuserauthentication.h"
-#include "networkrequestsingleton.h"
-#include "business/tokenmanager.h"
+#include "Network/networkrequestsingleton.h"
+#include "tokenstore.h"
 #include <QSettings>
 #include <QNetworkReply>
 #include <QJsonDocument>
@@ -11,12 +11,15 @@ using namespace Qt::StringLiterals;
 
 namespace Authentication::Service {
 LocalUserAuthentication::LocalUserAuthentication(QObject *parent)
-    : Business::Authentication{parent}
+    : Business::Authenticator{parent}
     , refreshToken_{}
     , isAuthenticated_{}
     , manager_{new QNetworkAccessManager(this)}
     , reply_{}
 {
+    Data::TokenStore ts{};
+    ts.restore();
+    setRefreshToken(ts.refresh());
 }
 
 void LocalUserAuthentication::authenticate()
@@ -24,12 +27,13 @@ void LocalUserAuthentication::authenticate()
     qInfo() << "Authenticationg user through LocalUserAuthentication...";
     if (refreshToken_.isEmpty())
     {
-        qCritical() << "LocalUserAuthentication::authenticate: refreshToken is empty.";
-        emit errorOccurred();
+        constexpr auto errorString{"refreshToken is empty."_L1};
+        qCritical() << "LocalUserAuthentication::authenticate: " << errorString;
+        emit errorOccurred(Authenticator::Error::EmptyToken, errorString);
         return;
     }
 
-    const auto api{NetworkRequestSingleton::instance().api()};
+    const auto api{Network::NetworkRequestSingleton::instance().api()};
 
     QNetworkRequest request{api->createRequest("/users/refresh/"_L1)};
     request.setRawHeader("Authorization"_ba, "Bearer "_ba + refreshToken_.toUtf8());
@@ -48,7 +52,8 @@ void LocalUserAuthentication::authenticate()
         }
         else if (replyError != QNetworkReply::NoError)
         {
-            emit errorOccurred();
+            emit errorOccurred(Authenticator::Error::Unknown,
+                               reply_->errorString());
             return;
         }
 

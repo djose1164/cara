@@ -43,19 +43,6 @@ void UserSession::clear()
     emit userChanged();
 }
 
-Entity::Salesperson UserSession::salesperson() const
-{
-    return salesperson_;
-}
-
-void UserSession::setSalesperson(const Entity::Salesperson &newSalesperson)
-{
-    if (salesperson_ == newSalesperson)
-        return;
-    salesperson_ = newSalesperson;
-    emit salespersonChanged();
-}
-
 Session *UserSession::session()
 {
     return this;

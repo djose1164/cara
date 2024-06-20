@@ -7,6 +7,7 @@ import Cara.Salesperson
 import Cara.User
 import Cara.Billing
 import Cara
+import Cara.Utils
 import "qrc:/orders"
 
 
@@ -56,8 +57,8 @@ Page {
 
     BuyOrderForm {
         id: buyOrderForm
-        width: appStack.width
-        height: appStack.height
+        width: ApplicationWindow.window.width
+        height: ApplicationWindow.window.height
         onAccepted: {
             if (root.salesperson.salespersonType === Salesperson.Administrator)
             {

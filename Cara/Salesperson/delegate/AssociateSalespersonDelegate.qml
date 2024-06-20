@@ -44,10 +44,11 @@ Page {
                         source: "qrc:qt/qml/Cara/Customer/Customers.qml"
                     }
 
-                    ListElement {
-                        text: "Ver estadisticas"
-                        source: "qrc:/statistics/Statistics.qml"
-                    }
+                    // ListElement {
+                    //     text: "Ver estadisticas"
+                    //     source: "qrc:/statistics/Statistics.qml"
+                    // }
+
                     ListElement {
                         text: "Ver inventario"
                         source: "qrc:/inventory/Inventory.qml"
@@ -64,7 +65,7 @@ Page {
         spacing: 20
 
         Label {
-            text: user.contact.forename +" "+ user.contact.surname
+            text: user.forename +" "+ user.surname
             font.pointSize: 12
             Layout.columnSpan: 2
         }

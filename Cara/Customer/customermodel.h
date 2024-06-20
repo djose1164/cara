@@ -22,7 +22,7 @@ public:
         CustomerIdRole = Qt::UserRole,
         AddressRole,
         SalespersonRole,
-        ContactRole,
+        PersonRole,
         FullnameRole,
         ForenameRole,
         SurnameRole

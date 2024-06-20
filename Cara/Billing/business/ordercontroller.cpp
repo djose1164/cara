@@ -1,6 +1,6 @@
 #include "ordercontroller.h"
 #include "data/restorderrepository.h"
-#include "entity/payment.h"
+#include "payment.h"
 
 using namespace Qt::StringLiterals;
 

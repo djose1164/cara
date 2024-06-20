@@ -41,11 +41,18 @@ public slots:
 
     void readFavorites(UserId id);
 
+    void deleteUser(UserId userId);
+
+    void signUp(const QVariantMap &newUser);
+
 signals:
     void fetched(const QByteArray &data);
     void updated();
     void contactUpdated();
-    void errorOccurred();
+    void errorOccurred(HttpStatus::Code c);
+    void userDeleted();
+    void userRegistered();
+    void userNotFound();
 
     void errorStringChanged();
 

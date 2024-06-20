@@ -1,7 +1,7 @@
 #include "salespersonrepositoryimp.h"
 #include <QJsonDocument>
 #include <QNetworkReply>
-#include "networkrequestsingleton.h"
+#include "Network/networkrequestsingleton.h"
 #include "salesperson.h"
 
 using namespace Qt::StringLiterals;
@@ -20,7 +20,7 @@ SalespersonRepositoryImpl::SalespersonRepositoryImpl(QObject *parent)
     , reply_{nullptr}
     , path_{"salespersons"_L1}
     , buffer_{}
-    , api_{Authentication::NetworkRequestSingleton::instance().api()}
+    , api_{Network::NetworkRequestSingleton::instance().api()}
 {
 }
 

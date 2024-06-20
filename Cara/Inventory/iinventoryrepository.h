@@ -12,17 +12,21 @@ class IInventoryRepository : public QObject
 public:
     using QObject::QObject;
     using SalespersonId = int;
+    using ProductId = int;
 
     virtual ~IInventoryRepository();
 
     virtual void fetchAll(SalespersonId) = 0;
 
+    virtual void fetchAnyByProductId(ProductId productId) = 0;
+
     virtual void update(const QVariantMap &stocks) = 0;
 
 signals:
-    void fetchedOne(const QList<EntityLayer::Product> &product);
+    void fetchedOne(const EntityLayer::Product &product);
     void fetchedAll(const QList<EntityLayer::Product> &products);
     void errorOccurred(const QString &errorString);
+    void anyFetched(const QList<EntityLayer::Product> &products);
 };
 }
 

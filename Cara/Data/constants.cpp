@@ -1,6 +1,5 @@
 #include "constants.h"
 #include "restconfig.h"
-#include "apienvironment.h"
 
 using namespace Qt::StringLiterals;
 
@@ -17,7 +16,7 @@ Constants::Constants(QObject *parent)
     , testingBase_{QStringLiteral(LOCAL_API_URL)}
     , remoteTesting_{"https://cara-api-testing.onrender.com"_L1}
     , production_{QStringLiteral(REMOTE_API_URL)}
-    , base_{Api::getApiPath().toString()}
+    , base_{QStringLiteral(CURRENT_BASE_URL) + "/api"_L1}
     , appWidth_{400}
     , appHeight_{640}
 {
@@ -54,10 +53,8 @@ int Constants::appHeight() const
 
 void Constants::setUploadsPath()
 {
-    QSettings settings;
-    QString path{settings.value("base"_L1).toString()};
-
-    uploadsPath_ = path.replace("/api"_L1, "/uploads"_L1) + "/"_L1;
+    uploadsPath_ = base_;
+    uploadsPath_.replace("/api"_L1, "/uploads"_L1) + "/"_L1;
 }
 
 QString Constants::uploadsPath() const

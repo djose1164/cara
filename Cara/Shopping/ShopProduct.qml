@@ -4,7 +4,8 @@ import QtQuick.Layouts
 import Cara.User
 import Cara.Shopping
 import Cara.Product
-import Cara.Data
+import Cara.Network
+import "qrc:/qt/qml/Cara/Product/product_helper.js" as ProductJS
 
 Item {
     id: root
@@ -32,7 +33,7 @@ Item {
 
         ProductItem {
             id: productItem
-            images: root.productForSale.images
+            images: ProductJS.getFixedImagesArr(root.productForSale.images)
             name: root.productForSale.name
             deleteBtn.visible: UserSettings.userTypeId !== UserEntity.Customer
             Layout.fillWidth: true
@@ -56,7 +57,7 @@ Item {
                     name: root.productForSale.name,
                     price: root.productForSale.sell_price,
                     productId: root.productId,
-                    imageUrl: Constants.uploadsPath + root.productForSale.images[0].image_url,
+                    imageUrl: Api.uploadsPath + root.productForSale.images[0].image_url,
                     selectedQty: root.selectedQty
                 };
                 print(JSON.stringify(productObj, null, 2));

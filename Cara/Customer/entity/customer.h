@@ -17,7 +17,7 @@ class Customer
     Q_PROPERTY(QString forename READ forename WRITE setForename FINAL)
     Q_PROPERTY(QString surname READ surname WRITE setSurname FINAL)
     Q_PROPERTY(QString phoneNumber READ phoneNumber WRITE setPhoneNumber FINAL)
-    Q_PROPERTY(CustomerId customerId READ customerId WRITE setCustomerId FINAL)
+    Q_PROPERTY(int customerId READ customerId WRITE setCustomerId FINAL)
     Q_PROPERTY(bool valid READ valid FINAL)
 public:
     static Customer fromJson(const QJsonObject &customerObject);

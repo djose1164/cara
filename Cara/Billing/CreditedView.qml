@@ -2,7 +2,7 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 import Cara
-import Cara.Utils
+import Cara.Controls
 import Cara.Billing
 
 // TODO: Make two views: one for just seeing & the another for editing.

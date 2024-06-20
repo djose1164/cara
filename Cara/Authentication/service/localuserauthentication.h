@@ -1,12 +1,12 @@
 #ifndef LOCALUSERAUTHENTICATION_H
 #define LOCALUSERAUTHENTICATION_H
 
-#include "business/authentication.h"
+#include "business/authenticator.h"
 #include <QObject>
 #include <QNetworkAccessManager>
 
 namespace Authentication::Service {
-class LocalUserAuthentication : public Business::Authentication
+class LocalUserAuthentication : public Business::Authenticator
 {
     Q_OBJECT
     QML_ELEMENT

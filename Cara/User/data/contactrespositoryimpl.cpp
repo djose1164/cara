@@ -1,7 +1,8 @@
 #include "contactrespositoryimpl.h"
-#include "QNAMSingleton.h"
-#include "networkrequestsingleton.h"
-#include <QRestAccessManager.h>
+
+#include "Network/networkrequestsingleton.h"
+#include <QRestAccessManager>
+#include "Network/qnamsingleton.h"
 
 using namespace Qt::StringLiterals;
 
@@ -14,7 +15,7 @@ namespace Data {
 ContactRespositoryImpl::ContactRespositoryImpl(QObject *parent)
     : QObject{parent}
     , manager_{new QRestAccessManager{QNAMSingleton::instance().qnam(), this}}
-    , api_{Authentication::NetworkRequestSingleton::instance().api()}
+    , api_{Network::NetworkRequestSingleton::instance().api()}
 {
 
 }

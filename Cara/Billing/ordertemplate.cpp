@@ -60,11 +60,12 @@ QString OrderTemplate::getFormattedOrder()
 
     const auto detailsHtml{detailsHtmlOpt.value()};
     const auto createdAtString{order_["created_at"].toString()};
-    const auto createdAt{QDateTime::fromString(createdAtString, Qt::ISODate)};
+    auto createdAt{QDateTime::fromString(createdAtString, Qt::ISODate)};
+    createdAt.setTimeZone(QTimeZone{QTimeZone::UTC});
     QSettings settings{};
     return html_.arg(
         settings.value("Salesperson/warehouseAddress"_L1).toString(),
-        createdAt.toString("dd/MM/yyyy hh:mm:ss"_L1),
+        createdAt.toLocalTime().toString("dd/MM/yyyy hh:mm:ss"_L1),
         order_["customer"_L1]["name"_L1].toString(),
         QString::number(order_["id"].toInt()),
         detailsHtml.join(""),

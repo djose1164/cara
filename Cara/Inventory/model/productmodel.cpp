@@ -1,6 +1,14 @@
 #include "productmodel.h"
 #include "iinventoryrepository.h"
 
+using namespace Qt::StringLiterals;
+
+namespace
+{
+constexpr auto imageUrlField{"imageUrl"_L1};
+constexpr auto idField{"id"_L1};
+}
+
 namespace Model
 {
 ProductModel::ProductModel(QObject *parent)
@@ -29,6 +37,25 @@ bool ProductModel::setData(const QModelIndex &index, const QVariant &value, int 
         return true;
     case RoleNames::QuantityAvailableRole:
         product.setQuantityAvailable(value.toInt());
+        emit dataChanged(index, index, {role});
+        return true;
+    case RoleNames::CategoryIdRole:
+        product.setCategoryId(value.toInt());
+        emit dataChanged(index, index, {role});
+        return true;
+    case RoleNames::ImagesRole:
+        product.setImages(QJsonArray{});
+        std::ranges::for_each(value.toList(), [&](const QVariant &item) {
+            const auto itemMap{item.toMap()};
+            QJsonObject obj;
+
+            obj[imageUrlField] = itemMap[imageUrlField].toUrl().toString();
+            if (itemMap.contains(idField))
+                obj[idField] = itemMap[idField].toInt();
+
+            product.images().append(std::move(obj));
+        });
+
         emit dataChanged(index, index, {role});
         return true;
     default:
@@ -62,6 +89,10 @@ QVariant ProductModel::data(const QModelIndex &index, int role) const
         return getValue.imageUrl();
     case RoleNames::SelectedQtyRole:
         return getValue.selectedQty();
+    case RoleNames::CategoryIdRole:
+        return getValue.categoryId();
+    case RoleNames::ImagesRole:
+        return getValue.images();
     default:
         return {};
     }
@@ -127,13 +158,18 @@ void ProductModel::update(SalespersonId spId)
     repository_->fetchAll(spId);
 
     connect(repository_, &Business::IInventoryRepository::fetchedAll, this, [&](const QList<EntityLayer::Product> &products) {
-        beginResetModel();
-        data_.clear();
-        data_ = products;
-        endResetModel();
-        emit countChanged();
-        emit updated();
+        updateFromList(products);
     });
+}
+
+void ProductModel::updateFromList(const QList<EntityLayer::Product> &products)
+{
+    beginResetModel();
+    data_.clear();
+    data_ = products;
+    endResetModel();
+    emit countChanged();
+    emit updated();
 }
 
 void ProductModel::append(const EntityLayer::Product &product)
@@ -179,7 +215,9 @@ QHash<int, QByteArray> ProductModel::roleNames() const
         {int(RoleNames::QuantityAvailableRole), "quantityAvailable"},
         {int(RoleNames::ReorderPointRole), "reorderPoint"},
         {int(RoleNames::BuyPriceRole), "buyPrice"},
-        {int(RoleNames::SelectedQtyRole), "selectedQty"}
+        {int(RoleNames::SelectedQtyRole), "selectedQty"},
+        {int(RoleNames::CategoryIdRole), "categoryId"},
+        {int(RoleNames::ImagesRole), "images"},
     };
     return hash;
 }

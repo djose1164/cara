@@ -22,6 +22,10 @@ public:
 
     void updatePassword(UserId userId, const QVariantMap &data) override;
 
+    void deleteUser(UserId userId) override;
+
+    void createUser(const QVariantMap &newUser) override;
+
     QString path() const;
     void setPath(const QString &newPath);
 

@@ -5,6 +5,7 @@ import QtQuick.Templates as T
 import Cara.Utils
 import Cara.Product
 import Cara.Billing
+import Cara.Network
 
 Page {
     id: root
@@ -68,7 +69,7 @@ Page {
 
                     width: listView.width
                     height: 100
-                    imageUrl: product.image_url
+                    imageUrl: product.images && product.images.length ? Api.uploadsPath + product.images[0].image_url : "qrc:/cara-logo-v1.png"
                     productName: product.name
                     productPrice: product.buy_price
                     spinBox.value: quantity

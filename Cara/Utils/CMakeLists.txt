@@ -6,12 +6,9 @@ qt_add_qml_module(UtilsLib
     URI Cara.Utils
     VERSION 1.0
     SOURCES
-        abstractresource.h abstractresource.cpp
         fileutils.h fileutils.cpp
         httpstatuscodes.h
-        internetstatus.h internetstatus.cpp
         notimplementated.h
-        qnamsingleton.h qnamsingleton.cpp
         shareplataform.h shareplataform.cpp
         shareutils.h shareutils.cpp
         utils.h utils.cpp
@@ -33,8 +30,6 @@ qt_add_qml_module(UtilsLib
         Message.qml
         MessagePane.qml
         MoreVertButton.qml
-        NumberTextField.qml
-        PasswordInput.qml
         ProcessingIndicator.qml
         RedirectGroupBox.qml
         RedirectLabel.qml
@@ -51,11 +46,11 @@ qt_add_qml_module(UtilsLib
         PicSwipeView.qml
         EmailField.qml
         SearchHeader.qml
+        SelectorHeaderItem.qml
     RESOURCES
         utils.js
         star.png
         star-unfilled.png
-        QML_FILES SelectorHeaderItem.qml
 )
 
 if(ANDROID)
@@ -65,3 +60,5 @@ if(ANDROID)
 endif()
 
 target_link_libraries(UtilsLib PRIVATE Qt6::Core Qt6::Network)
+
+target_include_directories(UtilsLib INTERFACE ${CMAKE_CURRENT_SOURCE_DIR})

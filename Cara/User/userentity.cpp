@@ -8,16 +8,17 @@ UserEntity UserEntity::fromJson(const QByteArray &data)
     const auto dataJson{QJsonDocument::fromJson(data)};
     const auto dataObj{dataJson.object()};
     const auto userObj{dataObj["user"].toObject()};
-    const auto contactDoc{userObj["contact"].toObject()};
+    auto &&personObj{userObj[QStringLiteral("person")].toObject()};
+    const auto contactDoc{personObj["contact"].toObject()};
     const auto customerObj{userObj["customer"].toObject()};
 
     UserEntity user{};
-    user.setForename(contactDoc["forename"].toString());
-    user.setSurname(contactDoc["surname"].toString());
+    user.setForename(personObj["forename"].toString());
+    user.setSurname(personObj["surname"].toString());
     user.setEmail(contactDoc["email"].toString());
     user.setCustomerId(userObj["customer_id"].toInt());
     user.setUserType(static_cast<UserTypes>(userObj["user_type_id"].toInt()));
-    Q_ASSERT(std::to_underlying(user.userType_));
+    Q_ASSERT(int(user.userType_));
     user.setUserId(userObj["id"].toInt());
     Q_ASSERT(user.userId());
     user.setUsername(userObj["username"].toString());
@@ -202,5 +203,39 @@ void UserEntity::setPhoneNumber(const QString &newPhoneNumber)
     if (phoneNumber_ == newPhoneNumber)
         return;
     phoneNumber_ = newPhoneNumber;
+}
+
+QByteArray UserEntity::toJson() const
+{
+    QJsonObject obj;
+    obj["forename"] = forename_;
+    obj["surname"] = surname_;
+    obj["telephone"] = phoneNumber_;
+    obj["email"] = email_;
+    obj["birthday"] = birthday_.toString(Qt::ISODate);
+
+    return QJsonDocument{obj}.toJson();
+}
+
+QDate UserEntity::birthday() const
+{
+    return birthday_;
+}
+
+void UserEntity::setBirthday(const QDate &newBirthday)
+{
+    if (birthday_ == newBirthday)
+        return;
+    birthday_ = newBirthday;
+}
+
+Address UserEntity::address() const
+{
+    return address_;
+}
+
+void UserEntity::setAddress(const Address &newAddress)
+{
+    address_ = newAddress;
 }
 }

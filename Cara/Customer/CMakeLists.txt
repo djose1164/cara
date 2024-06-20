@@ -1,3 +1,5 @@
+set(CMAKE_INCLUDE_CURRENT_DIR ON)
+
 qt_add_library(CustomerLib STATIC)
 
 set_source_files_properties(CustomerManager.qml PROPERTIES
@@ -24,6 +26,7 @@ qt_add_qml_module(CustomerLib
         Customers.qml
         PersonalInformationForm.qml
         SelectedCustomer.qml
+        PersonalInfoItem.qml
     SOURCES
         customermodel.h customermodel.cpp
         customerrepository.h customerrepository.cpp
@@ -44,7 +47,8 @@ target_include_directories(CustomerLib PRIVATE
     model
     business
     ../Salesperson
-    ../utils
+    ../Utils
+    ../
 )
 
 target_link_libraries(CustomerLib PRIVATE Qt6::Network)

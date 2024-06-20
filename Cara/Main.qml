@@ -8,7 +8,6 @@ import Cara.Utils
 import Cara.Salesperson
 import Cara
 import Cara.Customer
-import QtNetwork
 
 ApplicationWindow {
     id: app
@@ -47,6 +46,14 @@ ApplicationWindow {
             SalespersonSettings.setEntity(spController.fromJsonObject(salesperson));
             stackView.replace(mainPage);
         }
+        onUserNotFound: {
+            console.log("User with userId: "+UserSettings.userId+" was not found");
+            console.log("Deleting saved user info...");
+            UserSettings.clear();
+            SalespersonSettings.clear();
+            LoginManager.logOut();
+            stackView.replace(mainPage);
+        }
     }
 
     SalespersonController {
@@ -77,7 +84,7 @@ ApplicationWindow {
                 timeoutDialog.open();
             }
             onConnectionRefused: {
-                const message = "No se ha podido establecer una conexion con el servidor. "
+                const message = "No se ha podido establecer una conexión con el servidor. "
                               + "Intenta de nuevo mas tarde.";
                 appStack.replace("qrc:/errors/ErrorPage.qml", {message});
             }
@@ -104,33 +111,32 @@ ApplicationWindow {
     // This' not supposod to handle authentication from credentials, only from refresh token.
     Auth.Login {
         id: login
-        authenticator: localAuthenticator
-        stores: Auth.TokenStore
-        onAuthenticated: {
+        authenticator: Auth.LocalUserAuthentication {
+            id: localAuthenticator
+            refreshToken: Auth.TokenManager.refreshToken
+            onTokenExpired: {
+                print("Token is expired");
+                clearSavedSettings();
+                stackView.replaceCurrentItem(mainPage);
+            }
+        }
+
+        tokenManager: Auth.TokenManager
+        store: Auth.TokenStore {}
+        onAuthenticated: data => {
             print("Login: authenticated: ");
+            //Auth.TokenManager.accessToken = JSON.parse(data).access_token;
             userController.getUserById(UserSettings.userId);
         }
     }
 
-    Auth.LocalUserAuthentication {
-        id: localAuthenticator
-        refreshToken: Auth.TokenStore.refresh
-        onTokenExpired: {
-            print("Token is expired");
-            clearSavedSettings();
-            stackView.replaceCurrentItem(mainPage);
-        }
-    }
-
     function setup() {
-        Auth.TokenManager.store = Auth.TokenStore;
         LoginManager.session = UserSession.session;
-        Auth.TokenStore.restore();
         healthResource.readStatus();
     }
 
     function loginSetup() {
-        if (Auth.TokenStore.refresh && UserSettings.userId > 0) {
+        if (Auth.TokenManager.refreshToken && UserSettings.userId > 0) {
             login.authenticate();
         } else {
             clearSavedSettings();
@@ -140,7 +146,7 @@ ApplicationWindow {
 
     function closingHandler(close: CloseEvent) {
         // Manages Android Back-button
-        if(Qt.platform.os === "android") {
+        if (Qt.platform.os === "android") {
             if (appStack.depth > 1) {
                 close.accepted = false;
                 appStack.pop();

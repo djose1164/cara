@@ -5,6 +5,8 @@
 #include "data/salespersonrepositoryimp.h"
 #include "salesperson.h"
 
+using namespace Qt::StringLiterals;
+
 namespace Salesperson {
 SalespersonController::SalespersonController(QObject *parent)
     : QObject{parent}
@@ -28,11 +30,25 @@ SalespersonController::SalespersonController(QObject *parent)
 
 void SalespersonController::readSalesperson()
 {
-    salespersonRepository_->fetchSalesperson(adminId_);
+    if (salespersonId_ < 1)
+    {
+        setErrorString("Invalid salespersonId."_L1);
+        emit errorOccurred();
+        return;
+    }
+
+    salespersonRepository_->fetchSalesperson(salespersonId_);
 }
 
 void SalespersonController::readSalespeople()
 {
+    if (adminId_ < 1)
+    {
+        setErrorString("Invalid adminId."_L1);
+        emit errorOccurred();
+        return;
+    }
+
     const auto reply{salespersonRepository_->fetchSalespeopleByAdminId(adminId_)};
     connect(reply, &QNetworkReply::finished, this, [this, reply] {
         setData(reply->readAll());

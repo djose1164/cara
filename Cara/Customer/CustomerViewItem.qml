@@ -8,6 +8,7 @@ Item {
     id: root
 
     required property CustomerModel customerModel
+    property bool searchEnabled: CustomerManager.state !== "fetching"
 
     property alias searchText: customerProxy.text
 
@@ -16,25 +17,23 @@ Item {
 
     states: [
         State {
-            name: "searchDisabled"
-            when: CustomerManager.state === "fetching"
-            PropertyChanges {
-                target: root
-                enabled: false
-            }
-        },
-        State {
             name: "contentNotFound"
             when: CustomerManager.state === "contentNotFound"
             PropertyChanges {
                 target: errorPane
                 visible: true
             }
+        },
+        State {
+            when: CustomerManager.state === "errorOccurred"
+            PropertyChanges {
+                target: errorPane
+                visible: true
+                text: CustomerManager.errorString
+            }
         }
-
     ]
 
-    //customerModel.onUpdated: busyIndicator.visible = false;
     ListView {
         id: listView
         anchors.fill: parent

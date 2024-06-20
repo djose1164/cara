@@ -35,7 +35,7 @@ GroupBox {
             id: emailField
             Layout.fillWidth: true
             Layout.columnSpan: 2
-            placeholderText: "Correo electronico..."
+            placeholderText: "Correo electrónico..."
             validator: RegularExpressionValidator {
                 regularExpression: /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
             }
@@ -48,7 +48,7 @@ GroupBox {
         else if (JS.isEmpty(passwordField.text))
             throw "La contraseña no puede estar vacia."
         else if (!emailField.acceptableInput)
-            throw "El correo electronico no es valido."
+            throw "El correo electrónico no es valido."
     }
 
     function clear(): void {

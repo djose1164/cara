@@ -1,6 +1,6 @@
 #include "favoriteproduct.h"
 #include "favorite.h"
-#include <QRestAccessManager.h>
+#include <QRestAccessManager>
 #include <QRestReply>
 #include <QJsonDocument>
 

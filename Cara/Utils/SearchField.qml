@@ -28,7 +28,7 @@ Item {
         onTextEdited: root.textEdited()
     }
 
-    IconImage {
+    Image {
         id: lupa
         anchors.right: textField.right
         anchors.rightMargin: 10

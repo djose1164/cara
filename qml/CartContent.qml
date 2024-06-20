@@ -3,7 +3,6 @@ import QtQuick.Controls
 import QtQuick.Layouts
 import Cara.Product
 import Cara.Shopping
-import Cara.Data
 
 Item {
     id: root
@@ -38,5 +37,9 @@ Item {
             onDeleted: CartController.removeFromCart(index)
             spinBox.onValueChanged: model.quantity = spinBox.value
         }
+    }
+
+    function clear() {
+        CartController.model.clear();
     }
 }

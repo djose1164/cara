@@ -6,5 +6,5 @@ Rest {
     id: root
     property string endpoint: ""
     base: Constants.base + endpoint
-    accessToken: "Bearer " + TokenStore.access
+    accessToken: "Bearer " + TokenManager.accessToken
 }

@@ -1,6 +1,7 @@
 #ifndef USERREPOSITORY_H
 #define USERREPOSITORY_H
 
+#include "httpstatuscodes.h"
 #include "userentity.h"
 #include <QObject>
 
@@ -20,11 +21,15 @@ public:
 
     virtual void read(int id) = 0;
 
-    virtual QNetworkReply *readFavorites(UserId id) = 0;
+    [[nodiscard]] virtual QNetworkReply *readFavorites(UserId id) = 0;
 
     virtual void update(const Entity::UserEntity &user) = 0;
 
     virtual void updatePassword(UserId userId, const QVariantMap &data) = 0;
+
+    virtual void deleteUser(UserId userId) = 0;
+
+    virtual void createUser(const QVariantMap &newUser) = 0;
 
     QString base() const;
     void setBase(const QString &newBase);
@@ -38,8 +43,10 @@ public:
 signals:
     void fetched();
     void updated();
-    void errorOccurred();
+    void errorOccurred(HttpStatus::Code code);
     void passwordUpdated();
+    void deleted();
+    void userCreated();
 
 private:
     QString base_;

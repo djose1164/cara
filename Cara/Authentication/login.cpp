@@ -1,10 +1,15 @@
 #include "login.h"
-#include "networkrequestsingleton.h"
+#include "Network/networkrequestsingleton.h"
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QSettings>
 
 using namespace Qt::StringLiterals;
+
+namespace
+{
+constexpr auto accessTokenField{"access_token"_L1};
+}
 
 namespace Authentication::Business
 {
@@ -13,41 +18,129 @@ Login::Login(QObject *parent)
     , status_{Status::UnAuthenticated}
     , mode_{AuthenticationMode::Undefined}
     , authenticator_{}
-    , stores_{}
+    , store_{}
+    , token_{&Network::NetworkRequestSingleton::instance()}
+    , tokenManager_{}
 {
-    // connect(this, &Login::authenticated, this, &Login::userAuthenticated);
 }
 
 void Login::authenticate()
 {
+    if (!authenticator_)
+        return;
+    setStatus(Status::Busy);
     authenticator_->authenticate();
 }
 
 void Login::userAuthenticated(const QByteArray &data)
 {
-    qDebug() << "\nLogin::userAuthenticated: Saving...";
+    setStatus(Status::Authenticated);
 
-    for (const auto &store : std::as_const(stores_))
-        store->save(data);
+    if (const auto json{QJsonDocument::fromJson(data)};
+        tokenManager() and json.isObject() and json.object().contains(accessTokenField))
+    {
+        tokenManager()->setAccessToken(json[accessTokenField].toString());
+        qDebug() << "Login::userAuthenticated: updating TokenManager.accessToken";
+    }
+
+    if (store_)
+        store_->save(data);
 
     emit authenticated(data);
 }
 
-QQmlListProperty<Store::IStore> Login::stores()
+void Login::authenticatorConnection()
 {
-    return {this, &stores_};
+    connections_.append(
+        connect(authenticator_,
+                &Authenticator::errorOccurred,
+                this,
+                &Login::authenticationFailed
+        )
+    );
+    connections_.append(
+        connect(authenticator_, &Authenticator::succeeded,
+            this, &Login::userAuthenticated
+        )
+    );
+    connections_.append(
+        connect(authenticator_,
+            &Business::Authenticator::tokenReady,
+            this, [&](const QString &token)
+            {
+                token_->setAccessToken(token);
+            }
+        )
+    );
 }
 
-Authentication *Login::authenticator() const
+void Login::authenticatorDisconnection()
+{
+    for (const auto &connection : connections_)
+    {
+        disconnect(connection);
+    }
+    connections_.clear();
+}
+
+void Login::authenticationFailed(Authenticator::Error error, const QString &errorString)
+{
+    qWarning() << "Login::authenticationFailed: " << QVariant::fromValue(error);
+    using enum Authenticator::Error;
+    errorString_ = errorString;
+    if (error == InvalidCredentials)
+    {
+        setStatus(Status::InvalidCredentials);
+        error_ = InvalidCredentials;
+    }
+    emit errorOccurred(errorString);
+}
+
+TokenManager *Login::tokenManager() const
+{
+    return tokenManager_;
+}
+
+void Login::setTokenManager(TokenManager *newTokenManager)
+{
+    if (tokenManager_ == newTokenManager)
+        return;
+    tokenManager_ = newTokenManager;
+    emit tokenManagerChanged();
+}
+
+Store::IStore *Login::store()
+{
+    return store_;
+}
+
+void Login::setStore(Store::IStore *newStore)
+{
+    store_ = newStore;
+}
+
+QBindable<Authenticator::Error> Login::bindableError() const
+{
+    return &error_;
+}
+
+QBindable<QString> Login::bindableErrorString() const
+{
+    return &errorString_;
+}
+
+Authenticator *Login::authenticator() const
 {
     return authenticator_;
 }
 
-void Login::setAuthenticator(Authentication *newAuthenticator)
+void Login::setAuthenticator(Authenticator *newAuthenticator)
 {
     if (authenticator_ == newAuthenticator)
         return;
+    authenticatorDisconnection();
     authenticator_ = newAuthenticator;
+    authenticatorConnection();
     emit authenticatorChanged();
 }
 
@@ -77,18 +170,4 @@ void Login::setStatus(Status newStatus)
     emit statusChanged();
 }
 
-void Login::classBegin()
-{
-}
-
-void Login::componentComplete()
-{
-    connect(authenticator_, &Authentication::errorOccurred,
-            this, &Login::errorOccurred);
-    connect(authenticator_, &Authentication::succeeded,
-            this, &Login::userAuthenticated);
-    connect(authenticator_, &Business::Authentication::tokenReady, this, [&](const QString &token) {
-        NetworkRequestSingleton::instance().api()->setBearerToken(token.toUtf8());
-    });
-}
 }

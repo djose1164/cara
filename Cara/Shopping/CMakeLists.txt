@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 3.20)
 project(ShoppingLib LANGUAGES CXX)
 
+set(CMAKE_INCLUDE_CURRENT_DIR ON)
+
 qt_add_library(${PROJECT_NAME} STATIC)
 qt_add_qml_module(${PROJECT_NAME}
     URI Cara.Shopping
@@ -28,16 +30,16 @@ qt_add_qml_module(${PROJECT_NAME}
         productcategoryrepository.h productcategoryrepository.cpp
         productrepository.h productrepository.cpp
     DEPENDENCIES
-        User Billing Utils Product
+        Cara.User Cara.Billing Cara.Utils Cara.Product
 )
 
 target_include_directories(${PROJECT_NAME} PRIVATE
-    ../data
-    ../utils
-    ../user
-    ../billing
-    ../product
+    ../Data
+    ../Utils
+    ../Billing
+
     ../authentication
+    ../
 )
 
-target_link_libraries(${PROJECT_NAME} PRIVATE UtilsLib AuthenticationLib)
+target_link_libraries(${PROJECT_NAME} PRIVATE UtilsLib AuthenticationLib UserLib BillingLib ProductLib)

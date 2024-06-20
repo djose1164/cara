@@ -1,5 +1,5 @@
 #include "tokenstore.h"
-#include "networkrequestsingleton.h"
+#include "Network/networkrequestsingleton.h"
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QSettings>
@@ -16,6 +16,7 @@ TokenStore::TokenStore(QObject *parent)
 
 bool TokenStore::save(const QByteArray &data)
 {
+    qDebug() << "TokenStore::save: saving...";
     constexpr auto refresh_token{"refresh_token"_L1};
     constexpr auto access_token{"access_token"_L1};
     if (!data.contains(refresh_token) && !data.contains(access_token))
@@ -32,7 +33,7 @@ bool TokenStore::save(const QByteArray &data)
         refreshValue.isString())
     {
         setRefresh(refreshValue.toString());
-        settings.setValue("refreshToken", refresh_);
+        settings.setValue("refreshToken", refresh());
     }
 
     if (const auto accessValue{obj[access_token]};
@@ -45,7 +46,7 @@ bool TokenStore::save(const QByteArray &data)
 
     // TODO: I think this should be deleted.
     Q_ASSERT(!access_.isEmpty());
-    const auto api{NetworkRequestSingleton::instance().api()};
+    const auto api{Network::NetworkRequestSingleton::instance().api()};
     api->setBearerToken(access_.toUtf8());
     return true;
 }
@@ -66,8 +67,7 @@ void TokenStore::clear()
 
     access_.clear();
     emit accessChanged();
-    refresh_.clear();
-    emit refreshChanged();
+    refresh().clear();
 }
 
 
@@ -78,10 +78,12 @@ QString TokenStore::refresh() const
 
 void TokenStore::setRefresh(const QString &newRefresh)
 {
-    if (refresh_ == newRefresh)
-        return;
     refresh_ = newRefresh;
-    emit refreshChanged();
+}
+
+QBindable<QString> TokenStore::bindableRefreshToken() const
+{
+    return &refresh_;
 }
 
 QString TokenStore::access() const

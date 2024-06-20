@@ -3,15 +3,16 @@
 
 #include "istore.h"
 
+#include <QProperty>
+
 namespace Authentication::Data
 {
 class TokenStore : public Store::IStore
 {
     Q_OBJECT
-    Q_PROPERTY(QString refresh READ refresh NOTIFY refreshChanged FINAL)
-    Q_PROPERTY(QString access READ access NOTIFY accessChanged FINAL)
+    Q_PROPERTY(QString refresh READ refresh WRITE setRefresh BINDABLE bindableRefreshToken FINAL)
+    Q_PROPERTY(QString access READ access WRITE setAccess NOTIFY accessChanged FINAL)
     QML_ELEMENT
-    QML_SINGLETON
 public:
     explicit TokenStore(QObject *parent = nullptr);
 
@@ -20,6 +21,7 @@ public:
 
     QString refresh() const override;
     void setRefresh(const QString &newRefresh);
+    QBindable<QString> bindableRefreshToken() const override;
 
     QString access() const;
     void setAccess(const QString &newAccess);
@@ -31,12 +33,10 @@ public slots:
 signals:
     void credentialsChanged();
 
-    void refreshChanged();
-
     void accessChanged();
 
 private:
-    QString refresh_;
+    QProperty<QString> refresh_;
     QString access_;
 };
 }

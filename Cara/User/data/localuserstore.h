@@ -34,6 +34,7 @@ public:
     void setCredentials(const Authentication::Entity::Credential &newCredentials);
 
     QString refresh() const override;
+    QBindable<QString> bindableRefreshToken() const override;
 
 public slots:
     void restore() override;

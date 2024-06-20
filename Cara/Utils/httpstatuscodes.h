@@ -14,6 +14,7 @@
 
 #include <QString>
 #include <QObject>
+#include <QQmlEngine>
 
 #ifdef QT_NETWORK_LIB
 #	include <QNetworkReply>
@@ -124,18 +125,21 @@ enum Code
 	                                     //!< The policy for accessing the resource has not been met in the request. [RFC 2774]
 	NetworkAuthenticationRequired = 511, //!< Indicates that the client needs to authenticate to gain network access.
 
+    UndefinedStatusCode,
 	xxx_max = 1023
 };
 #if (QT_VERSION >= QT_VERSION_CHECK(5,8,0))
 Q_ENUM_NS(Code)
+QML_NAMED_ELEMENT(HttpStatus)
 #endif // Qt >= 5.8.0
 
-inline bool isInformational(int code) { return (code >= 100 && code < 200); } //!< \returns \c true if the given \p code is an informational code.
-inline bool isSuccessful(int code)    { return (code >= 200 && code < 300); } //!< \returns \c true if the given \p code is a successful code.
-inline bool isRedirection(int code)   { return (code >= 300 && code < 400); } //!< \returns \c true if the given \p code is a redirectional code.
-inline bool isClientError(int code)   { return (code >= 400 && code < 500); } //!< \returns \c true if the given \p code is a client error code.
-inline bool isServerError(int code)   { return (code >= 500 && code < 600); } //!< \returns \c true if the given \p code is a server error code.
-inline bool isError(int code)         { return (code >= 400); }               //!< \returns \c true if the given \p code is any type of error code.
+
+constexpr bool isInformational(Code code) { return (code >= 100 && code < 200); } //!< \returns \c true if the given \p code is an informational code.
+constexpr bool isSuccessful(Code code)    { return (code >= 200 && code < 300); } //!< \returns \c true if the given \p code is a successful code.
+constexpr bool isRedirection(Code code)   { return (code >= 300 && code < 400); } //!< \returns \c true if the given \p code is a redirectional code.
+constexpr bool isClientError(Code code)   { return (code >= 400 && code < 500); } //!< \returns \c true if the given \p code is a client error code.
+constexpr bool isServerError(Code code)   { return (code >= 500 && code < 600); } //!< \returns \c true if the given \p code is a server error code.
+constexpr bool isError(Code code)         { return (code >= 400); }               //!< \returns \c true if the given \p code is any type of error code.
 
 
 /*! Returns the standard HTTP reason phrase for a HTTP status code.
@@ -143,7 +147,7 @@ inline bool isError(int code)         { return (code >= 400); }               //
  * \return The standard HTTP reason phrase for the given \p code or a null \c QString()
  * if no standard phrase for the given \p code is known.
  */
-inline QString reasonPhrase(int code)
+inline QString reasonPhrase(Code code)
 {
 	switch (code)
 	{
@@ -220,7 +224,9 @@ inline QString reasonPhrase(int code)
 	case 510: return QStringLiteral("Not Extended");
 	case 511: return QStringLiteral("Network Authentication Required");
 
-	default: return QString();
+    case UndefinedStatusCode: return QStringLiteral("Undefined Status Code");
+
+    default: return QStringLiteral("");
 	}
 }
 
@@ -237,7 +243,7 @@ inline QString reasonPhrase(int code)
  *
  * \sa [statusCodeFromHttp() in qhttpthreaddelegate.cpp](http://code.qt.io/cgit/qt/qtbase.git/tree/src/network/access/qhttpthreaddelegate.cpp#n57)
  */
-inline int networkErrorToStatusCode(QNetworkReply::NetworkError error)
+constexpr Code networkErrorToStatusCode(QNetworkReply::NetworkError error)
 {
 	switch (error)
 	{
@@ -267,7 +273,7 @@ inline int networkErrorToStatusCode(QNetworkReply::NetworkError error)
 	 * Therefore, we return an invalid code.
 	 */
 	default:
-		return -1;
+        return UndefinedStatusCode;
 	}
 }
 
@@ -285,7 +291,7 @@ inline int networkErrorToStatusCode(QNetworkReply::NetworkError error)
  *
  * \sa [statusCodeFromHttp() in qhttpthreaddelegate.cpp](http://code.qt.io/cgit/qt/qtbase.git/tree/src/network/access/qhttpthreaddelegate.cpp#n57)
  */
-inline QNetworkReply::NetworkError statusCodeToNetworkError(int code)
+constexpr QNetworkReply::NetworkError statusCodeToNetworkError(Code code)
 {
 	// below 400
 	if (!isError(code))

@@ -8,7 +8,7 @@
 #include <QObject>
 #include <QQmlEngine>
 
-namespace Utils
+namespace Cara
 {
 class RestService : public QObject, public QQmlParserStatus
 {

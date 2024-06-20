@@ -14,8 +14,14 @@ Address *Address::fromMap(const QByteArray &data)
     return address;
 }
 
-Address::Address(QObject *parent)
-    : QObject{parent}
+Address::Address()
+    : addressId_{}
+    , houseNumber_{}
+    , countryId_{}
+    , provinceId_{}
+    , municipalityId_{}
+    , sectorId_{}
+    , street_{}
 {
 
 }
@@ -30,7 +36,6 @@ void Address::setAddressId(int newAddressId)
     if (addressId_ == newAddressId)
         return;
     addressId_ = newAddressId;
-    emit addressIdChanged();
 }
 
 int Address::houseNumber() const
@@ -43,7 +48,6 @@ void Address::setHouseNumber(int newHouseNumber)
     if (houseNumber_ == newHouseNumber)
         return;
     houseNumber_ = newHouseNumber;
-    emit houseNumberChanged();
 }
 
 int Address::countryId() const
@@ -56,7 +60,6 @@ void Address::setCountryId(int newCountryId)
     if (countryId_ == newCountryId)
         return;
     countryId_ = newCountryId;
-    emit countryIdChanged();
 }
 
 int Address::provinceId() const
@@ -69,7 +72,6 @@ void Address::setProvinceId(int newProvinceId)
     if (provinceId_ == newProvinceId)
         return;
     provinceId_ = newProvinceId;
-    emit provinceIdChanged();
 }
 
 int Address::municipalityId() const
@@ -82,7 +84,6 @@ void Address::setMunicipalityId(int newMunicipalityId)
     if (municipalityId_ == newMunicipalityId)
         return;
     municipalityId_ = newMunicipalityId;
-    emit municipalityIdChanged();
 }
 
 int Address::sectorId() const
@@ -95,7 +96,6 @@ void Address::setSectorId(int newSectorId)
     if (sectorId_ == newSectorId)
         return;
     sectorId_ = newSectorId;
-    emit sectorIdChanged();
 }
 
 QString Address::street() const
@@ -108,6 +108,5 @@ void Address::setStreet(const QString &newStreet)
     if (street_ == newStreet)
         return;
     street_ = newStreet;
-    emit streetChanged();
 }
 }

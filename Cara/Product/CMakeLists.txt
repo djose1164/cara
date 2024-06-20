@@ -21,12 +21,17 @@ qt_add_qml_module(ProductLib
         ProductView.qml
         ProductForm.qml
         ProductManager.qml
+        product_helper.js
     SOURCES
         productentity.h productentity.cpp
     RESOURCES
         add_a_photo.svg
     DEPENDENCIES
-        data
+        Cara.Network
 )
 
-target_include_directories(ProductLib PRIVATE ../data ../utils ..)
+target_include_directories(ProductLib
+    PRIVATE ..
+    INTERFACE ${CMAKE_CURRENT_SOURCE_DIR})
+
+target_link_libraries(ProductLib PUBLIC NetworkLib DataLib UtilsLib)
