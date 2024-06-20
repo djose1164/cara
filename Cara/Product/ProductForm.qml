@@ -7,11 +7,12 @@ import QtQuick.Templates as T
 import Cara.Utils
 import Cara.Shopping
 import "qrc:/inventory"
+import "product_helper.js" as ProductJS
 
 Page {
     id: root
 
-    readonly property var myStack: StackView.view
+    readonly property T.StackView myStack: StackView.view
     property int productId
     property int categoryId
     property int sellPrice
@@ -55,10 +56,14 @@ Page {
     }
 
     Component.onCompleted: {
-        if (root.mode === "add") {
-            pictureModel.append({image_url: Qt.url(internal.picturePlaceHolder)});
-            root.images = pictureModel;
+        internal.setOldProperties();
+
+        if (root.mode === "add" || product.images.length === 0) {
+            // pictureModel.append({image_url: Qt.url(internal.picturePlaceHolder)});
+            // product.images = pictureModel;
+            product.images = [{imageUrl: internal.picturePlaceHolder}];
         }
+        console.log(JSON.stringify(product.images))
     }
 
     StackLayout {
@@ -78,8 +83,8 @@ Page {
 
                 ProductItem {
                     id: productItem
-                    images: root.images
-                    deleteBtn.visible: root.images.count > 1
+                    images: product.images
+                    deleteBtn.visible: product.images.length > 1
                     favoriteBtn.visible: false
                     Layout.fillWidth: true
                     Layout.fillHeight: true
@@ -149,10 +154,6 @@ Page {
         }
     }
 
-    ListModel {
-        id: pictureModel
-    }
-
     CatalogueRepository {
         id: catalogueRepository
         onProductAdded: data => {
@@ -162,10 +163,10 @@ Page {
         onPictureAdded: data => {
             popup.state = "success";
             console.log(data);
-            const pictures = JSON.parse(data).images;
-            //root.images.append(pictures);
-            root.images.clear();
-            root.images.append(pictures);
+            const pictures = ProductJS.getFixedImagesArr(JSON.parse(data).images);
+
+            console.log(JSON.stringify(pictures, null, 2))
+            product.images = pictures;
         }
         onProductEdited: {
             popup.state = "success";
@@ -173,9 +174,15 @@ Page {
         }
         onPictureDeleted: {
             popup.state = "success";
-            root.images.remove(internal.pictureIndex);
+            const filteredImages = product.images.filter(item => item.id !== internal.pictureId);
+            console.log("to exclude: "+internal.pictureId)
+            console.log(JSON.stringify(filteredImages))
+            product.images = filteredImages;
         }
-        onErrorOccurred: popup.state = "error"
+        onErrorOccurred: err => {
+            console.log(err);
+            popup.state = "error";
+        }
     }
 
     StatusPopup {
@@ -201,8 +208,21 @@ Page {
 
     QtObject {
         id: internal
-        property int pictureIndex: -1
         readonly property url picturePlaceHolder: "cara-logo-v1.png"
+        property int pictureId: -1
+        property string oldName
+        property string oldDescription
+        property int oldSellPrice
+        property int oldBuyPrice
+        property int oldCategoryId
+
+        function setOldProperties() {
+            internal.oldName = root.name;
+            internal.oldDescription = root.description;
+            internal.oldSellPrice = root.sellPrice;
+            internal.oldBuyPrice = root.buyPrice;
+            internal.oldCategoryId = root.categoryId;
+        }
     }
 
     function openBusyPopup() {
@@ -240,9 +260,6 @@ Page {
             category_id: categoryCB.currentValue
         };
 
-        if (root.images.count > 0)
-            productJson.images = root.getPictureList();
-
         print(JSON.stringify(productJson, null, 2));
         catalogueRepository.editProduct(productJson);
     }
@@ -262,8 +279,8 @@ Page {
 
     function getPictureList(): var {
         const pictures = [];
-        for (let i = 0; i < root.images.count; ++i) {
-            pictures.push({image_url: root.images.get(i).image_url});
+        for (let i = 0; i < product.images.count; ++i) {
+            pictures.push({image_url: product.images.get(i).image_url});
         }
         return pictures;
     }
@@ -275,10 +292,10 @@ Page {
         }
 
         if (root.mode === "add") {
-            if (root.images.get(0).image_url === internal.picturePlaceHolder)
-                root.images.clear();
+            if (product.images.get(0).image_url === internal.picturePlaceHolder)
+                product.images.clear();
 
-            root.images.append({image_url: filename});
+            product.images.append({image_url: filename});
             return;
         }
 
@@ -290,16 +307,19 @@ Page {
     function handlePictureDeleted(index: int) {
         try {
             if (root.mode === "add") {
-                root.images.remove(index);
+                product.images.splice(index, 1);
                 return;
             }
 
             // Deleting an uploaded pic.
             openBusyPopup();
-            internal.pictureIndex = index;
-            const pictureId = root.images.get(index).id;
+            console.log("index:", index);
+            console.log(JSON.stringify(product.images))
+            const pictureId = product.images[index].id;
+            internal.pictureId = pictureId;
             catalogueRepository.deletePicture(pictureId);
         } catch (err) {
+            console.log(err);
             popup.state = "error";
         }
     }

@@ -185,8 +185,6 @@ void Product::setProductId(int productId)
     }
 }
 
-
-
 void Product::setupPictures(const QJsonArray &pics)
 {
     QJsonArray imageList;
@@ -194,15 +192,13 @@ void Product::setupPictures(const QJsonArray &pics)
     {
         const auto &&picObj{pic.toObject()};
         const QString imgUrl{picObj.value(imageUrlField).toString()};
-        imageList.append(QJsonObject{ {imageUrlProperty, picIdentificator.arg(imgUrl)} });
+        imageList.append(QJsonObject{{imageUrlProperty, picIdentificator.arg(imgUrl)},
+                                     {idField, picObj[idField].toInt()}});
+        Q_ASSERT(imageList.last()[idField].toInt() > 0);
     }
     setImageUrl(imageList.first().toObject()[imageUrlProperty].toString());
     setImages(std::move(imageList));
 }
-
-
-
-
 
 int Product::categoryId() const
 {
@@ -231,7 +227,12 @@ void Product::setImageUrl(const QString &newCoverImage)
     imageUrl_ = newCoverImage;
 }
 
-QJsonArray Product::images() const
+QJsonArray &Product::images()
+{
+    return images_;
+}
+
+const QJsonArray &Product::images() const
 {
     return images_;
 }

@@ -65,7 +65,8 @@ public:
 
     bool valid() const;
 
-    QJsonArray images() const;
+    QJsonArray &images();
+    const QJsonArray &images() const;
     void setImages(const QJsonArray &newImages);
     void setImages(QJsonArray &&newImages);
 
@@ -92,6 +93,7 @@ private:
     int buyPrice_;
     int productId_;
 
+    // TODO: Change to QList<>
     QJsonArray images_;
     QString imageUrl_;
     int maximumStockLevel_;

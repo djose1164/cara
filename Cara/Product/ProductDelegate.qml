@@ -3,7 +3,7 @@ import QtQuick.Controls
 import QtQuick.Layouts
 import QtQuick.Templates as T
 import Cara.Shopping
-import Cara.Data
+import Cara.Network
 
 Item {
     id: root
@@ -39,7 +39,7 @@ Item {
             ProductImage {
                 id: img
 
-                source: root.images && root.images.length ? Constants.uploadsPath + images[0].image_url : "qrc:/cara-logo-v1.png"
+                source: root.images && root.images.length ? Api.uploadsPath + images[0].image_url : "qrc:/cara-logo-v1.png"
                 sourceSize: "128x128"
                 onReady: stackLayout.currentIndex = 1
             }

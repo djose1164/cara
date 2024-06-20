@@ -18,7 +18,8 @@ QtObject {
         model.clear();
     }
 
-    function findById(productId: int) {
+    function findById(productId: int): product {
+        console.log("ProductManager.productId:", productId)
         const pred = product => product.id === productId;
 
         for (let i = 0; i < model.count; ++i)
