@@ -1,3 +1,4 @@
+qt_add_library(AuthenticationLib STATIC)
 qt_add_qml_module(AuthenticationLib
     URI Cara.Authentication
     VERSION 1.0
