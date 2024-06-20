@@ -162,14 +162,11 @@ Item {
             internal.saveSalespersonSettings(data);
             UserSettings.setEntity(userController.create(data));
             LoginManager.loggedIn();
-            TokenStore.access = jsonData.access_token;
-            TokenStore.refresh = jsonData.refresh_token;
             root.loggedIn();
 
             // MainPage.qml is already in stack. No need to replace.
             if (root.stackView)
                 root.stackView.popCurrentItem();
-            console.log("TokenStore.access:",TokenStore.access);
         }
 
         onErrorOccurred: errorString => {
