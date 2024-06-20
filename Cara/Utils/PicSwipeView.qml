@@ -1,6 +1,6 @@
 import QtQuick
 import QtQuick.Controls
-import Cara.Data
+import Cara.Network
 
 SwipeView {
     id: root
@@ -11,15 +11,15 @@ SwipeView {
         id: repeater
         Loader {
             id: loader
-            required property string image_url
+            required property string imageUrl
             active: SwipeView.isCurrentItem || SwipeView.isNextItem || SwipeView.isPreviousItem
             sourceComponent: Image {
                 source: {
-                    if (loader.image_url.startsWith("http")
-                            || loader.image_url.startsWith("file://"))
-                        return loader.image_url;
+                    if (loader.imageUrl.startsWith("http")
+                            || loader.imageUrl.startsWith("file://"))
+                        return loader.imageUrl;
                     else
-                        return Constants.uploadsPath + loader.image_url;
+                        return Api.uploadsPath + loader.imageUrl;
                 }
                 sourceSize: internal.sourceSize
                 fillMode: Image.PreserveAspectFit
