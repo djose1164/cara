@@ -6,8 +6,6 @@ import QtQuick.Templates as T
 import Cara.User
 import Cara.Salesperson
 import Cara.Customer
-import Cara.Billing
-import Cara.Authentication
 import QtNetwork
 
 // TODO: MaiPage should be deleted in a future release.
@@ -206,7 +204,6 @@ Page {
         switch (userType) {
         case UserEntity.Admin:
         case UserEntity.Salesperson:
-            CustomerManager.populate(SalespersonSettings.salespersonId);
             if (CustomerManager.isEmpty) spService.fetchCustomers();
             homeStack.replace(adminHomePath);
             orderStackView.replace(adminCartPath);
