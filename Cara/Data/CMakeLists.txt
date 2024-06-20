@@ -16,15 +16,16 @@ target_include_directories(DataLib
 set(REMOTE_API_URL https://cara-api.onrender.com)
 set(REMOTE_TESTING_API_URL https://cara-api-testing.onrender.com)
 if (ANDROID)
-    set(LOCAL_API_URL http://10.0.2.2:5000)
+    set(LOCAL_API_URL http://10.0.2.2:5000) # For emulator
 else()
     set(LOCAL_API_URL http://127.0.0.1:5000)
 endif()
-set(LOCAL_NETWORK_API_URL http://192.168.0.13:5000)
+set(LOCAL_NETWORK_API_URL http://192.168.1.8:5000)
 # RemoteTesting -- 0
 # LocalTesting -- 1
 # LocalNetworkTesting -- 2
 # Production -- 3
-set(API_ENVIRONMENT 1)
+set(CURRENT_BASE_URL ${REMOTE_API_URL})
+set(API_ENVIRONMENT 3)
 
 configure_file(restconfig.h.in ${CMAKE_CURRENT_SOURCE_DIR}/restconfig.h @ONLY)
