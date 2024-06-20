@@ -20,7 +20,7 @@ Item {
         text: "Compras realizadas recientemente "
         font.pointSize: 13
 
-        IconImage {
+        Image {
             anchors.left: recentOrdersLbl.right
             anchors.verticalCenter: parent.verticalCenter
             source: "qrc:/icons/arrow_forward.svg"

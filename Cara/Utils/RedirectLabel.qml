@@ -14,10 +14,10 @@ ItemDelegate {
             anchors.verticalCenter: parent.verticalCenter
             wrapMode: Label.Wrap
             elide: Label.ElideRight
-            font.pointSize: 12
+            font: root.font
         }
 
-        IconImage {
+        Image {
             id: icon
             anchors.verticalCenter: parent.verticalCenter
             anchors.right: parent.right

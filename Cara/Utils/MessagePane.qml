@@ -6,7 +6,7 @@ Item {
 
     property int elevation: 6
     property int type: MessagePane.Warning
-    property alias sourceSize: iconImage.sourceSize
+    property alias sourceSize: image.sourceSize
     property alias text: label.text
 
     enum Type {
@@ -26,8 +26,8 @@ Item {
             anchors.fill: parent
             spacing: 14
 
-            IconImage {
-                id: iconImage
+            Image {
+                id: image
                 anchors.horizontalCenter: parent.horizontalCenter
                 source: {
                     switch(root.type) {

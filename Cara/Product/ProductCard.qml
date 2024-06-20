@@ -64,7 +64,7 @@ Rectangle {
             Layout.column: 1
             Layout.row: 0
             Layout.alignment: Qt.AlignTrailing
-            IconImage {
+            Image {
                 anchors.centerIn: parent;
                 source: "qrc:/icons/trash-can-outline.svg"
             }

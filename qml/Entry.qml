@@ -48,7 +48,7 @@ RowLayout {
 
     RoundButton {
         onClicked: deleted(index);
-        IconImage {
+        Image {
             anchors.centerIn: parent;
             source: "qrc:/icons/trash-can-outline.svg"
         }

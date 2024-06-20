@@ -9,7 +9,7 @@ ColumnLayout {
         Layout.alignment: Qt.AlignCenter
     }
 
-    IconImage {
+    Image {
         source: "qrc:/icons/done.svg"
         sourceSize: "48x48"
         Layout.alignment: Qt.AlignCenter
