@@ -18,7 +18,7 @@ UserEntity UserEntity::fromJson(const QByteArray &data)
     user.setEmail(contactDoc["email"].toString());
     user.setCustomerId(userObj["customer_id"].toInt());
     user.setUserType(static_cast<UserTypes>(userObj["user_type_id"].toInt()));
-    Q_ASSERT(std::to_underlying(user.userType_));
+    Q_ASSERT(int(user.userType_));
     user.setUserId(userObj["id"].toInt());
     Q_ASSERT(user.userId());
     user.setUsername(userObj["username"].toString());

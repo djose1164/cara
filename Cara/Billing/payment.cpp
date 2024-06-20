@@ -136,7 +136,7 @@ QByteArray Payment::toJson() const
     object["paid_amount"] = paidAmount_;
     object["amount_to_pay"] = amountToPay_;
 
-    const int statusInt{std::to_underlying(status())};
+    const int statusInt{int(status())};
     object["payment_status_id"] = statusInt;
 
     return QJsonDocument{object}.toJson(QJsonDocument::Compact);
