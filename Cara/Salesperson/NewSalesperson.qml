@@ -21,33 +21,42 @@ Page {
 
     title: "Nuevo Vendedor"
 
-    ColumnLayout {
-        id: gridLayout
-        anchors {
-            fill: parent
-            topMargin: root.height * .1
-            bottomMargin: root.height * .1
-            leftMargin: 10
-            rightMargin: 10
-        }
-        spacing: 20
+    component Separator : Item {
+        height: 1
+    }
 
-        UserCredentialsForm {
-            id: credentialsForm
-            Layout.fillWidth: true
-        }
+    ScrollView {
+        id: scrollView
+        anchors.fill: parent
+        contentWidth: availableWidth
 
-        PersonalInformationForm {
-            id: nameForm
-            Layout.columnSpan: 2
-            Layout.fillWidth: true
-        }
+        ColumnLayout {
+            id: gridLayout
+            width: scrollView.width - 20
+            anchors.horizontalCenter: parent.horizontalCenter
+            spacing: 20
 
-        Button {
-            text: "Crear"
-            Layout.columnSpan: 2
-            Layout.fillWidth: true
-            onClicked: addSalesperson()
+            Separator {}
+
+            UserCredentialsForm {
+                id: credentialsForm
+                Layout.fillWidth: true
+            }
+
+            PersonalInformationForm {
+                id: nameForm
+                Layout.columnSpan: 2
+                Layout.fillWidth: true
+            }
+
+            Button {
+                text: "Crear"
+                Layout.columnSpan: 2
+                Layout.fillWidth: true
+                onClicked: addSalesperson()
+            }
+
+            Separator {}
         }
     }
 
