@@ -22,3 +22,5 @@ qt_add_qml_module(InventoryLib
 
 target_include_directories(InventoryLib
     PRIVATE model ../Product ../Authentication ../)
+
+target_link_libraries(InventoryLib PRIVATE NetworkLib)

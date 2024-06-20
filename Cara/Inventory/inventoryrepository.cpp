@@ -11,10 +11,12 @@ using namespace Qt::StringLiterals;
 namespace
 {
 constexpr auto resourceIdentification{"/%1"_L1};
+constexpr auto inventoriesField{"inventories"_L1};
 }
 
 namespace Data
 {
+
 InventoryRepository::InventoryRepository(QObject *parent)
     : Business::IInventoryRepository{parent}
     , manager_{new QNetworkAccessManager(this)}
@@ -50,20 +52,54 @@ void InventoryRepository::fetchAll(SalespersonId spId)
         }
 
         const auto inventoryArray = inventoryValue.toArray();
-        QList<EntityLayer::Product> products;
-        for (const auto product : std::as_const(inventoryArray))
-        {
-            const auto productJson = QJsonDocument(product.toObject()).toJson();
-            products.append(EntityLayer::Product::fromJson(productJson));
-        }
 
-        emit fetchedAll(products);
+        emit fetchedAll(mapJsonToProducts(inventoryArray));
     });
 }
 
 void InventoryRepository::update(const QVariantMap &stocks)
 {
 
+}
+
+void InventoryRepository::fetchAnyByProductId(ProductId productId)
+{
+    const QUrlQuery query{ {"product_id"_L1, QString::number(productId)} };
+    const auto req{api_->createRequest(path_, query)};
+
+    reply_ = manager_->get(req);
+
+    connect(reply_, &QNetworkReply::finished, this, [this] {
+        reply_->deleteLater();
+
+        QRestReply reply{reply_};
+
+        if (!reply.isSuccess())
+        {
+            setErrorString(reply.errorString());
+            emit errorOccurred(errorString_);
+            return;
+        }
+
+        if (const auto json{reply.readJson()};
+            json and json->isObject() and json->object().contains(inventoriesField))
+        {
+            setData(json->toJson());
+            emit anyFetched(mapJsonToProducts((*json)[inventoriesField].toArray()));
+        }
+    });
+}
+
+QList<EntityLayer::Product> InventoryRepository::mapJsonToProducts(const QJsonArray &array) const
+{
+    QList<EntityLayer::Product> productList{array.count()};
+
+    std::ranges::transform(array, productList.begin(), [](const QJsonValue &jsonValue) {
+        auto &&doc{QJsonDocument{jsonValue.toObject()}};
+        return EntityLayer::Product::fromJson(doc.toJson());
+    });
+
+    return productList;
 }
 
 QString InventoryRepository::errorString() const
@@ -85,4 +121,10 @@ void InventoryRepository::setData(const QByteArray &newData)
 {
     data_ = newData;
 }
+
+QBindable<QByteArray> InventoryRepository::bindableData() const
+{
+    return &data_;
+}
+
 }

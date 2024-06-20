@@ -28,6 +28,8 @@ Page {
 
             Label {
                 text: root.title
+                font.pointSize: 14
+                font.bold: true
                 Layout.alignment: Qt.AlignLeft
             }
         }

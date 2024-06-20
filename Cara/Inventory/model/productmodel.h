@@ -31,8 +31,11 @@ public:
         ReorderPointRole,
         QuantityAvailableRole,
         ImageUrlRole,
-        SelectedQtyRole
+        SelectedQtyRole,
+        CategoryIdRole,
+        ImagesRole,
     };
+
     explicit ProductModel(QObject *parent = nullptr);
 
     // QAbstractItemModel interface
@@ -54,6 +57,7 @@ public:
 
 public slots:
     void update(SalespersonId spId);
+    void updateFromList(const QList<EntityLayer::Product> &products);
     void append(const EntityLayer::Product &product);
     void clear();
     void remove(int index);
