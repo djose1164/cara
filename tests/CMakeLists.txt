@@ -11,7 +11,7 @@ add_library(LoginHelper STATIC
 qt_add_library(EnvHelper STATIC
     dotenv.h)
 
-target_link_libraries(LoginHelper PRIVATE Qt6::Test Qt6::Qml AuthenticationLib StoreLib UserLib)
+target_link_libraries(LoginHelper PRIVATE Qt6::Test Qt6::Qml AuthenticationLib UserLib)
 target_include_directories(LoginHelper INTERFACE ${CMAKE_CURRENT_SOURCE_DIR})
 
 function(SETUP_TESTS)
