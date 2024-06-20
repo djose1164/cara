@@ -3,7 +3,7 @@
 #include <QQmlContext>
 #include "Cara/Authentication/business/tokenmanager.h"
 #include "Cara/config.h"
-#include "Cara/networkrequestsingleton.h"
+#include "Cara/Network/networkrequestsingleton.h"
 
 using namespace Qt::StringLiterals;
 
@@ -19,7 +19,7 @@ int main(int argc, char *argv[])
 
     QQmlApplicationEngine engine;
     const auto tokenManager{engine.singletonInstance<Authentication::Business::TokenManager *>("Cara.Authentication"_L1, "TokenManager"_L1)};
-    tokenManager->setToken(&Authentication::NetworkRequestSingleton::instance());
+    tokenManager->setToken(&Network::NetworkRequestSingleton::instance());
 
     QObject::connect(
         &engine,
