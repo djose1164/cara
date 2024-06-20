@@ -14,6 +14,7 @@
 
 #include <QString>
 #include <QObject>
+#include <QQmlEngine>
 
 #ifdef QT_NETWORK_LIB
 #	include <QNetworkReply>
@@ -129,7 +130,9 @@ enum Code
 };
 #if (QT_VERSION >= QT_VERSION_CHECK(5,8,0))
 Q_ENUM_NS(Code)
+QML_NAMED_ELEMENT(HttpStatus)
 #endif // Qt >= 5.8.0
+
 
 constexpr bool isInformational(Code code) { return (code >= 100 && code < 200); } //!< \returns \c true if the given \p code is an informational code.
 constexpr bool isSuccessful(Code code)    { return (code >= 200 && code < 300); } //!< \returns \c true if the given \p code is a successful code.
