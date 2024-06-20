@@ -18,3 +18,5 @@ qt_add_qml_module(ReviewLib
 )
 
 target_include_directories(ReviewLib PRIVATE ../authentication ../Utils ../)
+
+target_link_libraries(ReviewLib PRIVATE NetworkLib)
