@@ -46,6 +46,14 @@ ApplicationWindow {
             SalespersonSettings.setEntity(spController.fromJsonObject(salesperson));
             stackView.replace(mainPage);
         }
+        onUserNotFound: {
+            console.log("User with userId: "+UserSettings.userId+" was not found");
+            console.log("Deleting saved user info...");
+            UserSettings.clear();
+            SalespersonSettings.clear();
+            LoginManager.logOut();
+            stackView.replace(mainPage);
+        }
     }
 
     SalespersonController {
@@ -112,9 +120,12 @@ ApplicationWindow {
                 stackView.replaceCurrentItem(mainPage);
             }
         }
-        store: Auth.TokenStore
-        onAuthenticated: {
+
+        tokenManager: Auth.TokenManager
+        store: Auth.TokenStore {}
+        onAuthenticated: data => {
             print("Login: authenticated: ");
+            //Auth.TokenManager.accessToken = JSON.parse(data).access_token;
             userController.getUserById(UserSettings.userId);
         }
     }
