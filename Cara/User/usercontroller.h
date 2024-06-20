@@ -49,9 +49,10 @@ signals:
     void fetched(const QByteArray &data);
     void updated();
     void contactUpdated();
-    void errorOccurred();
+    void errorOccurred(HttpStatus::Code c);
     void userDeleted();
     void userRegistered();
+    void userNotFound();
 
     void errorStringChanged();
 

@@ -15,6 +15,8 @@ Item {
     property alias streetText: street.text
     property alias houseNumberText: house_num.text
 
+    signal donePressed
+
     implicitWidth: columnLayout.implicitWidth
     implicitHeight: columnLayout.implicitHeight
 
@@ -52,6 +54,7 @@ Item {
             placeholderText: "Calle"
             Layout.columnSpan: 2
             Layout.fillWidth: true
+            EnterKey.type: Qt.EnterKeyNext
         }
 
         NumberTextField {
@@ -59,6 +62,8 @@ Item {
             placeholderText: "Numero de casa"
             Layout.columnSpan: 2
             Layout.fillWidth: true
+            EnterKey.type: Qt.EnterKeyDone
+            Keys.onReturnPressed: root.donePressed()
         }
     }
 

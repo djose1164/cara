@@ -1,6 +1,7 @@
 #ifndef USERREPOSITORY_H
 #define USERREPOSITORY_H
 
+#include "httpstatuscodes.h"
 #include "userentity.h"
 #include <QObject>
 
@@ -42,7 +43,7 @@ public:
 signals:
     void fetched();
     void updated();
-    void errorOccurred();
+    void errorOccurred(HttpStatus::Code code);
     void passwordUpdated();
     void deleted();
     void userCreated();

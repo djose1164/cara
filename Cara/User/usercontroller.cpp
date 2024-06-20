@@ -31,9 +31,12 @@ UserController::UserController(QObject *parent)
     repo->setPath("users");
 
     connect(repository_, &Data::UserRepository::updated, this, &UserController::updated);
-    connect(repository_, &Data::UserRepository::errorOccurred, this, [&] {
+    connect(repository_, &Data::UserRepository::errorOccurred, this, [&](HttpStatus::Code c) {
         setErrorString(repository_->errorString());
-        emit errorOccurred();
+        emit errorOccurred(c);
+
+        if (c == HttpStatus::NotFound)
+            emit userNotFound();
     });
     connect(repository_, &Data::UserRepository::passwordUpdated,
             this, &UserController::passwordUpdated);
@@ -71,7 +74,7 @@ void UserController::updateContact(const QVariantMap &data)
     else
     {
         setErrorString(QStringLiteral("%1 or %2 is missing.").arg(userIdField, customerIdField));
-        emit errorOccurred();
+        emit errorOccurred(HttpStatus::BadRequest);
         return;
     }
 
@@ -83,7 +86,7 @@ void UserController::updateContact(const QVariantMap &data)
             if (!reply.errorString().isEmpty())
             {
                 setErrorString(reply.errorString());
-                emit errorOccurred();
+                emit errorOccurred(static_cast<HttpStatus::Code>(reply.httpStatus()));
                 return;
             }
 
@@ -92,7 +95,7 @@ void UserController::updateContact(const QVariantMap &data)
             {
                 const auto message{(*json)[messageField].toString()};
                 setErrorString(message);
-                emit errorOccurred();
+                emit errorOccurred(static_cast<HttpStatus::Code>(reply.httpStatus()));
             }
         }
     });
@@ -123,7 +126,7 @@ void UserController::readFavorites(UserId id)
         if (reply->error() != QNetworkReply::NoError)
         {
             setErrorString(reply->errorString());
-            emit errorOccurred();
+            emit errorOccurred(HttpStatus::networkErrorToStatusCode(reply->error()));
             return;
         }
 
@@ -138,7 +141,7 @@ void UserController::deleteUser(UserId userId)
     if (userId < 1)
     {
         setErrorString("Invalid userId"_L1);
-        emit errorOccurred();
+        emit errorOccurred(HttpStatus::BadRequest);
         return;
     }
 
@@ -155,7 +158,7 @@ bool UserController::validatePasswordData(const QVariantMap &data)
     if (!data.contains(passwordField))
     {
         setErrorString("password property is missing."_L1);
-        emit errorOccurred();
+        emit errorOccurred(HttpStatus::BadRequest);
         return false;
     }
     else if (const auto password{data[passwordField].toMap()};
@@ -163,7 +166,7 @@ bool UserController::validatePasswordData(const QVariantMap &data)
              || !password.contains(newPasswordField))
     {
         setErrorString("%1 or %2 is missing."_L1.arg(currentPasswordField, newPasswordField));
-        emit errorOccurred();
+        emit errorOccurred(HttpStatus::BadRequest);
         return false;
     }
 

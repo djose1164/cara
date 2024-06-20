@@ -41,7 +41,7 @@ void UserRepositoryImpl::read(int id)
         if (reply_->error() != QNetworkReply::NoError)
         {
             setErrorString(reply_->errorString());
-            emit errorOccurred();
+            emit errorOccurred(HttpStatus::networkErrorToStatusCode(reply_->error()));
         }
         else
             emit fetched();
@@ -80,7 +80,7 @@ void UserRepositoryImpl::updatePassword(UserId userId, const QVariantMap &data)
                 setErrorString(
                     errMessage.isEmpty() ? reply_->errorString() : errMessage
                 );
-                emit errorOccurred();
+                emit errorOccurred(HttpStatus::networkErrorToStatusCode(reply_->error()));
             }
             return;
         }
@@ -101,7 +101,7 @@ void UserRepositoryImpl::deleteUser(UserId userId)
         if (!QRestReply{reply_}.isSuccess())
         {
             setErrorString(reply_->errorString());
-            emit errorOccurred();
+            emit errorOccurred(HttpStatus::networkErrorToStatusCode(reply_->error()));
             return;
         }
 
@@ -129,7 +129,7 @@ void UserRepositoryImpl::createUser(const QVariantMap &newUser)
                              json && json->isObject() && json->object().contains(messageField))
                          {
                              setErrorString((*json)[messageField].toString());
-                             emit errorOccurred();
+                             emit errorOccurred(HttpStatus::networkErrorToStatusCode(reply_->error()));
                          }
                      });
 }

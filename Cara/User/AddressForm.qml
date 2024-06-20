@@ -49,4 +49,8 @@ GroupBox {
     function resetSame() {
         fillOldProperties(root.address);
     }
+
+    function toJson() {
+        return addressItem.toJson();
+    }
 }

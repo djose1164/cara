@@ -46,4 +46,4 @@ target_include_directories(UserLib
 )
 
 target_link_libraries(UserLib
-    PRIVATE StoreLib AuthenticationLib)
+    PRIVATE AuthenticationLib NetworkLib)
