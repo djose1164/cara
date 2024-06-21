@@ -6,6 +6,7 @@ import QtQuick.Templates as T
 import Cara.User
 import Cara.Salesperson
 import Cara.Customer
+import Cara.Authentication
 import QtNetwork
 
 // TODO: MaiPage should be deleted in a future release.
@@ -172,7 +173,6 @@ Page {
                 TokenManager.resumeRefreshing();
             else if (state === Qt.ApplicationInactive && TokenManager.refreshing)
                 TokenManager.stopRefreshing();
-            print(`onApplicationStateChanged: ${state}`);
         }
     }
 
