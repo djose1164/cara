@@ -11,6 +11,7 @@ Item {
     property alias email: email.text
     property alias phoneNumber: phoneNumber.text
     property alias homePhone: homePhone.text
+    property bool emailRequired
 
     implicitWidth: columnLayout.implicitWidth
     implicitHeight: columnLayout.implicitHeight
@@ -48,15 +49,15 @@ Item {
         const msgTemplate = "El campo de %1 no puede estar vacio.";
         if (phoneNumber.text.length === 0)
             throw new Error(msgTemplate.arg(phoneNumber.placeholderText))
-        else if (!email.acceptableInput)
+        else if (root.emailRequired && !email.acceptableInput)
             throw new Error(email.placeholderText + " invalido.")
     }
 
     function toJson() {
         return {
-            telephone: phoneNumber.text,
-            homephone: homePhone.text,
-            email: email.text
+            telephone: phoneNumber.text ? phoneNumber.text : null,
+            homephone: homePhone.text ? homePhone.text : null,
+            email: email.text ? email.text : null
         };
     }
 }
