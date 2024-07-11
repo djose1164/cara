@@ -13,6 +13,7 @@ GroupBox {
                                  && internal.oldHomePhone === contactItem.homePhone
     property alias email: contactItem.email
     property alias phoneNumber: contactItem.phoneNumber
+    property alias emailRequired: contactItem.emailRequired
 
     title: "Informacion de Contacto"
     Component.onCompleted: {
