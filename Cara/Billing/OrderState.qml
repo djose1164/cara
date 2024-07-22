@@ -6,11 +6,12 @@ import Cara.Billing
 import Cara.User
 import Cara.Customer
 import Cara.Product
-import Cara.Data
+import Cara.Utils
 
 ColumnLayout {
     id: root
 
+    //efault property alias content: root.children
     property T.StackView stackView: StackView.view
     required property var model
     property var payment: root.model.payment
@@ -18,7 +19,9 @@ ColumnLayout {
     property date date
     property int orderId
     property var details
+    property int headerHeight: 20
     readonly property alias paymentDetails: paymentDetails
+    readonly property alias commentsDrawer: commentsDrawer
 
     spacing: 20
 
@@ -32,6 +35,10 @@ ColumnLayout {
             }
         }
     ]
+
+    Component.onCompleted: {
+        commentsDrawer.fetchCommentsByOrderId(root.orderId);
+    }
 
     CustomerInfoBox {
         Layout.fillWidth: true
@@ -120,6 +127,20 @@ ColumnLayout {
             spinBox.value: quantity
             imageUrl: product.imageUrl
         }
+    }
+
+    RedirectLabel {
+        title: "Comentarios"
+        Layout.fillWidth: true
+        onClicked: commentsDrawer.open()
+    }
+
+    CommentsDrawer {
+        id: commentsDrawer
+        width: ApplicationWindow.window.width
+        userId: UserSettings.userId
+        orderId: root.orderId
+        edge: Qt.BottomEdge
     }
 
     Item { Layout.fillWidth: true }

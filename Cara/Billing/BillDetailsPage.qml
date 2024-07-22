@@ -58,6 +58,7 @@ BackPage {
             stackView: root.stackView
             paymentDetails.orderId: root.model.orderId
             paymentDetails.salespersonId: SalespersonSettings.salespersonId
+            commentsDrawer.height: root.height
         }
     }
 
