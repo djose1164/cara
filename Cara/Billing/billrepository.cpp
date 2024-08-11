@@ -77,9 +77,11 @@ QNetworkReply *BillRepository::fetchUnpaidBills()
     return reply;
 }
 
-QNetworkReply *BillRepository::fetchOrdersInQueue()
+QNetworkReply *BillRepository::fetchOrdersInQueue(SalespersonId spId)
 {
-    return manager_->get(api_->createRequest("/orders/queue"_L1));
+    QUrlQuery query;
+    query.addQueryItem("salesperson_id"_L1, QString::number(spId));
+    return manager_->get(api_->createRequest("/orders/queue"_L1, std::move(query)));
 }
 
 void BillRepository::fetchBy(const QString &param, int id)

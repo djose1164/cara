@@ -25,7 +25,7 @@ public slots:
 
     [[nodiscard]] QNetworkReply *fetchUnpaidBills() override;
 
-    [[nodiscard]] QNetworkReply *fetchOrdersInQueue() override;
+    [[nodiscard]] QNetworkReply *fetchOrdersInQueue(SalespersonId spId) override;
 
 signals:
     void errorOccurred(const QByteArray &data);

@@ -1,10 +1,17 @@
 #include "billbusiness.h"
 #include "billrepository.h"
 
+using namespace Qt::StringLiterals;
+
+namespace
+{
+constexpr auto ordersField{"orders"_L1};
+}
+
 namespace BusinessLayer
 {
 BillBusiness::BillBusiness(QObject *parent)
-    : QObject{parent}
+    : Billing::QueueRepository{parent}
     , reply_{}
     , model_{nullptr}
     , billRepository_{new DataLayer::BillRepository(this)}
@@ -75,7 +82,7 @@ void BillBusiness::fetchBillsByAdminId(int adminId)
 
     connect(repository, &DataLayer::BillRepository::billsFetched, this, [&](const QByteArray &data) {
         const auto doc = QJsonDocument::fromJson(data).object();
-        const auto ordersArray = doc["orders"].toArray();
+        const auto ordersArray = doc[ordersField].toArray();
         for (const auto &order : ordersArray)
             model_->append(Entity::Bill::fromMap(order.toVariant().toMap()));
         emit populated();
@@ -90,12 +97,35 @@ void BillBusiness::fetchUnpaidBills()
     connect(reply_, &QNetworkReply::finished, this, &BillBusiness::handleRequestFinished);
 }
 
-void BillBusiness::fetchOrdersInQueue()
+void BillBusiness::fetchOrdersInQueue(SalespersonId spId)
 {
-    qDebug() << QStringLiteral("BillBusiness::fetchOrdersInQueue: fetching...");
-    reply_ = billRepository_->fetchOrdersInQueue();
+    if (spId < 1)
+    {
+        const auto errorString{QStringLiteral("BillBusiness::fetchOrdersInQueue: Invalid spId: %1")
+                                   .arg(QString::number(spId))};
+        qDebug() << errorString;
+        emit errorOccurred(errorString);
+        return;
+    }
 
-    connect(reply_, &QNetworkReply::finished, this, &BillBusiness::handleRequestFinished);
+    qDebug() << QStringLiteral("BillBusiness::fetchOrdersInQueue: spId: ") << spId << " fetching...";
+    reply_ = billRepository_->fetchOrdersInQueue(spId);
+
+    connect(reply_, &QNetworkReply::finished, this, [this] {
+        auto reply{QRestReply{reply_}};
+        if (!reply.isSuccess())
+        {
+            emit errorOccurred(reply.errorString());
+            return;
+        }
+
+        if (const auto json{reply.readJson()};
+            json && json->isObject() && json->object().contains(ordersField))
+        {
+            const auto orders = (*json)[ordersField].toArray();
+            emit queueFetched(orders);
+        }
+    });
 }
 
 void BillBusiness::clearModel()

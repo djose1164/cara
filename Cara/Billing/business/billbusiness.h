@@ -3,13 +3,14 @@
 
 #include "../Billing/model/billmodel.h"
 #include "ibillrepository.h"
+#include "queuerepository.h"
 #include <QObject>
 #include <QtQml>
 
 namespace BusinessLayer {
 using Model::BillModel;
 
-class BillBusiness : public QObject
+class BillBusiness : public Billing::QueueRepository
 {
     Q_OBJECT
     QML_ELEMENT
@@ -28,7 +29,7 @@ public slots:
     void fetchBillById(int orderId);
     void fetchBillsByAdminId(int adminId);
     void fetchUnpaidBills();
-    void fetchOrdersInQueue();
+    void fetchOrdersInQueue(SalespersonId spId) override;
 
     void clearModel();
 
@@ -39,6 +40,7 @@ signals:
     void modelChanged();
     void populated();
     void ordersNotFound();
+    void errorOccurred(QString errorString);
 
 private:
     DataLayer::IBillRepository *billRepository_;
