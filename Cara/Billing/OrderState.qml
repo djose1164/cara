@@ -110,8 +110,10 @@ ColumnLayout {
         id: repeater
         model: details
         delegate: ProductCard {
+            id: productCard
             required property var product
             required property int quantity
+            required property int price
             required total
 
             Component.onCompleted: {
@@ -122,10 +124,10 @@ ColumnLayout {
             Layout.fillHeight: true
             Layout.fillWidth: true
             enabled: false
-            productName: product.name
-            productPrice: product.price
-            spinBox.value: quantity
-            imageUrl: product.imageUrl
+            productName: productCard.product.name
+            productPrice: productCard.price
+            spinBox.value: productCard.quantity
+            imageUrl: productCard.product.imageUrl
         }
     }
 
