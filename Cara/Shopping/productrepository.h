@@ -24,6 +24,8 @@ public:
     QString errorString() const;
     void setErrorString(const QString &newErrorString);
 
+    static void validateMap(const QVariantMap &map);
+
 public slots:
     void add(const QVariantMap &product) override;
 

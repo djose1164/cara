@@ -1,10 +1,11 @@
 #include "productrepository.h"
-#include "Network/networkrequestsingleton.h"
-#include <QHttpMultiPart>
-#include <QJsonDocument>
 #include <QFile>
 #include <QFileInfo>
+#include <QHttpMultiPart>
 #include <QJsonArray>
+#include <QJsonDocument>
+#include "Network/networkrequestsingleton.h"
+#include "validationerror.h"
 
 using namespace Qt::Literals::StringLiterals;
 
@@ -13,6 +14,7 @@ namespace
 constexpr auto resourceID{"/%1"_L1};
 constexpr auto pictureEndpoint{"/picture"_L1};
 constexpr auto productsField{"products"_L1};
+constexpr auto imageUrlField{"imageUrl"_L1};
 }
 
 namespace Catalogue {
@@ -25,6 +27,7 @@ ProductRepository::ProductRepository(QObject *parent)
     , errorString_{}
     , api_{Network::NetworkRequestSingleton::instance().api()}
 {
+    manager_->setAutoDeleteReplies(true);
 }
 
 void ProductRepository::add(const QVariantMap &product)
@@ -68,22 +71,34 @@ QNetworkReply *ProductRepository::read(ProductId id)
 
 void ProductRepository::update(const QVariantMap &product)
 {
-    QVariantMap productTmp{product};
-    const int productId{productTmp["id"].toInt()};
-    productTmp.remove("id");
+    try
+    {
+        validateMap(product);
+        QVariantMap productTmp{product};
+        const int productId{productTmp["id"].toInt()};
+        productTmp.remove("id");
 
-    const auto request{api_->createRequest(path_ + resourceID.arg(QString::number(productId)))};
+        const auto request{api_->createRequest(path_ + resourceID.arg(QString::number(productId)))};
 
-    const auto payload = QJsonDocument::fromVariant(productTmp)
-        .toJson(QJsonDocument::Compact);
-    reply_ = manager_->put(request, payload);
+        const auto payload = QJsonDocument::fromVariant(productTmp).toJson(QJsonDocument::Compact);
+        reply_ = manager_->put(request, payload);
 
-    connect(reply_, &QNetworkReply::finished, this, [&] {
-        if (reply_->error() == QNetworkReply::NoError)
-            emit updated();
+        connect(reply_,
+                &QNetworkReply::finished,
+                this,
+                [&]
+                {
+                    if (reply_->error() == QNetworkReply::NoError)
+                        emit updated();
 
-        reply_->deleteLater();
-    });
+                    reply_->deleteLater();
+                });
+    }
+    catch (const ValidationError &err)
+    {
+        qWarning() << "ProductRepository::update: " << err.what();
+        emit errorOccurred(err.what());
+    }
 }
 
 void ProductRepository::fetchAll()
@@ -119,18 +134,23 @@ void ProductRepository::fetchAll()
 
 QNetworkReply *ProductRepository::addPicture(ProductId id, const QVariantList &pictureList)
 {
-    multiPart_ = new QHttpMultiPart(QHttpMultiPart::FormDataType, this);
-    prepareImagePart(pictureList);
+    try
+    {
+        multiPart_ = new QHttpMultiPart(QHttpMultiPart::FormDataType, this);
+        prepareImagePart(pictureList);
 
-    reply_ = manager_->post(
-        requestWithBoundary(
-            resourceID.arg(QString::number(id)) + pictureEndpoint
-        ),
-        multiPart_
-    );
-    multiPart_->setParent(reply_);
+        const QString endpoint{resourceID.arg(QString::number(id)) + pictureEndpoint};
+        reply_ = manager_->post(requestWithBoundary(endpoint), multiPart_);
+        multiPart_->setParent(reply_);
 
-    return reply_;
+        return reply_;
+    }
+    catch (const std::runtime_error &err)
+    {
+        qDebug() << "ProductRepository::add: " << err.what();
+        emit errorOccurred(err.what());
+    }
+    return nullptr;
 }
 
 QNetworkReply *ProductRepository::deletePicture(PictureId pictureId)
@@ -146,14 +166,19 @@ void ProductRepository::prepareImagePart(const QVariantList &pictureList)
 {
     qDebug() << "ProductRepository::prepareImagePart: " << pictureList;
     if (pictureList.isEmpty())
-        throw std::runtime_error{"Picture list cannot be empty."};
+        return;
 
     for (const auto &picture : pictureList)
     {
+        if (!picture.toMap().contains(imageUrlField))
+            throw std::runtime_error{"Map does not contains %1."_L1
+                                         .arg(imageUrlField)
+                                         .toStdString()};
+
         QHttpPart imagePart;
         imagePart.setHeader(QNetworkRequest::ContentTypeHeader, "image/jpeg"_L1);
 
-        const QUrl imageUrl{picture.toMap()["image_url"].toString()};
+        const QUrl imageUrl{picture.toMap()[imageUrlField].toString()};
 #ifdef Q_OS_ANDROID
         const auto img{new QFile(imageUrl.toString())};
 #else
@@ -208,6 +233,12 @@ QString ProductRepository::errorString() const
 void ProductRepository::setErrorString(const QString &newErrorString)
 {
     errorString_ = newErrorString;
+}
+
+void ProductRepository::validateMap(const QVariantMap &map)
+{
+    if (!map.contains("id"_L1))
+        throw ValidationError{"Map doesn't contains id."};
 }
 
 QString ProductRepository::path() const
