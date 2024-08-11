@@ -9,6 +9,7 @@ Page {
     id: root
 
     readonly property T.StackView stackView: StackView.view
+    required property int salespersonId
 
     enum View {
         TitleView,
@@ -99,6 +100,7 @@ Page {
 
         Menu {
             id: menu
+            y: parent.height
             rightMargin: 5
 
             MenuItem {
@@ -111,7 +113,7 @@ Page {
     Dialog {
         id: filterDialog
         width: root.width * .8
-        height: Math.max(root.height/2, implicitHeight)
+        height: root.height * .77
         anchors.centerIn: Overlay.overlay
         title: "Filtro"
         standardButtons: Dialog.Ok | Dialog.Cancel
@@ -124,34 +126,54 @@ Page {
             buttons: column.children
         }
 
-        Column {
-            id: column
-            RadioButton {
-                text: "Sin asignar"
-                onClicked: internal.queueStatus = OrderQueueEnum.NoAssignment
+        ScrollView {
+            anchors.fill: parent
+            contentWidth: availableWidth
+
+            ButtonGroup {
+                buttons: column.children
+                onClicked: btn => internal.queueStatus = queueModel.statusStringToId(btn.text)
             }
 
-            RadioButton {
-                text: "Asignadas a mi"
-                onClicked: internal.queueStatus = OrderQueueEnum.AssingedToMe
-            }
+            ColumnLayout {
+                id: column
+                width: filterDialog.width
 
-            RadioButton {
-                text: "Completadas"
-                onClicked: internal.queueStatus = OrderQueueEnum.Done
-            }
+                RadioButton {
+                    text: "Sin asignar"
+                }
 
-            RadioButton {
-                text: "Todas"
-                checked: true
-                onClicked: internal.queueStatus = OrderQueueEnum.Any
+                RadioButton {
+                    text: "Asignadas"
+                }
+
+                RadioButton {
+                    text: "Completadas"
+                }
+
+                RadioButton {
+                    text: "Canceladas"
+                }
+
+                RadioButton {
+                    text: "Devueltas"
+                }
+
+                RadioButton {
+                    text: "Reembolsadas"
+                }
+
+                RadioButton {
+                    text: "Todas"
+                    checked: true
+                }
             }
         }
     }
 
     QueueProxyModel {
         id: queueProxy
-        sourceModel: billModel
+        sourceModel: queueModel
         searchString: searchItem.displayText
     }
 
@@ -159,8 +181,13 @@ Page {
         id: listView
         anchors.fill: parent
         anchors.topMargin: 5
-        delegate: billDelegate
-        spacing: 20
+        delegate: QueueDelegate {
+            height: 250
+            width: listView.width
+            onClicked: stackView.pushItem("qrc:/qt/qml/Cara/Billing/BillDetailsPage.qml", {
+                                              model, mode: BillDetailsPage.QueueMode, proxyModel: queueProxy
+                                          });
+        }
         model: queueProxy
     }
 
@@ -188,12 +215,28 @@ Page {
 
     BillBusiness {
         id: billBusiness
-        model: billModel
         onOrdersNotFound: internal.busy = false
-        onPopulated: internal.busy = false
+        onQueueFetched: internal.busy = false
+        onErrorOccurred: err => {
+            internal.busy = false;
+            messagePane.text = err;
+            messagePane.visible = true;
+        }
     }
 
-    BillModel { id: billModel }
+    MessagePane {
+        id: messagePane
+        width: root.width * .9
+        height: root.height/2
+        anchors.centerIn: parent
+        type: MessagePane.Error
+        visible: false
+    }
+
+    OrderQueueModel {
+        id: queueModel
+        repository: billBusiness
+    }
 
     QtObject {
         id: internal
@@ -208,7 +251,7 @@ Page {
     function fetchOrdersInQueue() {
         internal.busy = true;
         setFetchingState();
-        billBusiness.fetchOrdersInQueue();
+        billBusiness.fetchOrdersInQueue(root.salespersonId);
     }
 
     function fetchCustomerBills(customerId: int) {
