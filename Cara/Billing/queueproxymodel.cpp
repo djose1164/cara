@@ -1,5 +1,5 @@
 #include "queueproxymodel.h"
-#include "billmodel.h"
+#include "orderqueuemodel.h"
 
 using namespace Qt::StringLiterals;
 
@@ -7,7 +7,7 @@ namespace Billing
 {
 QueueProxyModel::QueueProxyModel(QObject *parent)
     : AbstractSortFilterModel{parent}
-    , status_{OrderQueueEnum::FilterBy::Any}
+    , status_{OrderQueue::Status::Any}
     , searchString_{}
 {}
 
@@ -19,26 +19,14 @@ bool QueueProxyModel::filterAcceptsRow(int source_row,
 
     QModelIndex index{sourceModel()->index(source_row, 0, source_parent)};
 
-    using enum Model::BillModel::RoleNames;
+    using enum OrderQueueModel::RoleNames;
 
-    const auto filteredStatus = [&] -> bool {
-        switch (status_)
-        {
-            using enum OrderQueueEnum::FilterBy;
-        case NoAssignment:
-            return not index.data(int(TakenRole)).toBool();
-        case AssingedToMe:
-            return index.data(int(TakenRole)).toBool();
-        case Done:
-            return index.data(int(DoneRole)).toBool();
-        case Any:
-            return true;
-        default:
-            return false;
-        }
+    const auto filteredStatus = [&]() -> bool {
+        return status_ == OrderQueue::Status::Any
+               or index.data(int(QueueStatusIdRole)).toInt() == int(status_);
     };
 
-    const auto filteredString = [&] -> bool {
+    const auto filteredString = [&]() -> bool {
         auto &&customer{index.data(int(CustomerRole)).value<Entity::Customer>()};
         const auto customerName{customer.forename() + " "_L1 + customer.surname()};
         return customerName.contains(searchString_, Qt::CaseInsensitive) || searchString_.isEmpty();
@@ -62,12 +50,12 @@ void QueueProxyModel::setSearchString(const QString &newSearchString)
     invalidateFilter();
 }
 
-OrderQueueEnum::FilterBy QueueProxyModel::status() const
+OrderQueue::Status QueueProxyModel::status() const
 {
     return status_;
 }
 
-void QueueProxyModel::setStatus(OrderQueueEnum::FilterBy newStatus)
+void QueueProxyModel::setStatus(OrderQueue::Status newStatus)
 {
     if (status_ == newStatus)
         return;
