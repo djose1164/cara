@@ -1,15 +1,29 @@
 #include "detailsentity.h"
 
 using EntityLayer::DetailsEntity;
+using namespace Qt::StringLiterals;
+
+DetailsEntity *DetailsEntity::fromJson(const QJsonObject &data)
+{
+    const auto newDetail{new DetailsEntity};
+    newDetail->setQuantity(data["quantity"_L1].toInt());
+    newDetail->price_ = data["price"_L1].toInt();
+    newDetail->setProduct(
+        Product::fromMap(data["product"_L1].toVariant().toMap())
+    );
+
+    return newDetail;
+}
 
 DetailsEntity::DetailsEntity(QObject *parent)
     : QObject{parent}
     , quantity_{1}
+    , price_{}
     , total_{}
     , product_{}
 {
     total_.setBinding([&] {
-        return product().valid() ? product().price() * quantity_ : 0;
+        return product().valid() ? price_ * quantity_ : 0;
     });
 
     quantity_.setBinding([&] { return product().selectedQty(); });
@@ -18,6 +32,11 @@ DetailsEntity::DetailsEntity(QObject *parent)
 int DetailsEntity::quantity() const
 {
     return quantity_.value();
+}
+
+int DetailsEntity::price() const
+{
+    return price_;
 }
 
 int DetailsEntity::total() const
