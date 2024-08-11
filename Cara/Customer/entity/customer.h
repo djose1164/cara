@@ -3,7 +3,6 @@
 
 #include <QObject>
 #include <QQmlEngine>
-#include <QProperty>
 
 using CustomerId = int;
 
