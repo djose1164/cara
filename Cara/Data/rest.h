@@ -54,7 +54,7 @@ signals:
     void sent();
     void finished();
     void received(const QVariantMap &data);
-    void succeeded(const QVariantMap &data);
+    void succeeded(const QByteArray &data);
 
     // HTTP code error signals
     void failed(const QVariantMap &data); // Handle any error

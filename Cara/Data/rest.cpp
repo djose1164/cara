@@ -162,13 +162,14 @@ void Rest::replyFinished()
     if (!reply_->isOpen())
         return;
 
-    const auto doc{QJsonDocument::fromJson(reply_->readAll())};
+    const auto data{reply_->readAll()};
+    const auto doc{QJsonDocument::fromJson(data)};
     auto buffer{doc.toVariant().toMap()};
 
     emit received(buffer);
 
     if (reply_->error() == QNetworkReply::NoError)
-        emit succeeded(buffer);
+        emit succeeded(data);
     else
        emit failed(buffer);
 
