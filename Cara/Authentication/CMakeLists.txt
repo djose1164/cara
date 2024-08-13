@@ -27,10 +27,10 @@ qt_add_qml_module(AuthenticationLib
 )
 
 target_include_directories(AuthenticationLib
+    PUBLIC
+        business data entity service ${CMAKE_CURRENT_SOURCE_DIR}
     PRIVATE
-        business data entity service
         ../Utils ../
-    INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
 target_link_libraries(AuthenticationLib PUBLIC NetworkLib)
