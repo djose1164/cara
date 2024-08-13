@@ -13,9 +13,8 @@ class Product
     QML_STRUCTURED_VALUE
     Q_PROPERTY(QString name READ name WRITE setName FINAL)
     Q_PROPERTY(QString description MEMBER description_ FINAL)
-    Q_PROPERTY(int price READ price WRITE setPrice FINAL)
+    Q_PROPERTY(double price READ price WRITE setPrice FINAL)
     Q_PROPERTY(int productId READ productId WRITE setProductId FINAL)
-    Q_PROPERTY(int buyPrice READ buyPrice WRITE setBuyPrice FINAL)
     Q_PROPERTY(int maximumStockLevel READ maximumStockLevel WRITE setMaximumStockLevel FINAL)
     Q_PROPERTY(int minimumStockLevel READ minimumStockLevel WRITE setMinimumStockLevel FINAL)
     Q_PROPERTY(int quantityAvailable READ quantityAvailable WRITE setQuantityAvailable FINAL)
@@ -37,16 +36,14 @@ public:
     QString name() const;
     QString description() const;
 
-    void setPrice(int price);
-    int price() const;
+    void setupPricing(const QJsonObject &product);
+    void setPrice(double newPrice);
+    double price() const;
     QBindable<int> bindablePrice() const;
 
     int productId() const;
 
     Q_INVOKABLE QByteArray toJson() const;
-
-    int buyPrice() const;
-    void setBuyPrice(int newBuyPrice);
 
     int maximumStockLevel() const;
     void setMaximumStockLevel(int newMaximumStockLevel);
@@ -70,6 +67,9 @@ public:
     void setImages(const QJsonArray &newImages);
     void setImages(QJsonArray &&newImages);
 
+    Q_INVOKABLE void appendImage(const QUrl &filename);
+    Q_INVOKABLE void clearImages();
+
     QString imageUrl() const;
     void setImageUrl(const QString &newCoverImage);
 
@@ -85,12 +85,12 @@ public:
 
 private:
     void setupPictures(const QJsonArray &pics);
+    void setPriceHistory(const QJsonArray &history);
 
 private:
     QString name_;
     QString description_;
-    int price_;
-    int buyPrice_;
+    double price_;
     int productId_;
 
     // TODO: Change to QList<>

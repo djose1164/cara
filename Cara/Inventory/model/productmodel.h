@@ -23,8 +23,7 @@ public:
     {
         ProductIdRole = Qt::UserRole,
         ProductNameRole,
-        BuyPriceRole,
-        SellPriceRole,
+        PriceRole,
         DescriptionRole,
         MaximumStockLevelRole,
         MinimumStockLevelRole,

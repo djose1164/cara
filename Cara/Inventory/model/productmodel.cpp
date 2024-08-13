@@ -43,6 +43,14 @@ bool ProductModel::setData(const QModelIndex &index, const QVariant &value, int 
         product.setCategoryId(value.toInt());
         emit dataChanged(index, index, {role});
         return true;
+    case RoleNames::PriceRole:
+        product.setPrice(value.toInt());
+        emit dataChanged(index, index, {role});
+        return true;
+    case RoleNames::ProductNameRole:
+        product.setName(value.toString());
+        emit dataChanged(index, index, {role});
+        return true;
     case RoleNames::ImagesRole:
         product.setImages(QJsonArray{});
         std::ranges::for_each(value.toList(), [&](const QVariant &item) {
@@ -58,7 +66,15 @@ bool ProductModel::setData(const QModelIndex &index, const QVariant &value, int 
 
         emit dataChanged(index, index, {role});
         return true;
-    default:
+    case RoleNames::DescriptionRole:
+        product.setDescription(value.toString());
+        emit dataChanged(index, index, {role});
+        return true;
+    case RoleNames::ProductIdRole:
+    case RoleNames::MaximumStockLevelRole:
+    case RoleNames::MinimumStockLevelRole:
+    case RoleNames::ReorderPointRole:
+    case RoleNames::ImageUrlRole:
         return false;
     }
 }
@@ -75,9 +91,7 @@ QVariant ProductModel::data(const QModelIndex &index, int role) const
         return getValue.name();
     case RoleNames::ProductIdRole:
         return getValue.productId();
-    case RoleNames::BuyPriceRole:
-        return getValue.buyPrice();
-    case RoleNames::SellPriceRole:
+    case RoleNames::PriceRole:
         return getValue.price();
     case RoleNames::DescriptionRole:
         return getValue.description();
@@ -210,11 +224,10 @@ QHash<int, QByteArray> ProductModel::roleNames() const
         {int(RoleNames::ProductIdRole), "productId"},
         {int(RoleNames::ProductNameRole), "productName"},
         {int(RoleNames::DescriptionRole), "description"},
-        {int(RoleNames::SellPriceRole), "sellPrice"},
+        {int(RoleNames::PriceRole), "price"},
         {int(RoleNames::ImageUrlRole), "imageUrl"},
         {int(RoleNames::QuantityAvailableRole), "quantityAvailable"},
         {int(RoleNames::ReorderPointRole), "reorderPoint"},
-        {int(RoleNames::BuyPriceRole), "buyPrice"},
         {int(RoleNames::SelectedQtyRole), "selectedQty"},
         {int(RoleNames::CategoryIdRole), "categoryId"},
         {int(RoleNames::ImagesRole), "images"},
