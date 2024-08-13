@@ -7,7 +7,12 @@
 #include <QObject>
 #include <QQmlEngine>
 
-namespace Catalogue {
+namespace Product
+{
+class PictureRepository;
+}
+namespace Catalogue
+{
 class CatalogueRepository : public QObject
 {
     Q_OBJECT
@@ -15,6 +20,7 @@ class CatalogueRepository : public QObject
 
 public:
     using ProductId = int;
+    using PictureId = int;
 
     explicit CatalogueRepository(QObject *parent = nullptr);
 
@@ -23,7 +29,7 @@ public slots:
 
     void addPicture(ProductId productId, const QVariantList &pictureList);
 
-    void deletePicture(IProductRepository::PictureId pictureId);
+    void deletePicture(PictureId pictureId);
 
     void readProductById(ProductId id);
 
@@ -58,9 +64,10 @@ signals:
     void pictureDeleted();
 
 private:
+    Product::PictureRepository *pictureRepository_;
     IProductRepository *productRepository_;
     IProductCategoryRepository *categoryRepository_;
 };
-}
+} // namespace Catalogue
 
 #endif // CATALOGUEREPOSITORY_H

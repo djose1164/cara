@@ -10,13 +10,22 @@
 #include <QHttpPart>
 #include <QNetworkRequestFactory>
 
-namespace Catalogue {
+namespace Product
+{
+class PictureRepository;
+}
+
+namespace Catalogue
+{
 class ProductRepository : public QObject, public IProductRepository
 {
     Q_OBJECT
 
 public:
+    using PictureId = int;
+
     explicit ProductRepository(QObject *parent = nullptr);
+    ProductRepository(Product::PictureRepository *pictureRepository, QObject *parent = nullptr);
 
     QString path() const;
     void setPath(const QString &newPath);
@@ -35,9 +44,8 @@ public slots:
 
     void fetchAll() override;
 
-    QNetworkReply *addPicture(ProductId id, const QVariantList &pictureList) override;
-
-    QNetworkReply *deletePicture(PictureId pictureId) override;
+    QNetworkReply *addPicture(ProductId id, const QVariantList &pictureList);
+    QNetworkReply *deletePicture(PictureId pictureId);
 
 signals:
     void added(const QByteArray &body);
@@ -47,8 +55,6 @@ signals:
     void allProductsFetched(const QList<EntityLayer::Product> &products);
 
 private:
-    void prepareImagePart(const QVariantList &pictureList);
-
     void prepareJsonPart(const QVariantMap &product);
 
     QNetworkRequest requestWithBoundary(QAnyStringView endpoint = {}) const;
@@ -61,7 +67,8 @@ private:
     QString path_;
     QString errorString_;
     std::shared_ptr<QNetworkRequestFactory> api_;
+    Product::PictureRepository *pictureRepository_;
 };
-}
+} // namespace Catalogue
 
 #endif // PRODUCTREPOSITORY_H

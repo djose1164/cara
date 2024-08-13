@@ -5,6 +5,8 @@
 #include <QJsonArray>
 #include <QJsonDocument>
 #include "Network/networkrequestsingleton.h"
+#include "productpicturerepository.h"
+#include "utils.h"
 #include "validationerror.h"
 
 using namespace Qt::Literals::StringLiterals;
@@ -19,6 +21,11 @@ constexpr auto imageUrlField{"imageUrl"_L1};
 
 namespace Catalogue {
 ProductRepository::ProductRepository(QObject *parent)
+    : ProductRepository{new Product::ProductPictureRepository{this}, parent}
+{
+}
+
+ProductRepository::ProductRepository(Product::PictureRepository *pictureRepository, QObject *parent)
     : QObject{parent}
     , manager_{new QNetworkAccessManager(this)}
     , reply_{nullptr}
@@ -26,6 +33,7 @@ ProductRepository::ProductRepository(QObject *parent)
     , path_{"products"_L1}
     , errorString_{}
     , api_{Network::NetworkRequestSingleton::instance().api()}
+    , pictureRepository_{pictureRepository}
 {
     manager_->setAutoDeleteReplies(true);
 }
@@ -39,7 +47,7 @@ void ProductRepository::add(const QVariantMap &product)
         const auto imagesVariant{tmp.take("images")};
         qDebug() << "ProductRepository::add: " << imagesVariant.value<QList<QUrl>>();
         qDebug() << "ProductRepository::add: " << imagesVariant;
-        prepareImagePart(imagesVariant.toList());
+        pictureRepository_->prepareImagePart(*multiPart_, imagesVariant.toList());
         prepareJsonPart(tmp);
 
         reply_ = manager_->post(requestWithBoundary(), multiPart_);
@@ -134,75 +142,12 @@ void ProductRepository::fetchAll()
 
 QNetworkReply *ProductRepository::addPicture(ProductId id, const QVariantList &pictureList)
 {
-    try
-    {
-        multiPart_ = new QHttpMultiPart(QHttpMultiPart::FormDataType, this);
-        prepareImagePart(pictureList);
-
-        const QString endpoint{resourceID.arg(QString::number(id)) + pictureEndpoint};
-        reply_ = manager_->post(requestWithBoundary(endpoint), multiPart_);
-        multiPart_->setParent(reply_);
-
-        return reply_;
-    }
-    catch (const std::runtime_error &err)
-    {
-        qDebug() << "ProductRepository::add: " << err.what();
-        emit errorOccurred(err.what());
-    }
-    return nullptr;
+    return pictureRepository_->addPicture(id, pictureList);
 }
 
 QNetworkReply *ProductRepository::deletePicture(PictureId pictureId)
 {
-    return manager_->deleteResource(
-        api_->createRequest(
-            path_ + pictureEndpoint + resourceID.arg(QString::number(pictureId))
-        )
-    );
-}
-
-void ProductRepository::prepareImagePart(const QVariantList &pictureList)
-{
-    qDebug() << "ProductRepository::prepareImagePart: " << pictureList;
-    if (pictureList.isEmpty())
-        return;
-
-    for (const auto &picture : pictureList)
-    {
-        if (!picture.toMap().contains(imageUrlField))
-            throw std::runtime_error{"Map does not contains %1."_L1
-                                         .arg(imageUrlField)
-                                         .toStdString()};
-
-        QHttpPart imagePart;
-        imagePart.setHeader(QNetworkRequest::ContentTypeHeader, "image/jpeg"_L1);
-
-        const QUrl imageUrl{picture.toMap()[imageUrlField].toString()};
-#ifdef Q_OS_ANDROID
-        const auto img{new QFile(imageUrl.toString())};
-#else
-        const auto img{new QFile(imageUrl.toLocalFile())};
-#endif
-        imagePart.setHeader(
-            QNetworkRequest::ContentDispositionHeader,
-            "form-data; name=\"image\"; filename=\"%1\""_L1
-                .arg(QFileInfo(*img).fileName())
-        );
-
-        if (!img->open(QIODevice::ReadOnly))
-        {
-            qCritical() << "Failed to open file for reading";
-            setErrorString("El archivo no existe."_L1);
-            emit errorOccurred(errorString_.toUtf8());
-            throw std::runtime_error(errorString_.toUtf8());
-        }
-
-        imagePart.setBodyDevice(img);
-        img->setParent(multiPart_);
-
-        multiPart_->append(imagePart);
-    }
+    return pictureRepository_->deletePicture(pictureId);
 }
 
 void ProductRepository::prepareJsonPart(const QVariantMap &product)
@@ -220,8 +165,7 @@ void ProductRepository::prepareJsonPart(const QVariantMap &product)
 QNetworkRequest ProductRepository::requestWithBoundary(QAnyStringView endpoint) const
 {
     QNetworkRequest request{api_->createRequest(path_ + endpoint.toString())};
-    const auto headerValue{"multipart/form-data; boundary=\"%1\""_L1.arg(multiPart_->boundary())};
-    request.setHeader(QNetworkRequest::ContentTypeHeader, headerValue);
+    Utils::setBoundaryToRequest(multiPart_->boundary(), request);
     return request;
 }
 

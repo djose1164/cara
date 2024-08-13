@@ -5,6 +5,8 @@
 #include <QMetaProperty>
 
 class QRestReply;
+
+class QNetworkRequest;
 namespace Utils
 {
 std::optional<QJsonObject> byteArrayToJsonObject(const QByteArray &data);
@@ -44,6 +46,8 @@ QJsonObject toJson(const void *entity)
 
     return obj;
 }
+
+void setBoundaryToRequest(QAnyStringView boundary, QNetworkRequest &request);
 
 }
 #endif // UTILS_H

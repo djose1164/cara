@@ -12,6 +12,7 @@ qt_add_qml_module(UtilsLib
         shareplataform.h shareplataform.cpp
         shareutils.h shareutils.cpp
         utils.h utils.cpp
+        validationerror.h
     QML_FILES
         BackButton.qml
         BackPage.qml
