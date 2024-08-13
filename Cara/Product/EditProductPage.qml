@@ -104,12 +104,6 @@ ProductForm {
         onErrorOccurred: err => root.errorHandler(err)
     }
 
-    StatusPopup {
-        id: popup
-        width: root.width*.8
-        height: root.height/2
-    }
-
     InventoryAPI {
         id: inventoryAPI
         onFetchedByAdminIdAndProductId: inventory => {

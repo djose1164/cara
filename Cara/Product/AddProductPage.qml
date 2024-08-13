@@ -86,14 +86,20 @@ ProductForm {
     }
 
     function createProduct() {
-        openBusyPopup();
-        const productFormJson = root.toJson();
-        delete productFormJson["images"];
-        productFormJson["price_history"] = pricingItem.toJson();
-        print(JSON.stringify(productFormJson, null, 2));
+        try {
+            validate();
+            openBusyPopup();
+            const productFormJson = root.toJson();
+            productFormJson["price_history"] = pricingItem.toJson();
+            print(JSON.stringify(productFormJson, null, 2));
 
-        //const productJson = JSON.parse(newProduct.toJson());
-        catalogueRepository.addProduct(productFormJson);
+            //const productJson = JSON.parse(newProduct.toJson());
+            catalogueRepository.addProduct(productFormJson);
+        } catch (err) {
+            popup.text = err;
+            popup.state = "error";
+            popup.open();
+        }
     }
 
     function handlePictureSelected(filename: url) {
@@ -104,5 +110,12 @@ ProductForm {
             root.newProduct.clearImages();
 
         root.newProduct.appendImage(filename);
+    }
+
+    function validate() {
+        const productFormJson = root.toJson();
+        const categoryId = productFormJson.category_id;
+        if (isNaN(categoryId) || categoryId < 1)
+            throw "Necesitas seleccionar una categoría."
     }
 }
