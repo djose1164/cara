@@ -64,6 +64,7 @@ Page {
                 clip: true
                 model: orderDetails
                 delegate: ProductCard {
+                    id: productCard
                     required property var product
                     required property int quantity
 
@@ -71,9 +72,9 @@ Page {
                     height: 100
                     imageUrl: product.images && product.images.length ? Api.uploadsPath + product.images[0].image_url : "qrc:/cara-logo-v1.png"
                     productName: product.name
-                    productPrice: product.buy_price
+                    productPrice: productCard.product.price
                     spinBox.value: quantity
-                    total: product.buy_price * quantity
+                    total: productPrice * quantity
                 }
             }
         }

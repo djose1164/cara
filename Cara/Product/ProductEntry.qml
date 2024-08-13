@@ -6,7 +6,6 @@ import "qrc:/orders"
 ScrollView {
     id: root
 
-    required property int valueRoleType
     readonly property alias count: entries.count
     readonly property alias model: entries
 
@@ -22,7 +21,6 @@ ScrollView {
         model: entries
         clip: true
         delegate: Entry {
-            valueRoleType: root.valueRoleType
             onUpdated: (idx, entryValue) => {
                 if (!entryValue.product_id && !entryValue?.unit_price)
                     return;
@@ -37,11 +35,6 @@ ScrollView {
     }
 
     ListModel { id: entries }
-
-    ProductRequest {
-        id: productModel
-        Component.onCompleted: addSuggetionsToModel()
-    }
 
     function addEntry(): void {
         entries.append({idx: entries.count});

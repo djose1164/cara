@@ -13,12 +13,10 @@ RowLayout {
     readonly property var entryValue: {
         "product_id": findProductId(productField.currentText),
         "quantity": quantity,
-        "unit_price": price,
+        "unit_price": parseFloat(price),
     }
     readonly property int total: price * quantity
     readonly property ListModel model: productField.model
-
-    property alias valueRoleType: productField.valueRoleType
 
     signal created(entry: var)
     signal updated(idx: int, entry: var)
@@ -27,7 +25,6 @@ RowLayout {
     onEntryValueChanged: updated(index, entryValue)
 
     width: ListView.view.width
-    Component.onCompleted: if (ProductManager.modelIsEmpty()) productRequest.addSuggetionsToModel()
 
     ProductComboBox {
         id: productField
@@ -53,11 +50,6 @@ RowLayout {
             source: "qrc:/icons/trash-can-outline.svg"
         }
         flat: true
-    }
-
-    ProductRequest {
-        id: productRequest
-        onSucceeded: products => products.forEach(e => ProductManager.modelAppend(e))
     }
 
     function find(criteria) {

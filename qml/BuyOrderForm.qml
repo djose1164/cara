@@ -109,7 +109,7 @@ Drawer {
 
             AddProductView {
                 id: entry
-                valueRoleType: ProductComboBox.BuyPrice
+                salespersonId: root.salesperson.salespersonId
                 Layout.fillWidth: true
                 Layout.preferredHeight: 200
                 onEntryUpdated: {

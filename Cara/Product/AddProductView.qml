@@ -12,7 +12,7 @@ import Cara.Utils
 Column {
     id: root
 
-    property alias valueRoleType: productEntry.valueRoleType
+    required property int salespersonId
     property int payment: 2
     property var details
     readonly property alias entriesCount: productEntry.count
@@ -24,8 +24,11 @@ Column {
     signal entryUpdated
 
     spacing: 20
-    Component.onCompleted: payment = 0
     onOkClicked: productEntry.okClicked()
+    Component.onCompleted: {
+        root.payment = 0;
+        if (ProductManager.modelIsEmpty()) productRequest.addSuggetionsToModel(root.salespersonId)
+    }
 
     ProductEntry {
         id: productEntry
@@ -43,6 +46,15 @@ Column {
         icon.width: 36; icon.height: 36
         flat: true
         onClicked: productEntry.addEntry()
+    }
+
+    ProductRequest {
+        id: productRequest
+        onSucceeded: products => {
+            ProductManager.modelAppend(products);
+            console.log(products.length)
+            console.log(ProductManager.model.count)
+        }
     }
 
     function findIn(model, criteria) {
