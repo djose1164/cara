@@ -140,12 +140,14 @@ Page {
     }
 
     function toJson() {
-        return {
+        const formJson = {
             name: nameField.text,
             description: descriptionField.text,
             category_id: categoryCB.currentValue,
-            images: model.images
         };
+        if (model.images.length > 0)
+            formJson.images = model.images;
+        return formJson;
     }
 
     function _handlePictureSelected(filename: url) {
