@@ -60,24 +60,6 @@ Page {
         }
     }
 
-    states: [
-        State {
-            when: NetworkInformation.reachability !== NetworkInformation.Reachability.Online
-            PropertyChanges {
-                target: offlinePane
-                visible: true
-            }
-            PropertyChanges {
-                target: root
-                enabled: false
-            }
-            PropertyChanges {
-                target: stackLayout
-                visible: false
-            }
-        }
-    ]
-
     Component.onCompleted: {
         updateViews();
     }
@@ -94,7 +76,7 @@ Page {
 
             Image {
                 source: "wifi-off.svg"
-                sourceSize: "32x32"
+                sourceSize: Qt.size(32, 32)
                 Layout.alignment: Qt.AlignHCenter
                 Layout.bottomMargin: 10
             }
