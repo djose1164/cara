@@ -6,6 +6,7 @@ Dialog {
     id: root
 
     property date selectedDate
+    readonly property bool isValid: !isNaN(root.selectedDate)
 
     anchors.centerIn: Overlay.overlay
     locale: Qt.locale()
@@ -13,7 +14,7 @@ Dialog {
     standardButtons: Dialog.Ok | Dialog.Cancel
     onAccepted: root.selectedDate = internal.selectedDate
     Component.onCompleted: {
-        root.selectedDate = internal.currentDate;
+        // root.selectedDate = internal.currentDate;
         internal.selectedMonth = calendarModel.indexOf(internal.currentDate);
     }
 
@@ -89,6 +90,8 @@ Dialog {
     }
 
     function toShortDate() {
-        return selectedDate.toLocaleDateString(root.locale, "yyyy-MM-dd")
+        return root.isValid ? selectedDate
+                                .toLocaleDateString(root.locale, "yyyy-MM-dd")
+                            : null;
     }
 }
