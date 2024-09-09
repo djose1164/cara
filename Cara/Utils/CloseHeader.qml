@@ -12,6 +12,12 @@ Item {
 
     implicitWidth: rowLayout.implicitWidth
     implicitHeight: 50
+    z: 100
+
+    Rectangle {
+        anchors.fill: parent
+        color: "white"
+    }
 
     RowLayout {
         id: rowLayout
