@@ -127,6 +127,20 @@ Drawer {
             }
 
             Button {
+                visible: UserSettings.userTypeId === UserEntity.Admin
+                text: "Calculadora de Ganancias"
+                flat: true
+                icon.source: "qrc:/qt/qml/Cara/Salesperson/profit_calculator.svg"
+                onClicked: {
+                    root.close();
+                    stackView.pushItem("qrc:/qt/qml/Cara/Salesperson/ProfitCalculatorPage.qml",
+                                       {
+                                           adminId: UserSettings.userId
+                                       })
+                }
+            }
+
+            Button {
                 text: "Configuraciones"
                 icon.source: "qrc:/icons/settings.svg"
                 flat: true
