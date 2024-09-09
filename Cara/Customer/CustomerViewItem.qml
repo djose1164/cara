@@ -11,6 +11,8 @@ Item {
     property bool searchEnabled: CustomerManager.state !== "fetching"
 
     property alias searchText: customerProxy.text
+    property alias header: listView.header
+    property alias headerItem: listView.headerItem
 
     signal customerSelected(customer: var)
     signal customerClicked(customerId: int)
@@ -52,6 +54,7 @@ Item {
         model: customerProxy
         spacing: 20
         clip: true
+        headerPositioning: ListView.PullBackHeader
 
         BusyIndicator {
             id: busyIndicator
