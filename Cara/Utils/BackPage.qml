@@ -5,6 +5,7 @@ Page {
     id: root
 
     readonly property T.StackView stackView: StackView.view
+    readonly property bool isPageVisible: StackView.visible
     readonly property alias btnLoader: titleHeader.btnLoader
 
     header: TitleHeader {
