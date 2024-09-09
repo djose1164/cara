@@ -51,4 +51,4 @@ target_include_directories(UserLib
 )
 
 target_link_libraries(UserLib
-    PRIVATE AuthenticationLib NetworkLib)
+    PRIVATE AuthenticationLib NetworkLib CommonLib)
