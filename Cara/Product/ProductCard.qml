@@ -32,8 +32,8 @@ Rectangle {
 
         ProductImage {
             onReady: imageStackLayout.currentIndex = 1
-            source: imageUrl
-            sourceSize: "100x100"
+            source: root.imageUrl
+            sourceSize: Qt.size(100, 100)
         }
     }
 
@@ -46,7 +46,7 @@ Rectangle {
         columns: 2
 
         Label {
-            text: productName
+            text: root.productName
             font.pointSize: 13
             font.bold: true
             wrapMode: Label.Wrap
@@ -54,27 +54,15 @@ Rectangle {
         }
 
         Label {
-            text: `RD$${total}`
+            text: `RD$${root.total}`
             Layout.row: 1
             Layout.column: 0
         }
 
-        RoundButton {
-            onClicked: deleted();
-            Layout.column: 1
-            Layout.row: 0
-            Layout.alignment: Qt.AlignTrailing
-            Image {
-                anchors.centerIn: parent;
-                source: "qrc:/icons/trash-can-outline.svg"
-            }
-            flat: true
-        }
-
         SpinBox {
             id: spinBox
-            Layout.preferredWidth: 80
-            Layout.preferredHeight: 35
+            Layout.preferredWidth: 105
+            Layout.preferredHeight: 45
             Layout.row: 1
             Layout.column: 1
             Layout.alignment: Qt.AlignRight
@@ -82,7 +70,34 @@ Rectangle {
             Layout.bottomMargin: 5
             from: UserSettings.userTypeId === UserEntity.ADMIN ? 0 : 1
             editable: true
-            //Keys.onReturnPressed: Qt.inputMethod.hide()
+            inputMethodHints: Qt.ImhDigitsOnly
+        }
+    }
+
+    Binding {
+        target: spinBox
+        property: "down.indicator"
+        when: spinBox.value === 1
+        value: Item {
+            width: spinBox.height
+            height: width
+
+            ItemDelegate {
+                id: inId
+                x: spinBox.spacing
+                y: spinBox.spacing
+                width: parent.width - 2 * spinBox.spacing
+                height: parent.height - 2 * spinBox.spacing
+                contentItem: Item {
+                    Image {
+                        anchors.centerIn: parent
+                        source: "qrc:/icons/trash-can-outline.svg"
+                        sourceSize: Qt.size(20, 20)
+                    }
+                }
+
+                onClicked: root.deleted()
+            }
         }
     }
 }
