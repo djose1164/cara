@@ -33,6 +33,12 @@ QBindable<QString> OrderQueue::bindableComment() const
     return &comment_;
 }
 
+void OrderQueue::setBill(Entity::Bill *newBill)
+{
+    bill_ = newBill;
+    bill_->setParent(this);
+}
+
 QBindable<Entity::Bill *> OrderQueue::bindableBill() const
 {
     return &bill_;
@@ -107,7 +113,7 @@ std::unique_ptr<OrderQueue> OrderQueue::fromJson(const QJsonObject &json)
         .toObject()
         .toVariantMap()
     };
-    queue->bill_ = Entity::Bill::fromMap(orderMap);
+    queue->setBill(Entity::Bill::fromMap(orderMap));
 
     Q_ASSERT(queue->bill_->orderId() > 0);
     queue->bindableComment().setValue(json[commentField].toString());

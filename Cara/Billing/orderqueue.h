@@ -42,10 +42,15 @@ public:
     OrderQueue(QObject *parent = nullptr);
 
     QBindable<QString> bindableComment() const;
+
+    void setBill(Entity::Bill *newBill);
     QBindable<Entity::Bill *> bindableBill() const;
+
     QBindable<QDateTime> bindableCreatedAt() const;
+
     QBindable<int> bindableStatusId() const;
     QBindable<QString> bindableStatusString() const;
+
     QBindable<Entity::Salesperson> bindableSalesperson() const;
 
 private:
