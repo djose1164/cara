@@ -8,6 +8,7 @@ Item {
     id: root
 
     property alias model: productModel
+    property alias delegate: listView.delegate
 
     signal redirectClicked
     signal deleteClicked(index: int, productId: int)
@@ -29,16 +30,15 @@ Item {
                 required productName
                 required productId
                 required imageUrl
-                required property int sellPrice
+                required property int price
                 required property var model
                 required property int index
 
                 width: listView.width
-                productPrice: sellPrice
-                total: sellPrice * model.selectedQty
+                productPrice: price
+                total: price * model.selectedQty
                 spinBox.onValueChanged: productCard.model.selectedQty = spinBox.value
                 onDeleted: deleteClicked(index, productId)
-                Component.onCompleted: console.log(`SelectedProduct: total: ${sellPrice}x${productCard.model.selectedQty}`)
             }
         }
     }
