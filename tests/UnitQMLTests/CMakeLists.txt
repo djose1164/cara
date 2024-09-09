@@ -5,6 +5,7 @@ add_executable(TestQML tst_login.cpp tst_login.qml
     setup.h setup.cpp
     tst_signup.qml
     Controls/tst_linearprogressbar.qml
+    Billing/tst_profitcalculator.qml
 )
 
 add_test(NAME TestQML COMMAND TestQML)

@@ -29,7 +29,7 @@ qt_add_qml_module(BillingLib
         CustomerBills.qml
         CustomerBillsHome.qml
         NewPurchaseOrder.qml
-        OrderQueue.qml
+        OrderQueuePage.qml
         OrderState.qml
         OrderStatusCB.qml
         PayItem.qml
@@ -42,6 +42,9 @@ qt_add_qml_module(BillingLib
         PdfBillListing.qml
         ProductSale.qml
         SalespersonBillPage.qml
+        SalesPage.qml
+        QueueDelegate.qml
+        ProfitProductDelegate.qml
     SOURCES
         billrepository.h billrepository.cpp
         business/abstractdocument.h business/abstractdocument.cpp
@@ -67,11 +70,19 @@ qt_add_qml_module(BillingLib
         model/billmodel.h model/billmodel.cpp
         model/billproxymodel.h model/billproxymodel.cpp
         model/ordermodel.h model/ordermodel.cpp
-        orderqueueconstants.h
         orderstatus.h orderstatus.cpp
         ordertemplate.h ordertemplate.cpp
         queueproxymodel.h queueproxymodel.cpp
         uniquefilenamegenerator.h uniquefilenamegenerator.cpp
+        orderqueuemodel.h orderqueuemodel.cpp
+        orderqueue.h orderqueue.cpp
+        queuerepository.h
+        salemodel.h salemodel.cpp
+        sale.h sale.cpp
+        salerepository.h
+        restsalerepository.h restsalerepository.cpp
+        calculator.h calculator.cpp
+        profitcalculator.h profitcalculator.cpp
     RESOURCES
         order-model.html style.css
         pdf-icon.svg
@@ -81,8 +92,19 @@ qt_add_qml_module(BillingLib
         check_circle_fill.svg
         lists.svg
         contact-support.svg
+        pending.svg
+        processing.svg
+        cancelled-order.png
+        assigned.png
+        commission.png
     DEPENDENCIES
         QtQuick Utils Product Customer
+        SOURCES commissionrepository.h
+        SOURCES restcommissionrepository.h restcommissionrepository.cpp
+        SOURCES commissionmodel.h commissionmodel.cpp
+        SOURCES commission.h commission.cpp
+        QML_FILES CommissionPage.qml
+        QML_FILES CommissionItemsPage.qml
 )
 
 target_include_directories(BillingLib
