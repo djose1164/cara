@@ -11,12 +11,15 @@ find_package(Qt6 6.7 REQUIRED
     COMPONENTS Qml Quick Core Network Svg Test PrintSupport Graphs QuickTest REQUIRED)
 
 qt_standard_project_setup(REQUIRES 6.7)
-qt_policy(SET QTP0001 NEW)
+qt_policy(
+    SET QTP0001 NEW
+    SET QTP0004 NEW
+)
 
 add_subdirectory(Cara)
 
 if((LINUX OR WIN32) AND NOT CMAKE_BUILD_TYPE STREQUAL "Release")
-    # add_subdirectory(tests)
+    add_subdirectory(tests)
 endif()
 
 if (WIN32)
@@ -75,4 +78,7 @@ if (ANDROID)
     include(${android_openssl_SOURCE_DIR}/android_openssl.cmake)
 
     add_android_openssl_libraries(${PROJECT_NAME})
+endif()
+if (ANDROID)
+    include(/home/djose1164/Android/Sdk/android_openssl/CMakeLists.txt)
 endif()
