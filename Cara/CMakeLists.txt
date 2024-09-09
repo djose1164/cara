@@ -24,7 +24,6 @@ qt_add_qml_module(${PROJECT_NAME}
         cara-logo-v1.png
         cara-mobile-icon.ico
         cara-mobile-icon.png
-        .env
     SOURCES
         abstractresource.h abstractresource.cpp
         config.h.in
@@ -75,3 +74,4 @@ add_subdirectory(User)
 add_subdirectory(Billing)
 add_subdirectory(Customer)
 add_subdirectory(Review)
+add_subdirectory(common)

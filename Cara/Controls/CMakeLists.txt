@@ -11,10 +11,11 @@ qt_add_qml_module(ControlsLib
         selected-circle.png
         straight-line.png
     QML_FILES
-        LinearProgressIndicator.qml
         CircleIndicator.qml
-        NumberTextField.qml
         DateField.qml
+        LinearProgressIndicator.qml
+        NumberTextField.qml
+        TrashButton.qml
     SOURCES
         datevalidator.h datevalidator.cpp
     DEPENDENCIES

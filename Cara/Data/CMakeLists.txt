@@ -20,12 +20,12 @@ if (ANDROID)
 else()
     set(LOCAL_API_URL http://127.0.0.1:5000)
 endif()
-set(LOCAL_NETWORK_API_URL http://192.168.1.8:5000)
+set(LOCAL_NETWORK_API_URL http://192.168.1.10:5000)
 # RemoteTesting -- 0
 # LocalTesting -- 1
 # LocalNetworkTesting -- 2
 # Production -- 3
-set(CURRENT_BASE_URL ${REMOTE_API_URL})
-set(API_ENVIRONMENT 3)
+set(CURRENT_BASE_URL ${LOCAL_API_URL})
+set(API_ENVIRONMENT 1)
 
 configure_file(restconfig.h.in ${CMAKE_CURRENT_SOURCE_DIR}/restconfig.h @ONLY)

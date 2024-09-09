@@ -16,6 +16,7 @@ qt_add_qml_module(${PROJECT_NAME}
         qnamsingleton.h qnamsingleton.cpp
         itoken.h
         apienvironment.h apienvironment.cpp
+        pagination.h pagination.cpp
 )
 
 target_link_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
