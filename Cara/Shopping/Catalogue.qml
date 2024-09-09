@@ -37,8 +37,7 @@ Page {
                 required property var images
                 required property string description
                 required property string productName
-                required property int sellPrice
-                required property int buyPrice
+                required property int price
                 required property url imageUrl
                 required property var model
 
@@ -46,17 +45,8 @@ Page {
                 height: 100
 
                 onClicked: {
-                    stackView.push("qrc:/qt/qml/Cara/Product/ProductForm.qml", {
-                        productId,
-                        name: productName,
-                        images,
-                        categoryId,
-                        description,
-                        buyPrice,
-                        sellPrice,
-                        product: item.model,
-                        mode: "edit"
-                   });
+                    const path = "qrc:/qt/qml/Cara/Product/EditProductPage.qml";
+                    stackView.pushItem(path, {model});
                 }
 
                 ProductThumbnail {
@@ -99,7 +89,7 @@ Page {
     }
 
     RoundButton {
-        onClicked: stackView.pushItem("qrc:/qt/qml/Cara/Product/ProductForm.qml", {productModel: listModel})
+        onClicked: stackView.pushItem("qrc:/qt/qml/Cara/Product/AddProductPage.qml", {productModel})
         anchors {
             bottom: parent.bottom
             bottomMargin: 15
