@@ -9,6 +9,7 @@ class IProductRepository
 {
 public:
     using ProductId = int;
+    using SupplierId = int;
 
     virtual ~IProductRepository();
 
@@ -19,6 +20,8 @@ public:
     virtual void update(const QVariantMap &product) = 0;
 
     virtual void fetchAll() = 0;
+
+    [[nodiscard]] virtual QNetworkReply *fetchFromSupplier(SupplierId supplierId) = 0;
 };
 }
 

@@ -21,6 +21,7 @@ class CatalogueRepository : public QObject
 public:
     using ProductId = int;
     using PictureId = int;
+    using SupplierId = int;
 
     explicit CatalogueRepository(QObject *parent = nullptr);
 
@@ -34,6 +35,8 @@ public slots:
     void readProductById(ProductId id);
 
     void fetchProducts();
+
+    void fetchProductsFromSupplier(SupplierId supplierId);
 
     void editProduct(const QVariantMap &product);
 

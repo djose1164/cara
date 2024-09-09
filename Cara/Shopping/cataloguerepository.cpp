@@ -6,6 +6,11 @@
 
 using namespace Qt::StringLiterals;
 
+namespace
+{
+constexpr auto productsField{"products"_L1};
+}
+
 namespace Catalogue {
 CatalogueRepository::CatalogueRepository(QObject *parent)
     : QObject{parent}
@@ -115,6 +120,41 @@ void CatalogueRepository::fetchProducts()
 
     connect(productRepository, &ProductRepository::allProductsFetched,
             this, &CatalogueRepository::allProductsFetched);
+}
+
+void CatalogueRepository::fetchProductsFromSupplier(SupplierId supplierId)
+{
+    if (supplierId < 1)
+    {
+        const auto errorStr{"Invalid supplierId"_ba};
+        qWarning() << "CatalogueRepository::fetchProductsFromSupplier: " << errorStr;
+        emit errorOccurred(errorStr);
+        return;
+    }
+
+    const auto reply{productRepository_->fetchFromSupplier(supplierId)};
+    connect(reply,
+            &QNetworkReply::finished,
+            this,
+            [reply, this]
+            {
+                QRestReply restReply{reply};
+                if (!restReply.isSuccess())
+                {
+                    emit errorOccurred(restReply.readBody());
+                    return;
+                }
+
+                if (const auto json{restReply.readJson()};
+                    json && json->isObject() && json->object().contains("products"_L1))
+                {
+                    emit productsFetched(json->toJson());
+                }
+                else
+                {
+                    emit errorOccurred("products is not an array"_ba);
+                }
+            });
 }
 
 void CatalogueRepository::deleteProduct(int productId)

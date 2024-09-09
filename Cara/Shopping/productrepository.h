@@ -47,6 +47,9 @@ public slots:
     QNetworkReply *addPicture(ProductId id, const QVariantList &pictureList);
     QNetworkReply *deletePicture(PictureId pictureId);
 
+    // IProductRepository interface
+    QNetworkReply *fetchFromSupplier(SupplierId supplierId) override;
+
 signals:
     void added(const QByteArray &body);
     void updated();

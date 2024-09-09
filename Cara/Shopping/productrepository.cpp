@@ -150,6 +150,13 @@ QNetworkReply *ProductRepository::deletePicture(PictureId pictureId)
     return pictureRepository_->deletePicture(pictureId);
 }
 
+QNetworkReply *ProductRepository::fetchFromSupplier(SupplierId supplierId)
+{
+    QUrlQuery query;
+    query.addQueryItem("supplier_id"_L1, QString::number(supplierId));
+    return manager_->get(api_->createRequest(path_, query));
+}
+
 void ProductRepository::prepareJsonPart(const QVariantMap &product)
 {
     QHttpPart jsonPart;
