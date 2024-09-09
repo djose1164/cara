@@ -52,7 +52,7 @@ void CostCalculator::classBegin()
 
 void CostCalculator::componentComplete()
 {
-    connect(model_, &Model::ProductModel::countChanged,
+    connect(model_, &Model::ProductModel::rowsInserted,
             this, &CostCalculator::calculateTotal);
     connect(model_, &Model::ProductModel::dataChanged,
             this, &CostCalculator::calculateTotal);
