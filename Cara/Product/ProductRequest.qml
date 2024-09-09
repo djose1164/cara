@@ -31,7 +31,10 @@ Item {
     }
     
     function addSuggetionsToModel(supplierId: int) {
-        request.get(`/?supplier_id=${supplierId}`);
+        if (supplierId)
+            request.get(`/?supplier_id=${supplierId}`);
+        else
+            request.get(`/`);
         request.succeeded.connect(r => root.succeeded(r.products));
     }
 }
