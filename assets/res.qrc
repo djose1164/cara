@@ -37,5 +37,6 @@
         <file>icons/product_statistics.svg</file>
         <file>icons/customer_statistics.svg</file>
         <file>icons/hand-bill.svg</file>
+        <file>icons/error.svg</file>
     </qresource>
 </RCC>
