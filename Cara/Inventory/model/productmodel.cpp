@@ -70,6 +70,10 @@ bool ProductModel::setData(const QModelIndex &index, const QVariant &value, int 
         product.setDescription(value.toString());
         emit dataChanged(index, index, {role});
         return true;
+    case RoleNames::BuyPriceRole:
+        product.setBuyPrice(value.toInt());
+        emit dataChanged(index, index, {role});
+        return true;
     case RoleNames::ProductIdRole:
     case RoleNames::MaximumStockLevelRole:
     case RoleNames::MinimumStockLevelRole:
@@ -107,7 +111,10 @@ QVariant ProductModel::data(const QModelIndex &index, int role) const
         return getValue.categoryId();
     case RoleNames::ImagesRole:
         return getValue.images();
-    default:
+    case RoleNames::BuyPriceRole:
+        return getValue.buyPrice();
+    case RoleNames::MaximumStockLevelRole:
+    case RoleNames::MinimumStockLevelRole:
         return {};
     }
 }
@@ -121,7 +128,18 @@ void ProductModel::setRepository(Business::IInventoryRepository *newRepository)
 {
     if (repository_ == newRepository)
         return;
+    if (repository_)
+        repository_->disconnect();
+
     repository_ = newRepository;
+
+    if (repository_)
+    {
+        connect(repository_,
+                &Business::IInventoryRepository::fetchedAll,
+                this,
+                [&](const QList<EntityLayer::Product> &products) { updateFromList(products); });
+    }
     emit repositoryChanged();
 }
 
@@ -170,10 +188,6 @@ void ProductModel::update(SalespersonId spId)
     }
 
     repository_->fetchAll(spId);
-
-    connect(repository_, &Business::IInventoryRepository::fetchedAll, this, [&](const QList<EntityLayer::Product> &products) {
-        updateFromList(products);
-    });
 }
 
 void ProductModel::updateFromList(const QList<EntityLayer::Product> &products)
@@ -225,6 +239,7 @@ QHash<int, QByteArray> ProductModel::roleNames() const
         {int(RoleNames::ProductNameRole), "productName"},
         {int(RoleNames::DescriptionRole), "description"},
         {int(RoleNames::PriceRole), "price"},
+        {int(RoleNames::BuyPriceRole), "buyPrice"},
         {int(RoleNames::ImageUrlRole), "imageUrl"},
         {int(RoleNames::QuantityAvailableRole), "quantityAvailable"},
         {int(RoleNames::ReorderPointRole), "reorderPoint"},

@@ -26,9 +26,11 @@ class Product
     Q_PROPERTY(int categoryId READ categoryId WRITE setCategoryId FINAL)
 public:
     Product();
+    Product(int newProductId, double newPrice, int newSelectedQty);
 
     static Product fromMap(const QVariantMap &map);
     static Product fromJson(const QByteArray &data);
+    static Product *fromJson(const QJsonObject &data);
 
     bool operator==(const Product &rhs) const;
     bool operator!=(const Product &rhs) const;
@@ -83,6 +85,11 @@ public:
 
     void setProductId(int productId);
 
+    double buyPrice() const;
+    void setBuyPrice(double newBuyPrice);
+
+    static QString makeUrlToPicture(QAnyStringView filename);
+
 private:
     void setupPictures(const QJsonArray &pics);
     void setPriceHistory(const QJsonArray &history);
@@ -91,6 +98,7 @@ private:
     QString name_;
     QString description_;
     double price_;
+    double buyPrice_;
     int productId_;
 
     // TODO: Change to QList<>

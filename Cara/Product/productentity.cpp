@@ -47,17 +47,23 @@ namespace EntityLayer
 {
 
 Product::Product()
+    : Product{0, 0, 0}
+{
+}
+
+Product::Product(int newProductId, double newPrice, int newSelectedQty)
     : name_{}
     , description_{}
-    , price_{}
-    , productId_{}
+    , price_{newPrice}
+    , buyPrice_{}
+    , productId_{newProductId}
     , images_{}
     , imageUrl_{}
     , maximumStockLevel_{}
     , minimumStockLevel_{}
     , quantityAvailable_{}
     , reorderPoint_{}
-    , selectedQty_{}
+    , selectedQty_{newSelectedQty}
     , categoryId_{}
 {
 }
@@ -114,6 +120,24 @@ Product Product::fromJson(const QByteArray &data)
     product.setMinimumStockLevel(inventoryObj.value(minimumStockLevelField).toInt());
     product.setReorderPoint(inventoryObj.value(reorderPointField).toInt());
     product.setQuantityAvailable(inventoryObj.value(quantityAvailableField).toInt());
+
+    return product;
+}
+
+Product *Product::fromJson(const QJsonObject &data)
+{
+    QJsonObject productObj = std::move(data);
+
+    Q_ASSERT(productObj.value(idField).toInt());
+
+    const auto product{new Product};
+    product->setProductId(productObj.value(idField).toInt());
+    product->setName(productObj.value(nameField).toString());
+    product->setDescription(productObj.value(descriptionField).toString());
+    product->setCategoryId(productObj[categoryIdField].toInt());
+
+    product->setupPictures(productObj[imagesField].toArray());
+    product->setupPricing(productObj);
 
     return product;
 }
@@ -238,6 +262,20 @@ void Product::setPriceHistory(const QJsonArray &history)
                           });
 }
 
+double Product::buyPrice() const
+{
+    return buyPrice_;
+}
+
+void Product::setBuyPrice(double newBuyPrice)
+{
+    buyPrice_ = newBuyPrice;
+}
+
+QString Product::makeUrlToPicture(QAnyStringView filename)
+{
+    return getPicIdentificator().arg(filename.toString());
+}
 
 int Product::categoryId() const
 {
