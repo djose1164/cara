@@ -4,10 +4,7 @@ import QtQuick.Layouts
 import QtQuick.Dialogs
 import QtQuick.Templates as T
 import Cara.Customer
-import Cara.User
 import Cara.Utils
-import Cara.Inventory
-import Cara.Product
 import Cara.Billing
 import Cara.Salesperson
 
@@ -176,6 +173,7 @@ Page {
     function validate() {
         chooseCustomer.validate();
         productSale.validate();
+        productSale.validateStocks();
         paymentInput.validate();
     }
 

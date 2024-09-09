@@ -15,7 +15,9 @@ Item {
     }
 
     property alias choosenProducts: selectedProductsView.model
+    property alias productSelectorModel: productSelector.productModel
     property alias calculator: costCalculator
+    property alias selectedProductsDelegate: selectedProductsView.delegate
 
     implicitWidth: stackLayout.implicitWidth
     implicitHeight: stackLayout.implicitHeight
@@ -74,7 +76,9 @@ Item {
     function validate() {
         if (costCalculator.total === 0)
             throw "Debes agregar al menos un producto a la orden";
+    }
 
+    function validateStocks() {
         for (let i = 0; i < choosenProducts.count; ++i)
             enoughStocksFor(choosenProducts.get(i));
     }
