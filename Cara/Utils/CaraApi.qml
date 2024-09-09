@@ -7,12 +7,14 @@ Item {
     property string endpoint: ""
 
     signal succeeded(data: var)
+    signal failed(data: var)
 
     Rest {
         id: rest
         base: Constants.base + endpoint
         accessToken: "Bearer " + TokenManager.accessToken
         onSucceeded: data => root.succeeded(JSON.parse(data))
+        onFailed: data => root.failed(JSON.parse(data))
     }
 
     function get(endpoint: string) {
