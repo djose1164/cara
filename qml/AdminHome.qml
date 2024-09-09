@@ -87,11 +87,12 @@ Home {
                 Image {
                     anchors.centerIn: parent
                     source: item.source
-                    sourceSize: "50x50"
+                    sourceSize: Qt.size(50, 50)
                 }
 
                 TapHandler {
                     onTapped: {
+                        console.log("salespersonId:",SalespersonSettings.salespersonId)
                         if (needUser)
                             homeStack.push(path, {user: UserSettings.entity()});
                         else if (showCustomers)
@@ -165,8 +166,9 @@ Home {
 
         ListElement {
             source: "qrc:/qt/qml/Cara/Billing/orders.svg"
-            path: "qrc:/qt/qml/Cara/Billing/OrderQueue.qml"
+            path: "qrc:/qt/qml/Cara/Billing/OrderQueuePage.qml"
             name: "Cola"
+            showCustomers: true
         }
     }
 }
