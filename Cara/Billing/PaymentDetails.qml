@@ -138,7 +138,7 @@ Item {
     }
 
     component SeeMore : Button {
-        text: "Ver mas"
+        text: "Ver más"
         onClicked: stackView.push("PaymentDetailsPage.qml", {paymentId: payment_.paymentId})
     }
 

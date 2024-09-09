@@ -30,7 +30,7 @@ Page {
             Menu {
                 id: menu
                 MenuItem {
-                    text: "Mas informacion"
+                    text: "Más informacion"
                 }
             }
         }

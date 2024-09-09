@@ -26,7 +26,7 @@ Item {
         anchors.top: header.bottom
         header: Label {
             width: root.width
-            text: "Mas vendidos"
+            text: "Más vendidos"
             padding: 10
             font.pointSize: 14
             font.bold: true

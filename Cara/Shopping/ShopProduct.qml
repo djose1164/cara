@@ -49,7 +49,7 @@ Item {
         }
 
         Button {
-            text: internal.canBuy ? "Agregar al Carrito" : "Mas uninades en camino"
+            text: internal.canBuy ? "Agregar al Carrito" : "Más uninades en camino"
             enabled: internal.canBuy
             Layout.fillWidth: true
             onClicked: {

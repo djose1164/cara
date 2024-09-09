@@ -85,7 +85,7 @@ ApplicationWindow {
             }
             onConnectionRefused: {
                 const message = "No se ha podido establecer una conexión con el servidor. "
-                              + "Intenta de nuevo mas tarde.";
+                              + "Intenta de nuevo más tarde.";
                 appStack.replace("qrc:/errors/ErrorPage.qml", {message});
             }
             onUpgradeRequired: {
