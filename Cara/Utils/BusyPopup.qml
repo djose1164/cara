@@ -2,8 +2,8 @@ import QtQuick
 import QtQuick.Controls
 
 Popup {
-    width: parent.width * .7
-    height: parent.height/2
+    width: 200
+    height: 200
     anchors.centerIn: parent
     modal: true
     focus: true
