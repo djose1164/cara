@@ -78,7 +78,7 @@ Page {
         id: service
         adminId: root.adminId
         onFetched: {
-            SalespersonManager.add(JSON.parse(data).salespersons);
+            SalespersonManager.add(JSON.parse(data).salespeople);
             root.state = "";
         }
     }
