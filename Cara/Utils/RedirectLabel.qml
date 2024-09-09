@@ -22,7 +22,8 @@ ItemDelegate {
             anchors.verticalCenter: parent.verticalCenter
             anchors.right: parent.right
             source: "qrc:/icons/arrow_forward.svg"
-            sourceSize: "24x24"
+            sourceSize: Qt.size(24, 24)
+            opacity: enabled ? 1 : .4
         }
     }
 
