@@ -174,6 +174,7 @@ void CommentModel::addComment(const QVariantMap &comment) noexcept
                         return;
                     }
                    append(std::move(comment));
+                   emit commentAdded();
                 });
     }
     catch (const ValidationError &err)

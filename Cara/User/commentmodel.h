@@ -74,6 +74,7 @@ private:
     STATUS_SETTER(Idle)
 
 signals:
+    void commentAdded();
     void errorOccurred(const QString &errorString);
 
 private:

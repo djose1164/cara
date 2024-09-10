@@ -1,3 +1,4 @@
+pragma ComponentBehavior: Bound
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
@@ -98,6 +99,7 @@ Drawer {
     Component {
         id: listViewFooter
         Rectangle {
+            id: rectangle
             width: root.width
             implicitHeight: rowLayout.implicitHeight * 1.33
             color: "#F5F5F5"
@@ -118,8 +120,24 @@ Drawer {
                     flat: true
                     enabled: textField.length > 0
                     icon.source: "qrc:/icons/send.svg"
-                    onClicked: root.handleSendClicked()
+                    onClicked: root.handleSendClicked(rectangle.getComment())
                 }
+            }
+
+            Connections {
+                target: commentModel
+
+                function onCommentAdded() {
+                    textField.clear();
+                }
+            }
+
+            function getComment() : var {
+                return {
+                    userId: root.userId,
+                    content: textField.text,
+                    orderId: root.orderId
+                };
             }
         }
     }
@@ -136,8 +154,6 @@ Drawer {
                 CloseHeader {
                     id: label
                     width: listView.width
-                    // anchors.top: topLine.bottom
-                    //anchors.topMargin: 30
                     title: "Comentarios"
                     onCloseClicked: root.close()
                 }
@@ -160,7 +176,7 @@ Drawer {
         }
     }
 
-    function handleSendClicked() {
+    function handleSendClicked(newComment: var) {
         if (root.userId < 1) {
             const msg = "Invalid userId: "+root.userId;
             message.openWith("Error", msg);
@@ -173,11 +189,6 @@ Drawer {
             console.error(msg);
         }
 
-        const newComment = {
-            userId: root.userId,
-            content: textField.text,
-            orderId: root.orderId
-        };
         commentModel.addComment(newComment);
     }
 
