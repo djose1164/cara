@@ -11,7 +11,7 @@ TextField {
     echoMode: showText ? TextField.Normal : TextField.Password
     passwordMaskDelay: 600
     rightPadding: eyeIcon.width
-    inputMethodHints: Qt.ImhSensitiveData | Qt.ImhNoPredictiveText | Qt.ImhPreferNumbers
+    inputMethodHints: Qt.ImhSensitiveData | Qt.ImhNoPredictiveText
     EnterKey.type: Qt.EnterKeyDone
     hoverEnabled: true
 
