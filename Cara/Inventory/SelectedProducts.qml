@@ -1,6 +1,5 @@
 import QtQuick
-import QtQuick.Controls
-import Cara.Utils
+import Cara.Controls
 import Cara.Product
 import Cara.Inventory
 

@@ -1,10 +1,7 @@
-import QtCore
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
-import QtQuick.Dialogs
-import QtQuick.Templates as T
-import Cara.Utils
+import Cara.Controls
 import Cara.Shopping
 import Cara.Product
 import "qrc:/inventory"
@@ -42,7 +39,7 @@ ProductForm {
 
                 MenuItem {
                     text: "Vista de producto"
-                    onTriggered: root.myStack.pushItem("Cara/Product/ProductPage.qml", {productId: model.productId, product})
+                    onTriggered: root.myStack.pushItem("Cara/Product/ProductPage.qml", {productId: model.productId, product: root.model})
                 }
 
                 MenuItem {

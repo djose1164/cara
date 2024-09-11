@@ -1,5 +1,4 @@
 import QtQuick
-
 import Cara.Utils
 
 CaraApi {

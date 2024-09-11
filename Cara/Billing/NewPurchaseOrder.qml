@@ -4,7 +4,7 @@ import QtQuick.Layouts
 import QtQuick.Dialogs
 import QtQuick.Templates as T
 import Cara.Customer
-import Cara.Utils
+import Cara.Controls
 import Cara.Billing
 import Cara.Salesperson
 
@@ -76,7 +76,7 @@ Page {
 
             RedirectLabel {
                 id: dateRedirectLbl
-                title: datePicker.selectedDate.toLocaleDateString()
+                title: datePicker.dateString
                 Layout.fillWidth: true
                 onClicked: datePicker.open()
             }

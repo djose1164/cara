@@ -3,7 +3,7 @@ import QtCore
 import QtQuick.Controls
 import QtQuick.Templates as T
 import Qt.labs.folderlistmodel
-import Cara.Utils
+import Cara.Controls
 
 Page {
     id: root

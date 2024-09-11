@@ -1,9 +1,5 @@
 import QtQuick
 import QtQuick.Controls
-import QtQuick.Layouts
-import QtQuick.Dialogs
-
-import Cara.Utils
 import "qrc:/orders"
 import "qrc:/provider"
 import Cara.Billing

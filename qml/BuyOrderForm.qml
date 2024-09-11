@@ -3,7 +3,7 @@ import QtQuick.Controls
 import QtQuick.Layouts
 import Cara.User
 import Cara.Salesperson
-import Cara.Utils
+import Cara.Controls
 import "qrc:/provider"
 import Cara.Billing
 import Cara.Product
@@ -80,7 +80,8 @@ Drawer {
             }
 
             RedirectLabel {
-                title: datePicker.selectedDate.toLocaleDateString()
+                title: datePicker.dateString
+                Layout.fillWidth: true
                 onClicked: datePicker.open()
             }
 

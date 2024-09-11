@@ -1,7 +1,6 @@
 import QtQuick
 import Cara.Utils
 
-
 CaraApi {
     id: api
     endpoint: "/products"

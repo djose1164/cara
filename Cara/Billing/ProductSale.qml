@@ -1,7 +1,7 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
-import Cara.Utils
+import Cara.Controls
 import Cara.Inventory
 import Cara.Salesperson
 import Cara.Billing

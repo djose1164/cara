@@ -1,13 +1,12 @@
 import QtQuick
 import QtQuick.Controls
-import QtQuick.Layouts
+import QtNetwork
+import Cara
 import Cara.Data
 import Cara.Authentication as Auth
 import Cara.User
-import Cara.Utils
 import Cara.Salesperson
-import Cara
-import Cara.Customer
+import Cara.Controls
 
 ApplicationWindow {
     id: app
@@ -132,6 +131,10 @@ ApplicationWindow {
 
     function setup() {
         LoginManager.session = UserSession.session;
+        if (NetworkInformation.reachability !== NetworkInformation.Reachability.Online) {
+            stackView.replaceCurrentItem(mainPage);
+            return;
+        }
         healthResource.readStatus();
     }
 

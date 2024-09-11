@@ -1,6 +1,5 @@
 import QtQuick
-import QtQuick.Controls
-import Cara.Utils
+import Cara.Controls
 
 Item {
     id: root

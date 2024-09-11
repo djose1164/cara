@@ -2,7 +2,7 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 import QtQuick.Templates as T
-import Cara.Utils
+import Cara.Controls
 import Cara.Product
 import Cara.Billing
 import Cara.Network

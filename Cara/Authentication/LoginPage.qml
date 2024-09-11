@@ -6,7 +6,7 @@ import QtQuick.Templates as T
 import Cara.User
 import Cara.Authentication
 import Cara.Salesperson
-import Cara.Utils
+import Cara.Controls
 
 Item {
     id: root

@@ -2,8 +2,8 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Templates as T
 import Cara
-import Cara.Utils
 import Cara.Billing
+import Cara.Controls
 
 Page {
     id: root

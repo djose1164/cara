@@ -6,7 +6,7 @@ import Cara.Billing
 import Cara.User
 import Cara.Customer
 import Cara.Product
-import Cara.Utils
+import Cara.Controls
 
 ColumnLayout {
     id: root

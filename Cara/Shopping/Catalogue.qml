@@ -3,10 +3,9 @@ import QtQuick.Controls
 import QtQuick.Layouts
 import QtQuick.Templates as T
 import Cara.Shopping
-import Cara.Utils
+import Cara.Controls
 import Cara.Product
 import Cara.Inventory
-import Cara.Network
 
 Page {
     id: root

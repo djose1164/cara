@@ -1,7 +1,5 @@
 import QtQuick
 import QtQuick.Controls
-import QtQuick.Templates as T
-import Cara.Utils
 
 Page {
     id: root

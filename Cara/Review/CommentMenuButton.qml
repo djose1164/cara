@@ -1,5 +1,5 @@
 import QtQuick.Controls
-import Cara.Utils
+import Cara.Controls
 
 MoreVertButton {
     id: root

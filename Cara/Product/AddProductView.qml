@@ -1,12 +1,7 @@
 import QtQuick
 import QtQuick.Controls
-import QtQuick.Layouts
-import QtQuick.Dialogs
 import QtQuick.Controls.Material
-import Cara.Customer
 import "qrc:/orders"
-
-import Cara.Utils
 
 // TODO: Update implementation to use the new types.
 Column {

@@ -1,10 +1,5 @@
 import QtQuick
 import QtQuick.Controls
-import QtQuick.Layouts
-import QtQml.Models
-import Cara.Utils
-import Cara.Inventory
-import Cara.Product
 
 ItemDelegate {
     id: productThumbnail

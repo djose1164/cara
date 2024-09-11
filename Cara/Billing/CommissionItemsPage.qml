@@ -3,7 +3,7 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 import Cara.Billing
-import Cara.Utils
+import Cara.Controls
 
 BackPage {
     id: root

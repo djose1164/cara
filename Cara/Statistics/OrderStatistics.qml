@@ -3,7 +3,7 @@ import QtQuick.Controls
 import QtQuick.Layouts
 import QtQuick.Templates as T
 import QtCharts
-import Cara.Utils
+import Cara.Controls
 
 Page {
     id: root

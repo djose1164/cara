@@ -1,8 +1,7 @@
 import QtQuick
 import QtQuick.Controls
-import QtQuick.Layouts
 import Cara.Customer
-import Cara.Utils
+import Cara.Controls
 
 Item {
     id: root

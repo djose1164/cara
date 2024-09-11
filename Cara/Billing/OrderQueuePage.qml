@@ -2,8 +2,9 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 import QtQuick.Templates as T
-import Cara.Utils
 import Cara.Billing
+import Cara.Controls
+import Cara.Utils
 
 Page {
     id: root
@@ -36,7 +37,7 @@ Page {
                 SearchItem {
                     id: searchItem
                     Layout.fillWidth: true
-                    onSearchClosed: stackLayout.currentIndex = OrderQueue.TitleView
+                    onSearchClosed: stackLayout.currentIndex = OrderQueuePage.TitleView
                 }
 
                 FilterMenu {
@@ -88,7 +89,7 @@ Page {
         id: menuBtn
         RowLayout {
             SearchButton {
-                onClicked: stackLayout.currentIndex = OrderQueue.SearchView
+                onClicked: stackLayout.currentIndex = OrderQueuePage.SearchView
             }
 
             FilterMenu {}

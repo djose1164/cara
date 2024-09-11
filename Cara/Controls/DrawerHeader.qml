@@ -1,8 +1,7 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
-import QtQuick.Dialogs
-import Cara.Utils
+import Cara.Controls
 
 Rectangle {
     id: root

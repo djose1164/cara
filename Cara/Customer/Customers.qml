@@ -4,8 +4,8 @@ import QtQuick.Layouts
 import QtQuick.Templates as T
 import Cara
 import Cara.Customer
-import Cara.Salesperson
 import Cara.User
+import Cara.Controls
 import Cara.Utils
 
 ListViewPage {

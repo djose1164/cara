@@ -1,7 +1,7 @@
 import QtQuick
 import QtCore
-import Cara.Utils
 import Cara.Billing
+import Cara.Utils
 
 Item {
     id: root

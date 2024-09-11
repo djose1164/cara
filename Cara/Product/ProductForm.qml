@@ -1,12 +1,11 @@
 import QtCore
 import QtQuick
 import QtQuick.Controls
-import QtQuick.Layouts
 import QtQuick.Dialogs
+import QtQuick.Layouts
 import QtQuick.Templates as T
-import Cara.Utils
 import Cara.Shopping
-import Cara.Inventory
+import Cara.Controls
 
 Page {
     id: root

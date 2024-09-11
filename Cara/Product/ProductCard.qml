@@ -2,7 +2,7 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 import Cara.User
-import Cara.Utils
+import Cara.Controls
 
 Rectangle {
     id: root

@@ -1,7 +1,5 @@
 import QtQuick
 import QtQuick.Controls
-import QtQuick.Layouts
-import Cara.Utils
 import "qrc:/qt/qml/Cara/Utils/utils.js" as JS
 
 GroupBox {

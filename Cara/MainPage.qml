@@ -1,5 +1,4 @@
 import QtQuick
-import QtCore
 import QtQuick.Controls
 import QtQuick.Layouts
 import QtQuick.Templates as T
@@ -7,7 +6,6 @@ import Cara.User
 import Cara.Salesperson
 import Cara.Customer
 import Cara.Authentication
-import QtNetwork
 
 // TODO: MaiPage should be deleted in a future release.
 // Plan in what release it should be deleted.

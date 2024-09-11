@@ -1,6 +1,6 @@
 import QtQuick
 import QtQuick.Controls
-import Cara.Utils
+import Cara.Controls
 import Cara.Review
 
 BackPage {

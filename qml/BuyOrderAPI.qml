@@ -1,7 +1,7 @@
 import QtQuick
 import Cara.Utils
 
-
+@Deprecated { reason: "Use the C++ QML_ELEMENT type" }
 CaraApi {
     id: api
 
