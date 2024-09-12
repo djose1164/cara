@@ -15,7 +15,6 @@ qt_add_qml_module(UtilsLib
         validationerror.h
     QML_FILES
         CaraApi.qml
-        Message.qml
         SearchItem.qml
         SearchPage.qml
         SelectorHeaderItem.qml

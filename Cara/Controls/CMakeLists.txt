@@ -28,6 +28,7 @@ qt_add_qml_module(ControlsLib
         Header.qml
         LinearProgressIndicator.qml
         ListViewPage.qml
+        Message.qml
         MessagePane.qml
         MoreVertButton.qml
         NumberTextField.qml

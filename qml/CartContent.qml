@@ -1,6 +1,5 @@
+pragma ComponentBehavior: Bound
 import QtQuick
-import QtQuick.Controls
-import QtQuick.Layouts
 import Cara.Product
 import Cara.Shopping
 
@@ -21,15 +20,17 @@ Item {
         spacing: 5
         model: CartController.model
         delegate: ProductCard {
+            id: productCard
             required property var model
             required property product product
             required property int quantity
             required total
             required property int index
+            required property double price
 
             width: listView.width
             productName: product.name
-            productPrice: product.price
+            productPrice: productCard.price
             imageUrl: product.imageUrl
             productId: product.productId
             spinBox.value: quantity

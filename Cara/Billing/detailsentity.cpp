@@ -7,7 +7,10 @@ DetailsEntity *DetailsEntity::fromJson(const QJsonObject &data)
 {
     const auto newDetail{new DetailsEntity};
     newDetail->setQuantity(data["quantity"_L1].toInt());
-    newDetail->price_ = data["price"_L1].toInt();
+    Q_ASSERT(newDetail->quantity());
+
+    newDetail->price_ = data["product"_L1]["sell_price"_L1].toString().toDouble();
+    Q_ASSERT(newDetail->price() > 0);
     newDetail->setProduct(
         Product::fromMap(data["product"_L1].toVariant().toMap())
     );
@@ -23,7 +26,7 @@ DetailsEntity::DetailsEntity(QObject *parent)
     , product_{}
 {
     total_.setBinding([&] {
-        return product().valid() ? price_ * quantity_ : 0;
+        return product().valid() ? product().price() * quantity_ : 0;
     });
 
     quantity_.setBinding([&] { return product().selectedQty(); });
@@ -34,12 +37,12 @@ int DetailsEntity::quantity() const
     return quantity_.value();
 }
 
-int DetailsEntity::price() const
+double DetailsEntity::price() const
 {
     return price_;
 }
 
-int DetailsEntity::total() const
+double DetailsEntity::total() const
 {
     return total_.value();
 }

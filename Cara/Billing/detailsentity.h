@@ -17,9 +17,9 @@ public:
     void setQuantity(int quantity);
     int quantity() const;
 
-    int price() const;
+    double price() const;
 
-    int total() const;
+    double total() const;
     QBindable<int> bindableTotal() const;
     
     void setProduct(const Product &product);
@@ -32,8 +32,8 @@ signals:
 
 private:
     QProperty<int> quantity_;
-    QProperty<int> price_;
-    QProperty<int> total_;
+    QProperty<double> price_;
+    QProperty<double> total_;
     
     QProperty<Product> product_;
 };

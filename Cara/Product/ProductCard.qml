@@ -1,7 +1,6 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
-import Cara.User
 import Cara.Controls
 
 Rectangle {
@@ -68,35 +67,46 @@ Rectangle {
             Layout.alignment: Qt.AlignRight
             Layout.rightMargin: 5
             Layout.bottomMargin: 5
-            from: UserSettings.userTypeId === UserEntity.ADMIN ? 0 : 1
+            from: 0
             editable: true
             inputMethodHints: Qt.ImhDigitsOnly
+
+            down.indicator: DownIndicator {
+                x: spinBox.mirrored ? parent.width - width : 0
+                width: height
+                height: spinBox.height
+                spacing: spinBox.spacing
+                shouldDelete: spinBox.value === 1
+                color: spinBox.down.hovered ? spinBox.Material.listHighlightColor : "white"
+            }
+
+            onValueChanged: if (spinBox.value === 0) root.deleted()
         }
     }
 
-    Binding {
-        target: spinBox
-        property: "down.indicator"
-        when: spinBox.value === 1
-        value: Item {
-            width: spinBox.height
-            height: width
+    component DownIndicator : Item {
+        id: downIndicator
 
-            ItemDelegate {
-                id: inId
-                x: spinBox.spacing
-                y: spinBox.spacing
-                width: parent.width - 2 * spinBox.spacing
-                height: parent.height - 2 * spinBox.spacing
-                contentItem: Item {
-                    Image {
-                        anchors.centerIn: parent
-                        source: "qrc:/icons/trash-can-outline.svg"
-                        sourceSize: Qt.size(20, 20)
-                    }
-                }
+        property bool shouldDelete
+        property int spacing
+        property bool highlighted
+        property alias color: rectangle.color
 
-                onClicked: root.deleted()
+        implicitWidth: 40
+        implicitHeight: 40
+
+        Rectangle {
+            id: rectangle
+            x: downIndicator.spacing
+            y: downIndicator.spacing
+            width: downIndicator.width - (downIndicator.spacing * 2)
+            height: downIndicator.height - (downIndicator.spacing * 2)
+
+            Image {
+                anchors.centerIn: parent
+                source: downIndicator.shouldDelete ? "qrc:/icons/trash-can-outline.svg"
+                                                   : "remove.svg"
+                sourceSize: Qt.size(24, 24)
             }
         }
     }

@@ -35,6 +35,7 @@ qt_add_qml_module(ProductLib
         restpricehistoryrepository.h restpricehistoryrepository.cpp
     RESOURCES
         add_a_photo.svg
+        remove.svg
     DEPENDENCIES
         Cara.Network
 )

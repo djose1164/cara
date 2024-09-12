@@ -84,7 +84,7 @@ Drawer {
                 ReviewHeader {
                     Layout.preferredWidth: pane.width * .99
                     customerNameTxt: model.author
-                    dateTxt: model.createdAt.toLocaleString()
+                    dateTxt: model.createdAt.toLocaleString(Qt.locale(), Locale.NarrowFormat)
                 }
 
                 Label {
