@@ -42,12 +42,14 @@ QString OrderTemplate::getFormattedOrder()
     if (order_.isEmpty())
     {
         qCritical() << "OrderTemplate::getFormattedOrder: order cannot be empty.";
+        emit errorOccurred("OrderTemplate::getFormattedOrder: order cannot be empty."_L1);
         return QString{};
     }
 
     if (!order_["order_details"].isArray())
     {
         qCritical() << "OrderTemplate::getFormattedOrder: order_details is not an array.";
+        emit errorOccurred("OrderTemplate::getFormattedOrder: order_details is not an array."_L1);
         return QString{};
     }
 
@@ -55,11 +57,12 @@ QString OrderTemplate::getFormattedOrder()
     if (!detailsHtmlOpt)
     {
         qCritical() << "OrderTemplate::getFormattedOrder: empty HTML details.";
+        emit errorOccurred("OrderTemplate::getFormattedOrder: empty HTML details."_L1);
         return QString{};
     }
 
     const auto detailsHtml{detailsHtmlOpt.value()};
-    const auto createdAtString{order_["created_at"].toString()};
+    const auto createdAtString{order_["created_at"_L1].toString()};
     auto createdAt{QDateTime::fromString(createdAtString, Qt::ISODate)};
     createdAt.setTimeZone(QTimeZone{QTimeZone::UTC});
     QSettings settings{};
@@ -80,8 +83,10 @@ std::optional<QByteArray> OrderTemplate::load(QAnyStringView filename)
     QFile f{filename.toString()};
     if (!f.open(QFile::ReadOnly))
     {
-        qCritical() << "PdfOrderPrinter::load: Failed to open %1: %2"_L1
-                           .arg(stylePath, f.errorString());
+        const QString errorStr{"Failed to open %1: %2"_L1
+                               .arg(stylePath, f.errorString())};
+        qCritical() << "PdfOrderPrinter::load: " << errorStr;
+        emit errorOccurred(errorStr);
         return std::nullopt;
     }
 
@@ -103,22 +108,26 @@ std::optional<QStringList> OrderTemplate::htmlDetails()
     {
         if (!detail.isObject())
         {
-            qCritical() << "OrderTemplate::getFormattedOrder: detail is not an object.";
+            constexpr auto errorStr{"detail is not an object."_L1};
+            qCritical() << "OrderTemplate::htmlDetails: " << errorStr;
             qCritical() << detail;
+            emit errorOccurred(errorStr);
             return std::nullopt;
         }
 
         const auto detailObject{detail.toObject()};
         if (!detailObject["product"].isObject())
         {
-            qCritical() << "OrderTemplate::getFormattedOrder: product is not an object.";
+            constexpr auto errorStr{"product is not an object."_L1};
+            qCritical() << "OrderTemplate::htmlDetails: " << errorStr;
+            emit errorOccurred(errorStr);
             return std::nullopt;
         }
 
-        const auto productObject{detailObject["product"].toObject()};
-        const int sellPrice{productObject["sell_price"].toInt()};
-        const int quantity{detailObject["quantity"].toInt()};
-        const auto productName{productObject["name"].toString()};
+        const auto productObject{detailObject["product"_L1].toObject()};
+        const int sellPrice{detailObject["price"_L1].toInt()};
+        const int quantity{detailObject["quantity"_L1].toInt()};
+        const auto productName{productObject["name"_L1].toString()};
         const auto subtotal{quantity * sellPrice};
         calculatedTotal_ += subtotal;
 

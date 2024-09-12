@@ -4,7 +4,6 @@
 #include <QtConcurrent>
 #include "abstractdocument.h"
 #include "uniquefilenamegenerator.h"
-#include "utils.h"
 
 using namespace Qt::StringLiterals;
 
