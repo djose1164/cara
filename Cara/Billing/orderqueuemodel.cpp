@@ -40,7 +40,7 @@ QVariant OrderQueueModel::data(const QModelIndex &index, int role) const
     switch(static_cast<RoleNames>(role))
     {
     case RoleNames::CommentRole:
-        return queue->bindableComment().value();
+        return queue->bindableLastComment().value();
     case RoleNames::CreatedAtRole:
         return queue->bindableCreatedAt().value();
     case RoleNames::SalespersonRole:
@@ -48,7 +48,7 @@ QVariant OrderQueueModel::data(const QModelIndex &index, int role) const
     case RoleNames::OrderRole:
         return QVariant::fromValue(queue->bindableBill().value());
     case RoleNames::QueueStatusIdRole:
-        return queue->bindableStatusId().value();
+        return QVariant::fromValue(queue->bindableStatus().value());
     case RoleNames::QueueStatusStringRole:
         return queue->bindableStatusString().value();
     case RoleNames::DetailsRole:
@@ -62,7 +62,7 @@ QVariant OrderQueueModel::data(const QModelIndex &index, int role) const
     case RoleNames::CustomerRole:
         return QVariant::fromValue(bill->customer());
     case RoleNames::TakenRole:
-        return bill->isTaken();
+        return queue->bindableTaken().value();
     case RoleNames::DoneRole:
         return bill->done();
     case RoleNames::OrderIdRole:
@@ -76,6 +76,48 @@ QVariant OrderQueueModel::data(const QModelIndex &index, int role) const
 
 bool OrderQueueModel::setData(const QModelIndex &index, const QVariant &value, int role)
 {
+    if (not index.isValid())
+        return false;
+
+    OrderQueue *entity{data_[index.row()].get()};
+    switch (static_cast<RoleNames>(role))
+    {
+    case RoleNames::CommentRole:
+    case RoleNames::CreatedAtRole:
+    case RoleNames::SalespersonRole:
+    case RoleNames::OrderRole:
+    case RoleNames::QueueStatusIdRole:
+        entity->bindableStatus()
+                .setValue(static_cast<OrderQueue::Status>(value.toInt()));
+        emit dataChanged(index, index, {role, int(RoleNames::QueueStatusStringRole)});
+        Q_ASSERT(entity->bindableStatus().value() == static_cast<OrderQueue::Status>(value.toInt()));
+        return true;
+    case RoleNames::QueueStatusStringRole:
+    case RoleNames::DetailsRole:
+    case RoleNames::PaymentRole:
+    {
+        auto &&newPayment{value.value<Entity::Payment>()};
+        entity->bindableBill().value()->setPayment(newPayment);
+        emit dataChanged(index, index, {role});
+        return true;
+    }
+    case RoleNames::DateRole:
+    case RoleNames::StatusRole:
+    case RoleNames::CustomerRole:
+        break;
+    case RoleNames::TakenRole:
+    {
+        entity->bindableTaken().setValue(value.toBool());
+        emit dataChanged(index, index, {role});
+        Q_ASSERT(entity->bindableTaken().value() == value.toBool());
+        return true;
+    }
+    case RoleNames::DoneRole:
+    case RoleNames::OrderIdRole:
+    case RoleNames::ProductQuantityRole:
+    case RoleNames::TotalToPayRole:
+        break;
+    }
     return false;
 }
 
@@ -109,7 +151,7 @@ QBindable<QueueRepository *> OrderQueueModel::bindableRepository()
 
 QString OrderQueueModel::statusIdToString(OrderQueue::Status s) const
 {
-    return OrderQueue::statusIdToString(s);
+    return OrderQueue::statusToString(s);
 }
 
 OrderQueue::Status OrderQueueModel::statusStringToId(const QString &s)
@@ -125,14 +167,7 @@ void OrderQueueModel::queueFetched(const QJsonArray &queue)
     data_.clear();
     for (const auto &jsonValue: queue)
         data_.push_back(std::move(Billing::OrderQueue::fromJson(jsonValue.toObject())));
-    // std::ranges::transform(queue, queueList.begin(), [](const QJsonValue &jsonValue) {
-    //     return Billing::OrderQueue::fromJson(jsonValue.toObject());
-    // });
-
-    //data_ = std::move(queueList);
     endResetModel();
 }
-
-
 
 } // namespace Billing
