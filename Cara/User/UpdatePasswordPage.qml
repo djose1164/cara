@@ -25,6 +25,7 @@ BackPage {
 
         PasswordItem {
             id: passwordItem
+            width: column.width
         }
 
         Button {
