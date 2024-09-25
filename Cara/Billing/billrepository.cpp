@@ -80,7 +80,8 @@ QNetworkReply *BillRepository::fetchUnpaidBills()
 QNetworkReply *BillRepository::fetchOrdersInQueue(SalespersonId spId)
 {
     QUrlQuery query;
-    query.addQueryItem("salesperson_id"_L1, QString::number(spId));
+    if (spId > 0)
+        query.addQueryItem("salesperson_id"_L1, QString::number(spId));
     return manager_->get(api_->createRequest("/orders/queue"_L1, std::move(query)));
 }
 
