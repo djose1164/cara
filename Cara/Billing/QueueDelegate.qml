@@ -9,13 +9,19 @@ Item {
 
     signal clicked
 
+    implicitWidth: pane.implicitWidth
+    implicitHeight: pane.implicitHeight
+
     Pane {
+        id: pane
         anchors.fill: parent
         anchors.margins: 10
+        font.pointSize: 12
         Material.elevation: 6
 
         ColumnLayout {
             anchors.fill: parent
+            spacing: 20
 
             GridLayout {
                 columns: 2
@@ -62,24 +68,15 @@ Item {
                     wrapMode: Label.Wrap
                     Layout.fillWidth: true
                 }
-
-                Label {
-                    text: "<b>Comentario:</b> " + model.comment
-                    wrapMode: Label.Wrap
-                    Layout.fillWidth: true
-                }
             }
 
-            ToolSeparator {
-                orientation: Qt.Horizontal
+            Label {
+                visible: model.comment.length > 0
+                text: "<b>Último comentario:</b> " + model.comment
+                elide: Label.ElideRight
+                wrapMode: Label.Wrap
                 Layout.fillWidth: true
-            }
-
-            ColumnLayout {
-
-                Label {
-                    text: "Order ID #" + model.orderId
-                }
+                Layout.fillHeight: true
             }
         }
 
@@ -93,9 +90,11 @@ Item {
         case OrderQueue.Cancelled:
             return "cancelled-order.png";
         case OrderQueue.Unassigned:
-            return "pending.png";
+            return "pending.svg";
         case OrderQueue.Assigned:
             return "assigned.png";
+        case OrderQueue.Completed:
+            return "order-completed.svg"
         }
     }
 }
