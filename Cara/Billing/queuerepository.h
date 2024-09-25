@@ -17,7 +17,7 @@ public:
 
     virtual ~QueueRepository() = default;
 
-    virtual void fetchOrdersInQueue(SalespersonId spId) = 0;
+    virtual void fetchOrdersInQueue(SalespersonId spId = -1) = 0;
 
 signals:
     void queueFetched(const QJsonArray &queue);
