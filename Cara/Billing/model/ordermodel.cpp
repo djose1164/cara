@@ -79,7 +79,6 @@ QByteArray OrderModel::toJson() const
     }
 
     QJsonDocument doc{arr};
-    qDebug() << "OrderModel::toJson " << doc;
     return doc.toJson(QJsonDocument::Compact);
 }
 

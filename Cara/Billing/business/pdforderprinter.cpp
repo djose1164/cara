@@ -7,12 +7,6 @@
 
 using namespace Qt::StringLiterals;
 
-namespace
-{
-constexpr auto htmlPath{":/qt/qml/Billing/order-model.html"_L1};
-constexpr auto stylePath{":/qt/qml/Billing/style.css"_L1};
-}
-
 namespace Billing
 {
 PdfOrderPrinter::PdfOrderPrinter(QObject *parent)
