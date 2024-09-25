@@ -34,6 +34,7 @@ constexpr auto supplierPriceHistoryField{"supplier_price_history"_L1};
 constexpr auto priceHistoryField{"price_history"_L1};
 constexpr auto idField{"id"_L1};
 constexpr auto productField{"product"_L1};
+constexpr auto productIdField{"product_id"_L1};
 constexpr auto descriptionField{"description"_L1};
 constexpr auto maximumStockLevelField{"maximum_stock_level"_L1};
 constexpr auto minimumStockLevelField{"minimum_stock_level"_L1};
@@ -181,6 +182,7 @@ QByteArray Product::toJson() const
     obj[priceHistoryField] = QJsonArray{QJsonObject{{"price"_L1, price_}}};
     obj[imagesField] = images_;
     obj[categoryIdField] = categoryId_;
+    obj[productIdField] = productId_;
 
     QJsonDocument doc{obj};
     return doc.toJson(QJsonDocument::Compact);
