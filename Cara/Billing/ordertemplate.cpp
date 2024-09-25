@@ -65,6 +65,8 @@ QString OrderTemplate::getFormattedOrder()
     const auto createdAtString{order_["created_at"_L1].toString()};
     auto createdAt{QDateTime::fromString(createdAtString, Qt::ISODate)};
     createdAt.setTimeZone(QTimeZone{QTimeZone::UTC});
+    Q_ASSERT(calculatedTotal_);
+
     QSettings settings{};
     return html_.arg(
         settings.value("Salesperson/warehouseAddress"_L1).toString(),
@@ -106,6 +108,7 @@ std::optional<QStringList> OrderTemplate::htmlDetails()
     QStringList detailsHtml{};
     for (const auto &detail : std::as_const(orderDetails))
     {
+        qDebug() << "OrderTemplate::htmlDetails: " << detail;
         if (!detail.isObject())
         {
             constexpr auto errorStr{"detail is not an object."_L1};
@@ -124,19 +127,26 @@ std::optional<QStringList> OrderTemplate::htmlDetails()
             return std::nullopt;
         }
 
+        Q_ASSERT(detailObject.contains("price"_L1));
+
+        bool ok{};
         const auto productObject{detailObject["product"_L1].toObject()};
-        const int sellPrice{detailObject["price"_L1].toInt()};
+        const double sellPrice{detailObject["price"_L1].toString().toDouble(&ok)};
+        Q_ASSERT(ok);
         const int quantity{detailObject["quantity"_L1].toInt()};
         const auto productName{productObject["name"_L1].toString()};
         const auto subtotal{quantity * sellPrice};
+
+        Q_ASSERT(quantity);
+        Q_ASSERT(sellPrice > 0);
         calculatedTotal_ += subtotal;
 
         detailsHtml
-            << "<tr>"
-            << td.arg(QString::number(quantity) + "x" + QString::number(sellPrice))
+            << "<tr>"_L1
+            << td.arg(QString::number(quantity) + "x"_L1 + QString::number(sellPrice))
             << td.arg(productName)
             << td.arg(QString::number(subtotal))
-            << "</tr>";
+            << "</tr>"_L1;
     }
 
     return detailsHtml;
