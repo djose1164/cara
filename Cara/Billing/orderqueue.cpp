@@ -5,10 +5,11 @@ using namespace Qt::StringLiterals;
 namespace
 {
 constexpr auto orderField{"order"_L1};
-constexpr auto commentField{"comment"_L1};
+constexpr auto commentField{"last_comment"_L1};
 constexpr auto createdAtField{"created_at"_L1};
 constexpr auto salespersonField{"salesperson"_L1};
 constexpr auto statusIdField{"order_queue_status_id"_L1};
+constexpr auto takenField{"taken"_L1};
 }
 
 namespace Billing
@@ -16,21 +17,16 @@ namespace Billing
 
 OrderQueue::OrderQueue(QObject *parent)
     : QObject{parent}
-    , comment_{}
     , bill_{new Entity::Bill{this}}
     , createdAt_{}
-    , statusId_{}
+    , status_{Status::Any}
     , statusString_{}
     , salesperson_{}
+    , lastComment_{}
 {
     statusString_.setBinding([this] {
-        return statusIdToString(static_cast<Status>(statusId_.value()));
+        return statusToString(static_cast<Status>(status_.value()));
     });
-}
-
-QBindable<QString> OrderQueue::bindableComment() const
-{
-    return &comment_;
 }
 
 void OrderQueue::setBill(Entity::Bill *newBill)
@@ -49,9 +45,9 @@ QBindable<QDateTime> OrderQueue::bindableCreatedAt() const
     return &createdAt_;
 }
 
-QBindable<int> OrderQueue::bindableStatusId() const
+QBindable<OrderQueue::Status> OrderQueue::bindableStatus()
 {
-    return &statusId_;
+    return &status_;
 }
 
 QBindable<QString> OrderQueue::bindableStatusString() const
@@ -64,7 +60,17 @@ QBindable<Entity::Salesperson> OrderQueue::bindableSalesperson() const
     return &salesperson_;
 }
 
-QString OrderQueue::statusIdToString(Status statudId)
+QBindable<bool> OrderQueue::bindableTaken()
+{
+    return &taken_;
+}
+
+QBindable<QString> OrderQueue::bindableLastComment()
+{
+    return &lastComment_;
+}
+
+QString OrderQueue::statusToString(Status statudId)
 {
     switch (statudId)
     {
@@ -115,15 +121,19 @@ std::unique_ptr<OrderQueue> OrderQueue::fromJson(const QJsonObject &json)
     };
     queue->setBill(Entity::Bill::fromMap(orderMap));
 
+    Q_ASSERT(queue->bill_->totalToPay() > 0);
+    Q_ASSERT(queue->bill_->quantityOfProducts());
     Q_ASSERT(queue->bill_->orderId() > 0);
-    queue->bindableComment().setValue(json[commentField].toString());
+
     const auto dateString{json[createdAtField].toString()};
     queue->createdAt_ = QDateTime::fromString(dateString, Qt::ISODate);
-    queue->statusId_ = json[statusIdField].toInt();
+    queue->status_ = static_cast<Status>(json[statusIdField].toInt());
     queue->salesperson_ = Entity::Salesperson::fromJson(
         QJsonDocument::fromVariant(json[salespersonField])
             .toJson()
     );
+    queue->taken_ = json[takenField].toBool();
+    queue->lastComment_ = json[commentField].toString();
     return queue;
 }
 
