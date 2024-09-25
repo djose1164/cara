@@ -122,7 +122,9 @@ void SalespersonController::takeOrder(OrderId orderId)
         if (reply->error() != QNetworkReply::NoError
             or respObj[QStringLiteral("code")].toString() != QStringLiteral("success"))
         {
-            setErrorString(reply->errorString());
+            setErrorString(
+                respObj["error"_L1].toString()
+            );
             emit errorOccurred();
             return;
         }
