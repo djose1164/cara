@@ -55,7 +55,7 @@ public slots:
 
 private:
     QProperty<int> orderId_;
-    OrderModel *details_;
+    QProperty<OrderModel *> details_;
     Entity::Payment payment_;
     OrderStatus *orderStatus_;
     QProperty<QDateTime> date_;
