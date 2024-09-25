@@ -1,9 +1,12 @@
+pragma ComponentBehavior: Bound
+
 import QtQuick
 import QtCore
 import QtQuick.Controls
 import QtQuick.Templates as T
 import Qt.labs.folderlistmodel
 import Cara.Controls
+import Cara.Utils
 
 Page {
     id: root
@@ -13,7 +16,7 @@ Page {
     title: "Facturas en PDF"
     header: TitleHeader {
         title: root.title
-        onBackClicked: stackView.pop()
+        onBackClicked: root.stackView.popCurrentItem()
         btnLoader.sourceComponent: MoreVertButton {
             id: menuBtn
             onClicked: menu.open()
@@ -65,7 +68,7 @@ Page {
                     Image {
                         id: img
                         source: "pdf-icon-colored.svg"
-                        sourceSize: "32x32"
+                        sourceSize: Qt.size(32, 32)
                     }
 
                     Label {
@@ -90,8 +93,8 @@ Page {
                 }
 
                 SwipeDelegate.onClicked: {
-                    print(path);
-                    if (!fileUtils.removeFile(path))
+                    print(control.path);
+                    if (!fileUtils.removeFile(control.path))
                         print("Couldn't remove file.");
                 }
             }
