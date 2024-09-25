@@ -99,7 +99,7 @@ void BillBusiness::fetchUnpaidBills()
 
 void BillBusiness::fetchOrdersInQueue(SalespersonId spId)
 {
-    if (spId < 1)
+    if (spId < -1 or spId == 0)
     {
         const auto errorString{QStringLiteral("BillBusiness::fetchOrdersInQueue: Invalid spId: %1")
                                    .arg(QString::number(spId))};
