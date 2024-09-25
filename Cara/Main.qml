@@ -92,6 +92,11 @@ ApplicationWindow {
                 appStack.replace("qrc:/errors/ErrorPage.qml", {message});
             }
             onErrorOccurred: message => {
+                if (NetworkInformation.reachability !== NetworkInformation.Reachability.Disconnected) {
+                    stackView.replaceCurrentItem(app.mainPage);
+                    console.log("No internet: NetworkInformation.Reachability.Disconnected");
+                    return;
+                }
                 console.log("onErrorOccurred: "+message);
                 appStack.replace("qrc:/errors/ErrorPage.qml", {message});
             }
@@ -131,10 +136,6 @@ ApplicationWindow {
 
     function setup() {
         LoginManager.session = UserSession.session;
-        if (NetworkInformation.reachability !== NetworkInformation.Reachability.Online) {
-            stackView.replaceCurrentItem(mainPage);
-            return;
-        }
         healthResource.readStatus();
     }
 
