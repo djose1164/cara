@@ -1,3 +1,5 @@
+pragma ComponentBehavior: Bound
+
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
@@ -68,6 +70,15 @@ Page {
                 stock: root.inStock
                 favoriteProduct: favoriteResource
                 productForSale: root.product
+                buyButtonState: {
+                    if (internal.isInCart)
+                        return ShopProduct.AlreadyInCart;
+                    else if (root.inStock === 0)
+                        return ShopProduct.OutOfStocks;
+                    else
+                        return ShopProduct.Ok;
+                }
+
                 Layout.fillWidth: true
                 onBuyClicked: product => handleBuyClicked(product)
             }
@@ -99,7 +110,7 @@ Page {
                 }
             }
 
-            Item { height: 1 }
+            Item {}
         }
     }
 
@@ -178,6 +189,9 @@ Page {
         readonly property int caraId: 1
         readonly property string titleTemplate: `<b>%1</b><br><font size="2">%2</font>`
         readonly property int margin: Math.max(scrollView.effectiveScrollBarWidth, 10)
+        readonly property bool isInCart: CartController
+                                            .cartedProductIds
+                                            .indexOf(root.productId) > -1
         property string shortDescription
         property favorite fav
     }
