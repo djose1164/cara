@@ -20,6 +20,7 @@ class CartController : public QObject
     Q_PROPERTY(EntityLayer::OrderEntity *order READ order WRITE setOrder NOTIFY orderChanged)
     Q_PROPERTY(Model::OrderModel *model READ model WRITE setModel NOTIFY modelChanged)
     Q_PROPERTY(int totalToPay READ totalToPay NOTIFY totalToPayChanged)
+    Q_PROPERTY(QList<int> cartedProductIds READ cartedProductIds NOTIFY cartedProductIdsChanged FINAL)
 
 public:
     explicit CartController(QObject *parent = nullptr);
@@ -29,6 +30,9 @@ public:
     
     Q_INVOKABLE bool isProductInCart(const EntityLayer::Product &product) const;
     Q_INVOKABLE int totalToPay() const;
+
+    QList<int> cartedProductIds() const;
+    void setCartedProductIds(const QList<int> &newCartedProductIds);
 
 public slots:
     void setOrder(EntityLayer::OrderEntity *const order);
@@ -52,8 +56,12 @@ signals:
     void totalToPayChanged();
     void errorOccurred(const QString &errorString);
 
+    void cartedProductIdsChanged();
+
 private:
     void prepareOrder(const Entity::Customer &buyer);
+    void appendProductId(int productId);
+    void removeProductId(int productId);
     
     AbstractResource::Api api_;
     AbstractResource::Manager manager_;
@@ -61,6 +69,7 @@ private:
     Model::OrderModel *model_;
 
     int totalToPay_;
+    QList<int> cartedProductIds_; // Holds the product's ids stored in the cart.
 };
 }
 

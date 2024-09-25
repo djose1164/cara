@@ -81,12 +81,15 @@ void CartController::addtoCart(const EntityLayer::Product &product)
     detail->setProduct(product);
 
     model_->append(detail);
+    appendProductId(product.productId());
 }
 
 void CartController::removeFromCart(const int index)
 {
+    const int productId{model_->get(index)->product().productId()};
     model_->remove(index);
     emit totalToPayChanged();
+    removeProductId(productId);
 }
 
 void CartController::checkout(const Entity::Customer &buyer)
@@ -129,5 +132,39 @@ void CartController::prepareOrder(const Entity::Customer &buyer)
     order_->setCustomer(buyer);
 
     order_->setDetails(model_->toJson());
+}
+
+void CartController::appendProductId(int productId)
+{
+    if (productId < 1)
+        return;
+    cartedProductIds_.append(productId);
+    emit cartedProductIdsChanged();
+}
+
+void CartController::removeProductId(int productId)
+{
+    if (productId < 1)
+        return;
+    const qsizetype deletedItems = cartedProductIds_.removeIf(
+        [=](int itemId)
+        {
+            return itemId == productId;
+        });
+    Q_ASSERT(deletedItems == 1);
+    emit cartedProductIdsChanged();
+}
+
+QList<int> CartController::cartedProductIds() const
+{
+    return cartedProductIds_;
+}
+
+void CartController::setCartedProductIds(const QList<int> &newCartedProductIds)
+{
+    if (cartedProductIds_ == newCartedProductIds)
+        return;
+    cartedProductIds_ = newCartedProductIds;
+    emit cartedProductIdsChanged();
 }
 }
