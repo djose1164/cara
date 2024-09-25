@@ -191,10 +191,12 @@ BackPage {
         onOrderTook: {
             processingIndicator.close();
             root.model.taken = true;
+            root.model.queueStatusId = OrderQueue.Assigned;
             takeMessage.open();
         }
         onOrderAbandoned: {
             root.model.taken = false;
+            root.model.queueStatusId = OrderQueue.Unassigned;
             internal.operation = BillDetailsPage.OrderAbandoned;
             processingIndicator.close();
             abandonMessage.open();
@@ -206,7 +208,8 @@ BackPage {
         onErrorOccurred: {
             processingIndicator.close();
             try {
-                errorMessage.text = JSON.parse(data).message;
+                errorMessage.title = JSON.parse(data).message;
+                errorMessage.text = JSON.parse(data).error;
             } catch (err) {
                 errorMessage.text = data;
             } finally {
