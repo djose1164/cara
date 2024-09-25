@@ -24,4 +24,8 @@ Item {
     function post(endpoint: string, obj) {
         rest.post(endpoint, obj);
     }
+
+    function patch(endpoint: string, obj: var) {
+        rest.patch(endpoint, obj);
+    }
 }
