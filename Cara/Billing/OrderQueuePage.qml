@@ -183,8 +183,8 @@ Page {
         anchors.fill: parent
         anchors.topMargin: 5
         delegate: QueueDelegate {
-            height: 250
             width: listView.width
+            height: 220
             onClicked: stackView.pushItem("qrc:/qt/qml/Cara/Billing/BillDetailsPage.qml", {
                                               model, mode: BillDetailsPage.QueueMode, proxyModel: queueProxy
                                           });
@@ -252,7 +252,7 @@ Page {
     function fetchOrdersInQueue() {
         internal.busy = true;
         setFetchingState();
-        billBusiness.fetchOrdersInQueue(root.salespersonId);
+        billBusiness.fetchOrdersInQueue(-1);
     }
 
     function fetchCustomerBills(customerId: int) {
