@@ -15,8 +15,8 @@ Pane {
         Label {
             id: totalLbl
             Layout.alignment: Qt.AlignHCenter
-            text: `Total: RD$${total}`
-            font.pointSize: 12
+            text: `Total: <b>RD$${total}</b>`
+            font.pointSize: 15
         }
 
         RoundButton {
