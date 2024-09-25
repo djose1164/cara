@@ -97,6 +97,7 @@ qt_add_qml_module(BillingLib
         cancelled-order.png
         assigned.png
         commission.png
+        order-completed.svg
     DEPENDENCIES
         QtQuick Utils Product Customer
         SOURCES commissionrepository.h
