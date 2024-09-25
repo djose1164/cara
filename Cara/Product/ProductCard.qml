@@ -77,10 +77,8 @@ Rectangle {
                 height: spinBox.height
                 spacing: spinBox.spacing
                 shouldDelete: spinBox.value === 1
-                color: spinBox.down.hovered ? spinBox.Material.listHighlightColor : "white"
+                color: spinBox.down.hovered || spinBox.down.pressed ? spinBox.Material.listHighlightColor : "white"
             }
-
-            onValueChanged: if (spinBox.value === 0) root.deleted()
         }
     }
 
@@ -107,6 +105,7 @@ Rectangle {
                 source: downIndicator.shouldDelete ? "qrc:/icons/trash-can-outline.svg"
                                                    : "remove.svg"
                 sourceSize: Qt.size(24, 24)
+                opacity: enabled ? 1 : .3
             }
         }
     }
