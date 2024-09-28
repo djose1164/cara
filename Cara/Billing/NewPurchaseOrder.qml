@@ -76,7 +76,8 @@ Page {
 
             RedirectLabel {
                 id: dateRedirectLbl
-                title: datePicker.dateString
+                title: datePicker.isValid ? datePicker.dateString
+                                          : "Seleccionar fecha"
                 Layout.fillWidth: true
                 onClicked: datePicker.open()
             }

@@ -7,10 +7,10 @@ Dialog {
 
     property date selectedDate
     readonly property bool isValid: !isNaN(root.selectedDate)
-    readonly property string dateString: !root.isValid ? "Seleccionar fecha"
-                                                       : root.selectedDate
-                                                             .toLocaleDateString()
+    readonly property string dateString: root.selectedDate.toLocaleDateString()
 
+    implicitWidth: ApplicationWindow.window.width * .9
+    implicitHeight: ApplicationWindow.window.height * .7
     anchors.centerIn: Overlay.overlay
     locale: Qt.locale()
     title: "Selecciona una fecha"
