@@ -24,6 +24,8 @@ qt_add_qml_module(BillingLib
         BillViewChooser.qml
         BillingSettings.qml
         BillingSettingsItem.qml
+        CommissionItemsPage.qml
+        CommissionPage.qml
         CreditedView.qml
         CustomerBillDelegate.qml
         CustomerBills.qml
@@ -41,11 +43,17 @@ qt_add_qml_module(BillingLib
         PaymentStatusFilter.qml
         PdfBillListing.qml
         ProductSale.qml
-        SalespersonBillPage.qml
-        SalesPage.qml
-        QueueDelegate.qml
         ProfitProductDelegate.qml
+        ProviderAPI.qml
+        ProviderComboBox.qml
+        ProviderForm.qml
+        Providers.qml
+        ProvinceComboBox.qml
+        QueueDelegate.qml
+        SalesPage.qml
+        SalespersonBillPage.qml
     SOURCES
+        bill.h bill.cpp
         billrepository.h billrepository.cpp
         business/abstractdocument.h business/abstractdocument.cpp
         business/billbusiness.h business/billbusiness.cpp
@@ -57,32 +65,35 @@ qt_add_qml_module(BillingLib
         business/paymentcontroller.h business/paymentcontroller.cpp
         business/pdforderprinter.h business/pdforderprinter.cpp
         business/purchaseorder.h business/purchaseorder.cpp
+        calculator.h calculator.cpp
+        commission.h commission.cpp
+        commissionmodel.h commissionmodel.cpp
+        commissionrepository.h
         costcalculator.h costcalculator.cpp
         data/paymentresource.h data/paymentresource.cpp
         data/restorderrepository.h data/restorderrepository.cpp
         detailsentity.h detailsentity.cpp
         document.h document.cpp
-        bill.h bill.cpp
-        orderentity.h orderentity.cpp
-        payment.h payment.cpp
         ibillrepository.h ibillrepository.cpp
         model/abstractsortfiltermodel.h model/abstractsortfiltermodel.cpp
         model/billmodel.h model/billmodel.cpp
         model/billproxymodel.h model/billproxymodel.cpp
         model/ordermodel.h model/ordermodel.cpp
+        orderentity.h orderentity.cpp
+        orderqueue.h orderqueue.cpp
+        orderqueuemodel.h orderqueuemodel.cpp
         orderstatus.h orderstatus.cpp
         ordertemplate.h ordertemplate.cpp
-        queueproxymodel.h queueproxymodel.cpp
-        uniquefilenamegenerator.h uniquefilenamegenerator.cpp
-        orderqueuemodel.h orderqueuemodel.cpp
-        orderqueue.h orderqueue.cpp
-        queuerepository.h
-        salemodel.h salemodel.cpp
-        sale.h sale.cpp
-        salerepository.h
-        restsalerepository.h restsalerepository.cpp
-        calculator.h calculator.cpp
+        payment.h payment.cpp
         profitcalculator.h profitcalculator.cpp
+        queueproxymodel.h queueproxymodel.cpp
+        queuerepository.h
+        restcommissionrepository.h restcommissionrepository.cpp
+        restsalerepository.h restsalerepository.cpp
+        sale.h sale.cpp
+        salemodel.h salemodel.cpp
+        salerepository.h
+        uniquefilenamegenerator.h uniquefilenamegenerator.cpp
     RESOURCES
         order-model.html style.css
         pdf-icon.svg
@@ -98,14 +109,11 @@ qt_add_qml_module(BillingLib
         assigned.png
         commission.png
         order-completed.svg
+        paid.png
+        unpaid.png
     DEPENDENCIES
         QtQuick Utils Product Customer
-        SOURCES commissionrepository.h
-        SOURCES restcommissionrepository.h restcommissionrepository.cpp
-        SOURCES commissionmodel.h commissionmodel.cpp
-        SOURCES commission.h commission.cpp
-        QML_FILES CommissionPage.qml
-        QML_FILES CommissionItemsPage.qml
+
 )
 
 target_include_directories(BillingLib
