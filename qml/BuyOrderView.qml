@@ -1,7 +1,6 @@
 import QtQuick
 import QtQuick.Controls
 import "qrc:/orders"
-import "qrc:/provider"
 import Cara.Billing
 
 ListView {

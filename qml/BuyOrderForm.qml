@@ -4,7 +4,6 @@ import QtQuick.Layouts
 import Cara.User
 import Cara.Salesperson
 import Cara.Controls
-import "qrc:/provider"
 import Cara.Billing
 import Cara.Product
 
