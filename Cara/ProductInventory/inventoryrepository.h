@@ -5,7 +5,7 @@
 
 #include <QQmlEngine>
 
-namespace Data
+namespace ProductInventory
 {
 class InventoryRepository : public Business::IInventoryRepository
 {

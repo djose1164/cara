@@ -13,6 +13,9 @@ find_package(Qt6 6.7 REQUIRED
 qt_standard_project_setup(REQUIRES 6.7)
 qt_policy(
     SET QTP0001 NEW
+)
+
+qt_policy(
     SET QTP0004 NEW
 )
 

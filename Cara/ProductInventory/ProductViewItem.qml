@@ -1,30 +1,30 @@
+pragma ComponentBehavior: Bound
+
 import QtQuick
 import QtQuick.Controls
 import QtQml.Models
-import Cara.Inventory
 import Cara.Product
 import Cara.Controls
+import Cara.ProductInventory
 
 Item {
     id: root
 
     required property ProductModel selectedProducts
     required property string searchText
-    property alias productModel: productModel
+    readonly property ProductModel productModel: ProductInventoryController.inventory
 
     states: [
         State {
             name: "fetching"
             PropertyChanges {
-                target: busyIndicator
-                running: true
+                busyIndicator.running: true
             }
         },
         State {
             name: "empty"
             PropertyChanges {
-                target: errorPane
-                visible: true
+                errorPane.visible: true
             }
         }
     ]
@@ -55,7 +55,7 @@ Item {
 
     ItemSelectionModel {
         id: selectionModel
-        model: productModel
+        model: root.productModel
         onSelectedIndexesChanged: {
             internal.isAcceptBtnEnabled = selectedIndexes.length > 0;
         }
@@ -88,23 +88,20 @@ Item {
 
     ProductProxyModel {
         id: proxyModel
-        sourceModel: productModel
-        productName: searchText
+        sourceModel: root.productModel
+        productName: root.searchText
     }
 
-    ProductModel {
-        id: productModel
-        repository: inventoryRepository
-        onUpdated: {
-            if (count === 0)
+    Connections {
+        target: ProductInventoryController.catalog
+
+        function onUpdated() {
+            console.log("ProductInventoryController.catalog: Model updated")
+            if (root.productModel.count === 0)
                 root.state = "empty";
             else
                 root.state = "";
         }
-    }
-
-    InventoryRepository {
-        id: inventoryRepository
     }
 
     Component {
@@ -133,10 +130,14 @@ Item {
             height: 100
             width: listView.width
             onClicked: {
-                const selectedById = productModel.find(productId);
+                const selectedById = root.productModel.find(productId);
                 selectionModel.select(selectedById, ItemSelectionModel.Select | ItemSelectionModel.Toggle);
             }
         }
+    }
+
+    SellerProductRepositoryREST {
+        id: sellerProductRepository
     }
 
     QtObject {
@@ -145,7 +146,7 @@ Item {
     }
 
     function removeSelectionOf(productId: int) {
-        const idx = productModel.index(indexOf(productId), 0);
+        const idx = root.productModel.index(indexOf(productId), 0);
         if (!idx.valid) {
             print("The idx is not valid");
             return;
@@ -158,13 +159,16 @@ Item {
     }
 
     function indexOf(productId: int): int {
-        for (let i = 0; i < productModel.count; ++i)
+        for (let i = 0; i < root.productModel.count; ++i)
             if (productModel.get(i).productId === productId)
                 return i;
         return -1;
     }
 
     function updateModel(salespersonId: int) {
-        productModel.update(salespersonId);
+        sellerProductRepository.sellerId = salespersonId;
+        const inventory = ProductInventoryController.inventory;
+        inventory.repository = sellerProductRepository;
+        inventory.update();
     }
 }

@@ -1,7 +1,7 @@
 import QtQuick
 import QtQuick.Controls
 import Cara.Utils
-import Cara.Inventory
+import Cara.ProductInventory
 
 Drawer {
     id: root

@@ -1,7 +1,7 @@
 #include "productproxymodel.h"
 #include "productmodel.h"
 
-namespace Model
+namespace ProductInventory
 {
 ProductProxyModel::ProductProxyModel(QObject *parent)
     : QSortFilterProxyModel{parent}

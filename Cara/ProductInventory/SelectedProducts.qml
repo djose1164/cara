@@ -1,13 +1,17 @@
+pragma ComponentBehavior: Bound
+
 import QtQuick
 import Cara.Controls
 import Cara.Product
-import Cara.Inventory
+import Cara.ProductInventory
 
 Item {
     id: root
 
     property alias model: productModel
     property alias delegate: listView.delegate
+    readonly property alias implicitViewWidth: listView.width
+    readonly property alias implicitViewHeight: listView.height
 
     signal redirectClicked
     signal deleteClicked(index: int, productId: int)
@@ -29,15 +33,23 @@ Item {
                 required productName
                 required productId
                 required imageUrl
+                required index
                 required property int price
                 required property var model
-                required property int index
 
                 width: listView.width
                 productPrice: price
                 total: price * model.selectedQty
                 spinBox.onValueChanged: productCard.model.selectedQty = spinBox.value
-                onDeleted: deleteClicked(index, productId)
+                //onDeleted: deleteClicked(index, productId)
+            }
+
+            Connections {
+                target: listView.currentItem
+
+                function onDeleted(index: int, productId: int) {
+                    root.deleteClicked(index, productId);
+                }
             }
         }
     }

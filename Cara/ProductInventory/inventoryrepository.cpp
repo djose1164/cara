@@ -1,5 +1,5 @@
 #include "inventoryrepository.h"
-#include "Network/networkrequestsingleton.h"
+#include "networkrequestsingleton.h"
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
 #include <QJsonDocument>
@@ -14,7 +14,7 @@ constexpr auto resourceIdentification{"/%1"_L1};
 constexpr auto inventoriesField{"inventories"_L1};
 }
 
-namespace Data
+namespace ProductInventory
 {
 
 InventoryRepository::InventoryRepository(QObject *parent)

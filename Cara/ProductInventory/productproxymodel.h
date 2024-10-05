@@ -5,7 +5,7 @@
 #include <QQmlEngine>
 #include <QSortFilterProxyModel>
 
-namespace Model
+namespace ProductInventory
 {
 class ProductProxyModel : public QSortFilterProxyModel
 {
