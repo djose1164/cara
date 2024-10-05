@@ -1,6 +1,10 @@
+pragma ComponentBehavior: Bound
+
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
+import QtQuick.Dialogs
+import QtQuick.Templates as T
 import Cara.Controls
 import Cara.Product
 
@@ -22,6 +26,7 @@ BackPage {
     }
 
     component PriceHistoryDelegate: Item {
+        id: priceDelegate
         required property var model
         required property int price
         required property date startDate
@@ -29,23 +34,28 @@ BackPage {
 
         width: listView.width
         implicitHeight: 100
+        onIsCurrentChanged: if (isCurrent) internal.latestPrice = priceDelegate.price
 
         Rectangle {
             anchors.fill: parent
-            color: isCurrent ? "lightyellow" : "transparent"
+            color: priceDelegate.isCurrent ? "lightyellow" : "transparent"
         }
 
         ColumnLayout {
             anchors.fill: parent
             anchors.margins: 10
+
             Label {
-                text: `Price: ${price}`
+                text: `Price: ${priceDelegate.price}`
             }
+
             Label {
-                text: `Fecha de inicio: ${startDate.toLocaleDateString()}`
+                text: `Fecha de inicio: ${priceDelegate.startDate.toLocaleDateString()}`
             }
+
             Label {
-                text: `Fecha final: ${isCurrent ? "Precio actual" : model.thruDate.toLocaleDateString()}`
+                text: `Fecha final: ${priceDelegate.isCurrent ? "Precio actual"
+                                                              : priceDelegate.model.thruDate.toLocaleDateString()}`
             }
         }
     }
@@ -58,6 +68,10 @@ BackPage {
             repository: RestPriceHistoryRepository {
                 id: priceHistoryRepository
                 priceType: "sell"
+            }
+            onErrorOccurred: (error, errorString) => {
+                const errorName = root._errorCodeToString();
+                errorMessage.openWith(`Error code: ${error}<br>Error: ${errorName}`, errorString);
             }
         }
         delegate: PriceHistoryDelegate {}
@@ -80,28 +94,46 @@ BackPage {
         }
     }
 
-    Dialog {
+    PriceDialog {
         id: newPriceDialog
-        width: root.width * .8
-        height: root.height/2
-        anchors.centerIn: parent
         title: "Establecer nuevo precio"
-        standardButtons: Dialog.Ok | Dialog.Cancel
+        oldPrice: internal.latestPrice
         onAccepted: {
-            const newPrice = parseInt(newPriceField.text);
-            if (newPrice < 0) {
+            if (newPriceDialog.newPrice < 0) {
+                errorMessage.openWith("Debes ingresar un precio mayor a 0.");
                 console.error("The inserted new price is less than 0.");
                 return;
             }
 
-            priceHistoryRepository.addNewPrice({productId, price: newPrice, price_type: "sell"});
+            priceHistoryRepository.addNewPrice({productId, price: newPriceDialog.newPrice,
+                                                priceType: "sell"});
         }
+    }
 
-        TextField {
-            id: newPriceField
-            width: newPriceDialog.availableWidth
-            anchors.verticalCenter: parent.verticalCenter
-            placeholderText: "Nuevo precio RD$"
+    MessageDialog {
+        id: errorMessage
+        title: "Error"
+
+        function openWith(text: string, detail: string) {
+            errorMessage.text = text;
+            errorMessage.detailedText = detail;
+            errorMessage.open()
+        }
+    }
+
+    QtObject {
+        id: internal
+        property double latestPrice
+    }
+
+    function _errorCodeToString(errorCode: int): string {
+        switch (errorCode) {
+        case PriceHistory.FailedToAddNewPrice:
+            return "Error al añadir nuevo precio";
+        case PriceHistory.FailedToFetchPriceHistory:
+            return "Error al leer historico de precios";
+        default:
+            return "Error desconocido: " + errorCode;
         }
     }
 }

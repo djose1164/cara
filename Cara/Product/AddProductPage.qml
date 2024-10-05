@@ -1,11 +1,13 @@
+pragma ComponentBehavior: Bound
+
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Dialogs
 import QtQuick.Layouts
-import Cara.Shopping
 import Cara.Product
-import Cara.Inventory
-import "product_helper.js" as ProductJS
+import Cara.ProductInventory
+import Cara.Controls
+import Cara.Billing
 
 ProductForm {
     id: root
@@ -25,49 +27,48 @@ ProductForm {
 
     buttonComponent: AddPhotoBtn {}
     pricingLoader.sourceComponent: PricingItem {}
+    supplierLoader.sourceComponent: BuyPriceSupplierItem {}
 
     onPictureAccepted: filename => root.handlePictureSelected(filename)
 
     component AddPhotoBtn : ToolButton {
         icon.source: "add_a_photo.svg"
-        onClicked: imgPicker.open()
+        onClicked: root.imgPicker.open()
     }
 
     component PricingItem : TextField {
         id: priceSell
         placeholderText: "Precio de venta"
         inputMethodHints: Qt.ImhDigitsOnly
-
-        function toJson() {
-            return [
-                {
-                    price: parseInt(priceSell.text),
-                    price_type: "sell"
-                }
-            ];
-        }
     }
 
-    CatalogueRepository {
-        id: catalogueRepository
-        onProductAdded: data => {
-            popup.close();
-            const newProduct = ProductManager.productFromJson(JSON.parse(data).product);
-            // ProductManager.modelAppend(newProduct);
-            root.productModel.append(newProduct);
-            successDialog.open();
+    component BuyPriceSupplierItem : GroupBox {
+        title: "Suplidor y precio de compra"
+
+        ColumnLayout {
+            anchors.fill: parent
+            spacing: 20
+
+            ProviderComboBox {
+                id: supplierCB
+                Layout.fillWidth: true
+
+            }
+
+            NumberTextField {
+                id: priceField
+                text: root.model.supplierPrice
+                placeholderText: "Precio de compra"
+                Layout.fillWidth: true
+            }
         }
 
-        onPictureAdded: data => {
-            popup.state = "success";
-            console.log(data);
-            const pictures = ProductJS.getFixedImagesArr(JSON.parse(data).images);
-
-            console.log(JSON.stringify(pictures, null, 2))
-            product.images = pictures;
+        function toJson() {
+            return {
+                supplierId: supplierCB.currentValue,
+                supplierPrice: parseInt(priceField.text)
+            }
         }
-
-        onErrorOccurred: err => root.errorHandler(err)
     }
 
     MessageDialog {
@@ -76,6 +77,15 @@ ProductForm {
         text: "¡El producto ha sido agregado al catálogo exitosamente!"
         onAccepted: {
             root.myStack.popCurrentItem();
+        }
+    }
+
+    Connections {
+        target: ProductInventoryController.catalog
+
+        function onAdded() {
+            root.popup.close();
+            successDialog.open();
         }
     }
 
@@ -90,11 +100,11 @@ ProductForm {
             validate();
             openBusyPopup();
             const productFormJson = root.toJson();
-            productFormJson["price_history"] = pricingItem.toJson();
+            productFormJson.price = parseInt((pricingItem as TextField).text);
+            Object.assign(productFormJson, supplierItem.toJson());
             print(JSON.stringify(productFormJson, null, 2));
 
-            //const productJson = JSON.parse(newProduct.toJson());
-            catalogueRepository.addProduct(productFormJson);
+            ProductInventoryController.catalog.addProduct(productFormJson);
         } catch (err) {
             popup.text = err;
             popup.state = "error";
@@ -114,7 +124,7 @@ ProductForm {
 
     function validate() {
         const productFormJson = root.toJson();
-        const categoryId = productFormJson.category_id;
+        const categoryId = productFormJson.categoryId;
         if (isNaN(categoryId) || categoryId < 1)
             throw "Necesitas seleccionar una categoría."
     }

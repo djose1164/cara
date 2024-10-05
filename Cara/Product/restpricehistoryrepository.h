@@ -32,6 +32,8 @@ private:
     void priceHistoryFetched(QRestReply &reply) noexcept;
 
 private:
+    static void validateMap(const QVariantMap &map);
+
     QRestAccessManager *manager_;
     std::shared_ptr<QNetworkRequestFactory> api_;
     QProperty<QString> priceType_;

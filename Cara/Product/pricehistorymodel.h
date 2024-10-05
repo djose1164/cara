@@ -27,8 +27,6 @@ public:
         ThruDateRole
     };
 
-    Q_ENUM(Product::PriceHistoryRepository::Error)
-
     explicit PriceHistoryModel(QObject *parent = nullptr);
 
     QBindable<QString> bindableErrorString();

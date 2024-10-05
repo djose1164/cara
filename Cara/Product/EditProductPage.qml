@@ -1,3 +1,5 @@
+pragma ComponentBehavior: Bound
+
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
@@ -27,7 +29,7 @@ ProductForm {
         id: rowLayout
         ToolButton {
             icon.source: "add_a_photo.svg"
-            onClicked: imgPicker.open()
+            onClicked: root.imgPicker.open()
         }
 
         MoreVertButton {
@@ -61,7 +63,7 @@ ProductForm {
             anchors.fill: parent
 
             Label {
-                text: `<span style="font-size: 11pt;">RD$</span><b>${model.price}</b>`
+                text: `<span style="font-size: 11pt;">RD$</span><b>${root.model.price}</b>`
                 horizontalAlignment: Label.AlignHCenter
                 textFormat: Label.RichText
                 font.pointSize: 14
@@ -80,7 +82,7 @@ ProductForm {
     CatalogueRepository {
         id: catalogueRepository
         onPictureAdded: data => {
-            popup.state = "success";
+            root.popup.state = "success";
             console.log(data);
             const pictures = ProductJS.getFixedImagesArr(JSON.parse(data).images);
 
@@ -88,11 +90,11 @@ ProductForm {
             root.model.images = pictures;
         }
         onProductEdited: {
-            popup.state = "success";
+            root.popup.state = "success";
             updateCatalogue();
         }
         onPictureDeleted: {
-            popup.state = "success";
+            root.popup.state = "success";
             const filteredImages = model.images.filter(item => item.id !== internal.pictureId);
             console.log("to exclude: "+internal.pictureId)
             console.log(JSON.stringify(filteredImages))
@@ -104,7 +106,7 @@ ProductForm {
     InventoryAPI {
         id: inventoryAPI
         onFetchedByAdminIdAndProductId: inventory => {
-            myStack.push("qrc:/inventory/InventoryForm.qml", {
+            root.myStack.push("qrc:/inventory/InventoryForm.qml", {
                 inventoryId: inventory.id,
                 product: inventory.product,
                 warehouse: inventory.warehouse,
@@ -177,12 +179,6 @@ ProductForm {
         } catch (err) {
             console.log(err);
             popup.state = "error";
-        }
-    }
-
-    function getProduct(): product {
-        return {
-
         }
     }
 }

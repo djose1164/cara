@@ -19,6 +19,8 @@ Page {
     property alias actionButtonComponent: actionButtonLoader.sourceComponent
     property alias pricingLoader: pricingLoader
     property alias imgPicker: imgPicker
+    readonly property alias supplierLoader: supplierLoader
+    readonly property alias supplierItem: supplierLoader.item
     readonly property alias popup: popup
     readonly property alias pricingItem: pricingLoader.item
     readonly property alias nameField: nameField
@@ -26,20 +28,59 @@ Page {
     readonly property alias categoryCB: categoryCB
     readonly property alias same: internal.same
 
-
     signal pictureAccepted(selectedPicture: url)
     signal deletePictureClicked(index: int)
+    signal refreshRequested(productId: int)
 
     header: TitleHeader {
         title: root.title
         btnLoader.sourceComponent: root.buttonComponent
-        onBackClicked: myStack.pop()
+        onBackClicked: root.myStack.pop()
     }
 
     Component.onCompleted: {
         internal.setOldProperties();
-        //console.log("ProductForm: "+model.categoryId);
-        console.log("Productname:",root.model.productName)
+    }
+
+    component SupplierInfoBox: GroupBox {
+        title: "Suplidor"
+        Layout.fillWidth: true
+
+        ColumnLayout {
+            anchors.fill: parent
+            spacing: 10
+
+            Label {
+                text: `ID: <b>${root.model.supplierId}</b>`
+                Layout.fillWidth: true
+            }
+
+            Label {
+                text: `Nombre: <b>${root.model.supplierName}</b>`
+                Layout.fillWidth: true
+            }
+
+            Label {
+                text: `Precio: <b>RD$${root.model.supplierPrice}</b>`
+                Layout.fillWidth: true
+            }
+
+            Button {
+                text: "Actualizar"
+                Layout.fillWidth: true
+                onClicked: {
+                    root.myStack.pushItem(
+                        Qt.resolvedUrl("UpdateSupplierView.qml"),
+                        {model: root.model}
+                    );
+                    const currentItem = root.myStack.currentItem;
+                    currentItem.refreshRequested.connect(productId => {
+                        console.log("Emittig refreshRequested from ProductForm. productId: "+productId);
+                        root.refreshRequested(productId);
+                    });
+                }
+            }
+        }
     }
 
     StackLayout {
@@ -55,29 +96,31 @@ Page {
             ColumnLayout {
                 anchors.centerIn: parent
                 width: root.width*.9
-                spacing: 10
+                spacing: 20
 
                 ProductItem {
                     id: productItem
-                    images: model.images
-                    deleteBtn.visible: model.images.length > 1
+                    images: root.model.images
+                    deleteBtn.visible: root.model.images.length > 1
                     favoriteBtn.visible: false
                     Layout.fillWidth: true
                     Layout.fillHeight: true
                     onDeletePictureClicked: index => root.deletePictureClicked(index)
 
                     Binding on images {
-                        when: model.images.length === 0
+                        when: root.model.images.length === 0
                         value: [{imageUrl: internal.picturePlaceHolder}]
                     }
                 }
 
                 MenuSeparator { Layout.alignment: Qt.AlignCenter }
 
-                FileDialog {
-                    id: imgPicker
-                    currentFolder: StandardPaths.standardLocations(StandardPaths.PicturesLocation)[0]
-                    onAccepted: root.pictureAccepted(imgPicker.selectedFile)
+                TextField {
+                    visible: root.model.productId > 0
+                    enabled: false
+                    placeholderText: "Product ID"
+                    text: root.model.productId
+                    Layout.fillWidth: true
                 }
 
                 TextField {
@@ -91,6 +134,12 @@ Page {
                     id: descriptionField
                     text: root.model.description
                     placeholderText: "Descripcion del producto"
+                    Layout.fillWidth: true
+                }
+
+                Loader {
+                    id: supplierLoader
+                    sourceComponent: SupplierInfoBox {}
                     Layout.fillWidth: true
                 }
 
@@ -109,8 +158,16 @@ Page {
                     id: actionButtonLoader
                     Layout.fillWidth: true
                 }
+
+                Item {}
             }
         }
+    }
+
+    FileDialog {
+        id: imgPicker
+        currentFolder: StandardPaths.standardLocations(StandardPaths.PicturesLocation)[0]
+        onAccepted: root.pictureAccepted(imgPicker.selectedFile)
     }
 
     StatusPopup {
@@ -142,9 +199,14 @@ Page {
         const formJson = {
             name: nameField.text,
             description: descriptionField.text,
-            category_id: categoryCB.currentValue,
+            categoryId: categoryCB.currentValue,
         };
-        if (model.images.length > 0)
+
+        const productImages = model.images;
+        if (productImages[0].imageUrl.toString() === internal.picturePlaceHolder.toString())
+            return formJson;
+
+        if (productImages.length > 0)
             formJson.images = model.images;
         return formJson;
     }
