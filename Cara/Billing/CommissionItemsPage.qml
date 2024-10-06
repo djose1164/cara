@@ -1,4 +1,5 @@
 pragma ComponentBehavior: Bound
+
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
@@ -10,6 +11,8 @@ BackPage {
 
     required property CommissionModel repository
     required property var model
+
+    title: "Detalles"
 
     component CardBox : GroupBox {
         id: cardBox
@@ -23,8 +26,8 @@ BackPage {
             anchors.fill: parent
             source: "qrc:/qt/qml/Cara/Customer/person.svg"
             text: internal.cardTemplate
-                                .arg(cardBox.name)
-                                .arg(cardBox.identifier)
+            .arg(cardBox.name)
+            .arg(cardBox.identifier)
         }
     }
 
@@ -44,14 +47,14 @@ BackPage {
 
             CardBox {
                 title: "Info del vendedor"
-                name: model.sellerName
-                identifier: model.sellerId
+                name: root.model.sellerName
+                identifier: root.model.sellerId
             }
 
             CardBox {
                 title: "Info del administrador"
-                name: model.adminName
-                identifier: model.adminId
+                name: root.model.adminName
+                identifier: root.model.adminId
             }
 
             GroupBox {
@@ -63,14 +66,16 @@ BackPage {
 
                     Label {
                         text: `
-                            <h3>ID:</h3>
-                            ${internal.fontTag.arg(model.commissionId)}
-                            <h3>% de ganancia:</h3>
-                            ${internal.fontTag.arg(model.rate + "%")}
-                            <h3>Monto:</h3>
-                            ${internal.fontTag.arg("RD$" + model.amount)}
-                            <h3>Fecha de creación:</h3>
-                            ${internal.fontTag.arg(model.createdAt.toLocaleString())}
+                        <h3>ID:</h3>
+                        ${internal.fontTag.arg(root.model.commissionId)}
+                        <h3>Total ganancia neta:</h3>
+                        ${internal.fontTag.arg("RD$" + model.grossProfit)}
+                        <h3>% a descontar:</h3>
+                        ${internal.fontTag.arg(model.rate + "%")}
+                        <h3>Monto a pagar:</h3>
+                        ${internal.fontTag.arg("RD$" + model.amount)}
+                        <h3>Fecha de creación:</h3>
+                        ${internal.fontTag.arg(model.createdAt.toLocaleString())}
                         `
                         textFormat: Label.RichText
                         wrapMode: Label.Wrap
@@ -85,13 +90,23 @@ BackPage {
 
                 ColumnLayout {
                     anchors.fill: parent
+                    Image {
+                        source: internal.isPaymenDateValid ? "paid.png" : "unpaid.png"
+                        sourceSize: Qt.size(80, 80)
+                        //fillMode: Image.PreserveAspectFit
+                        Layout.alignment: Qt.AlignHCenter
+                        // Layout.maximumWidth: Math.min(64, parent.width / 2)
+                        // Layout.maximumHeight: Math.min(parent.height / 2, 64)
+                    }
+
                     Label {
                         text: {
                             if (internal.isPaymenDateValid)
-                                return `<h3>PaymentDate: ${model.paymentDate.toLocaleString()}</h3>`
+                            return `<h3>Pagado el: ${root.model.paymentDate.toLocaleDateString()}
+                            ${model.paymentDate.toLocaleTimeString(Locale.ShortFormat)}</h3>`
                             else
-                                return "<h3>Aún no se ha efectuado el pago. "
-                                        + `El monto a pagar es de RD$${model.amount}</h3>`
+                            return "<h3>Aún no se ha efectuado el pago. "
+                            + `El monto a pagar es de RD$${model.amount}</h3>`
                         }
                         wrapMode: Label.Wrap
                         Layout.fillWidth: true
@@ -103,14 +118,14 @@ BackPage {
                         Material.background: Material.Green
                         Layout.fillWidth: true
                         onClicked: {
-                            model.paymentDate = new Date();
+                            root.model.paymentDate = new Date();
                         }
                     }
                 }
             }
 
             GroupBox {
-                title: "Detalles de la comisión"
+                title: `Detalles de la comisión - Total: <b>RD$${root.model.grossProfit}</b>`
                 Layout.fillWidth: true
 
                 ColumnLayout {
@@ -153,8 +168,8 @@ BackPage {
             color: "transparent"
         }
 
-        text: `<h3>CommissionUnit: RD$${model.unitCommission}</h3>`
-              + `<h3>Quantity: ${model.quantity}</h3>`
+        text: `<h3>Comisión unitaria: RD$${model.unitCommission}</h3>`
+              + `<h3>Cantidad: ${model.quantity}</h3>`
               + `<h3>Total: ${model.quantity * model.unitCommission}</h3>`
     }
 
@@ -162,6 +177,7 @@ BackPage {
         id: internal
         readonly property string cardTemplate: `<h3>%1</h3><h5>ID #%2</h5>`
         readonly property bool isPaymenDateValid: !isNaN(root.model.paymentDate)
+                                                  && root.model.paymentDate <= new Date()
         readonly property string fontTag: `<font size="+1">%1</font>`
     }
 }
