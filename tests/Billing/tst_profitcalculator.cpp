@@ -1,5 +1,5 @@
 #include <QTest>
-#include "Inventory/model/productmodel.h"
+
 #include "calculator.h"
 #include "profitcalculator.h"
 
@@ -26,7 +26,7 @@ TestProfitCalculator::TestProfitCalculator(QObject *parent) {}
 
 void TestProfitCalculator::initTestCase()
 {
-    model_ = std::make_unique<Model::ProductModel>();
+    model_ = std::make_unique<ProductInventory::ProductModel>();
 }
 
 void TestProfitCalculator::init()
@@ -40,7 +40,7 @@ void TestProfitCalculator::init()
     calculator_->setModel(model_.get());
     calculator_->setSupplierId(supplierId);
 
-    const auto productModel{qobject_cast<Model::ProductModel *>(model_.get())};
+    const auto productModel{qobject_cast<ProductInventory::ProductModel *>(model_.get())};
     productModel->updateFromList(
         QList<Product>{Product{1, 100, 5}, Product{2, 200, 6}, Product{3, 180, 2}});
 }
@@ -82,7 +82,7 @@ void TestProfitCalculator::test_shouldCalculateTotalProfitCorrectlyWithSinglePro
     constexpr int wholePercentage{80};
     constexpr double percentage{wholePercentage / 100.0};
 
-    const auto productModel{qobject_cast<Model::ProductModel *>(model_.get())};
+    const auto productModel{qobject_cast<ProductInventory::ProductModel *>(model_.get())};
     productModel->updateFromList(QList{Product{1, 100, 5}});
 
     calculator_->setPercentage(wholePercentage);
