@@ -79,15 +79,10 @@ Drawer {
             }
 
             RedirectLabel {
-                title: datePicker.dateString
+                title: datePicker.isValid ? datePicker.dateString
+                                          : "Seleccionar fecha"
                 Layout.fillWidth: true
                 onClicked: datePicker.open()
-            }
-
-            DatePicker {
-                id: datePicker
-                width: root.width * .9
-                height: root.height * .75
             }
 
             PaymentStatus {
@@ -143,5 +138,11 @@ Drawer {
                 }
             }
         }
+    }
+
+    DatePicker {
+        id: datePicker
+        width: root.width * .9
+        height: root.height * .75
     }
 }

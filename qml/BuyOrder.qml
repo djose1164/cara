@@ -7,6 +7,7 @@ import Cara.User
 import Cara.Billing
 import Cara
 import Cara.Controls
+import Cara.ProductInventory
 import "qrc:/orders"
 
 
@@ -80,9 +81,9 @@ Page {
         PurchaseOrder {
             id: purchaseOrder
             path: `salespersons/${SalespersonSettings.salespersonId}/buy_orders`
-            onOrdersFetched: resp => ordersReady(resp)
-            onOrderPlaced: resp => orderPlacedHandler(resp)
-            onErrorOccurred: err => errorOccurredHandler(err)
+            onOrdersFetched: resp => root.ordersReady(resp)
+            onOrderPlaced: resp => root.orderPlacedHandler(resp)
+            onErrorOccurred: err => root.errorOccurredHandler(err)
         }
     }
 
@@ -98,14 +99,19 @@ Page {
     }
 
     function ordersReady(resp) {
-        print("ordersReady: ", typeof resp);
         const buyOrders = JSON.parse(resp).buy_orders;
+        for (let item of buyOrders) {
+            if(!item.thru_date)
+            item.thru_date = item.thru_date || "";
+            item.supplier = item.supplier || "";
+        }
         listModel.append(buyOrders);
     }
 
     function orderPlacedHandler(resp) {
         const buyOrder = JSON.parse(resp).buy_order;
         listModel.append(buyOrder);
+        ProductInventoryController.inventory.editFromList(buyOrder.order_details);
 
         if (root.salesperson.salespersonType === Salesperson.Administrator) {
             dialog.text = "Orden de compra creada con exito!";
