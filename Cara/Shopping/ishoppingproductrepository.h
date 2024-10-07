@@ -1,17 +1,17 @@
-#ifndef IPRODUCTREPOSITORY_H
-#define IPRODUCTREPOSITORY_H
+#ifndef ISHOPPINGPRODUCTREPOSITORY_H
+#define ISHOPPINGPRODUCTREPOSITORY_H
 
 #include <QVariantMap>
 class QNetworkReply;
 
 namespace Catalogue {
-class IProductRepository
+class IShoppingProductRepository
 {
 public:
     using ProductId = int;
     using SupplierId = int;
 
-    virtual ~IProductRepository();
+    virtual ~IShoppingProductRepository();
 
     virtual void add(const QVariantMap &product) = 0;
 
@@ -25,4 +25,4 @@ public:
 };
 }
 
-#endif // IPRODUCTREPOSITORY_H
+#endif // ISHOPPINGPRODUCTREPOSITORY_H

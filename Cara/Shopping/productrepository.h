@@ -1,7 +1,7 @@
 #ifndef PRODUCTREPOSITORY_H
 #define PRODUCTREPOSITORY_H
 
-#include "iproductrepository.h"
+#include "ishoppingproductrepository.h"
 #include "productentity.h"
 
 #include <QNetworkReply>
@@ -17,7 +17,7 @@ class PictureRepository;
 
 namespace Catalogue
 {
-class ProductRepository : public QObject, public IProductRepository
+class ProductRepository : public QObject, public IShoppingProductRepository
 {
     Q_OBJECT
 

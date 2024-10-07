@@ -2,7 +2,7 @@
 #define CATALOGUEREPOSITORY_H
 
 #include "iproductcategoryrepository.h"
-#include "iproductrepository.h"
+#include "ishoppingproductrepository.h"
 #include "productentity.h"
 #include <QObject>
 #include <QQmlEngine>
@@ -68,7 +68,7 @@ signals:
 
 private:
     Product::PictureRepository *pictureRepository_;
-    IProductRepository *productRepository_;
+    IShoppingProductRepository *productRepository_;
     IProductCategoryRepository *categoryRepository_;
 };
 } // namespace Catalogue

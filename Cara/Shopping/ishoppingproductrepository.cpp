@@ -1,7 +1,7 @@
-#include "iproductrepository.h"
+#include "ishoppingproductrepository.h"
 
 namespace Catalogue {
-IProductRepository::~IProductRepository()
+IShoppingProductRepository::~IShoppingProductRepository()
 {
 
 }

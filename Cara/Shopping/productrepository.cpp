@@ -21,7 +21,7 @@ constexpr auto imageUrlField{"imageUrl"_L1};
 
 namespace Catalogue {
 ProductRepository::ProductRepository(QObject *parent)
-    : ProductRepository{new Product::ProductPictureRepository{this}, parent}
+    : ProductRepository{nullptr, parent}
 {
 }
 
@@ -55,6 +55,7 @@ void ProductRepository::add(const QVariantMap &product)
 
         connect(reply_, &QNetworkReply::finished, this, [&] {
             const auto content{reply_->readAll()};
+            QRestReply restReply{reply_};
             if (reply_->error() == QNetworkReply::NoError)
                 emit added(content);
             else
@@ -188,8 +189,41 @@ void ProductRepository::setErrorString(const QString &newErrorString)
 
 void ProductRepository::validateMap(const QVariantMap &map)
 {
-    if (!map.contains("id"_L1))
-        throw ValidationError{"Map doesn't contains id."};
+    const auto validator = [&map](QAnyStringView key) {
+        const auto message{"map doesn't contains '%1' key."_L1.arg(key.toString())};
+        if (!map.contains(key.toString()))
+            throw ValidationError{message};
+    };
+
+    validator("name"_L1);
+    if (map["name"_L1].toString().isEmpty())
+        throw ValidationError{"The name cannot be empty."_L1};
+
+    validator("categoryId"_L1);
+    if (map["categoryId"_L1].toInt() < 1)
+        throw ValidationError{"The categoryId must be greater than 0."_L1};
+
+    validator("description"_L1);
+    if (map["description"_L1].toString().isEmpty())
+        throw ValidationError{"The description cannot be empty."_L1};
+
+    validator("supplierId"_L1);
+    if (map["supplierId"_L1].toInt() < 1)
+        throw ValidationError{"The supplierId must be greater than 0."_L1};
+
+    validator("supplierPrice"_L1);
+    if (map["supplierPrice"_L1].toInt() < 1)
+        throw ValidationError{"The supplierPrice must be greater than 0."_L1};
+
+    validator("price"_L1);
+    if (map["price"_L1].toInt() < 1)
+        throw ValidationError{"The price must be greater than 0."_L1};
+
+    if (map.contains("images"_L1))
+    {
+        if (map["images"_L1].toList().count() < 1)
+            throw ValidationError{"There's must be at least one image."};
+    }
 }
 
 QString ProductRepository::path() const
