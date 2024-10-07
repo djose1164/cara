@@ -7,16 +7,17 @@ RowLayout {
     id: root
 
     required property int index
+    required property var productModel
 
     readonly property int quantity: quantityField.value
     readonly property alias price: productField.currentValue
     readonly property var entryValue: {
-        "product_id": findProductId(productField.currentText),
+        "product_id": root.productModel.get(productField.currentIndex).productId,
         "quantity": quantity,
         "unit_price": parseFloat(price),
     }
     readonly property int total: price * quantity
-    readonly property ListModel model: productField.model
+    readonly property var model: productField.model
 
     signal created(entry: var)
     signal updated(idx: int, entry: var)
@@ -28,7 +29,7 @@ RowLayout {
 
     ProductComboBox {
         id: productField
-        model: ProductManager.model
+        model: root.productModel
         Layout.fillWidth: true
         Layout.preferredHeight: 50
     }
@@ -50,20 +51,5 @@ RowLayout {
             source: "qrc:/icons/trash-can-outline.svg"
         }
         flat: true
-    }
-
-    function find(criteria) {
-        for (let i = 0; i < model.count; ++i)
-            if (criteria(model.get(i)))
-                return model.get(i);
-        return null;
-    }
-
-    function findProductId(productName) {
-        const pred = item => item.name === productName;
-        const fetched = find(pred);
-        if (!fetched)
-            return null;
-        return fetched.id;
     }
 }
