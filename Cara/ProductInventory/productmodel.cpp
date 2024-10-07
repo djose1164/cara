@@ -95,6 +95,8 @@ bool ProductModel::setData(const QModelIndex &index, const QVariant &value, int 
         product.setBuyPriceHistory(value.toJsonArray());
         emit dataChanged(index, index, {role});
         return true;
+    case RoleNames::WarehouseNameRole:
+        return false;
     }
 }
 
@@ -129,8 +131,9 @@ QVariant ProductModel::data(const QModelIndex &index, int role) const
     case RoleNames::BuyPriceRole:
         return getValue.buyPrice();
     case RoleNames::MaximumStockLevelRole:
+        return getValue.maximumStockLevel();
     case RoleNames::MinimumStockLevelRole:
-        return {};
+        return getValue.minimumStockLevel();
     case RoleNames::SupplierIdRole:
         return getValue.supplierCatalog()["supplier"_L1]["id"_L1].toInt();
     case RoleNames::SupplierNameRole:
@@ -142,6 +145,8 @@ QVariant ProductModel::data(const QModelIndex &index, int role) const
                 .toDouble();
     case RoleNames::BuyPriceHistoryRole:
         return getValue.buyPriceHistory();
+    case RoleNames::WarehouseNameRole:
+        return getValue.warehouseName();
     }
 }
 
@@ -204,6 +209,27 @@ void ProductModel::updateFromList(const QList<EntityLayer::Product> &products)
     qDebug() << "ProductModel::updateFromList: updating...Done";
 }
 
+void ProductModel::editFromList(const QVariantList &list) noexcept
+{
+    for (const auto &item : list)
+        editFromJson(item.toJsonObject());
+}
+
+void ProductModel::editFromJson(const QJsonObject &json) noexcept
+{
+    if (not json.contains("product_id"_L1) || not json.contains("quantity"_L1))
+        return;
+
+    const int productId{json["product_id"_L1].toInt()};
+    if (const auto fetched{find(productId)}; fetched.isValid())
+    {
+        const int currentQty{data(fetched, int(RoleNames::QuantityAvailableRole)).toInt()};
+        const int newQty{currentQty + json["quantity"_L1].toInt()};
+        setData(fetched, newQty, int(RoleNames::QuantityAvailableRole));
+    }
+
+}
+
 void ProductModel::addProduct(const QVariantMap &map) noexcept
 {
     try
@@ -215,6 +241,7 @@ void ProductModel::addProduct(const QVariantMap &map) noexcept
                 [this, productRepository]
                 {
                     emit added();
+                    emit countChanged();
                     productRepository->deleteLater();
                 });
         productRepository->add(map);
@@ -371,6 +398,9 @@ QHash<int, QByteArray> ProductModel::roleNames() const
         {int(RoleNames::SupplierNameRole), "supplierName"_ba},
         {int(RoleNames::SupplierPriceRole), "supplierPrice"_ba},
         {int(RoleNames::BuyPriceHistoryRole), "buyPriceHistory"_ba},
+        {int(RoleNames::MaximumStockLevelRole), "maximunStockLevel"_ba},
+        {int(RoleNames::MinimumStockLevelRole), "minimunStockLevel"_ba},
+        {int(RoleNames::WarehouseNameRole), "warehouseName"_ba}
     };
     return hash;
 }

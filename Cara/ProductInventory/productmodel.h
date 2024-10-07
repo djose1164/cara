@@ -41,6 +41,7 @@ public:
         SupplierNameRole,
         SupplierPriceRole,
         BuyPriceHistoryRole,
+        WarehouseNameRole,
     };
 
     explicit ProductModel(QObject *parent = nullptr);
@@ -67,6 +68,8 @@ public slots:
     void update();
     void updateFromList(const QList<EntityLayer::Product> &products);
 
+    void editFromList(const QVariantList &list) noexcept;
+
     void addProduct(const QVariantMap &map) noexcept;
     void append(const EntityLayer::Product &product);
 
@@ -89,6 +92,12 @@ signals:
 private:
     void makeConnections() noexcept;
     QJsonObject findLatestPrice(const QJsonArray &array) const noexcept;
+
+    /**
+     * @brief editFromJson Edit the product in tho model that matches the id in json.
+     * @param json A buy oreder details represented in json
+     */
+    void editFromJson(const QJsonObject &json) noexcept;
 
     QList<EntityLayer::Product> data_;
     IProductRepository *repository_;
