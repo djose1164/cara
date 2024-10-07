@@ -3,8 +3,7 @@ project(ShoppingLib LANGUAGES CXX)
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
-qt_add_library(${PROJECT_NAME} STATIC)
-qt_add_qml_module(${PROJECT_NAME}
+qt_add_qml_module(${PROJECT_NAME} STATIC
     URI Cara.Shopping
     VERSION 1.0
     QML_FILES
@@ -25,7 +24,7 @@ qt_add_qml_module(${PROJECT_NAME}
         favorite.h favorite.cpp
         favoriteproduct.h favoriteproduct.cpp
         iproductcategoryrepository.h iproductcategoryrepository.cpp
-        iproductrepository.h iproductrepository.cpp
+        ishoppingproductrepository.h ishoppingproductrepository.cpp
         organizationresource.h organizationresource.cpp
         productcategoryrepository.h productcategoryrepository.cpp
         productrepository.h productrepository.cpp
@@ -37,9 +36,10 @@ target_include_directories(${PROJECT_NAME} PRIVATE
     ../Data
     ../Utils
     ../Billing
-
     ../authentication
     ../
+    INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
-target_link_libraries(${PROJECT_NAME} PRIVATE UtilsLib AuthenticationLib UserLib BillingLib ProductLib)
+target_link_libraries(${PROJECT_NAME}
+    PRIVATE UtilsLib AuthenticationLib UserLib BillingLib ProductLib)
