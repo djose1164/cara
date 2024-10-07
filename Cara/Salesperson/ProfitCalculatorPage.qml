@@ -1,10 +1,11 @@
+pragma ComponentBehavior: Bound
+
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 import QtQuick.Dialogs
 import Cara.Controls
 import Cara.Billing
-import "qrc:/provider"
 
 BackPage {
     id: root
@@ -19,9 +20,24 @@ BackPage {
             id: menu
             MenuItem {
                 text: "Ver historial"
-                onClicked: stackView.pushItem(Qt.resolvedUrl("../Billing/CommissionPage.qml"), {commissionModel})
+                onTriggered: root.stackView.pushItem(Qt.resolvedUrl("../Billing/CommissionPage.qml"), {commissionModel})
+            }
+
+            MenuItem {
+                text: "Ayuda"
+                icon.name: "help"
+                onTriggered: helpDialog.open()
             }
         }
+    }
+
+    MessageDialog {
+        id: helpDialog
+        title: "Ayuda"
+        text: "Los precios listados en 'Productos agregados' corresponde a la"
+              + " ganancia neta por unidad de ese producto. Para calcular dicha"
+              + " ganancia neta se utiliza la siguiente formula:"
+              + " <b>Ganancia Neta = Precio de Venta - Precio de Compra</b>"
     }
 
     ScrollView {
@@ -50,7 +66,9 @@ BackPage {
             ProductSale {
                 id: productSale
                 enabled: providerSelector.currentIndex !== -1
-                selectedProductsDelegate: ProfitProductDelegate {}
+                selectedProductsDelegate: ProfitProductDelegate {
+                    width: productSale.implicitViewWidth
+                }
                 Layout.fillWidth: true
                 Layout.minimumHeight: productSale.choosenProducts.count > 0 ? root.height * .4 : productSale.implicitHeight
             }
@@ -78,6 +96,7 @@ BackPage {
                             id: spinBox
                             from: 1
                             value: 5
+                            stepSize: 5
                             editable: true
                             validator: IntValidator {}
                         }
@@ -101,7 +120,8 @@ BackPage {
             }
 
             RedirectLabel {
-                title: "Seleccionar fecha de pago"
+                title: datePicker.isValid ? datePicker.dateString
+                                          : "Seleccionar fecha de pago"
                 Layout.fillWidth: true
                 onClicked: datePicker.open()
             }
@@ -160,7 +180,7 @@ BackPage {
         readonly property double marginSize: root.width < 401
                                              && root.height < 641 ? Math.max(scrollView.effectiveScrollBarWidth,
                                                                              Math.min(root.width*.025, root.height*.025))
-                                                                  : Math.min(root.width*.1, root.height*.1)
+                                                                  : Math.min(root.width*.07, root.height*.07)
     }
 
     function saveSale() {
