@@ -143,15 +143,10 @@ ProductForm {
     }
 
     function updateCatalogue() {
-        console.log(root.model,null,2)
-        //console.log(JSON.stringify(root.model,null,2))
-        console.log(root.model.productName)
-        console.log(root.model.description)
-        //ProductManager.updateProduct(root.model);
         root.model.productName = root.nameField.text;
         root.model.description = root.descriptionField.text;
         root.model.categoryId = root.categoryCB.currentValue;
-        console.log(root.model.productName)
+
     }
 
     function openProductInInventory() {

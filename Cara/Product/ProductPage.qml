@@ -6,11 +6,10 @@ import QtQuick.Layouts
 import QtQuick.Templates as T
 import Cara
 import Cara.Controls
-import Cara.Inventory
+import Cara.ProductInventory
 import Cara.Review
 import Cara.Shopping
 import Cara.User
-import Cara.Utils
 import "qrc:/inventory"
 
 Page {
@@ -43,7 +42,6 @@ Page {
     Component.onCompleted: {
         organizationResource.readById(internal.caraId);
         inventoryRepository.fetchAnyByProductId(root.productId);
-        //inventoryApi.fetchByProductId(root.productId);
         reviewModel.fetchReviewsByProductId(root.productId);
         ReviewController.canCustomerReview(UserSettings.customerId, root.productId);
     }
@@ -120,26 +118,6 @@ Page {
 
     Message { id: message }
 
-    ProductApi { id: api }
-
-    InventoryAPI {
-        id: inventoryApi
-        onFetchedInventoriesByProductId: function(inventories) {
-            let totalStock = 0;
-            let locations = "";
-
-            for (let inventory of inventories) {
-                const qty = inventory.quantity_available;
-                totalStock += qty;
-
-                if (qty > 0)
-                    shopProduct.locations.push(inventory.warehouse.name)
-            }
-
-            inStock = totalStock;
-        }
-    }
-
     InventoryRepository {
         id: inventoryRepository
         onAnyFetched: {
@@ -156,7 +134,7 @@ Page {
                     shopProduct.locations.push(inventory.warehouse.name)
             }
 
-            inStock = totalStock;
+            root.inStock = totalStock;
         }
     }
 
