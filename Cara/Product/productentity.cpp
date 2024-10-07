@@ -1,6 +1,7 @@
 #include "productentity.h"
 #include "restconfig.h"
 #include "Network/apienvironment.h"
+#include "utils.h"
 
 using namespace Qt::StringLiterals;
 
@@ -60,6 +61,7 @@ Product::Product(int newProductId, double newPrice, int newSelectedQty)
     , productId_{newProductId}
     , images_{}
     , imageUrl_{}
+    , warehouseName_{}
     , maximumStockLevel_{}
     , minimumStockLevel_{}
     , quantityAvailable_{}
@@ -73,8 +75,9 @@ Product Product::fromMap(const QVariantMap &map)
 {
     Product product{};
     product.setName(map[nameField].toString());
-    product.setPrice(map[priceField].toDouble());
-    product.setProductId(map[idField].toInt());
+    product.setPrice(map["price"_L1].toDouble());
+    product.setProductId(map["productId"_L1].toInt());
+    product.setCategoryId(map["categoryId"_L1].toInt());
 
     product.setupPictures(map[imagesField].toJsonArray());
 
@@ -106,10 +109,13 @@ Product Product::fromJson(const QByteArray &data)
     product.setName(productObj.value(nameField).toString());
     product.setDescription(productObj.value(descriptionField).toString());
     product.setCategoryId(productObj[categoryIdField].toInt());
+    product.setSupplierCatalog(productObj["supplier_catalog"_L1].toObject());
+    product.setBuyPriceHistory(productObj["buy_price_history"_L1].toArray());
 
     product.setupPictures(productObj[imagesField].toArray());
     product.setupPricing(productObj);
 
+    Q_ASSERT(product.productId() > 0);
     Q_ASSERT(productObj[categoryIdField].toInt());
     Q_ASSERT(product.price() > 0);
     Q_ASSERT(product.categoryId() > 0);
@@ -121,6 +127,7 @@ Product Product::fromJson(const QByteArray &data)
     product.setMinimumStockLevel(inventoryObj.value(minimumStockLevelField).toInt());
     product.setReorderPoint(inventoryObj.value(reorderPointField).toInt());
     product.setQuantityAvailable(inventoryObj.value(quantityAvailableField).toInt());
+    product.setWarehouseName(inventoryObj["warehouse"_L1]["name"_L1].toString());
 
     return product;
 }
@@ -141,6 +148,18 @@ Product *Product::fromJson(const QJsonObject &data)
     product->setupPricing(productObj);
 
     return product;
+}
+
+QList<Product> Product::fromJsonArray(const QJsonArray &array)
+{
+    QList<Product> productList;
+    productList.reserve(array.count());
+    for (const auto &item : array)
+    {
+        const auto productJson{QJsonDocument{item.toObject()}.toJson()};
+        productList.append(fromJson(productJson));
+    }
+    return productList;
 }
 
 bool Product::operator==(const Product &rhs) const
@@ -262,6 +281,66 @@ void Product::setPriceHistory(const QJsonArray &history)
                                   setPrice(newPrice);
                               }
                           });
+}
+
+QString Product::warehouseName() const
+{
+    return warehouseName_;
+}
+
+void Product::setWarehouseName(const QString &newWarehouseName)
+{
+    warehouseName_ = newWarehouseName;
+}
+
+QJsonArray Product::buyPriceHistory() const
+{
+    return buyPriceHistory_;
+}
+
+void Product::setBuyPriceHistory(const QJsonArray &newBuyPriceHistory)
+{
+    QJsonArray history;
+    std::ranges::for_each(
+        newBuyPriceHistory,
+        [this, &history](const auto &item)
+        {
+            if (item["thru_date"_L1].isNull())
+                setBuyPrice(item["price"_L1].toString().toDouble());
+
+            const QDateTime startDate{
+                Utils::stringToDateTime(item["start_date"_L1].toString())};
+            const QDateTime thruDate{
+                Utils::stringToDateTime(item["thru_date"_L1].toString())};
+            history.append(
+                QJsonObject
+                {
+                    {"priceId"_L1, item["id"_L1].toInt()},
+                    {"price"_L1, item["price"_L1].toString()},
+                    {"startDate"_L1, startDate.toString(Qt::ISODate)},
+                    {"thruDate"_L1, thruDate.toString(Qt::ISODate)},
+                    {"supplierId"_L1, item["supplier"_L1]["id"_L1].toInt()},
+                    {"supplierName"_L1, item["supplier"_L1]["name"_L1].toString()},
+                }
+            );
+        }
+    );
+    buyPriceHistory_ = std::move(history);
+}
+
+bool Product::isPostable() const
+{
+    return not name_.isEmpty() and price_ > 0 and categoryId_ > 0;
+}
+
+QJsonObject Product::supplierCatalog() const
+{
+    return supplierCatalog_;
+}
+
+void Product::setSupplierCatalog(const QJsonObject &newSupplierCatalog)
+{
+    supplierCatalog_ = newSupplierCatalog;
 }
 
 double Product::buyPrice() const
