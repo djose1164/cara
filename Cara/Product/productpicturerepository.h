@@ -15,7 +15,7 @@ class ProductPictureRepository : public PictureRepository
 {
     Q_OBJECT
 public:
-    ProductPictureRepository(QObject *parent = nullptr);
+    explicit ProductPictureRepository(QObject *parent = nullptr);
 
     // PictureRepository interface
     QNetworkReply *addPicture(ProductId id, const QVariantList &pictureList) override;
