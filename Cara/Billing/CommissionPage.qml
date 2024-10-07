@@ -1,9 +1,11 @@
 pragma ComponentBehavior: Bound
+
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 import QtQuick.Templates as T
 import Cara.Billing
+import Cara.Controls
 
 ListView {
     id: root
@@ -20,7 +22,6 @@ ListView {
     spacing: 5
 
     Component.onCompleted: {
-        console.log("commissionModel.rowCount():",commissionModel.rowCount());
         if (commissionModel.rowCount() === 0)
             commissionModel.fetchCommissions();
     }
@@ -30,12 +31,7 @@ ListView {
         z: 2
 
         RowLayout {
-            anchors.fill: parent
-
-            ToolButton {
-                text: "←"
-                font.pointSize: 14
-                font.bold: true
+            BackButton {
                 onClicked: root.stackView.popCurrentItem()
             }
 
@@ -43,7 +39,10 @@ ListView {
                 text: "Historal"
                 font.pointSize: 14
                 font.bold: true
+                Layout.alignment: Qt.AlignCenter
             }
+
+            Item {}
         }
     }
 
