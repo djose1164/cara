@@ -11,10 +11,11 @@ Rectangle {
     property int productPrice
     property int productId
     property int total
+    property int index
 
     readonly property alias spinBox: spinBox
 
-    signal deleted
+    signal deleted(index: int, productId: int)
 
     width: 400
     height: 100
@@ -50,6 +51,7 @@ Rectangle {
             font.bold: true
             wrapMode: Label.Wrap
             Layout.fillWidth: true
+            Layout.columnSpan: 2
         }
 
         Label {
@@ -67,7 +69,7 @@ Rectangle {
             Layout.alignment: Qt.AlignRight
             Layout.rightMargin: 5
             Layout.bottomMargin: 5
-            from: 0
+            //from: 1
             editable: true
             inputMethodHints: Qt.ImhDigitsOnly
 
@@ -79,6 +81,9 @@ Rectangle {
                 shouldDelete: spinBox.value === 1
                 color: spinBox.down.hovered || spinBox.down.pressed ? spinBox.Material.listHighlightColor : "white"
             }
+
+            down.onPressedChanged: if (spinBox.value === 0) root.deleted(root.index, root.productId)
+            Component.onCompleted: if (spinBox.value === 0) spinBox.increase()
         }
     }
 
