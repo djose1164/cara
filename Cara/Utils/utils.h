@@ -49,5 +49,7 @@ QJsonObject toJson(const void *entity)
 
 void setBoundaryToRequest(QAnyStringView boundary, QNetworkRequest &request);
 
+QDateTime stringToDateTime(QStringView dateString);
+
 }
 #endif // UTILS_H
