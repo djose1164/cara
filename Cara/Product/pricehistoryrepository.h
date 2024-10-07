@@ -20,6 +20,7 @@ public:
         FailedToFetchPriceHistory,
         UnknownError
     };
+    Q_ENUM(Error)
 
     virtual ~PriceHistoryRepository() = default;
 
@@ -34,6 +35,13 @@ signals:
     void errorOccurred(Error error, const QString &errorString);
 };
 
+}
+
+namespace PriceHistoryForeign
+{
+Q_NAMESPACE
+QML_NAMED_ELEMENT(PriceHistory)
+QML_FOREIGN_NAMESPACE(Product::PriceHistoryRepository)
 }
 
 #endif // PRICEHISTORYREPOSITORY_H
