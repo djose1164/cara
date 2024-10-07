@@ -1,5 +1,6 @@
 #include "commission.h"
 #include "productentity.h"
+#include "utils.h"
 
 #include <QJsonArray>
 #include <QJsonDocument>
@@ -7,16 +8,6 @@
 #include <QTimeZone>
 
 using namespace Qt::StringLiterals;
-
-namespace
-{
-    QDateTime stringToDateTime(QStringView dateString)
-    {
-        auto &&dt = QDateTime::fromString(dateString, Qt::ISODate);
-        dt.setTimeZone(QTimeZone{Qt::UTC});
-        return dt;
-    }
-}
 
 namespace Billing
 {
@@ -58,8 +49,8 @@ Commission Commission::fromJson(const QJsonObject &json)
     c.commissionId_ = json["id"_L1].toInt();
     c.adminId_ = json["admin_id"_L1].toInt();
     c.salespersonId_ = json["salesperson_id"].toInt();
-    c.paymentDate_ = stringToDateTime(json["payment_date"_L1].toString());
-    c.createdAt_ = stringToDateTime(json["created_at"_L1].toString());
+    c.paymentDate_ = Utils::stringToDateTime(json["payment_date"_L1].toString());
+    c.createdAt_ = Utils::stringToDateTime(json["created_at"_L1].toString());
     c.setCommissionItems(json["commission_items"_L1].toArray());
     c.setSalesperson(
         Entity::Salesperson::fromJson(
@@ -203,6 +194,17 @@ void Commission::setAdmin(const Entity::UserEntity &newAdmin)
 bool Commission::isPatchable() const
 {
     return commissionId_ > 0;
+}
+
+double Commission::calculateGrossProfit() const
+{
+    return std::accumulate(commissionItems_.begin(),
+                           commissionItems_.end(),
+                           0.0,
+                           [](double sum, const auto &item)
+                           {
+                               return sum + item.unitCommission() * item.quantity();
+                           });
 }
 
 Entity::Salesperson Commission::salesperson() const

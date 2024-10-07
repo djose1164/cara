@@ -96,6 +96,8 @@ public:
 
     bool isPatchable() const;
 
+    double calculateGrossProfit() const;
+
 private:
     void setCommissionItems(const QJsonArray &array);
 

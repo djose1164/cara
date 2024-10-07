@@ -120,6 +120,8 @@ QVariant CommissionModel::data(const QModelIndex &index, int role) const
     case RoleNames::CommissionItemsRole:
         Q_ASSERT(entity.commissionItems().count() > 0);
         return QVariant::fromValue(entity.commissionItems());
+    case RoleNames::GrossProfitRole:
+        return entity.calculateGrossProfit();
     }
 }
 
@@ -169,7 +171,8 @@ QHash<int, QByteArray> CommissionModel::roleNames() const
         {int(SellerIdRole), "sellerId"_ba},
         {int(SellerNameRole), "sellerName"_ba},
         {int(AdminNameRole), "adminName"_ba},
-        {int(CommissionItemsRole), "commissionItems"_ba}
+        {int(CommissionItemsRole), "commissionItems"_ba},
+        {int(GrossProfitRole), "grossProfit"_ba}
     };
 }
 

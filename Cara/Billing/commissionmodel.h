@@ -29,7 +29,8 @@ public:
         SellerIdRole,
         SellerNameRole,
         AdminNameRole,
-        CommissionItemsRole
+        CommissionItemsRole,
+        GrossProfitRole
     };
 
     Q_ENUM(Billing::CommissionRepository::Error)
