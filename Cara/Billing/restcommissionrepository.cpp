@@ -49,7 +49,7 @@ void RestCommissionRepository::fetchCommissions()
                           const auto commissionsArray = (*json)[commissionsField].toArray();
                           QList<Commission> commissionList;
                           std::ranges::for_each(commissionsArray,
-                                                [&commissionList](const auto jsonValue)
+                                                [&commissionList](const auto &jsonValue)
                                                 {
                                                     commissionList.append(Commission::fromJson(jsonValue.toObject()));
                                                 });

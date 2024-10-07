@@ -111,6 +111,9 @@ qt_add_qml_module(BillingLib
         order-completed.svg
         paid.png
         unpaid.png
+        business.svg
+        current_price.png
+        previous_price.png
     DEPENDENCIES
         QtQuick Utils Product Customer
 
@@ -125,9 +128,18 @@ target_include_directories(BillingLib
 
 if (NOT EMSCRIPTEN)
     target_link_libraries(BillingLib
-        PRIVATE Qt6::Concurrent Qt6::PrintSupport Qt6::Network UtilsLib InventoryLib CustomerLib ProductLib)
+        PRIVATE
+            Qt6::Concurrent
+            Qt6::PrintSupport
+            Qt6::Network
+            UtilsLib
+            CustomerLib
+            ProductLib
+        INTERFACE
+            ProductInventoryLib
+    )
 else()
     target_link_libraries(BillingLib
-        PRIVATE Qt6::PrintSupport Qt6::Network UtilsLib InventoryLib CustomerLib ProductLib)
+        PRIVATE Qt6::PrintSupport Qt6::Network UtilsLib CustomerLib ProductLib)
 endif()
 

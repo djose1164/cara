@@ -1,5 +1,4 @@
 #include "profitcalculator.h"
-#include "Inventory/model/productmodel.h"
 #include "Shopping/cataloguerepository.h"
 
 using namespace Qt::StringLiterals;
@@ -21,7 +20,7 @@ ProfitCalculator::ProfitCalculator(QObject *parent)
             this,
             [this](const QByteArray &data)
             {
-                const auto productModel{qobject_cast<Model::ProductModel *>(model())};
+                const auto productModel{qobject_cast<ProductInventory::ProductModel *>(model())};
                 auto json{QJsonDocument::fromJson(data)};
                 if (json["products"_L1].isArray())
                 {
@@ -58,12 +57,12 @@ void ProfitCalculator::calculate()
         return;
     }
 
-    const auto productModel{qobject_cast<Model::ProductModel *>(model())};
+    const auto productModel{qobject_cast<ProductInventory::ProductModel *>(model())};
     const double calcPercentage{percentage_ / 100.};
     double calcTotal{};
     for (int i{}; i < model()->rowCount(); ++i)
     {
-        using enum Model::ProductModel::RoleNames;
+        using enum ProductInventory::ProductModel::RoleNames;
 
         //takeBuyPriceFromProductList(i);
 
@@ -89,12 +88,12 @@ void ProfitCalculator::setProductList(const QList<EntityLayer::Product *> &newPr
     productList_ = newProductList;
 }
 
-Model::ProductModel *ProfitCalculator::selectorModel() const
+ProductInventory::ProductModel *ProfitCalculator::selectorModel() const
 {
     return selectorModel_;
 }
 
-void ProfitCalculator::setSelectorModel(Model::ProductModel *newSelectorModel)
+void ProfitCalculator::setSelectorModel(ProductInventory::ProductModel *newSelectorModel)
 {
     if (selectorModel_ == newSelectorModel)
         return;
@@ -169,9 +168,9 @@ void ProfitCalculator::updateProductList()
 
 void ProfitCalculator::takeBuyPriceFromProductList(int posInModel)
 {
-    using enum Model::ProductModel::RoleNames;
+    using enum ProductInventory::ProductModel::RoleNames;
 
-    const auto productModel{qobject_cast<Model::ProductModel *>(model())};
+    const auto productModel{qobject_cast<ProductInventory::ProductModel *>(model())};
     auto &&product{productModel->get(posInModel)};
     if (product.buyPrice() > 0.0)
         return;
@@ -199,7 +198,7 @@ void ProfitCalculator::setBuyPriceInSelectorModel()
 
         if (const std::optional<double> buyPrice{getBuyPriceByProductId(productId)}; buyPrice)
         {
-            using enum Model::ProductModel::RoleNames;
+            using enum ProductInventory::ProductModel::RoleNames;
 
             const QModelIndex productIndex{selectorModel_->find(productId)};
             selectorModel_->setData(productIndex, *buyPrice, int(BuyPriceRole));

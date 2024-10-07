@@ -2,6 +2,7 @@
 #define PROFITCALCULATOR_H
 
 #include <QQmlEngine>
+#include "ProductInventory/productmodel.h"
 #include "calculator.h"
 
 namespace EntityLayer
@@ -12,10 +13,7 @@ namespace Catalogue
 {
 class CatalogueRepository;
 }
-namespace Model
-{
-class ProductModel;
-}
+
 namespace Billing
 {
 
@@ -24,7 +22,7 @@ class ProfitCalculator : public Calculator
     Q_OBJECT
     Q_PROPERTY(int supplierId READ supplierId WRITE setSupplierId BINDABLE bindableSupplierId FINAL)
     Q_PROPERTY(int percentage READ percentage WRITE setPercentage NOTIFY percentageChanged FINAL)
-    Q_PROPERTY(Model::ProductModel *selectorModel READ selectorModel WRITE setSelectorModel NOTIFY selectorModelChanged FINAL)
+    Q_PROPERTY(ProductInventory::ProductModel *selectorModel READ selectorModel WRITE setSelectorModel NOTIFY selectorModelChanged FINAL)
     Q_PROPERTY(double grossTotal READ grossTotal BINDABLE bindableGrossTotal FINAL)
     QML_ELEMENT
 public:
@@ -42,8 +40,8 @@ public:
     QList<EntityLayer::Product *> productList() const;
     void setProductList(const QList<EntityLayer::Product *> &newProductList);
 
-    Model::ProductModel *selectorModel() const;
-    void setSelectorModel(Model::ProductModel *newSelectorModel);
+    ProductInventory::ProductModel *selectorModel() const;
+    void setSelectorModel(ProductInventory::ProductModel *newSelectorModel);
 
     double grossTotal() const;
     void setGrossTotal(double newGrossTotal);
@@ -71,7 +69,7 @@ private:
     int percentage_;
     QList<EntityLayer::Product *> productList_;
     QPropertyNotifier supplierIdHandler_;
-    Model::ProductModel *selectorModel_;
+    ProductInventory::ProductModel *selectorModel_;
     QProperty<double> grossTotal_;
 };
 

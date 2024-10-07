@@ -9,12 +9,12 @@ CostCalculator::CostCalculator(QObject *parent)
 {
 }
 
-Model::ProductModel *CostCalculator::model() const
+ProductInventory::ProductModel *CostCalculator::model() const
 {
     return model_;
 }
 
-void CostCalculator::setModel(Model::ProductModel *newModel)
+void CostCalculator::setModel(ProductInventory::ProductModel *newModel)
 {
     if (model_ == newModel)
         return;
@@ -52,9 +52,9 @@ void CostCalculator::classBegin()
 
 void CostCalculator::componentComplete()
 {
-    connect(model_, &Model::ProductModel::rowsInserted,
+    connect(model_, &ProductInventory::ProductModel::rowsInserted,
             this, &CostCalculator::calculateTotal);
-    connect(model_, &Model::ProductModel::dataChanged,
+    connect(model_, &ProductInventory::ProductModel::dataChanged,
             this, &CostCalculator::calculateTotal);
 }
 }

@@ -1,8 +1,7 @@
 import QtQuick
-import QtQuick.Controls
 import QtQuick.Layouts
 import Cara.Controls
-import Cara.Inventory
+import Cara.ProductInventory
 import Cara.Salesperson
 import Cara.Billing
 
@@ -18,6 +17,8 @@ Item {
     property alias productSelectorModel: productSelector.productModel
     property alias calculator: costCalculator
     property alias selectedProductsDelegate: selectedProductsView.delegate
+    readonly property alias implicitViewWidth: selectedProductsView.implicitViewWidth
+    readonly property alias implicitViewHeight: selectedProductsView.implicitViewHeight
 
     implicitWidth: stackLayout.implicitWidth
     implicitHeight: stackLayout.implicitHeight

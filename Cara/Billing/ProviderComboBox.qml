@@ -19,4 +19,10 @@ ComboBox {
         id: providerApi
         onProvidersFetched: providers => providers.forEach(e => providersModel.append(e))
     }
+
+    function toJson() {
+        return {
+            supplierId: root.currentValue
+        };
+    }
 }

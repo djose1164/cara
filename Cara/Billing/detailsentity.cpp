@@ -11,8 +11,9 @@ DetailsEntity *DetailsEntity::fromJson(const QJsonObject &data)
 
     newDetail->price_ = data["product"_L1]["sell_price"_L1].toString().toDouble();
     Q_ASSERT(newDetail->price() > 0);
+
     newDetail->setProduct(
-        Product::fromMap(data["product"_L1].toVariant().toMap())
+        Product::fromJson(QJsonDocument{data["product"_L1].toObject()}.toJson())
     );
 
     return newDetail;

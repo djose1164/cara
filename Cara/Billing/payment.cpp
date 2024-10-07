@@ -39,13 +39,6 @@ Payment::Payment()
     , amount_{}
     , status_{Status::Any}
 {
-    // using enum Status;
-    // if (amountToPay_ > 0 && amountToPay_ == paidAmount_)
-    //     setStatus(Paid);
-    // else if (paidAmount_ > 0)
-    //     setStatus(Credited);
-    // else if (paidAmount_ == 0 && amountToPay_ > 0)
-    //     setStatus(Unpaid);
 }
 
 bool Payment::operator==(const Payment &other) const
