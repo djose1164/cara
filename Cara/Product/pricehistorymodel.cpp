@@ -11,6 +11,8 @@ namespace
 {
 constexpr auto path{"products/%1/price_history"_L1};
 constexpr auto priceHistoryField{"price_history"_L1};
+constexpr auto startDateField{"start_date"_L1};
+constexpr auto thruDateField{"thru_date"_L1};
 
 /**
  * @brief dateTimeWithTZ Converts a datetime ISO string to a QDateTime obect.
@@ -31,7 +33,7 @@ QString priceTypeToReadableString(QStringView priceType)
         return templateStr.arg("Venta"_L1);
     else if (priceType == "buy"_L1)
         return templateStr.arg("Compra"_L1);
-    return "Error"_L1;
+    return "Error: Unkwon type: %1"_L1.arg(priceType);
 }
 }
 
@@ -76,7 +78,16 @@ void PriceHistoryModel::fetchPriceHistoryBy(ProductId productId)
 
 void PriceHistoryModel::newPriceAdded(const QByteArray &data)
 {
-    append(QJsonDocument::fromJson(data).object());
+    qDebug() << "PriceHistoryModel::newPriceAdded: " << QJsonDocument::fromJson(data);
+    QJsonObject &oldLatest{data_.last()};
+    QJsonObject &&newLatest{QJsonDocument::fromJson(data).object()};
+
+    oldLatest[thruDateField] = newLatest[startDateField].toString();
+
+    const QModelIndex idx{index(data_.count() - 1)};
+    emit dataChanged(idx, idx, {int(RoleNames::ThruDateRole)});
+
+    append(newLatest);
 }
 
 void PriceHistoryModel::priceHistoryFetched(const QByteArray &data)
@@ -163,6 +174,7 @@ QVariant PriceHistoryModel::data(const QModelIndex &index, int role) const
     case RoleNames::PriceRole:
         return entity["price"_L1].toString().toDouble();
     case RoleNames::PriceTypeRole:
+        Q_ASSERT(entity.contains("price_type"_L1));
         return priceTypeToReadableString(entity["price_type"_L1].toString());
     case RoleNames::StartDateRole:
         return dateTimeWithTZ(entity["start_date"_L1].toString());
