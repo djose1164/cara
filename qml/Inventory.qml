@@ -4,6 +4,7 @@ import QtQuick.Layouts
 import QtQuick.Templates as T
 import Cara.Controls
 import Cara.Product
+import Cara.ProductInventory
 import Cara.Network
 
 Page {
@@ -31,36 +32,31 @@ Page {
         id: stackLayout
         anchors.fill: parent
         anchors.topMargin: 5
+        currentIndex: ProductInventoryController.inventory.count < 1 ? 1 : 0
 
         // FIXME: A new component `InventoryView` must be created.
         ProductView {
             id: productView
             salespersonId: root.salespersonId
-            onEntriesAdded: total => { if (total === 0) stackLayout.currentIndex = 1 }
-
+            listView.model: ProductInventoryController.inventory
             delegate: ItemDelegate {
                 id: item
-                required property int id
-                required property var product
-                required property var warehouse
-                required property int quantity_available
-                required property int minimum_stock_level
-                required property int maximum_stock_level
-                required property int reorder_point
-                readonly property bool hasImages: item.product.images && item.product.images.length
+                required property var model
+                required property int quantityAvailable
+                required property int minimunStockLevel
+                required property int maximunStockLevel
+                required property int reorderPoint
+                readonly property bool hasImages: model.images && model.images.length
 
                 onClicked: {
-                    item.product.image_url = thumbnail.source;
                     stackView.push(
-                        "qrc:/qt/qml/Cara/Inventory/InventoryForm.qml",
+                        "qrc:/qt/qml/Cara/ProductInventory/InventoryForm.qml",
                         {
-                            inventoryId: id,
-                            product,
-                            warehouse,
-                            minimunStockLevel: minimum_stock_level,
-                            maximunStockLevel: maximum_stock_level,
-                            reorderPoint: reorder_point,
-                            quantityAvailable: quantity_available
+                            model,
+                            minimunStockLevel,
+                            maximunStockLevel,
+                            reorderPoint,
+                            quantityAvailable,
                         }
                     );
                 }
@@ -76,9 +72,9 @@ Page {
 
                     width: parent.width
                     height: 100
-                    detailed: `Disponible ${quantity_available}`
-                    source: item.hasImages ? Api.uploadsPath + item.product.images[0].image_url : "qrc:/cara-logo-v1.png" //root.images && root.images.length ? Constants.uploadsPath + images[0].image_url : "qrc:/cara-logo-v1.png"
-                    name: item.product.name
+                    detailed: `Disponible ${quantityAvailable}`
+                    source: model.imageUrl
+                    name: model.productName
                 }
             }
         }
