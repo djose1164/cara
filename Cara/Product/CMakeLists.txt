@@ -12,7 +12,6 @@ qt_add_qml_module(ProductLib
         AddProductView.qml
         EditProductPage.qml
         PriceHistoryPage.qml
-        ProductApi.qml
         ProductCard.qml
         ProductComboBox.qml
         ProductDelegate.qml
@@ -24,6 +23,8 @@ qt_add_qml_module(ProductLib
         ProductRequest.qml
         ProductThumbnail.qml
         ProductView.qml
+        UpdateSupplierView.qml
+        PriceDialog.qml
         product_helper.js
     SOURCES
         picturerepository.cpp
