@@ -10,7 +10,11 @@ ProductInventoryController::ProductInventoryController(QObject *parent)
 {
     const auto tempRepo{new CatalogProductRepository};
     connect(tempRepo, &IProductRepository::fetched,
-            this, [tempRepo]{ tempRepo->deleteLater(); });
+            this, [this, tempRepo]
+                  {
+                      setRepository(nullptr);
+                      tempRepo->deleteLater();
+                  });
 
     catalog_->setRepository(tempRepo);
     catalog_->update();

@@ -24,10 +24,13 @@ Item {
         State {
             name: "empty"
             PropertyChanges {
+                when: root.productModel.count === 0
                 errorPane.visible: true
             }
         }
     ]
+
+    Component.onDestruction: ProductInventoryController.inventory.repository = null
 
     ListView {
         id: listView
@@ -90,18 +93,6 @@ Item {
         id: proxyModel
         sourceModel: root.productModel
         productName: root.searchText
-    }
-
-    Connections {
-        target: ProductInventoryController.catalog
-
-        function onUpdated() {
-            console.log("ProductInventoryController.catalog: Model updated")
-            if (root.productModel.count === 0)
-                root.state = "empty";
-            else
-                root.state = "";
-        }
     }
 
     Component {

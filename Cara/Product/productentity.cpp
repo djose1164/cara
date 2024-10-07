@@ -117,6 +117,8 @@ Product Product::fromJson(const QByteArray &data)
 
     Q_ASSERT(product.productId() > 0);
     Q_ASSERT(productObj[categoryIdField].toInt());
+    if (product.price() == 0)
+        qFatal() << productObj;
     Q_ASSERT(product.price() > 0);
     Q_ASSERT(product.categoryId() > 0);
 
@@ -225,6 +227,11 @@ void Product::setDescription(const QString &description)
 
 void Product::setupPricing(const QJsonObject &product)
 {
+    if (product.contains("sell_price"_L1))
+    {
+        setPrice(product[priceField].toString().toDouble());
+        return;
+    }
     if (product.contains(priceHistoryField))
     {
         setPriceHistory(product[priceHistoryField].toArray());
