@@ -22,7 +22,6 @@ Column {
     onOkClicked: productEntry.okClicked()
     Component.onCompleted: {
         root.payment = 0;
-        if (ProductManager.modelIsEmpty()) productRequest.addSuggetionsToModel(root.salespersonId)
     }
 
     ProductEntry {
@@ -41,15 +40,6 @@ Column {
         icon.width: 36; icon.height: 36
         flat: true
         onClicked: productEntry.addEntry()
-    }
-
-    ProductRequest {
-        id: productRequest
-        onSucceeded: products => {
-            ProductManager.modelAppend(products);
-            console.log(products.length)
-            console.log(ProductManager.model.count)
-        }
     }
 
     function findIn(model, criteria) {

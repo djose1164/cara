@@ -12,10 +12,6 @@ Item {
     property alias spacing: listView.spacing
     property alias listView: listView
 
-    Component.onCompleted: inventoryApi.fetchAll()
-
-    signal entriesAdded(total: int)
-
     ListView {
         id: listView
         readonly property bool isEmpty: count === 0
@@ -28,17 +24,6 @@ Item {
             id: busyIndicator
             anchors.centerIn: parent
             visible: listView.isEmpty
-        }
-    }
-
-    ListModel { id: model }
-
-    InventoryAPI {
-        id: inventoryApi
-        salespersonId: root.salespersonId
-        onFetchedAll: function(resp) {
-            resp.inventory.forEach(e => model.append(e));
-            entriesAdded(model.count);
         }
     }
 }
