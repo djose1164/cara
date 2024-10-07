@@ -3,19 +3,16 @@ import QtQuick.Controls
 import QtQuick.Layouts
 import QtQuick.Templates as T
 import Cara.Controls
-import Cara.Product
 
 Page {
     id: root
 
     readonly property T.StackView stackView: StackView.view
-    required property var product
-    required property var warehouse
-    required property int inventoryId
     required property int minimunStockLevel
     required property int maximunStockLevel
     required property int reorderPoint
     required property int quantityAvailable
+    required property var model
 
     title: "Stocks"
     header: ToolBar {
@@ -66,7 +63,7 @@ Page {
             spacing: 25
 
             Image {
-                source: product.image_url
+                source: model.imageUrl
                 sourceSize: "200x200"
             }
 
@@ -106,7 +103,7 @@ Page {
             TextField {
                 width: column.width
                 placeholderText: "Almacen"
-                text: warehouse.name
+                text: model.warehouseName
             }
 
             Row {
