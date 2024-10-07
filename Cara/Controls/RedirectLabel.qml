@@ -7,12 +7,12 @@ ItemDelegate {
     property alias title: customerLbl.text
 
     contentItem: Item {
+        id: myItem
         implicitWidth: customerLbl.implicitWidth + icon.implicitWidth
         implicitHeight: Math.max(customerLbl.implicitHeight, icon.implicitHeight)
         Label {
             id: customerLbl
-            anchors.verticalCenter: parent.verticalCenter
-            wrapMode: Label.Wrap
+            width: myItem.width - icon.width
             elide: Label.ElideRight
             font: root.font
         }
