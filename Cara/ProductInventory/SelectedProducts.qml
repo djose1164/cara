@@ -40,6 +40,7 @@ Item {
                 width: listView.width
                 productPrice: price
                 total: price * model.selectedQty
+                spinBox.to: model.quantityAvailable
                 spinBox.onValueChanged: productCard.model.selectedQty = spinBox.value
                 //onDeleted: deleteClicked(index, productId)
             }

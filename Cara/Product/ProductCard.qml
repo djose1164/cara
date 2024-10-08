@@ -71,7 +71,6 @@ Rectangle {
             Layout.alignment: Qt.AlignRight
             Layout.rightMargin: 5
             Layout.bottomMargin: 5
-            //from: 1
             editable: true
             inputMethodHints: Qt.ImhDigitsOnly
 
