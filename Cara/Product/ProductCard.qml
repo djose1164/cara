@@ -1,3 +1,5 @@
+pragma ComponentBehavior: Bound
+
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
@@ -74,29 +76,30 @@ Rectangle {
             inputMethodHints: Qt.ImhDigitsOnly
 
             down.indicator: DownIndicator {
-                x: spinBox.mirrored ? parent.width - width : 0
-                width: height
-                height: spinBox.height
+                enabled: !parent.enabled
                 spacing: spinBox.spacing
                 shouldDelete: spinBox.value === 1
-                color: spinBox.down.hovered || spinBox.down.pressed ? spinBox.Material.listHighlightColor : "white"
             }
-
-            down.onPressedChanged: if (spinBox.value === 0) root.deleted(root.index, root.productId)
             Component.onCompleted: if (spinBox.value === 0) spinBox.increase()
         }
     }
 
-    component DownIndicator : Item {
+    component DownIndicator : ToolButton {
         id: downIndicator
 
         property bool shouldDelete
-        property int spacing
-        property bool highlighted
+
         property alias color: rectangle.color
 
+        x: spinBox.mirrored ? parent.width - width : 0
+        height: parent.height
         implicitWidth: 40
         implicitHeight: 40
+        color: (hovered || pressed ) ? spinBox.Material.listHighlightColor : "white"
+        background: Rectangle {
+            color: downIndicator.pressed ? spinBox.Material.listHighlightColor: "transparent"
+            radius: downIndicator.width
+        }
 
         Rectangle {
             id: rectangle
@@ -104,14 +107,19 @@ Rectangle {
             y: downIndicator.spacing
             width: downIndicator.width - (downIndicator.spacing * 2)
             height: downIndicator.height - (downIndicator.spacing * 2)
+        }
 
-            Image {
-                anchors.centerIn: parent
-                source: downIndicator.shouldDelete ? "qrc:/icons/trash-can-outline.svg"
-                                                   : "remove.svg"
-                sourceSize: Qt.size(24, 24)
-                opacity: enabled ? 1 : .3
-            }
+        icon.source: downIndicator.shouldDelete ? "qrc:/icons/trash-can-outline.svg"
+                                                : "remove.svg"
+        icon.width: 24
+        icon.height: 24
+        autoRepeat: true
+        flat: true
+        onClicked: {
+            if (downIndicator.shouldDelete)
+                root.deleted(root.index, root.productId)
+            else
+                spinBox.decrease()
         }
     }
 }
