@@ -22,6 +22,7 @@ ProductModel::ProductModel(IProductRepository *newRepository, QObject *parent)
     : QAbstractListModel{parent}
     , data_{}
     , repository_{newRepository}
+    , status_{Status::Idle}
 {
     makeConnections();
 }
@@ -194,6 +195,7 @@ void ProductModel::update()
         return;
     }
 
+    setStatus(Status::Busy);
     repository_->update();
 }
 
@@ -228,6 +230,19 @@ void ProductModel::editFromJson(const QJsonObject &json) noexcept
         setData(fetched, newQty, int(RoleNames::QuantityAvailableRole));
     }
 
+}
+
+ProductModel::Status ProductModel::status() const
+{
+    return status_;
+}
+
+void ProductModel::setStatus(Status newStatus)
+{
+    if (status_ == newStatus)
+        return;
+    status_ = newStatus;
+    emit statusChanged();
 }
 
 void ProductModel::addProduct(const QVariantMap &map) noexcept
@@ -348,7 +363,11 @@ void ProductModel::makeConnections() noexcept
         connect(repository_,
                 &IProductRepository::fetched,
                 this,
-                [&](const QList<EntityLayer::Product> &products) { updateFromList(products); });
+                [&](const QList<EntityLayer::Product> &products)
+                {
+                    updateFromList(products);
+                    setStatus(Status::Idle);
+                });
     }
 }
 

@@ -44,6 +44,14 @@ public:
         WarehouseNameRole,
     };
 
+    enum class Status
+    {
+        Idle,
+        Busy,
+        Error
+    };
+    Q_ENUM(Status)
+
     explicit ProductModel(QObject *parent = nullptr);
     ProductModel(IProductRepository *newRepository, QObject *parent = nullptr);
 
@@ -63,6 +71,9 @@ public:
 
     ProductInventory::IProductRepository *repository() const;
     void setRepository(ProductInventory::IProductRepository *newRepository);
+
+    Status status() const;
+    void setStatus(Status newStatus);
 
 public slots:
     void update();
@@ -89,6 +100,8 @@ signals:
 
     void buyPriceHistoryRefreshed();
 
+    void statusChanged();
+
 private:
     void makeConnections() noexcept;
     QJsonObject findLatestPrice(const QJsonArray &array) const noexcept;
@@ -101,6 +114,8 @@ private:
 
     QList<EntityLayer::Product> data_;
     IProductRepository *repository_;
+    Status status_;
+    Q_PROPERTY(Status status READ status WRITE setStatus NOTIFY statusChanged FINAL)
 };
 }
 

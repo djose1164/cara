@@ -1,6 +1,5 @@
 import QtQuick
 import QtQuick.Controls
-import QtQuick.Layouts
 
 import "qrc:/inventory"
 
@@ -19,12 +18,6 @@ Item {
         anchors.fill: parent
         spacing: 20
         model: model
-
-        BusyIndicator {
-            id: busyIndicator
-            anchors.centerIn: parent
-            visible: listView.isEmpty
-        }
     }
 }
 

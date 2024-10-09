@@ -62,11 +62,6 @@ BackPage {
             paymentDetails.salespersonId: SalespersonSettings.salespersonId
             paymentDetails.mode: root.mode
             commentsDrawer.height: root.height
-            Component.onCompleted: {
-                console.log("SalespersonSettings.salespersonId:",SalespersonSettings.salespersonId)
-                console.log("root.mode:",root.mode)
-                console.log("root.model.taken:",root.model.taken)
-            }
         }
     }
 

@@ -1,3 +1,5 @@
+pragma ComponentBehavior: Bound
+
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
@@ -5,12 +7,12 @@ import QtQuick.Templates as T
 import Cara.Controls
 import Cara.Product
 import Cara.ProductInventory
-import Cara.Network
+import Cara.Salesperson
 
 Page {
     id: root
 
-    required property int salespersonId
+    property int salespersonId
     readonly property T.StackView stackView: StackView.view
 
     title: "Inventario"
@@ -25,20 +27,27 @@ Page {
             ToolTip.timeout: 5000
         }
 
-        onBackClicked: stackView.pop()
+        onBackClicked: root.stackView.popCurrentItem()
+    }
+
+    Component.onCompleted: {
+        if (internal.isCurrentSalesperson)
+            return;
+
+        productModel.update();
     }
 
     StackLayout {
         id: stackLayout
         anchors.fill: parent
         anchors.topMargin: 5
-        currentIndex: ProductInventoryController.inventory.count < 1 ? 1 : 0
+        currentIndex: internal.model.count < 1 ? 1 : 0
 
         // FIXME: A new component `InventoryView` must be created.
         ProductView {
             id: productView
             salespersonId: root.salespersonId
-            listView.model: ProductInventoryController.inventory
+            listView.model: internal.model
             delegate: ItemDelegate {
                 id: item
                 required property var model
@@ -72,12 +81,19 @@ Page {
 
                     width: parent.width
                     height: 100
-                    detailed: `Disponible ${quantityAvailable}`
-                    source: model.imageUrl
-                    name: model.productName
+                    detailed: `Disponible ${item.quantityAvailable}`
+                    source: item.model.imageUrl
+                    name: item.model.productName
                 }
             }
+
+            BusyIndicator {
+                id: busyIndicator
+                anchors.centerIn: parent
+                visible: productView.listView.isEmpty && productModel.status === ProductModel.Busy
+            }
         }
+
         Item {
             Label {
                 id: label
@@ -85,11 +101,28 @@ Page {
                 width: parent.width*.9
                 horizontalAlignment: Label.AlignHCenter
                 text: "Tu inventario esta vacio. Intenta crear una nueva [Orden de Compra](qrc:/orders/BuyOrder.qml)."
-                onLinkActivated: link => stackView.push(link)
+                onLinkActivated: link => root.stackView.pushItem(link)
                 textFormat: Label.MarkdownText
                 font.pointSize: 14
                 wrapMode: Label.WordWrap
             }
         }
+    }
+
+    ProductModel {
+        id: productModel
+        repository: SellerProductRepositoryREST {
+            sellerId: root.salespersonId
+        }
+
+        //onUpdated:
+    }
+
+    QtObject {
+        id: internal
+        readonly property bool isCurrentSalesperson: root.salespersonId === SalespersonSettings.salespersonId
+        readonly property ProductModel model: isCurrentSalesperson ? ProductInventoryController
+                                                                        .inventory
+                                                                   : productModel
     }
 }
