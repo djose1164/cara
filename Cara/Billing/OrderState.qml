@@ -30,8 +30,7 @@ ColumnLayout {
             name: "customerView"
             when: UserSettings.userTypeId === UserEntity.Customer
             PropertyChanges {
-                target: orderStatusCB
-                enabled: false
+                orderStatusCB.enabled: false
             }
         }
     ]
@@ -118,7 +117,6 @@ ColumnLayout {
 
             Component.onCompleted: {
                 internal.orderTotal += total;
-                console.log(imageUrl)
             }
 
             Layout.fillHeight: true

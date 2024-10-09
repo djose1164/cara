@@ -1,3 +1,5 @@
+pragma ComponentBehavior: Bound
+
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
@@ -14,6 +16,7 @@ Item {
     required property payment payment_
     required property T.StackView stackView
     required property bool taken
+    required property int mode
     // If different to -1, we'll evulate whether the salesperson meet the criteria
     // to mark the bill as paid.
     property int salespersonId: -1
@@ -27,43 +30,34 @@ Item {
     states: [
         State {
             name: "paid"
-            when: payment_.status === Payment.Paid
+            when: root.payment_.status === Payment.Paid
             PropertyChanges {
-                target: label
-                title: "Ultimo pago"
-                content: payment_.updatedAt.toLocaleDateString()
+                label.title: "Ultimo pago"
+                label.content: payment_.updatedAt.toLocaleDateString()
             }
             PropertyChanges {
-                target: loader
-                sourceComponent: paidDelegate
+                loader.sourceComponent: paidDelegate
             }
         },
         State {
             name: "unpaid"
-            when: payment_.status === Payment.Unpaid
+            when: root.payment_.status === Payment.Unpaid
             PropertyChanges {
-                target: label
-                title: "Deuda"
-                content: `RD$${internal.debt}`
-            }
-            PropertyChanges {
-                target: loader
-                active: UserSettings.userTypeId !== UserEntity.Customer && taken
-                visible: active
-                sourceComponent: unpaidDelegate
+                label.title: "Deuda"
+                label.content: `RD$${internal.debt}`
+                loader.active: UserSettings.userTypeId !== UserEntity.Customer
+                               && (taken || mode === BillDetailsPage.QueueOwnerMode)
+                loader.visible: loader.active
+                loader.sourceComponent: unpaidDelegate
             }
         },
         State {
             name: "credited"
-            when: payment_.status === Payment.Credited
+            when: root.payment_.status === Payment.Credited
             PropertyChanges {
-                target: loader
-                sourceComponent: creditedDelegate
-            }
-            PropertyChanges {
-                target: label
-                title: "Deuda"
-                content: `<span>RD$</span><b style="font-size: 14pt;">${internal.debt}</b>`
+                loader.sourceComponent: creditedDelegate
+                label.title: "Deuda"
+                label.content: `<span>RD$</span><b style="font-size: 14pt;">${internal.debt}</b>`
             }
         }
     ]
@@ -80,7 +74,7 @@ Item {
             columnSpacing: 25
 
             Label {
-                text: `<span>Estado de Pago</span><h2>${payment_.statusString}</h2>`
+                text: `<span>Estado de Pago</span><h2>${root.payment_.statusString}</h2>`
                 textFormat: Label.RichText
             }
 
@@ -139,7 +133,7 @@ Item {
 
     component SeeMore : Button {
         text: "Ver más"
-        onClicked: stackView.push("PaymentDetailsPage.qml", {paymentId: payment_.paymentId})
+        onClicked: root.stackView.push("PaymentDetailsPage.qml", {paymentId: root.payment_.paymentId})
     }
 
     component PayButton: Button {
@@ -162,13 +156,13 @@ Item {
         id: unpaidDelegate
         Item {
             implicitWidth: groupBox.width
+            implicitHeight: 1
+            visible: internal.canPay
 
             RowLayout {
                 anchors.fill: parent
 
-                PayButton {
-                    visible: internal.canPay
-                }
+                PayButton {}
 
                 Button {
                     text: "Abonar"
@@ -204,8 +198,6 @@ Item {
 
                 Button {
                     id: abonarBtn
-                    width: parent.width
-                    anchors.margins: 10
                     visible: internal.canPay
                     text: "Abonar"
                     Layout.fillWidth: true
@@ -228,7 +220,6 @@ Item {
         height: root.height * 1.3
         anchors.centerIn: Overlay.overlay
         onClosed: payItem.resetView()
-        onAboutToShow: console.log(`size: ${width}x${height}`)
 
         PayItem {
             id: payItem
@@ -243,7 +234,7 @@ Item {
     RestService {
         Pay {
             id: payService
-            paymentId: payment_.paymentId
+            paymentId: root.payment_.paymentId
             path: "payments"
             onPaid: resp => {
                 const newPayment = paymentController.fromJsonObject(resp.payment);
@@ -260,7 +251,7 @@ Item {
 
     QtObject {
         id: internal
-        readonly property int debt: payment_.amountToPay - payment_.paidAmount
+        readonly property int debt: root.payment_.amountToPay - root.payment_.paidAmount
         readonly property bool canPay: UserSettings.userTypeId === UserEntity.Admin
                                        || UserSettings.userTypeId === UserEntity.Salesperson
     }

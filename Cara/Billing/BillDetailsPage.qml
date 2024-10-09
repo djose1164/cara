@@ -1,3 +1,5 @@
+pragma ComponentBehavior: Bound
+
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Dialogs
@@ -58,7 +60,13 @@ BackPage {
             stackView: root.stackView
             paymentDetails.orderId: root.model.orderId
             paymentDetails.salespersonId: SalespersonSettings.salespersonId
+            paymentDetails.mode: root.mode
             commentsDrawer.height: root.height
+            Component.onCompleted: {
+                console.log("SalespersonSettings.salespersonId:",SalespersonSettings.salespersonId)
+                console.log("root.mode:",root.mode)
+                console.log("root.model.taken:",root.model.taken)
+            }
         }
     }
 
@@ -74,8 +82,7 @@ BackPage {
                 State {
                     when: root.mode === BillDetailsPage.QueueOwnerMode
                     PropertyChanges {
-                        target: takeAbandonAction
-                        enabled: false
+                        takeAbandonAction.enabled: false
                     }
                 }
             ]
@@ -126,10 +133,17 @@ BackPage {
                         enabled: !root.model.done && visible
                         text: "Cancelar orden"
                         onTriggered: {
-
+                            cancelMessage.open();
                         }
                     }
                 }
+            }
+
+            MessageDialog {
+                id: cancelMessage
+                title: "No disponible"
+                text: "Necesitas contactarte con un administar, y llenar una solicitud "
+                      + "para cancelar la orden."
             }
         }
     }
