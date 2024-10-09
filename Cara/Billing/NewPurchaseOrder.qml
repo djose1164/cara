@@ -7,6 +7,7 @@ import Cara.Customer
 import Cara.Controls
 import Cara.Billing
 import Cara.Salesperson
+import Cara.Utils
 
 Page {
     id: root
