@@ -56,7 +56,7 @@ Item {
         return {
             telephone: phoneNumber.text,
             homephone: homePhone.text,
-            email: email.text
+            email: email.text.length > 0 ? email.text : null
         };
     }
 }
