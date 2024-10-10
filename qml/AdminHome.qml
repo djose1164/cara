@@ -137,7 +137,7 @@ Home {
 
         ListElement {
             source: "qrc:/icons/supplier.svg"
-            path: "qrc:/provider/Providers.qml"
+            path: "qrc:/qt/qml/Cara/Billing/Providers.qml"
             name: "Proveedores"
             showCustomers: false
             admin: false
