@@ -54,7 +54,7 @@ Item {
 
     function toJson() {
         return {
-            telephone: phoneNumber.text,
+            telephone: (phoneNumber.text.length > 0) ? phoneNumber.text : null,
             homephone: homePhone.text,
             email: email.text.length > 0 ? email.text : null
         };
