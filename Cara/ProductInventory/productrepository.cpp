@@ -45,7 +45,6 @@ void ProductRepository::add(const QVariantMap &product)
         multiPart_ = new QHttpMultiPart(QHttpMultiPart::FormDataType, this);
         auto tmp{product};
         const auto imagesVariant{tmp.take("images")};
-        qDebug() << "ProductRepository::add: " << imagesVariant.value<QList<QUrl>>();
         qDebug() << "ProductRepository::add: " << imagesVariant;
         pictureRepository_->prepareImagePart(*multiPart_, imagesVariant.toList());
         prepareJsonPart(tmp);

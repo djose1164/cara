@@ -17,6 +17,7 @@ class ProductModel : public QAbstractListModel
     Q_OBJECT
     Q_PROPERTY(ProductInventory::IProductRepository *repository READ repository WRITE setRepository NOTIFY repositoryChanged FINAL)
     Q_PROPERTY(int count READ count NOTIFY countChanged FINAL)
+    Q_PROPERTY(Status status READ status WRITE setStatus NOTIFY statusChanged FINAL)
     QML_ELEMENT
 public:
     //using SalespersonId = int;
@@ -115,7 +116,6 @@ private:
     QList<EntityLayer::Product> data_;
     IProductRepository *repository_;
     Status status_;
-    Q_PROPERTY(Status status READ status WRITE setStatus NOTIFY statusChanged FINAL)
 };
 }
 

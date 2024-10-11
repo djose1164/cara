@@ -71,6 +71,5 @@ Item {
     QtObject {
         id: internal
         readonly property int bestSize: Math.min(root.width/2, root.height/2)
-        readonly property string sourceSize: "150x150"
     }
 }
