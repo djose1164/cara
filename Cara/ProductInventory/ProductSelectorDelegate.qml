@@ -1,8 +1,12 @@
 import QtQuick
 import QtQuick.Controls
+import Cara.ProductInventory
 
 ItemDelegate {
-    id: productThumbnail
+    id: root
+
+    required property ItemSelectionModel selection
+    required property ProductModel productModel
     property int index
     property var model
     property string productName
@@ -11,22 +15,36 @@ ItemDelegate {
     property int reorderPoint
     property string imageUrl
 
-    Row {
+    contentItem: Row {
         spacing: 10
         Image {
             id: image
-            source: imageUrl
-            sourceSize.width: productThumbnail.width /4
-            sourceSize.height: productThumbnail.height
+            source: root.imageUrl
+            sourceSize.width: root.width /4
+            sourceSize.height: root.height
             onStatusChanged: if (status === Image.Error) console.log(image.source)
         }
 
         Label {
-            width: productThumbnail.width - image.width
-            text: `
-            <h3>${productName}</h3>
-            <p>Cantidad disponible: <strong>${quantityAvailable}</strong>
-            `
+            width: root.width - image.implicitWidth
+            text: root.text
+
         }
+    }
+
+    background: Rectangle {
+        color: {
+            if (!root.selection.hasSelection)
+                return "transparent";
+            const selectedById = root.productModel.find(root.productId);
+            if (selection.isSelected(selectedById))
+                return "cornflowerblue";
+            return "transparent";
+        }
+    }
+
+    onClicked: {
+        const selectedById = root.productModel.find(productId);
+        selection.select(selectedById, ItemSelectionModel.Select | ItemSelectionModel.Toggle);
     }
 }
