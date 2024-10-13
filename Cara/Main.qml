@@ -7,6 +7,7 @@ import Cara.Authentication as Auth
 import Cara.User
 import Cara.Salesperson
 import Cara.Controls
+import Cara.ProductInventory
 
 ApplicationWindow {
     id: app
@@ -128,9 +129,18 @@ ApplicationWindow {
         tokenManager: Auth.TokenManager
         store: Auth.TokenStore {}
         onAuthenticated: data => {
+            LoginManager.loggingIn();
             print("Login: authenticated: ");
-            //Auth.TokenManager.accessToken = JSON.parse(data).access_token;
             userController.getUserById(UserSettings.userId);
+            LoginManager.loggedIn();
+        }
+    }
+
+    Connections {
+        target: LoginManager
+
+        function onLoggedIn() {
+            ProductInventoryController.updateSellerInventory(SalespersonSettings.salespersonId);
         }
     }
 
@@ -153,14 +163,14 @@ ApplicationWindow {
         if (Qt.platform.os === "android") {
             if (appStack.depth > 1) {
                 close.accepted = false;
-                appStack.pop();
+                appStack.popCurrentItem();
                 return;
             }
 
             const currentSV = appStack.currentItem.currentStackView;
             if (currentSV instanceof StackView && currentSV.depth > 1) {
                 close.accepted = false;
-                currentSV.pop()
+                currentSV.popCurrentItem();
                 return;
             }
         }
