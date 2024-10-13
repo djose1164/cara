@@ -352,7 +352,9 @@ void Product::setSupplierCatalog(const QJsonObject &newSupplierCatalog)
 
 double Product::buyPrice() const
 {
-    return buyPrice_;
+    return supplierCatalog()["price"_L1]
+            .toString()
+            .toDouble();
 }
 
 void Product::setBuyPrice(double newBuyPrice)

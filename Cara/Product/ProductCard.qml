@@ -10,9 +10,9 @@ Rectangle {
 
     property string imageUrl
     property string productName
-    property int productPrice
+    property double productPrice
     property int productId
-    property int total
+    property double total
     property int index
 
     readonly property alias spinBox: spinBox
@@ -116,7 +116,7 @@ Rectangle {
         flat: true
         onClicked: {
             if (downIndicator.shouldDelete)
-                root.deleted(root.index, root.productId)
+                root.deleted(root.index, root.productId);
             else
                 spinBox.decrease()
         }

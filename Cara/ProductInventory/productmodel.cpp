@@ -140,10 +140,7 @@ QVariant ProductModel::data(const QModelIndex &index, int role) const
     case RoleNames::SupplierNameRole:
         return getValue.supplierCatalog()["supplier"_L1]["name"_L1].toString();
     case RoleNames::SupplierPriceRole:
-        return getValue
-                .supplierCatalog()["price"_L1]
-                .toString()
-                .toDouble();
+        return getValue.buyPrice();
     case RoleNames::BuyPriceHistoryRole:
         return getValue.buyPriceHistory();
     case RoleNames::WarehouseNameRole:
@@ -171,20 +168,19 @@ bool ProductModel::contains(const EntityLayer::Product &product) const
 
 QModelIndex ProductModel::find(int productId) const
 {
-    const auto pred = [productId](const EntityLayer::Product &p) -> bool {
-        return p.productId() == productId;
-    };
+    const auto res = std::find_if(data_.begin(),
+                                  data_.end(),
+                                  [productId](const EntityLayer::Product &p)
+                                  {
+                                      return p.productId() == productId;
+                                  });
 
-    if (const auto res{std::find_if(data_.begin(), data_.end(), pred)};
-        res != data_.end())
+    if (res == data_.end())
     {
-        if (const auto idx{data_.indexOf(std::as_const(*res))}; idx == -1)
-            return {};
-        else
-            return index(idx);
+        return {};
     }
 
-    return {};
+    return index(std::distance(data_.begin(), res));
 }
 
 void ProductModel::update()
