@@ -1,6 +1,5 @@
 #include "sellerproductrepositoryrest.h"
 #include "qnamsingleton.h"
-#include "networkrequestsingleton.h"
 
 
 using namespace Qt::StringLiterals;
