@@ -6,6 +6,7 @@ import QtQuick.Layouts
 import QtQuick.Dialogs
 import Cara.Controls
 import Cara.Billing
+import Cara.ProductInventory
 
 BackPage {
     id: root
@@ -61,14 +62,35 @@ BackPage {
             ProviderComboBox {
                 id: providerSelector
                 Layout.fillWidth: true
+                onActivated: {
+                    if (selected) productModel.update()
+                }
             }
 
             ProductSale {
                 id: productSale
                 enabled: providerSelector.currentIndex !== -1
+                         && productModel.count > 0
+                selectorModel: productModel
                 selectedProductsDelegate: ProfitProductDelegate {
                     width: productSale.implicitViewWidth
+                    onDeleted: (idx, id) => productSale.selectedProductsView.deleteClicked(idx, id)
                 }
+
+                selectorDelegate: ProductSelectorDelegate {
+                    required model
+                    required productId
+
+                    width: root.width
+                    height: 90
+                    imageUrl: model.imageUrl
+                    text: `<h3>${model.productName}</h3>`
+                          + `${model.description}`
+                    productModel: productSale.productSelectorModel
+                    selection: productSale.selectionModel
+                    onClicked: console.log("selectorDelegate.productId:",productId)
+                }
+
                 Layout.fillWidth: true
                 Layout.minimumHeight: productSale.choosenProducts.count > 0 ? root.height * .4 : productSale.implicitHeight
             }
@@ -142,16 +164,18 @@ BackPage {
         }
     }
 
+    ProductModel {
+        id: productModel
+        repository: SupplierProductRepository {
+            supplierId: providerSelector.currentValue || 0
+        }
+        onUpdated: console.log("find(35):",find(35))
+    }
+
     ProfitCalculator {
         id: calculator
         percentage: spinBox.value
         model: productSale.choosenProducts
-        selectorModel: productSale.productSelectorModel
-
-        Binding on supplierId {
-            when: !isNaN(providerSelector.currentValue)
-            value: providerSelector.currentValue
-        }
     }
 
     CommissionModel {

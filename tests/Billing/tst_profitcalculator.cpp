@@ -38,7 +38,6 @@ void TestProfitCalculator::init()
 
     calculator_ = std::make_unique<Billing::ProfitCalculator>();
     calculator_->setModel(model_.get());
-    calculator_->setSupplierId(supplierId);
 
     const auto productModel{qobject_cast<ProductInventory::ProductModel *>(model_.get())};
     productModel->updateFromList(
@@ -52,9 +51,9 @@ void TestProfitCalculator::test_shouldCalculateTotalProfitCorrectly()
     constexpr double multi{.8};
     constexpr int percentage{40};
     calculator_->setPercentage(percentage);
-    calculator_->setProductList(QList<Product *>{new Product(1, 100 * multi, 0),
-                                                 new Product(2, 200 * multi, 0),
-                                                 new Product(3, 180 * multi, 0)});
+    // calculator_->setProductList(QList<Product *>{new Product(1, 100 * multi, 0),
+    //                                              new Product(2, 200 * multi, 0),
+    //                                              new Product(3, 180 * multi, 0)});
 
     calculator_->calculate();
 
@@ -67,7 +66,6 @@ void TestProfitCalculator::test_shouldCalculateTotalProfitAsZeroWhenNoProducts()
 
     constexpr int percentage{40};
     calculator_->setPercentage(percentage);
-    calculator_->setProductList(QList<Product *>{});
 
     calculator_->calculate();
 
@@ -86,7 +84,7 @@ void TestProfitCalculator::test_shouldCalculateTotalProfitCorrectlyWithSinglePro
     productModel->updateFromList(QList{Product{1, 100, 5}});
 
     calculator_->setPercentage(wholePercentage);
-    calculator_->setProductList(QList<Product *>{new Product(1, 100 * multi, 0)});
+    // calculator_->setProductList(QList<Product *>{new Product(1, 100 * multi, 0)});
 
     calculator_->calculate();
 
