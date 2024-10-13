@@ -8,6 +8,7 @@ import Cara.Controls
 import Cara.Billing
 import Cara.Salesperson
 import Cara.Utils
+import Cara.ProductInventory
 
 Page {
     id: root
@@ -27,19 +28,14 @@ Page {
         State {
             name: "creating"
             PropertyChanges {
-                target: busyPopup
-                visible: true
-            }
-            PropertyChanges {
-                target: acceptBtn
-                enabled: false
+                busyPopup.visible: true
+                acceptBtn.enabled: false
             }
         },
         State {
             name: "orderCreated"
             PropertyChanges {
-                target: busyPopup
-                visible: false
+                busyPopup.visible: false
             }
         }
     ]
@@ -66,6 +62,7 @@ Page {
 
             ProductSale {
                 id: productSale
+                selectorModel: ProductInventoryController.inventory
                 Layout.fillWidth: true
             }
 

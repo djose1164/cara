@@ -42,15 +42,7 @@ Item {
                 total: price * model.selectedQty
                 spinBox.to: model.quantityAvailable
                 spinBox.onValueChanged: productCard.model.selectedQty = spinBox.value
-                //onDeleted: deleteClicked(index, productId)
-            }
-
-            Connections {
-                target: listView.currentItem
-
-                function onDeleted(index: int, productId: int) {
-                    root.deleteClicked(index, productId);
-                }
+                onDeleted: root.deleteClicked(index, productId)
             }
         }
     }

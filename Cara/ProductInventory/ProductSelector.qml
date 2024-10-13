@@ -1,6 +1,8 @@
+pragma ComponentBehavior: Bound
+
 import QtQuick
 import QtQuick.Controls
-import Cara.Utils
+
 import Cara.ProductInventory
 
 Drawer {
@@ -8,35 +10,20 @@ Drawer {
 
     required property int salespersonId
     required property ProductModel selectedProducts
-    property alias productModel: productView.productModel
+    property alias productModel: productView.model
+    property alias delegate: productView.delegate
+    property alias model: productView.model
+    property alias selectionModel: productView.selectionModel
 
     signal productSelected(products: ProductModel)
 
     interactive: false
 
-    Component.onCompleted: {
-        refresh();
-    }
-
-    SelectorHeaderItem {
-        id: searchHeader
-        anchors {
-            top: parent.top
-            left: parent.left
-            right: parent.right
-        }
-
-        title: "Seleccionar producto"
-        onCloseClicked: root.close()
-    }
-
     ProductViewItem {
         id: productView
-        width: root.width
-        anchors.top: searchHeader.bottom
-        anchors.bottom: parent.bottom
+        anchors.fill: parent
         selectedProducts: root.selectedProducts
-        searchText: searchHeader.searchText
+        onCloseClicked: root.close()
     }
 
     function removeSelectionOf(productId) {
@@ -45,9 +32,5 @@ Drawer {
 
     function deselectAll() {
         productView.deselectAll();
-    }
-
-    function refresh() {
-        productView.updateModel(salespersonId);
     }
 }

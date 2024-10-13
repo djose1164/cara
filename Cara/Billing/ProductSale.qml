@@ -1,4 +1,5 @@
 import QtQuick
+import QtQuick.Controls
 import QtQuick.Layouts
 import Cara.Controls
 import Cara.ProductInventory
@@ -17,8 +18,12 @@ Item {
     property alias productSelectorModel: productSelector.productModel
     property alias calculator: costCalculator
     property alias selectedProductsDelegate: selectedProductsView.delegate
+    property alias selectorDelegate: productSelector.delegate
+    property alias selectorModel: productSelector.model
     readonly property alias implicitViewWidth: selectedProductsView.implicitViewWidth
     readonly property alias implicitViewHeight: selectedProductsView.implicitViewHeight
+    readonly property alias selectedProductsView: selectedProductsView
+    readonly property alias selectionModel: productSelector.selectionModel
 
     implicitWidth: stackLayout.implicitWidth
     implicitHeight: stackLayout.implicitHeight
@@ -58,8 +63,8 @@ Item {
 
     ProductSelector {
         id: productSelector
-        width: app.width
-        height: app.height
+        width: ApplicationWindow.window.width
+        height: ApplicationWindow.window.height
         salespersonId: SalespersonSettings.salespersonId
         selectedProducts: selectedProductsView.model
     }

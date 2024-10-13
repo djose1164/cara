@@ -6,13 +6,21 @@ import QtQml.Models
 import Cara.Product
 import Cara.Controls
 import Cara.ProductInventory
+import Cara.Utils
 
 Item {
     id: root
 
     required property ProductModel selectedProducts
-    required property string searchText
-    readonly property ProductModel productModel: ProductInventoryController.inventory
+    required property ProductModel model
+    property alias searchText: proxyModel.productName
+    property alias delegate: listView.delegate
+    readonly property alias selectionModel: selectionModel
+
+    signal closeClicked
+
+    implicitWidth: 400
+    implicitHeight: 500
 
     states: [
         State {
@@ -24,17 +32,29 @@ Item {
         State {
             name: "empty"
             PropertyChanges {
-                when: root.productModel.count === 0
+                when: root.model.count === 0
                 errorPane.visible: true
             }
         }
     ]
 
-    Component.onDestruction: ProductInventoryController.inventory.repository = null
+    SelectorHeaderItem {
+        id: searchHeader
+        anchors {
+            top: parent.top
+            left: parent.left
+            right: parent.right
+        }
+
+        title: "Seleccionar producto"
+        onCloseClicked: root.closeClicked()
+    }
 
     ListView {
         id: listView
-        anchors.fill: parent
+        width: root.width
+        anchors.top: searchHeader.bottom
+        anchors.bottom: parent.bottom
         model: proxyModel
         delegate: productDelegate
         clip: true
@@ -58,7 +78,7 @@ Item {
 
     ItemSelectionModel {
         id: selectionModel
-        model: root.productModel
+        model: root.model
         onSelectedIndexesChanged: {
             internal.isAcceptBtnEnabled = selectedIndexes.length > 0;
         }
@@ -91,8 +111,8 @@ Item {
 
     ProductProxyModel {
         id: proxyModel
-        sourceModel: root.productModel
-        productName: root.searchText
+        sourceModel: root.model
+        productName: searchHeader.searchText
     }
 
     Component {
@@ -108,22 +128,12 @@ Item {
             required imageUrl
 
             enabled: quantityAvailable > 0
-            background: Rectangle {
-                color: {
-                    if (!selectionModel.hasSelection)
-                        return "transparent";
-                    const selectedById = productModel.find(productId);
-                    if (selectionModel.isSelected(selectedById))
-                        return "cornflowerblue";
-                    return "transparent";
-                }
-            }
+            text: `<h3>${productName}</h3>`
+                  + `<p>Cantidad disponible: <strong>${quantityAvailable}</strong>`
+            selection: selectionModel
+            productModel: root.model
             height: 100
-            width: listView.width
-            onClicked: {
-                const selectedById = root.productModel.find(productId);
-                selectionModel.select(selectedById, ItemSelectionModel.Select | ItemSelectionModel.Toggle);
-            }
+            width: root.width
         }
     }
 
@@ -137,7 +147,7 @@ Item {
     }
 
     function removeSelectionOf(productId: int) {
-        const idx = root.productModel.index(indexOf(productId), 0);
+        const idx = root.model.index(indexOf(productId), 0);
         if (!idx.valid) {
             print("The idx is not valid");
             return;
@@ -150,16 +160,9 @@ Item {
     }
 
     function indexOf(productId: int): int {
-        for (let i = 0; i < root.productModel.count; ++i)
-            if (productModel.get(i).productId === productId)
+        for (let i = 0; i < root.model.count; ++i)
+            if (root.model.get(i).productId === productId)
                 return i;
         return -1;
-    }
-
-    function updateModel(salespersonId: int) {
-        sellerProductRepository.sellerId = salespersonId;
-        const inventory = ProductInventoryController.inventory;
-        inventory.repository = sellerProductRepository;
-        inventory.update();
     }
 }
