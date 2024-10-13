@@ -9,25 +9,27 @@ namespace ProductInventory {
 class SupplierProductRepository : public ProductInventory::IProductRepository
 {
     Q_OBJECT
-    Q_PROPERTY(int productId READ productId WRITE setProductId NOTIFY productIdChanged FINAL)
+    Q_PROPERTY(int supplierId READ supplierId WRITE setSupplierId NOTIFY supplierIdChanged FINAL)
     QML_ELEMENT
 public:
+    using SupplierId = int;
+
     explicit SupplierProductRepository(QObject *parent = nullptr);
 
     // IProductRepository interface
     void add(const EntityLayer::Product &product) override;
     void update() override;
-    void remove(ProductId productId) override;
+    void remove(SupplierId supplierId) override;
 
-    ProductId productId() const;
-    void setProductId(ProductId newProductId);
+    SupplierId supplierId() const;
+    void setSupplierId(SupplierId newSupplierId);
 
 signals:
-    void productIdChanged();
+    void supplierIdChanged();
 
 
 private:
-    ProductId productId_;
+    SupplierId supplierId_;
 };
 
 } // namespace ProductInventory

@@ -1,5 +1,4 @@
 #include "supplierproductrepository.h"
-#include "networkrequestsingleton.h"
 #include "qnamsingleton.h"
 
 using namespace Qt::StringLiterals;
@@ -17,7 +16,7 @@ namespace ProductInventory
 
 SupplierProductRepository::SupplierProductRepository(QObject *parent)
     : IProductRepository{parent}
-    , productId_{}
+    , supplierId_{}
 {
     setPath("products"_L1);
 }
@@ -28,17 +27,18 @@ void SupplierProductRepository::add(const EntityLayer::Product &product)
 
 void SupplierProductRepository::update()
 {
-    const QString identifier{QString::number(productId_)};
-    if (productId_ < 1)
+    const QString identifier{QString::number(supplierId_)};
+    if (supplierId_ < 1)
     {
-        const auto errStr{"Invalid productId: %1"_L1.arg(identifier)};
+        const auto errStr{"Invalid supplierId: %1"_L1.arg(identifier)};
         qWarning() << "SupplierProductRepository::fetch: " << errStr;
         emit errorOccurred(Error::FailedToFetch, errStr);
         return;
     }
 
+    const QUrlQuery query{ {"supplier_id"_L1, identifier} };
     manager_->get(
-        api_->createRequest(path() + resourceID.arg(identifier)),
+        api_->createRequest(path(), query),
         this,
         [this](QRestReply &reply)
         {
@@ -67,21 +67,21 @@ void SupplierProductRepository::update()
     );
 }
 
-void SupplierProductRepository::remove(ProductId productId)
+void SupplierProductRepository::remove(SupplierId supplierId)
 {
 }
 
-IProductRepository::ProductId SupplierProductRepository::productId() const
+SupplierProductRepository::SupplierId SupplierProductRepository::supplierId() const
 {
-    return productId_;
+    return supplierId_;
 }
 
-void SupplierProductRepository::setProductId(ProductId newProductId)
+void SupplierProductRepository::setSupplierId(SupplierId newSupplierId)
 {
-    if (productId_ == newProductId)
+    if (supplierId_ == newSupplierId)
         return;
-    productId_ = newProductId;
-    emit productIdChanged();
+    supplierId_ = newSupplierId;
+    emit supplierIdChanged();
 }
 
 } // namespace ProductInventory
