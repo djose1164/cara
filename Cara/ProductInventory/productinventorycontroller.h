@@ -28,6 +28,9 @@ public:
     IProductRepository *repository() const;
     void setRepository(IProductRepository *newRepository);
 
+public slots:
+    void updateSellerInventory(int sellerId) noexcept;
+
 signals:
     void catalogChanged();
 
@@ -36,6 +39,8 @@ signals:
     void repositoryChanged();
 
 private:
+    void initCatalog() noexcept;
+
     ProductModel *catalog_;
     ProductModel *inventory_;
     IProductRepository *repository_;

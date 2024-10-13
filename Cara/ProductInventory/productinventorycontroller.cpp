@@ -1,5 +1,6 @@
 #include "productinventorycontroller.h"
 #include "catalogproductrepository.h"
+#include "sellerproductrepositoryrest.h"
 
 namespace ProductInventory {
 
@@ -8,16 +9,7 @@ ProductInventoryController::ProductInventoryController(QObject *parent)
     , catalog_{new ProductModel{this}}
     , inventory_{new ProductModel{this}}
 {
-    const auto tempRepo{new CatalogProductRepository};
-    connect(tempRepo, &IProductRepository::fetched,
-            this, [this, tempRepo]
-                  {
-                      setRepository(nullptr);
-                      tempRepo->deleteLater();
-                  });
-
-    catalog_->setRepository(tempRepo);
-    catalog_->update();
+    initCatalog();
 }
 
 ProductModel *ProductInventoryController::catalog() const
@@ -57,6 +49,35 @@ void ProductInventoryController::setRepository(IProductRepository *newRepository
         return;
     repository_ = newRepository;
     emit repositoryChanged();
+}
+
+void ProductInventoryController::updateSellerInventory(int sellerId) noexcept
+{
+    const auto tempRepo{new SellerProductRepositoryREST};
+    tempRepo->setSellerId(sellerId);
+    connect(tempRepo, &IProductRepository::fetched,
+            this, [this, tempRepo]
+                  {
+                      setRepository(nullptr);
+                      tempRepo->deleteLater();
+                  });
+
+    inventory_->setRepository(tempRepo);
+    inventory_->update();
+}
+
+void ProductInventoryController::initCatalog() noexcept
+{
+    const auto tempRepo{new CatalogProductRepository};
+    connect(tempRepo, &IProductRepository::fetched,
+            this, [this, tempRepo]
+                  {
+                      setRepository(nullptr);
+                      tempRepo->deleteLater();
+                  });
+
+    catalog_->setRepository(tempRepo);
+    catalog_->update();
 }
 
 } // namespace ProductInventory
