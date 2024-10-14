@@ -71,7 +71,7 @@ BackPage {
                         <h3>Total ganancia neta:</h3>
                         ${internal.fontTag.arg("RD$" + model.grossProfit)}
                         <h3>% a descontar:</h3>
-                        ${internal.fontTag.arg(model.rate + "%")}
+                        ${internal.fontTag.arg((model.rate * 100) + "%")}
                         <h3>Monto a pagar:</h3>
                         ${internal.fontTag.arg("RD$" + model.amount)}
                         <h3>Fecha de creación:</h3>
