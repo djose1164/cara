@@ -108,6 +108,5 @@ Item {
 
     function refreshSelector() {
         productSelector.deselectAll();
-        productSelector.refresh();
     }
 }

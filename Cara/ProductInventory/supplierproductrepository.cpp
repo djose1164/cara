@@ -44,9 +44,17 @@ void SupplierProductRepository::update()
         {
             if (!reply.isSuccess())
             {
-                const QString errString{(*reply.readJson())["error"].toString()};
-                emit errorOccurred(Error::FailedToFetch, errString);
-                return;
+                if (const auto json{reply.readJson()}; json and json->isObject())
+                {
+                    const QString errString{(*json)["error"_L1].toString()};
+                    emit errorOccurred(Error::FailedToFetch, errString);
+                    return;
+                }
+                else
+                {
+                    emit errorOccurred(Error::FailedToFetch, reply.errorString());
+                    return;
+                }
             }
 
             if (const auto json{reply.readJson()};

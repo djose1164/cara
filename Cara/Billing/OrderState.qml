@@ -122,6 +122,7 @@ ColumnLayout {
             Layout.fillHeight: true
             Layout.fillWidth: true
             enabled: false
+            productId: productCard.product.id
             productName: productCard.product.name
             productPrice: productCard.price
             spinBox.value: productCard.quantity
