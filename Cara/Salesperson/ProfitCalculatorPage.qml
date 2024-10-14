@@ -88,7 +88,6 @@ BackPage {
                           + `${model.description}`
                     productModel: productSale.productSelectorModel
                     selection: productSale.selectionModel
-                    onClicked: console.log("selectorDelegate.productId:",productId)
                 }
 
                 Layout.fillWidth: true
@@ -169,7 +168,6 @@ BackPage {
         repository: SupplierProductRepository {
             supplierId: providerSelector.currentValue || 0
         }
-        onUpdated: console.log("find(35):",find(35))
     }
 
     ProfitCalculator {
