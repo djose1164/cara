@@ -8,12 +8,12 @@ import Cara.Controls
 Rectangle {
     id: root
 
+    required property int index
+    required property int productId
     property string imageUrl
     property string productName
     property double productPrice
-    property int productId
     property double total
-    property int index
 
     readonly property alias spinBox: spinBox
 
