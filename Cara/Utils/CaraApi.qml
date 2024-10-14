@@ -28,4 +28,8 @@ Item {
     function patch(endpoint: string, obj: var) {
         rest.patch(endpoint, obj);
     }
+
+    function put(endpoint: string, obj: var) {
+        rest.put(endpoint, obj);
+    }
 }
