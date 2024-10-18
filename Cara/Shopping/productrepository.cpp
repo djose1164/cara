@@ -82,7 +82,10 @@ void ProductRepository::update(const QVariantMap &product)
 {
     try
     {
-        validateMap(product);
+        // TODO: We need a validator member that holds a validator implementation,
+        // for this case an UpdateValidator. We also need to use the implementation
+        // from ProductInventory.
+        // validateMap(product);
         QVariantMap productTmp{product};
         const int productId{productTmp["id"].toInt()};
         productTmp.remove("id");
