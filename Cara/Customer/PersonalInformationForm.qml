@@ -9,6 +9,7 @@ GroupBox {
 
     property alias forename: personalInfo.forename
     property alias surname: personalInfo.surname
+    property alias dateRequired: personalInfo.dateRequired
     readonly property bool same: internal.oldForename === root.forename
                                  && internal.oldSurname === root.surname
 
