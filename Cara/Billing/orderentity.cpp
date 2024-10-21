@@ -75,14 +75,23 @@ QByteArray OrderEntity::toJson()
     for (const auto &detail : detailsDoc.array())
     {
         const auto detailObj{detail.toObject()};
-        const auto productId{detailObj["product"].toObject()["product_id"].toInt()};
-        const auto price{detailObj["product"].toObject()["price"].toInt()};
+        const auto productId{detailObj["product"_L1].toObject()["product_id"_L1].toInt()};
+        const int price{detailObj["product"_L1]["price_history"_L1]
+                                    .toArray()
+                                    .at(0)["price"_L1]
+                                    .toInt()};
+
+        qDebug() << detailObj["product"_L1]["price_history"_L1].toArray().at(0);
+        qDebug() << detailObj;
 
         QJsonObject detailsObj{};
         detailsObj["product_id"] = productId;
 
         const auto quantity{detailObj["quantity"].toInt()};
         detailsObj["quantity"] = quantity;
+
+        Q_ASSERT(price);
+        Q_ASSERT(quantity);
 
         amountToPay += quantity*price;
 
@@ -92,6 +101,7 @@ QByteArray OrderEntity::toJson()
     object["date"] = orderDate().toString(dateTimeFormat);
 
     payment_.setAmountToPay(amountToPay);
+    Q_ASSERT(amountToPay);
     payment_.decideStatus();
     const auto doc_{QJsonDocument::fromJson(payment_.toJson())};
 

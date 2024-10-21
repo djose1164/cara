@@ -1,12 +1,14 @@
+pragma ComponentBehavior: Bound
+
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Dialogs
-import QtQuick.Layouts
 import Cara
-import Cara.Utils
+import Cara.Controls
 import Cara.Billing
 import Cara.User
 import Cara.Salesperson
+import Cara.Utils
 import "qrc:/orders"
 
 BackPage {
@@ -58,6 +60,8 @@ BackPage {
             stackView: root.stackView
             paymentDetails.orderId: root.model.orderId
             paymentDetails.salespersonId: SalespersonSettings.salespersonId
+            paymentDetails.mode: root.mode
+            commentsDrawer.height: root.height
         }
     }
 
@@ -73,8 +77,7 @@ BackPage {
                 State {
                     when: root.mode === BillDetailsPage.QueueOwnerMode
                     PropertyChanges {
-                        target: takeAbandonAction
-                        enabled: false
+                        takeAbandonAction.enabled: false
                     }
                 }
             ]
@@ -125,10 +128,17 @@ BackPage {
                         enabled: !root.model.done && visible
                         text: "Cancelar orden"
                         onTriggered: {
-
+                            cancelMessage.open();
                         }
                     }
                 }
+            }
+
+            MessageDialog {
+                id: cancelMessage
+                title: "No disponible"
+                text: "Necesitas contactarte con un administar, y llenar una solicitud "
+                      + "para cancelar la orden."
             }
         }
     }
@@ -190,10 +200,12 @@ BackPage {
         onOrderTook: {
             processingIndicator.close();
             root.model.taken = true;
+            root.model.queueStatusId = OrderQueue.Assigned;
             takeMessage.open();
         }
         onOrderAbandoned: {
             root.model.taken = false;
+            root.model.queueStatusId = OrderQueue.Unassigned;
             internal.operation = BillDetailsPage.OrderAbandoned;
             processingIndicator.close();
             abandonMessage.open();
@@ -205,7 +217,8 @@ BackPage {
         onErrorOccurred: {
             processingIndicator.close();
             try {
-                errorMessage.text = JSON.parse(data).message;
+                errorMessage.title = JSON.parse(data).message;
+                errorMessage.text = JSON.parse(data).error;
             } catch (err) {
                 errorMessage.text = data;
             } finally {

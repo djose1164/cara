@@ -1,5 +1,7 @@
 #include "salespersonmodel.h"
 
+using namespace Qt::StringLiterals;
+
 namespace Model
 {
 SalespersonModel::SalespersonModel(QObject *parent)
@@ -31,9 +33,12 @@ QVariant SalespersonModel::data(const QModelIndex &index, int role) const
         return data_.at(row).salespersonId();
     case Roles::SalespersonTypeRole:
         return int(data_.at(row).salespersonType());
-    default:
-        qWarning() << "The role " << role << " is not valid";
-        break;
+    case Roles::ForenameRole:
+        return data_.at(row).forename();
+    case Roles::SurnameRole:
+        return data_.at(row).surname();
+    case Roles::FullnameRole:
+        return "%1 %2"_L1.arg(data_.at(row).forename(), data_.at(row).surname());
     }
     return {};
 }
@@ -76,7 +81,10 @@ QHash<int, QByteArray> SalespersonModel::roleNames() const
         {int(Roles::CreditConsumedRole), "creditConsumed"},
         {int(Roles::CreditLimitRole), "creditLimit"},
         {int(Roles::SalespersonIdRole), "salespersonId"},
-        {int(Roles::SalespersonTypeRole), "salespersonType"}
+        {int(Roles::SalespersonTypeRole), "salespersonType"},
+        {int(Roles::ForenameRole), "forename"},
+        {int(Roles::SurnameRole), "surname"},
+        {int(Roles::FullnameRole), "fullname"}
     };
 
     return hash;

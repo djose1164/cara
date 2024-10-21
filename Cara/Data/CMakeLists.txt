@@ -20,7 +20,7 @@ if (ANDROID)
 else()
     set(LOCAL_API_URL http://127.0.0.1:5000)
 endif()
-set(LOCAL_NETWORK_API_URL http://192.168.1.8:5000)
+set(LOCAL_NETWORK_API_URL http://192.168.1.2:5000)
 # RemoteTesting -- 0
 # LocalTesting -- 1
 # LocalNetworkTesting -- 2

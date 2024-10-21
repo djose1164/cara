@@ -30,8 +30,11 @@ Item {
         request.succeeded.connect(r => root.succeeded(r.products));
     }
     
-    function addSuggetionsToModel() {
-        request.get('/');
+    function addSuggetionsToModel(supplierId: int) {
+        if (supplierId)
+            request.get(`/?supplier_id=${supplierId}`);
+        else
+            request.get(`/`);
         request.succeeded.connect(r => root.succeeded(r.products));
     }
 }

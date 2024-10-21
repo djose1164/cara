@@ -3,6 +3,7 @@
 
 #include <QPointer>
 
+class QRestAccessManager;
 class QNetworkAccessManager;
 
 class QNAMSingleton
@@ -14,6 +15,8 @@ public:
     QNAMSingleton operator=(const QNAMSingleton &) = delete;
 
     QNetworkAccessManager *qnam() const;
+
+    static std::unique_ptr<QRestAccessManager> qram();
 
 private:
     QNAMSingleton();

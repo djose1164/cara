@@ -1,16 +1,16 @@
 #ifndef SALESPERSON_H
 #define SALESPERSON_H
 
+#include "common/ipersonname.h"
+
 #include <QObject>
 #include <QQmlEngine>
 #include <QJsonObject>
 
 namespace Entity {
-class Salesperson
+class Salesperson : public IPersonName
 {
     Q_GADGET
-    QML_VALUE_TYPE(salesperson)
-    QML_STRUCTURED_VALUE
     Q_PROPERTY(int salespersonId READ salespersonId WRITE setSalespersonId FINAL)
     Q_PROPERTY(SalespersonTypes salespersonType READ salespersonType WRITE setSalespersonType FINAL)
     Q_PROPERTY(int creditLimit READ creditLimit WRITE setCreditLimit FINAL)
@@ -20,6 +20,10 @@ class Salesperson
     Q_PROPERTY(QString warehouseAddress READ warehouseAddress WRITE setWarehouseAddress FINAL)
     Q_PROPERTY(QString salespersonTypeName READ salespersonTypeName WRITE setSalespersonTypeName FINAL)
     Q_PROPERTY(OrganizationId organizationId READ organizationId WRITE setOrganizationId FINAL)
+    Q_PROPERTY(QString forename READ forename WRITE setForename FINAL)
+    Q_PROPERTY(QString surname READ surname WRITE setSurname FINAL)
+    QML_VALUE_TYPE(salesperson)
+    QML_STRUCTURED_VALUE
 public:
     using SalespersonId = int;
     using UserId = int;
@@ -51,10 +55,10 @@ public:
     QString email() const;
     void setEmail(const QString &newEmail);
 
-    QString forename() const;
+    QString forename() const override;
     void setForename(const QString &newForename);
 
-    QString surname() const;
+    QString surname() const override;
     void setSurname(const QString &newSurname);
 
     int creditLimit() const;
@@ -92,6 +96,8 @@ public:
 
     OrganizationId organizationId() const;
     void setOrganizationId(OrganizationId newOrganizationId);
+
+    QString fullname() const override;
 
 private:
     QJsonObject prepareUser() const;

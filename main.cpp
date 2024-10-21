@@ -1,9 +1,14 @@
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
+#include <qqmlextensionplugin.h>
 #include "Cara/Authentication/business/tokenmanager.h"
 #include "Cara/config.h"
 #include "Cara/Network/networkrequestsingleton.h"
+
+Q_IMPORT_QML_PLUGIN(Cara_ProductInventoryPlugin)
+Q_IMPORT_QML_PLUGIN(Cara_ShoppingPlugin)
+Q_IMPORT_QML_PLUGIN(Cara_BillingPlugin)
 
 using namespace Qt::StringLiterals;
 

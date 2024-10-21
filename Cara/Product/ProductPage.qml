@@ -1,14 +1,15 @@
+pragma ComponentBehavior: Bound
+
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
-import QtQuick.Dialogs
 import QtQuick.Templates as T
 import Cara
-import Cara.Utils
+import Cara.Controls
+import Cara.ProductInventory
+import Cara.Review
 import Cara.Shopping
 import Cara.User
-import Cara.Review
-import Cara.Inventory
 import "qrc:/inventory"
 
 Page {
@@ -30,7 +31,7 @@ Page {
             Menu {
                 id: menu
                 MenuItem {
-                    text: "Mas informacion"
+                    text: "Más informacion"
                 }
             }
         }
@@ -41,7 +42,6 @@ Page {
     Component.onCompleted: {
         organizationResource.readById(internal.caraId);
         inventoryRepository.fetchAnyByProductId(root.productId);
-        //inventoryApi.fetchByProductId(root.productId);
         reviewModel.fetchReviewsByProductId(root.productId);
         ReviewController.canCustomerReview(UserSettings.customerId, root.productId);
     }
@@ -68,6 +68,15 @@ Page {
                 stock: root.inStock
                 favoriteProduct: favoriteResource
                 productForSale: root.product
+                buyButtonState: {
+                    if (internal.isInCart)
+                        return ShopProduct.AlreadyInCart;
+                    else if (root.inStock === 0)
+                        return ShopProduct.OutOfStocks;
+                    else
+                        return ShopProduct.Ok;
+                }
+
                 Layout.fillWidth: true
                 onBuyClicked: product => handleBuyClicked(product)
             }
@@ -99,7 +108,7 @@ Page {
                 }
             }
 
-            Item { height: 1 }
+            Item {}
         }
     }
 
@@ -108,26 +117,6 @@ Page {
     }
 
     Message { id: message }
-
-    ProductApi { id: api }
-
-    InventoryAPI {
-        id: inventoryApi
-        onFetchedInventoriesByProductId: function(inventories) {
-            let totalStock = 0;
-            let locations = "";
-
-            for (let inventory of inventories) {
-                const qty = inventory.quantity_available;
-                totalStock += qty;
-
-                if (qty > 0)
-                    shopProduct.locations.push(inventory.warehouse.name)
-            }
-
-            inStock = totalStock;
-        }
-    }
 
     InventoryRepository {
         id: inventoryRepository
@@ -145,7 +134,7 @@ Page {
                     shopProduct.locations.push(inventory.warehouse.name)
             }
 
-            inStock = totalStock;
+            root.inStock = totalStock;
         }
     }
 
@@ -178,6 +167,9 @@ Page {
         readonly property int caraId: 1
         readonly property string titleTemplate: `<b>%1</b><br><font size="2">%2</font>`
         readonly property int margin: Math.max(scrollView.effectiveScrollBarWidth, 10)
+        readonly property bool isInCart: CartController
+                                            .cartedProductIds
+                                            .indexOf(root.productId) > -1
         property string shortDescription
         property favorite fav
     }

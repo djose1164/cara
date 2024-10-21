@@ -1,7 +1,5 @@
 import QtQuick
-import QtQuick.Controls
 import Cara.Utils
-
 
 @Deprecated { reason: "Use SalespersonController." }
 QtObject {

@@ -207,3 +207,4 @@ restconfig.h
 # End of https://www.toptal.com/developers/gitignore/api/android,qt,qtcreator
 
 
+.qmlls.ini

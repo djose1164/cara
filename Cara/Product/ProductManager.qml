@@ -1,5 +1,6 @@
 pragma Singleton
 import QtQuick
+import Cara.Product
 
 QtObject {
     readonly property ListModel model: ListModel {}
@@ -18,7 +19,26 @@ QtObject {
         model.clear();
     }
 
-    function findById(productId: int): product {
+    function productFromJson(json): product {
+        console.log(JSON.stringify(json,null,2))
+        return {
+            name: json.name,
+            categoryId: json.category_id,
+            images: json.images,
+            price: json.price,
+            description: json.description,
+            productId: json.id
+        };
+    }
+
+    function updateProduct(newProduct: product) {
+        const product = ProductManager.findById(newProduct.productId);
+        product.name = newProduct.name;
+        product.description = newProduct.description;
+        product.sell_price = newProduct.price;
+    }
+
+    function findById(productId: int) {
         console.log("ProductManager.productId:", productId)
         const pred = product => product.id === productId;
 

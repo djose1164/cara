@@ -12,45 +12,14 @@ qt_add_qml_module(UtilsLib
         shareplataform.h shareplataform.cpp
         shareutils.h shareutils.cpp
         utils.h utils.cpp
+        validationerror.h
     QML_FILES
-        BackButton.qml
-        BackPage.qml
-        BusyPopup.qml
-        BusyStackLayout.qml
         CaraApi.qml
-        Card.qml
-        CenterBusyIndicator.qml
-        CloseButton.qml
-        CloseHeader.qml
-        DateDelegate.qml
-        DatePicker.qml
-        DrawerHeader.qml
-        Header.qml
-        ListViewPage.qml
-        Message.qml
-        MessagePane.qml
-        MoreVertButton.qml
-        ProcessingIndicator.qml
-        RedirectGroupBox.qml
-        RedirectLabel.qml
-        ScrollablePage.qml
-        SearchBar.qml
-        SearchButton.qml
-        SearchField.qml
         SearchItem.qml
         SearchPage.qml
-        Star.qml
-        StarRating.qml
-        TimeoutDialog.qml
-        TitleHeader.qml
-        PicSwipeView.qml
-        EmailField.qml
-        SearchHeader.qml
         SelectorHeaderItem.qml
     RESOURCES
         utils.js
-        star.png
-        star-unfilled.png
 )
 
 if(ANDROID)

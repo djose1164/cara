@@ -4,12 +4,11 @@ import QtQuick.Layouts
 import QtQuick.Dialogs
 import QtQuick.Templates as T
 import Cara.Customer
-import Cara.User
-import Cara.Utils
-import Cara.Inventory
-import Cara.Product
+import Cara.Controls
 import Cara.Billing
 import Cara.Salesperson
+import Cara.Utils
+import Cara.ProductInventory
 
 Page {
     id: root
@@ -29,19 +28,14 @@ Page {
         State {
             name: "creating"
             PropertyChanges {
-                target: busyPopup
-                visible: true
-            }
-            PropertyChanges {
-                target: acceptBtn
-                enabled: false
+                busyPopup.visible: true
+                acceptBtn.enabled: false
             }
         },
         State {
             name: "orderCreated"
             PropertyChanges {
-                target: busyPopup
-                visible: false
+                busyPopup.visible: false
             }
         }
     ]
@@ -68,6 +62,7 @@ Page {
 
             ProductSale {
                 id: productSale
+                selectorModel: ProductInventoryController.inventory
                 Layout.fillWidth: true
             }
 
@@ -79,7 +74,8 @@ Page {
 
             RedirectLabel {
                 id: dateRedirectLbl
-                title: datePicker.selectedDate.toLocaleDateString()
+                title: datePicker.isValid ? datePicker.dateString
+                                          : "Seleccionar fecha"
                 Layout.fillWidth: true
                 onClicked: datePicker.open()
             }
@@ -176,6 +172,7 @@ Page {
     function validate() {
         chooseCustomer.validate();
         productSale.validate();
+        productSale.validateStocks();
         paymentInput.validate();
     }
 

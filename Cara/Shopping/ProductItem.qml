@@ -1,7 +1,7 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
-import Cara.Utils
+import Cara.Controls
 
 Item {
     id: root
@@ -71,6 +71,5 @@ Item {
     QtObject {
         id: internal
         readonly property int bestSize: Math.min(root.width/2, root.height/2)
-        readonly property string sourceSize: "150x150"
     }
 }

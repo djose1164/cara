@@ -3,7 +3,7 @@ import QtQuick.Controls
 import QtQuick.Layouts
 import QtQuick.Templates as T
 import QtQuick.Dialogs
-import Cara.Utils
+import Cara.Controls
 import Cara.User
 import Cara.Controls
 import Cara.Customer

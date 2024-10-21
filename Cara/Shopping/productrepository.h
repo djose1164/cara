@@ -1,7 +1,7 @@
 #ifndef PRODUCTREPOSITORY_H
 #define PRODUCTREPOSITORY_H
 
-#include "iproductrepository.h"
+#include "ishoppingproductrepository.h"
 #include "productentity.h"
 
 #include <QNetworkReply>
@@ -10,19 +10,30 @@
 #include <QHttpPart>
 #include <QNetworkRequestFactory>
 
-namespace Catalogue {
-class ProductRepository : public QObject, public IProductRepository
+namespace Product
+{
+class PictureRepository;
+}
+
+namespace Catalogue
+{
+class ProductRepository : public QObject, public IShoppingProductRepository
 {
     Q_OBJECT
 
 public:
+    using PictureId = int;
+
     explicit ProductRepository(QObject *parent = nullptr);
+    ProductRepository(Product::PictureRepository *pictureRepository, QObject *parent = nullptr);
 
     QString path() const;
     void setPath(const QString &newPath);
 
     QString errorString() const;
     void setErrorString(const QString &newErrorString);
+
+    static void validateMap(const QVariantMap &map);
 
 public slots:
     void add(const QVariantMap &product) override;
@@ -33,9 +44,11 @@ public slots:
 
     void fetchAll() override;
 
-    QNetworkReply *addPicture(ProductId id, const QVariantList &pictureList) override;
+    QNetworkReply *addPicture(ProductId id, const QVariantList &pictureList);
+    QNetworkReply *deletePicture(PictureId pictureId);
 
-    QNetworkReply *deletePicture(PictureId pictureId) override;
+    // IProductRepository interface
+    QNetworkReply *fetchFromSupplier(SupplierId supplierId) override;
 
 signals:
     void added(const QByteArray &body);
@@ -45,8 +58,6 @@ signals:
     void allProductsFetched(const QList<EntityLayer::Product> &products);
 
 private:
-    void prepareImagePart(const QVariantList &pictureList);
-
     void prepareJsonPart(const QVariantMap &product);
 
     QNetworkRequest requestWithBoundary(QAnyStringView endpoint = {}) const;
@@ -59,7 +70,8 @@ private:
     QString path_;
     QString errorString_;
     std::shared_ptr<QNetworkRequestFactory> api_;
+    Product::PictureRepository *pictureRepository_;
 };
-}
+} // namespace Catalogue
 
 #endif // PRODUCTREPOSITORY_H

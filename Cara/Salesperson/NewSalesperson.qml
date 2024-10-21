@@ -5,7 +5,7 @@ import QtQuick.Dialogs
 import QtQuick.Templates as T
 import Cara.Salesperson
 import Cara.User
-import Cara.Utils
+import Cara.Controls
 import Cara.Customer
 
 Page {

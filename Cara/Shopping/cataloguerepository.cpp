@@ -1,14 +1,21 @@
 #include "cataloguerepository.h"
-#include "productrepository.h"
-#include "productcategoryrepository.h"
 #include <QJsonDocument>
+#include "productcategoryrepository.h"
+#include "productpicturerepository.h"
+#include "productrepository.h"
 
 using namespace Qt::StringLiterals;
+
+namespace
+{
+constexpr auto productsField{"products"_L1};
+}
 
 namespace Catalogue {
 CatalogueRepository::CatalogueRepository(QObject *parent)
     : QObject{parent}
-    , productRepository_{new ProductRepository(this)}
+    , pictureRepository_{new Product::ProductPictureRepository{this}}
+    , productRepository_{new ProductRepository(pictureRepository_, this)}
     , categoryRepository_{new ProductCategoryRepository(this)}
 {
     const auto repository{dynamic_cast<ProductRepository *>(productRepository_)};
@@ -27,7 +34,24 @@ void CatalogueRepository::addProduct(const QVariantMap &product)
 
 void CatalogueRepository::addPicture(ProductId productId, const QVariantList &pictureList)
 {
-    const auto reply{productRepository_->addPicture(productId, pictureList)};
+    if (productId < 1)
+    {
+        const QByteArray errorStr{"CatalogueRepository::addPicture: productId is invalid"_ba};
+        qWarning() << errorStr;
+        emit errorOccurred(errorStr);
+        return;
+    }
+    else if (pictureList.isEmpty())
+    {
+        const QByteArray errorStr{"CatalogueRepository::addPicture: pictureList is empty"_ba};
+        qWarning() << errorStr;
+        emit errorOccurred(errorStr);
+        return;
+    }
+
+    const auto reply{pictureRepository_->addPicture(productId, pictureList)};
+    if (!reply)
+        return;
 
     connect(reply, &QNetworkReply::finished, this, [reply, this] {
         const QByteArray data{reply->readAll()};
@@ -43,7 +67,7 @@ void CatalogueRepository::addPicture(ProductId productId, const QVariantList &pi
     });
 }
 
-void CatalogueRepository::deletePicture(IProductRepository::PictureId pictureId)
+void CatalogueRepository::deletePicture(PictureId pictureId)
 {
     if (pictureId < 1)
     {
@@ -53,7 +77,7 @@ void CatalogueRepository::deletePicture(IProductRepository::PictureId pictureId)
         return;
     }
 
-    const auto reply{productRepository_->deletePicture(pictureId)};
+    const auto reply{pictureRepository_->deletePicture(pictureId)};
 
     connect(reply, &QNetworkReply::finished, this, [this, reply] {
         const QByteArray data{reply->readAll()};
@@ -96,6 +120,41 @@ void CatalogueRepository::fetchProducts()
 
     connect(productRepository, &ProductRepository::allProductsFetched,
             this, &CatalogueRepository::allProductsFetched);
+}
+
+void CatalogueRepository::fetchProductsFromSupplier(SupplierId supplierId)
+{
+    if (supplierId < 1)
+    {
+        const auto errorStr{"Invalid supplierId"_ba};
+        qWarning() << "CatalogueRepository::fetchProductsFromSupplier: " << errorStr;
+        emit errorOccurred(errorStr);
+        return;
+    }
+
+    const auto reply{productRepository_->fetchFromSupplier(supplierId)};
+    connect(reply,
+            &QNetworkReply::finished,
+            this,
+            [reply, this]
+            {
+                QRestReply restReply{reply};
+                if (!restReply.isSuccess())
+                {
+                    emit errorOccurred(restReply.readBody());
+                    return;
+                }
+
+                if (const auto json{restReply.readJson()};
+                    json && json->isObject() && json->object().contains("products"_L1))
+                {
+                    emit productsFetched(json->toJson());
+                }
+                else
+                {
+                    emit errorOccurred("products is not an array"_ba);
+                }
+            });
 }
 
 void CatalogueRepository::deleteProduct(int productId)

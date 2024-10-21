@@ -1,7 +1,7 @@
 #include "productentity.h"
 #include "restconfig.h"
-#include "utils.h"
 #include "Network/apienvironment.h"
+#include "utils.h"
 
 using namespace Qt::StringLiterals;
 
@@ -30,32 +30,43 @@ constexpr auto imageUrlField{"image_url"_L1};
 constexpr auto imageUrlProperty{"imageUrl"_L1};
 constexpr auto imagesField{"images"_L1};
 constexpr auto nameField{"name"_L1};
-constexpr auto sellPriceField{"sell_price"_L1};
-constexpr auto buyPriceField{"buy_price"_L1};
+constexpr auto priceField{"sell_price"_L1};
+constexpr auto supplierPriceHistoryField{"supplier_price_history"_L1};
+constexpr auto priceHistoryField{"price_history"_L1};
 constexpr auto idField{"id"_L1};
 constexpr auto productField{"product"_L1};
+constexpr auto productIdField{"product_id"_L1};
 constexpr auto descriptionField{"description"_L1};
 constexpr auto maximumStockLevelField{"maximum_stock_level"_L1};
 constexpr auto minimumStockLevelField{"minimum_stock_level"_L1};
 constexpr auto reorderPointField{"reorder_point"_L1};
 constexpr auto quantityAvailableField{"quantity_available"_L1};
+constexpr auto categoryIdField{"category_id"_L1};
 constexpr auto picIdentificator{getPicIdentificator()};
 }
 
-namespace EntityLayer {
+namespace EntityLayer
+{
+
 Product::Product()
+    : Product{0, 0, 0}
+{
+}
+
+Product::Product(int newProductId, double newPrice, int newSelectedQty)
     : name_{}
     , description_{}
-    , price_{}
+    , price_{newPrice}
     , buyPrice_{}
-    , productId_{}
+    , productId_{newProductId}
     , images_{}
     , imageUrl_{}
+    , warehouseName_{}
     , maximumStockLevel_{}
     , minimumStockLevel_{}
     , quantityAvailable_{}
     , reorderPoint_{}
-    , selectedQty_{}
+    , selectedQty_{newSelectedQty}
     , categoryId_{}
 {
 }
@@ -64,8 +75,9 @@ Product Product::fromMap(const QVariantMap &map)
 {
     Product product{};
     product.setName(map[nameField].toString());
-    product.setPrice(map[sellPriceField].toInt());
-    product.setProductId(map[idField].toInt());
+    product.setPrice(map["price"_L1].toDouble());
+    product.setProductId(map["productId"_L1].toInt());
+    product.setCategoryId(map["categoryId"_L1].toInt());
 
     product.setupPictures(map[imagesField].toJsonArray());
 
@@ -96,12 +108,19 @@ Product Product::fromJson(const QByteArray &data)
     product.setProductId(productObj.value(idField).toInt());
     product.setName(productObj.value(nameField).toString());
     product.setDescription(productObj.value(descriptionField).toString());
+    product.setCategoryId(productObj[categoryIdField].toInt());
+    product.setSupplierCatalog(productObj["supplier_catalog"_L1].toObject());
+    product.setBuyPriceHistory(productObj["buy_price_history"_L1].toArray());
+
     product.setupPictures(productObj[imagesField].toArray());
+    product.setupPricing(productObj);
 
-    product.setPrice(productObj.value(sellPriceField).toInt());
-    product.setBuyPrice(productObj.value(buyPriceField).toInt());
-
+    Q_ASSERT(product.productId() > 0);
+    Q_ASSERT(productObj[categoryIdField].toInt());
+    if (product.price() == 0)
+        qFatal() << productObj;
     Q_ASSERT(product.price() > 0);
+    Q_ASSERT(product.categoryId() > 0);
 
     if (not isFromInventory)
         return product;
@@ -110,13 +129,44 @@ Product Product::fromJson(const QByteArray &data)
     product.setMinimumStockLevel(inventoryObj.value(minimumStockLevelField).toInt());
     product.setReorderPoint(inventoryObj.value(reorderPointField).toInt());
     product.setQuantityAvailable(inventoryObj.value(quantityAvailableField).toInt());
+    product.setWarehouseName(inventoryObj["warehouse"_L1]["name"_L1].toString());
 
     return product;
 }
 
+Product *Product::fromJson(const QJsonObject &data)
+{
+    QJsonObject productObj = std::move(data);
+
+    Q_ASSERT(productObj.value(idField).toInt());
+
+    const auto product{new Product};
+    product->setProductId(productObj.value(idField).toInt());
+    product->setName(productObj.value(nameField).toString());
+    product->setDescription(productObj.value(descriptionField).toString());
+    product->setCategoryId(productObj[categoryIdField].toInt());
+
+    product->setupPictures(productObj[imagesField].toArray());
+    product->setupPricing(productObj);
+
+    return product;
+}
+
+QList<Product> Product::fromJsonArray(const QJsonArray &array)
+{
+    QList<Product> productList;
+    productList.reserve(array.count());
+    for (const auto &item : array)
+    {
+        const auto productJson{QJsonDocument{item.toObject()}.toJson()};
+        productList.append(fromJson(productJson));
+    }
+    return productList;
+}
+
 bool Product::operator==(const Product &rhs) const
 {
-    return productId_ == rhs.productId();
+    return productId_ == rhs.productId() && images_ == rhs.images_;
 }
 
 bool Product::operator!=(const Product &rhs) const
@@ -134,7 +184,7 @@ QString Product::description() const
     return description_;
 }
 
-int Product::price() const
+double Product::price() const
 {
     return price_;
 }
@@ -147,10 +197,13 @@ int Product::productId() const
 QByteArray Product::toJson() const
 {
     QJsonObject obj{};
-    obj["product_id"_L1] = productId_;
+    //obj["product_id"_L1] = productId_;
     obj[nameField] = name_;
     obj[descriptionField] = description_;
-    obj["price"_L1] = price();
+    obj[priceHistoryField] = QJsonArray{QJsonObject{{"price"_L1, price_}}};
+    obj[imagesField] = images_;
+    obj[categoryIdField] = categoryId_;
+    obj[productIdField] = productId_;
 
     QJsonDocument doc{obj};
     return doc.toJson(QJsonDocument::Compact);
@@ -172,9 +225,27 @@ void Product::setDescription(const QString &description)
     }
 }
 
-void Product::setPrice(int price)
+void Product::setupPricing(const QJsonObject &product)
 {
-    price_ = price;
+    if (product.contains("sell_price"_L1))
+    {
+        setPrice(product[priceField].toString().toDouble());
+        return;
+    }
+    if (product.contains(priceHistoryField))
+    {
+        setPriceHistory(product[priceHistoryField].toArray());
+    }
+    else
+    {
+        qWarning() << "Product::setupPricing: %1 not present in QJsonObject."_L1.arg(
+            priceHistoryField);
+    }
+}
+
+void Product::setPrice(double newPrice)
+{
+    price_ = newPrice;
 }
 
 void Product::setProductId(int productId)
@@ -198,6 +269,102 @@ void Product::setupPictures(const QJsonArray &pics)
     }
     setImageUrl(imageList.first().toObject()[imageUrlProperty].toString());
     setImages(std::move(imageList));
+}
+
+void Product::setPriceHistory(const QJsonArray &history)
+{
+    if (history.isEmpty())
+    {
+        qWarning() << "Product::setupPrice: priceHistory is empty.";
+        return;
+    }
+    std::ranges::for_each(history,
+                          [this](const QJsonValue &jsonValue)
+                          {
+                              if (const auto entity{jsonValue.toObject()};
+                                  entity["thru_date"_L1].isNull())
+                              {
+                                  const double newPrice{entity["price"_L1].toString().toDouble()};
+                                  setPrice(newPrice);
+                              }
+                          });
+}
+
+QString Product::warehouseName() const
+{
+    return warehouseName_;
+}
+
+void Product::setWarehouseName(const QString &newWarehouseName)
+{
+    warehouseName_ = newWarehouseName;
+}
+
+QJsonArray Product::buyPriceHistory() const
+{
+    return buyPriceHistory_;
+}
+
+void Product::setBuyPriceHistory(const QJsonArray &newBuyPriceHistory)
+{
+    QJsonArray history;
+    std::ranges::for_each(
+        newBuyPriceHistory,
+        [this, &history](const auto &item)
+        {
+            if (item["thru_date"_L1].isNull())
+                setBuyPrice(item["price"_L1].toString().toDouble());
+
+            const QDateTime startDate{
+                Utils::stringToDateTime(item["start_date"_L1].toString())};
+            const QDateTime thruDate{
+                Utils::stringToDateTime(item["thru_date"_L1].toString())};
+            history.append(
+                QJsonObject
+                {
+                    {"priceId"_L1, item["id"_L1].toInt()},
+                    {"price"_L1, item["price"_L1].toString()},
+                    {"startDate"_L1, startDate.toString(Qt::ISODate)},
+                    {"thruDate"_L1, thruDate.toString(Qt::ISODate)},
+                    {"supplierId"_L1, item["supplier"_L1]["id"_L1].toInt()},
+                    {"supplierName"_L1, item["supplier"_L1]["name"_L1].toString()},
+                }
+            );
+        }
+    );
+    buyPriceHistory_ = std::move(history);
+}
+
+bool Product::isPostable() const
+{
+    return not name_.isEmpty() and price_ > 0 and categoryId_ > 0;
+}
+
+QJsonObject Product::supplierCatalog() const
+{
+    return supplierCatalog_;
+}
+
+void Product::setSupplierCatalog(const QJsonObject &newSupplierCatalog)
+{
+    supplierCatalog_ = newSupplierCatalog;
+}
+
+double Product::buyPrice() const
+{
+    return supplierCatalog()["price"_L1]
+            .toString()
+            .toDouble();
+}
+
+void Product::setBuyPrice(double newBuyPrice)
+{
+    buyPrice_ = newBuyPrice;
+}
+
+QString Product::makeUrlToPicture(QAnyStringView filename)
+{
+    return getPicIdentificator().arg(filename.toString());
 }
 
 int Product::categoryId() const
@@ -247,6 +414,17 @@ void Product::setImages(const QJsonArray &newImages)
 void Product::setImages(QJsonArray &&newImages)
 {
     images_ = std::move(newImages);
+}
+
+void Product::appendImage(const QUrl &filename)
+{
+    images_.append(QJsonObject{{imageUrlProperty, filename.toString()}});
+}
+
+void Product::clearImages()
+{
+    while (images_.count())
+        images_.pop_back();
 }
 
 int Product::selectedQty() const
@@ -312,21 +490,10 @@ void Product::setMaximumStockLevel(int newMaximumStockLevel)
     maximumStockLevel_ = newMaximumStockLevel;
 }
 
-int Product::buyPrice() const
+}
+
+QDebug operator<<(QDebug dbg, const EntityLayer::Product &p)
 {
-    return buyPrice_;
-}
-
-void Product::setBuyPrice(int newBuyPrice)
-{
-    if (buyPrice_ == newBuyPrice)
-        return;
-    buyPrice_ = newBuyPrice;
-}
-
-}
-
-QDebug operator<<(QDebug dbg, const EntityLayer::Product &p) {
     dbg.nospace() << QStringLiteral("Product(name=%1, sellPrice=%2, productId=%3)")
                          .arg(p.name(),
                               QString::number(p.price()),

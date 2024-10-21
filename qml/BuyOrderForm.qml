@@ -3,10 +3,10 @@ import QtQuick.Controls
 import QtQuick.Layouts
 import Cara.User
 import Cara.Salesperson
-import Cara.Utils
-import "qrc:/provider"
+import Cara.Controls
 import Cara.Billing
 import Cara.Product
+import Cara.ProductInventory
 
 Drawer {
     id: root
@@ -16,14 +16,14 @@ Drawer {
     readonly property var buyOrder: {
         "date": datePicker.toShortDate(),
         "description": descriptionArea.text,
-        "provider_id": providerComboBox.currentValue,
+        "provider_id": providerSelector.currentValue,
         "payment": {
-            "amount_to_pay": entry.totalToPay,
-            "paid_amount": !paymentStatus.isCredit ? entry.totalToPay : 0
+            "amount_to_pay": productSale.calculator.total,
+            "paid_amount": !paymentStatus.isCredit ? productSale.calculator.total : 0
         },
         "total_amount": totalAmount
     }
-    property int totalAmount
+    readonly property double totalAmount: productSale.calculator.total
 
     signal accepted
 
@@ -33,7 +33,7 @@ Drawer {
         id: header
         width: root.width
         height: 40
-        anchors.top: root.top
+        anchors.top: parent.top
 
         Label {
             text: "Nueva Orden de Compra"
@@ -64,8 +64,11 @@ Drawer {
             spacing: 20
 
             ProviderComboBox {
-                id: providerComboBox
+                id: providerSelector
                 Layout.fillWidth: true
+                onActivated: {
+                    if (selected) productModel.update();
+                }
             }
 
             ScrollView {
@@ -80,14 +83,10 @@ Drawer {
             }
 
             RedirectLabel {
-                title: datePicker.selectedDate.toLocaleDateString()
+                title: datePicker.isValid ? datePicker.dateString
+                                          : "Seleccionar fecha"
+                Layout.fillWidth: true
                 onClicked: datePicker.open()
-            }
-
-            DatePicker {
-                id: datePicker
-                width: root.width * .9
-                height: root.height * .75
             }
 
             PaymentStatus {
@@ -98,29 +97,42 @@ Drawer {
                 partialPaid: false
             }
 
-            Label {
-                text: "Poductos"
-                font.pointSize: 14
-                font.bold: true
-                background: Rectangle { color: "white" }
-                Layout.fillWidth: true
-                Layout.fillHeight: true
-            }
+            ProductSale {
+                id: productSale
+                enabled: providerSelector.currentIndex !== -1
+                         && productModel.count > 0
+                selectorModel: productModel
+                selectorDelegate: ProductSelectorDelegate {
+                    required model
+                    required productId
 
-            AddProductView {
-                id: entry
-                valueRoleType: ProductComboBox.BuyPrice
-                Layout.fillWidth: true
-                Layout.preferredHeight: 200
-                onEntryUpdated: {
-                    totalAmount = entry.calculateTotal();
-                    buyOrder.order_details = productEntries.entryValues();
+                    width: root.width
+                    height: 90
+                    imageUrl: model.imageUrl
+                    text: `<h3>${model.productName}</h3>`
+                          + `${model.description}`
+                    productModel: productSale.productSelectorModel
+                    selection: productSale.selectionModel
                 }
+
+                selectedProductsDelegate: ProductCard {
+                    required property double buyPrice
+                    required property var model
+                    required productName
+                    required imageUrl
+
+                    width: productSale.implicitViewWidth
+                    total: buyPrice * spinBox.value
+                    spinBox.onValueChanged: model.selectedQty = spinBox.value
+                }
+
+                Layout.fillWidth: true
+                Layout.minimumHeight: productSale.choosenProducts.count > 0 ? root.height * .4 : productSale.implicitHeight
             }
 
             Label {
                 property int total
-                text: "Total: RD$" + totalAmount
+                text: "Total: RD$" + root.totalAmount
                 font.pointSize: 14
             }
 
@@ -135,13 +147,29 @@ Drawer {
                 }
 
                 Button {
-                    onClicked: accepted()
                     Layout.fillWidth: true
                     text: "Aceptar"
                     Material.background: Material.Green
                     Material.foreground: "white"
+                    onClicked: {
+                        root.buyOrder.order_details = productSale.toJson();
+                        root.accepted();
+                    }
                 }
             }
+        }
+    }
+
+    DatePicker {
+        id: datePicker
+        width: root.width * .9
+        height: root.height * .75
+    }
+
+    ProductModel {
+        id: productModel
+        repository: SupplierProductRepository {
+            supplierId: providerSelector.currentValue || 0
         }
     }
 }

@@ -2,7 +2,7 @@ import QtQuick
 import QtQuick.Dialogs
 import QtQuick.Controls
 import QtQuick.Layouts
-import Cara.Utils
+import Cara.Controls
 import Cara.User
 import Cara.Review
 
@@ -57,6 +57,7 @@ Item {
     signal reviewDeleted
 
     implicitHeight: columnLayout.implicitHeight
+    implicitWidth: columnLayout.implicitWidth
     ColumnLayout {
         id: columnLayout
         anchors.fill: parent
@@ -67,6 +68,7 @@ Item {
             customerNameTxt: root.reviewer
             dateTxt: agoDate
             Layout.preferredWidth: root.width/2
+            Layout.fillWidth: true
             onDeleteClicked: ReviewController.deleteReview(root.reviewId)
         }
 

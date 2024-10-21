@@ -17,11 +17,23 @@ endfunction()
 # include_directories(../Cara/User)
 
 SETUP_TESTS(
+   commission
    pay
    payment
+   profitcalculator
+   restcommissionrepository
    restorderrepository
+   restsalerepository
 )
 
 qt_add_resources(restorderrepository "sample_data"
     FILES good_order.json bad_order.json
+)
+
+qt_add_resources(restsalerepository "restsalerepository_sample_data"
+    FILES sales.json
+)
+
+qt_add_resources(restcommissionrepository "restcommissionrepository_sample_data"
+    FILES insertable_commission.json
 )

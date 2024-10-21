@@ -1,6 +1,7 @@
 #include "qnamsingleton.h"
 
 #include <QNetworkAccessManager>
+#include <QRestAccessManager>
 
 QNAMSingleton &QNAMSingleton::instance()
 {
@@ -17,4 +18,9 @@ QNAMSingleton::QNAMSingleton()
 QNetworkAccessManager *QNAMSingleton::qnam() const
 {
     return qnam_.get();
+}
+
+std::unique_ptr<QRestAccessManager> QNAMSingleton::qram()
+{
+    return std::make_unique<QRestAccessManager>(QNAMSingleton::instance().qnam());
 }

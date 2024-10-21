@@ -17,6 +17,7 @@ qt_add_qml_module(UserLib
         UpdatePasswordPage.qml
         UserCredentialsForm.qml
         UserSettings.qml
+        CommentsDrawer.qml
     SOURCES
         address.h address.cpp
         contact.h contact.cpp
@@ -32,6 +33,10 @@ qt_add_qml_module(UserLib
         usermodel.h usermodel.cpp
         userrepository.h userrepository.cpp
         usersession.h usersession.cpp
+        comment.h comment.cpp
+        commentmodel.h commentmodel.cpp
+        commentrepository.h
+        ordercommentrepository.h ordercommentrepository.cpp
     RESOURCES
         password.svg
     DEPENDENCIES
@@ -46,4 +51,4 @@ target_include_directories(UserLib
 )
 
 target_link_libraries(UserLib
-    PRIVATE AuthenticationLib NetworkLib)
+    PRIVATE AuthenticationLib NetworkLib CommonLib)

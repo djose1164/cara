@@ -2,12 +2,17 @@
 #define CATALOGUEREPOSITORY_H
 
 #include "iproductcategoryrepository.h"
-#include "iproductrepository.h"
+#include "ishoppingproductrepository.h"
 #include "productentity.h"
 #include <QObject>
 #include <QQmlEngine>
 
-namespace Catalogue {
+namespace Product
+{
+class PictureRepository;
+}
+namespace Catalogue
+{
 class CatalogueRepository : public QObject
 {
     Q_OBJECT
@@ -15,6 +20,8 @@ class CatalogueRepository : public QObject
 
 public:
     using ProductId = int;
+    using PictureId = int;
+    using SupplierId = int;
 
     explicit CatalogueRepository(QObject *parent = nullptr);
 
@@ -23,11 +30,13 @@ public slots:
 
     void addPicture(ProductId productId, const QVariantList &pictureList);
 
-    void deletePicture(IProductRepository::PictureId pictureId);
+    void deletePicture(PictureId pictureId);
 
     void readProductById(ProductId id);
 
     void fetchProducts();
+
+    void fetchProductsFromSupplier(SupplierId supplierId);
 
     void editProduct(const QVariantMap &product);
 
@@ -58,9 +67,10 @@ signals:
     void pictureDeleted();
 
 private:
-    IProductRepository *productRepository_;
+    Product::PictureRepository *pictureRepository_;
+    IShoppingProductRepository *productRepository_;
     IProductCategoryRepository *categoryRepository_;
 };
-}
+} // namespace Catalogue
 
 #endif // CATALOGUEREPOSITORY_H

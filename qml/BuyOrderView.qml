@@ -1,17 +1,15 @@
+pragma ComponentBehavior: Bound
+
 import QtQuick
 import QtQuick.Controls
-import QtQuick.Layouts
-import QtQuick.Dialogs
-
-import Cara.Utils
+import QtQuick.Templates as T
 import "qrc:/orders"
-import "qrc:/provider"
 import Cara.Billing
 
 ListView {
-    id: listView
+    id: root
 
-    required property StackView stackView
+    required property T.StackView stackView
 
     delegate: ItemDelegate {
         required property int id
@@ -22,25 +20,25 @@ ListView {
         required property string date
 
         onClicked: {
-            stackView.push("qrc:/orders/BuyOrderDetails.qml", {
+            root.stackView.push("qrc:/orders/BuyOrderDetails.qml", {
                                orderId: id,
                                description,
                                payment,
                                orderDetails: order_details,
                                provider,
-                               date
+                               date,
                            });
         }
 
-        width: listView.width
+        width: root.width
         text: `Order de Compra No.: ${id}\n${description}`
     }
 
     Label {
-        width: listView.width * .8
+        width: root.width * .8
         anchors.centerIn: parent
         horizontalAlignment: Label.AlignHCenter
-        visible: listModel.count === 0
+        visible: root.count === 0
         text: "No hay ordenes de compra para mostrar."
         font.pointSize: 14
         wrapMode: Label.Wrap

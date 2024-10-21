@@ -1,9 +1,7 @@
 #include "Authentication/data/restuserauthentication.h"
-#include "Authentication/data/tokenstore.h"
 #include "Authentication/entity/credential.h"
 #include "Authentication/login.h"
 #include "Authentication/service/localuserauthentication.h"
-#include "User/data/localuserstore.h"
 #include "loginhelper.h"
 #include <QSettings>
 #include <QSignalSpy>

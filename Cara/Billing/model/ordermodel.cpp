@@ -1,6 +1,7 @@
 #include "ordermodel.h"
 
 using EntityLayer::DetailsEntity;
+using namespace Qt::StringLiterals;
 
 namespace Model
 {
@@ -8,9 +9,10 @@ OrderModel::OrderModel(QObject *parent)
     : QAbstractListModel{parent}
     , data_{}
 {
-    roleNames_[int(RoleNames::ProductRole)] = "product";
-    roleNames_[int(RoleNames::TotalRole)] = "total";
-    roleNames_[int(RoleNames::QuantityRole)] = "quantity";
+    roleNames_[int(RoleNames::ProductRole)] = "product"_ba;
+    roleNames_[int(RoleNames::TotalRole)] = "total"_ba;
+    roleNames_[int(RoleNames::QuantityRole)] = "quantity"_ba;
+    roleNames_[int(RoleNames::PriceRole)] = "price"_ba;
 }
 
 int OrderModel::rowCount(const QModelIndex &parent) const
@@ -37,6 +39,9 @@ QVariant OrderModel::data(const QModelIndex &index, int role) const
 
     case RoleNames::TotalRole:
         return data_[row]->total();
+
+    case RoleNames::PriceRole:
+        return data_[row]->price();
 
     default:
         qWarning() << "Trying to use a non-existent role name";
@@ -74,7 +79,6 @@ QByteArray OrderModel::toJson() const
     }
 
     QJsonDocument doc{arr};
-    qDebug() << "OrderModel::toJson " << doc;
     return doc.toJson(QJsonDocument::Compact);
 }
 
@@ -132,6 +136,8 @@ bool OrderModel::setData(const QModelIndex &index, const QVariant &value, int ro
 
     case RoleNames::TotalRole:
         qWarning() << "Trying to set 'total' which is a readonly property";
+        break;
+    case RoleNames::PriceRole:
         break;
     }
 

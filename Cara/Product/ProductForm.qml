@@ -1,69 +1,86 @@
 import QtCore
 import QtQuick
 import QtQuick.Controls
-import QtQuick.Layouts
 import QtQuick.Dialogs
+import QtQuick.Layouts
 import QtQuick.Templates as T
-import Cara.Utils
 import Cara.Shopping
-import "qrc:/inventory"
-import "product_helper.js" as ProductJS
+import Cara.Controls
 
 Page {
     id: root
 
     readonly property T.StackView myStack: StackView.view
-    property int productId
-    property int categoryId
-    property int sellPrice
-    property int buyPrice
-    property string description
-    property string name
-    property var images
-    property string mode: "add"
-    property var product
+    readonly property alias categoryId: categoryCB.currentValue
+    readonly property alias description: descriptionField.text
+    readonly property alias name: nameField.text
+    property var model
+    property Component buttonComponent
+    property alias actionButtonComponent: actionButtonLoader.sourceComponent
+    property alias pricingLoader: pricingLoader
+    property alias imgPicker: imgPicker
+    readonly property alias supplierLoader: supplierLoader
+    readonly property alias supplierItem: supplierLoader.item
+    readonly property alias popup: popup
+    readonly property alias pricingItem: pricingLoader.item
+    readonly property alias nameField: nameField
+    readonly property alias descriptionField: descriptionField
+    readonly property alias categoryCB: categoryCB
+    readonly property alias same: internal.same
+
+    signal pictureAccepted(selectedPicture: url)
+    signal deletePictureClicked(index: int)
+    signal refreshRequested(productId: int)
 
     header: TitleHeader {
-        title: root.mode == "add" ? "Agregar nuevo producto" : "Editar producto"
-        btnLoader.sourceComponent: RowLayout {
-            id: rowLayout
-            ToolButton {
-                icon.source: "add_a_photo.svg"
-                onClicked: imgPicker.open()
-            }
-
-            MoreVertButton {
-                onClicked: menu.visible = !menu.visible
-                Menu {
-                    id: menu
-                    y: parent.height
-                    rightMargin: 5
-
-                    MenuItem {
-                        text: "Vista de producto"
-                        onTriggered: root.myStack.pushItem("Cara/Product/ProductPage.qml", {productId, product})
-                    }
-
-                    MenuItem {
-                        text: "Ver reseñas"
-                        onTriggered: root.myStack.pushItem("Cara/Review/ReviewsPage.qml", {productId})
-                    }
-                }
-            }
-        }
-
-        onBackClicked: myStack.pop()
+        title: root.title
+        btnLoader.sourceComponent: root.buttonComponent
+        onBackClicked: root.myStack.pop()
     }
 
     Component.onCompleted: {
         internal.setOldProperties();
+    }
 
-        if (root.mode === "add" || product.images.length === 0) {
-            // pictureModel.append({image_url: Qt.url(internal.picturePlaceHolder)});
-            // product.images = pictureModel;
-            product.images = [{imageUrl: internal.picturePlaceHolder}];
+    component SupplierInfoBox: GroupBox {
+        title: "Suplidor"
+        Layout.fillWidth: true
+
+        ColumnLayout {
+            anchors.fill: parent
+            spacing: 10
+
+            Label {
+                text: `ID: <b>${root.model.supplierId}</b>`
+                Layout.fillWidth: true
+            }
+
+            Label {
+                text: `Nombre: <b>${root.model.supplierName}</b>`
+                Layout.fillWidth: true
+            }
+
+            Label {
+                text: `Precio: <b>RD$${root.model.supplierPrice}</b>`
+                Layout.fillWidth: true
+            }
+
+            Button {
+                text: "Actualizar"
+                Layout.fillWidth: true
+                onClicked: {
+                    root.myStack.pushItem(
+                        Qt.resolvedUrl("UpdateSupplierView.qml"),
+                        {model: root.model}
+                    );
+                    const currentItem = root.myStack.currentItem;
+                    currentItem.refreshRequested.connect(productId => {
+                        console.log("Emittig refreshRequested from ProductForm. productId: "+productId);
+                        root.refreshRequested(productId);
+                    });
+                }
+            }
         }
-        console.log(JSON.stringify(product.images))
     }
 
     StackLayout {
@@ -79,110 +96,78 @@ Page {
             ColumnLayout {
                 anchors.centerIn: parent
                 width: root.width*.9
-                spacing: 10
+                spacing: 20
 
                 ProductItem {
                     id: productItem
-                    images: product.images
-                    deleteBtn.visible: product.images.length > 1
+                    images: root.model.images
+                    deleteBtn.visible: root.model.images.length > 1
                     favoriteBtn.visible: false
                     Layout.fillWidth: true
                     Layout.fillHeight: true
-                    onDeletePictureClicked: index => root.handlePictureDeleted(index)
+                    onDeletePictureClicked: index => root.deletePictureClicked(index)
+
+                    Binding on images {
+                        when: root.model.images.length === 0
+                        value: [{imageUrl: internal.picturePlaceHolder}]
+                    }
                 }
 
                 MenuSeparator { Layout.alignment: Qt.AlignCenter }
 
-                FileDialog {
-                    id: imgPicker
-                    currentFolder: StandardPaths.standardLocations(StandardPaths.PicturesLocation)[0]
-                    onAccepted: root.handlePictureSelected(imgPicker.selectedFile)
+                TextField {
+                    visible: root.model.productId > 0
+                    enabled: false
+                    placeholderText: "Product ID"
+                    text: root.model.productId
+                    Layout.fillWidth: true
                 }
 
                 TextField {
-                    id: productName
-                    text: name
+                    id: nameField
+                    text: root.model.productName
                     placeholderText: "Nombre del producto"
                     Layout.fillWidth: true
                 }
 
                 TextField {
                     id: descriptionField
-                    text: description
+                    text: root.model.description
                     placeholderText: "Descripcion del producto"
                     Layout.fillWidth: true
                 }
 
-                TextField {
-                    id: priceBuy
-                    text: buyPrice
-                    placeholderText: "Precio de compra"
+                Loader {
+                    id: supplierLoader
+                    sourceComponent: SupplierInfoBox {}
                     Layout.fillWidth: true
-                    inputMethodHints: Qt.ImhDigitsOnly
                 }
 
-                TextField {
-                    id: priceSell
-                    text: sellPrice
-                    placeholderText: "Precio de venta"
+                Loader {
+                    id: pricingLoader
                     Layout.fillWidth: true
-                    inputMethodHints: Qt.ImhDigitsOnly
                 }
 
                 CategoryComboBox {
                     id: categoryCB
                     Layout.preferredWidth: root.width/2
-                    currentIndex: categoryId - 1
+                    currentIndex: root.model.categoryId - 1
                 }
 
-                RowLayout {
-                    Button {
-                        visible: mode !== "add"
-                        text: "Ver en inventario"
-                        onClicked: openProductInInventory()
-                    }
-
-                    Button {
-                        text: mode === "add" ? "Agregar" : "Guardar"
-                        Layout.fillWidth: true
-                        Material.background: Material.Green
-                        Material.foreground: "white"
-                        onClicked: mode === "add" ? createProduct() : updateProduct()
-                    }
+                Loader {
+                    id: actionButtonLoader
+                    Layout.fillWidth: true
                 }
+
+                Item {}
             }
         }
     }
 
-    CatalogueRepository {
-        id: catalogueRepository
-        onProductAdded: data => {
-            popup.state = "success";
-            ProductManager.modelAppend(JSON.parse(data).product);
-        }
-        onPictureAdded: data => {
-            popup.state = "success";
-            console.log(data);
-            const pictures = ProductJS.getFixedImagesArr(JSON.parse(data).images);
-
-            console.log(JSON.stringify(pictures, null, 2))
-            product.images = pictures;
-        }
-        onProductEdited: {
-            popup.state = "success";
-            updateCatalogue();
-        }
-        onPictureDeleted: {
-            popup.state = "success";
-            const filteredImages = product.images.filter(item => item.id !== internal.pictureId);
-            console.log("to exclude: "+internal.pictureId)
-            console.log(JSON.stringify(filteredImages))
-            product.images = filteredImages;
-        }
-        onErrorOccurred: err => {
-            console.log(err);
-            popup.state = "error";
-        }
+    FileDialog {
+        id: imgPicker
+        currentFolder: StandardPaths.standardLocations(StandardPaths.PicturesLocation)[0]
+        onAccepted: root.pictureAccepted(imgPicker.selectedFile)
     }
 
     StatusPopup {
@@ -191,38 +176,62 @@ Page {
         height: root.height/2
     }
 
-    InventoryAPI {
-        id: inventoryAPI
-        onFetchedByAdminIdAndProductId: inventory => {
-            myStack.push("qrc:/inventory/InventoryForm.qml", {
-                inventoryId: inventory.id,
-                product: inventory.product,
-                warehouse: inventory.warehouse,
-                minimunStockLevel: inventory.minimum_stock_level,
-                maximunStockLevel: inventory.maximum_stock_level,
-                reorderPoint: inventory.reorder_point,
-                quantityAvailable: inventory.quantity_available
-            });
-        }
-    }
-
     QtObject {
         id: internal
         readonly property url picturePlaceHolder: "cara-logo-v1.png"
+        readonly property bool same: root.name === internal.oldName
+                                     && root.description === internal.oldDescription
+                                     && root.categoryId === internal.oldCategoryId
         property int pictureId: -1
         property string oldName
         property string oldDescription
-        property int oldSellPrice
-        property int oldBuyPrice
+        property int oldPrice
         property int oldCategoryId
 
         function setOldProperties() {
             internal.oldName = root.name;
             internal.oldDescription = root.description;
-            internal.oldSellPrice = root.sellPrice;
-            internal.oldBuyPrice = root.buyPrice;
-            internal.oldCategoryId = root.categoryId;
+            internal.oldCategoryId = root.model.categoryId;
         }
+    }
+
+    function toJson() {
+        const formJson = {
+            name: nameField.text,
+            description: descriptionField.text,
+            categoryId: categoryCB.currentValue,
+        };
+
+        const productImages = model.images;
+        if (productImages[0].imageUrl.toString() === internal.picturePlaceHolder.toString())
+            return formJson;
+
+        if (productImages.length > 0)
+            formJson.images = model.images;
+        return formJson;
+    }
+
+    function _handlePictureSelected(filename: url) {
+        if (filename.toString() === "") {
+            console.log("handlePictureSelected:", filename);
+            throw "handlePictureSelected: " + filename;
+        }
+    }
+
+    function _handlePictureDeleted(index: int) {
+        try {
+            root.model.images.splice(index, 1);
+
+        } catch (err) {
+            console.log(err);
+            popup.state = "error";
+        }
+    }
+
+    function errorHandler(err) {
+        console.log(err);
+        popup.text = err;
+        popup.state = "error";
     }
 
     function openBusyPopup() {
@@ -233,94 +242,5 @@ Page {
     function closeBusyPopup() {
         popup.state = "";
         popup.close();
-    }
-
-    function createProduct() {
-        openBusyPopup();
-        const productJson = {
-            name: productName.text,
-            description: descriptionField.text,
-            buy_price: priceBuy.text,
-            sell_price: priceSell.text,
-            images: root.getPictureList(),
-            category_id: categoryCB.currentValue
-        };
-        print(JSON.stringify(productJson, null, 2));
-        catalogueRepository.addProduct(productJson);
-    }
-
-    function updateProduct() {
-        openBusyPopup();
-        const productJson = {
-            id: productId,
-            name: productName.text,
-            description: descriptionField.text,
-            buy_price: priceBuy.text,
-            sell_price: priceSell.text,
-            category_id: categoryCB.currentValue
-        };
-
-        print(JSON.stringify(productJson, null, 2));
-        catalogueRepository.editProduct(productJson);
-    }
-
-    function updateCatalogue() {
-        const product = ProductManager.findById(productId);
-        product.name = productName.text;
-        product.description = descriptionField.text;
-        product.buy_price = priceBuy.text;
-        product.sell_price = priceSell.text;
-    }
-
-    function openProductInInventory() {
-        const adminId = settings.value("userId");
-        inventoryAPI.fetchByAdminIdAndProductId(adminId, productId);
-    }
-
-    function getPictureList(): var {
-        const pictures = [];
-        for (let i = 0; i < product.images.count; ++i) {
-            pictures.push({image_url: product.images.get(i).image_url});
-        }
-        return pictures;
-    }
-
-    function handlePictureSelected(filename: url) {
-        if (filename.toString() === "") {
-            console.log("handlePictureSelected:", filename);
-            return;
-        }
-
-        if (root.mode === "add") {
-            if (product.images.get(0).image_url === internal.picturePlaceHolder)
-                product.images.clear();
-
-            product.images.append({image_url: filename});
-            return;
-        }
-
-        // Edit mode
-        openBusyPopup();
-        catalogueRepository.addPicture(root.productId, [{image_url: filename}]);
-    }
-
-    function handlePictureDeleted(index: int) {
-        try {
-            if (root.mode === "add") {
-                product.images.splice(index, 1);
-                return;
-            }
-
-            // Deleting an uploaded pic.
-            openBusyPopup();
-            console.log("index:", index);
-            console.log(JSON.stringify(product.images))
-            const pictureId = product.images[index].id;
-            internal.pictureId = pictureId;
-            catalogueRepository.deletePicture(pictureId);
-        } catch (err) {
-            console.log(err);
-            popup.state = "error";
-        }
     }
 }

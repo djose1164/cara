@@ -1,6 +1,9 @@
 #include "utils.h"
 #include <QJsonDocument>
 #include <QRestReply>
+#include <QTimeZone>
+
+using namespace Qt::StringLiterals;
 
 namespace Utils
 {
@@ -20,6 +23,19 @@ std::optional<QJsonObject> byteArrayToJsonObject(const QByteArray &data)
 bool isOperationCanceledError(const QRestReply &reply)
 {
     return reply.error() == QNetworkReply::OperationCanceledError;
+}
+
+void setBoundaryToRequest(QAnyStringView boundary, QNetworkRequest &request)
+{
+    const auto headerValue{"multipart/form-data; boundary=\"%1\""_L1.arg(boundary.toString())};
+    request.setHeader(QNetworkRequest::ContentTypeHeader, headerValue);
+}
+
+QDateTime stringToDateTime(QStringView dateString)
+{
+    auto &&dt = QDateTime::fromString(dateString, Qt::ISODate);
+    dt.setTimeZone(QTimeZone{Qt::UTC});
+    return dt;
 }
 
 }

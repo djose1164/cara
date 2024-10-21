@@ -152,7 +152,6 @@ TokenManager *TokenManager::instance()
 
 void TokenManager::clear()
 {
-    refreshToken().clear();
     QSettings settings{};
     settings.remove("Credentails");
 }

@@ -8,12 +8,35 @@ using Model::OrderModel;
 Bill::Bill(QObject *parent)
     : QObject{parent}
     , orderId_{}
-    , details_{new OrderModel(this)}
+    , details_{}
     , payment_{}
     , orderStatus_{nullptr}
     , date_{}
     , customer_{}
+    , quantityOfProducts_{}
 {
+    quantityOfProducts_.setBinding([this] {
+        if (!details())
+            return 0;
+
+        int quantity{};
+        for (int i{}; i < details_->count(); ++i)
+            quantity += details_->get(i)->quantity();
+        return quantity;
+    });
+
+    totalToPay_.setBinding([this] {
+        if (!details())
+            return 0;
+
+        int total{};
+        for (int i{}; i < details_->count(); ++i)
+        {
+            const auto detail{details_->get(i)};
+            total += detail->product().price() * detail->quantity();
+        }
+        return total;
+    });
 }
 
 QDateTime Bill::date() const
@@ -40,7 +63,6 @@ Bill *Bill::fromMap(const QVariantMap &billMap)
 
     bill->setDate(QDateTime::fromString(strDate, "yyyy-MM-dd"));
     bill->setOrderId(billMap["id"].toInt());
-    bill->setIsTaken(billMap["is_taken"].toBool());
 
     bill->setPayment(
         Entity::Payment::fromJsonObject(billMap["payment"].toJsonObject())
@@ -57,20 +79,15 @@ Bill *Bill::fromMap(const QVariantMap &billMap)
     const auto queueMap{billMap["queue"].toMap()};
     bill->setDone(queueMap["is_done"].toBool());
 
+    const auto orderDetails{new OrderModel(bill)};
     for (const auto &detail : billMap["order_details"].toList())
     {
-        const auto map{detail.toMap()};
-        auto newDetail{new DetailsEntity};
-        newDetail->setQuantity(map["quantity"].toInt());
+        auto newDetail{DetailsEntity::fromJson(detail.toJsonObject())};
 
-        newDetail->setProduct(
-            Product::fromMap(map["product"].toMap())
-        );
-
-        newDetail->setParent(bill);
-        bill->appendDetail(newDetail);
+        newDetail->setParent(orderDetails);
+        orderDetails->append(newDetail);
     }
-
+    bill->details_ = orderDetails;
     return bill;
 }
 
@@ -138,6 +155,16 @@ void Bill::appendDetail(DetailsEntity * const detail)
     Q_ASSERT(detail);
 
     details_->append(detail);
+}
+
+int Bill::totalToPay() const
+{
+    return totalToPay_;
+}
+
+int Bill::quantityOfProducts() const
+{
+    return quantityOfProducts_;
 }
 
 bool Bill::done() const

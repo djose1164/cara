@@ -2,7 +2,7 @@ import QtQuick
 import QtQuick.Controls
 import Cara.Salesperson
 import QtQuick.Templates as T
-import Cara.Utils
+import Cara.Controls
 
 Page {
     id: root
@@ -78,7 +78,7 @@ Page {
         id: service
         adminId: root.adminId
         onFetched: {
-            SalespersonManager.add(JSON.parse(data).salespersons);
+            SalespersonManager.add(JSON.parse(data).salespeople);
             root.state = "";
         }
     }

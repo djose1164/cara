@@ -2,9 +2,17 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 
-namespace Entity {
+using namespace Qt::StringLiterals;
+
+namespace Entity
+{
+
+// TODO: Caller should pass in user json as root.
 UserEntity UserEntity::fromJson(const QByteArray &data)
 {
+    if (data.isEmpty())
+        return {};
+
     const auto dataJson{QJsonDocument::fromJson(data)};
     const auto dataObj{dataJson.object()};
     const auto userObj{dataObj["user"].toObject()};
@@ -23,7 +31,7 @@ UserEntity UserEntity::fromJson(const QByteArray &data)
     Q_ASSERT(user.userId());
     user.setUsername(userObj["username"].toString());
     user.setPhoneNumber(contactDoc["telephone"].toString());
-    qDebug() << "UserEntity::fromJson: " << user.username();
+
     Q_ASSERT(user.username().isEmpty() == false);
     user.setCustomerId(customerObj["id"].toInt());
 
@@ -42,6 +50,7 @@ UserEntity::UserEntity()
     , surname_{}
     , customerId_{}
     , userId_{}
+    , salespersonId_{}
     , userType_{UserTypes::Guest}
 {
 
@@ -238,4 +247,50 @@ void UserEntity::setAddress(const Address &newAddress)
 {
     address_ = newAddress;
 }
+
+QString UserEntity::fullname() const
+{
+    return forename() + " "_L1 + surname();
+}
+
+UserEntity UserEntity::fromJson(const QJsonObject &json)
+{
+    if (json.isEmpty())
+        return {};
+
+    UserEntity user{};
+    if (auto &&personObj{json["person"_L1].toObject()};
+            not personObj.isEmpty())
+    {
+        user.setForename(personObj["forename"_L1].toString());
+        user.setSurname(personObj["surname"_L1].toString());
+
+        if (const auto contactDoc{personObj["contact"_L1].toObject()};
+                not contactDoc.isEmpty())
+        {
+            user.setEmail(contactDoc["email"_L1].toString());
+            user.setPhoneNumber(contactDoc["telephone"_L1].toString());
+        }
+    }
+
+    user.setCustomerId(json["customer_id"_L1].toInt());
+    user.setUserType(static_cast<UserTypes>(json["user_type_id"_L1].toInt()));
+    Q_ASSERT(int(user.userType_));
+    user.setUserId(json["id"_L1].toInt());
+    Q_ASSERT(user.userId());
+    user.setUsername(json["username"_L1].toString());
+
+    Q_ASSERT(user.username().isEmpty() == false);
+    if (const auto customerObj{json["customer"_L1].toObject()};
+            not customerObj.isEmpty())
+    {
+        user.setCustomerId(customerObj["id"_L1].toInt());
+    }
+
+    const auto salespersonData{QJsonDocument(json["salesperson"_L1].toObject())};
+    user.setSalespersonId(salespersonData["id"_L1].toInt());
+
+    return user;
+}
+
 }

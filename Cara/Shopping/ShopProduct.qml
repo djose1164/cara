@@ -15,13 +15,22 @@ Item {
 
     readonly property  int productId: root.productForSale.id
     readonly property int userId: UserSettings.userId
+
     readonly property alias selectedQty: priceSpinBox.selectedQty
+    readonly property alias buyButton: buyButton
 
     property list<string> locations
     property int sellPrice
     property int stock
+    property int buyButtonState: ShopProduct.Ok
 
     signal buyClicked(productToBuy: product)
+
+    enum BuyButtonState {
+        OutOfStocks,
+        AlreadyInCart,
+        Ok
+    }
 
     implicitWidth: columnLayout.implicitWidth
     implicitHeight: columnLayout.implicitHeight
@@ -49,8 +58,17 @@ Item {
         }
 
         Button {
-            text: internal.canBuy ? "Agregar al Carrito" : "Mas uninades en camino"
-            enabled: internal.canBuy
+            id: buyButton
+            text: switch (root.buyButtonState) {
+            case ShopProduct.OutOfStocks:
+                return "Más uninades en camino";
+            case ShopProduct.AlreadyInCart:
+                return "¡Producto agregado al carrito!"
+            case ShopProduct.Ok:
+                return "Agregar al Carrito";
+            }
+
+            enabled: root.buyButtonState === ShopProduct.Ok
             Layout.fillWidth: true
             onClicked: {
                 const productObj = {

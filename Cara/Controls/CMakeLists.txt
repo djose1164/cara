@@ -11,10 +11,44 @@ qt_add_qml_module(ControlsLib
         selected-circle.png
         straight-line.png
     QML_FILES
-        LinearProgressIndicator.qml
+        BackButton.qml
+        BackPage.qml
+        BusyPopup.qml
+        BusyStackLayout.qml
+        Card.qml
+        CenterBusyIndicator.qml
         CircleIndicator.qml
-        NumberTextField.qml
+        CloseButton.qml
+        CloseHeader.qml
+        DateDelegate.qml
         DateField.qml
+        DatePicker.qml
+        DrawerHeader.qml
+        EmailField.qml
+        Header.qml
+        LinearProgressIndicator.qml
+        ListViewPage.qml
+        Message.qml
+        MessagePane.qml
+        MoreVertButton.qml
+        NumberTextField.qml
+        PicSwipeView.qml
+        ProcessingIndicator.qml
+        RedirectGroupBox.qml
+        RedirectLabel.qml
+        ScrollablePage.qml
+        SearchBar.qml
+        SearchButton.qml
+        SearchField.qml
+        SearchHeader.qml
+        Star.qml
+        StarRating.qml
+        TimeoutDialog.qml
+        TitleHeader.qml
+        TrashButton.qml
+    RESOURCES
+        star-unfilled.png
+        star.png
     SOURCES
         datevalidator.h datevalidator.cpp
     DEPENDENCIES

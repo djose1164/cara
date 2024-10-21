@@ -18,12 +18,7 @@
         <file>BuyOrderHeader.qml</file>
         <file>OrderAPI.qml</file>
     </qresource>
-    <qresource prefix="/provider">
-        <file>Providers.qml</file>
-        <file>ProviderAPI.qml</file>
-        <file>ProviderForm.qml</file>
-        <file>ProviderComboBox.qml</file>
-    </qresource>
+    <qresource prefix="/provider"/>
     <qresource lang="qml" prefix="/errors">
         <file>ErrorPage.qml</file>
     </qresource>
@@ -43,7 +38,6 @@
     <qresource prefix="/address">
         <file>CountryComboBox.qml</file>
         <file>AddressAPI.qml</file>
-        <file>ProvinceComboBox.qml</file>
         <file>AddressSelector.qml</file>
         <file>MunicipalityComboBox.qml</file>
         <file>SectorCombBox.qml</file>

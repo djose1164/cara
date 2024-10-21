@@ -2,9 +2,34 @@ import QtQuick
 import Cara.Authentication
 import Cara.Data
 
-Rest {
+Item {
     id: root
     property string endpoint: ""
-    base: Constants.base + endpoint
-    accessToken: "Bearer " + TokenManager.accessToken
+
+    signal succeeded(data: var)
+    signal failed(data: var)
+
+    Rest {
+        id: rest
+        base: Constants.base + endpoint
+        accessToken: "Bearer " + TokenManager.accessToken
+        onSucceeded: data => root.succeeded(JSON.parse(data))
+        onFailed: data => root.failed(JSON.parse(data))
+    }
+
+    function get(endpoint: string) {
+        rest.get(endpoint);
+    }
+
+    function post(endpoint: string, obj) {
+        rest.post(endpoint, obj);
+    }
+
+    function patch(endpoint: string, obj: var) {
+        rest.patch(endpoint, obj);
+    }
+
+    function put(endpoint: string, obj: var) {
+        rest.put(endpoint, obj);
+    }
 }

@@ -1,5 +1,4 @@
 import QtQuick
-import QtCore
 import QtQuick.Controls
 import QtQuick.Layouts
 import QtQuick.Templates as T
@@ -7,7 +6,6 @@ import Cara.User
 import Cara.Salesperson
 import Cara.Customer
 import Cara.Authentication
-import QtNetwork
 
 // TODO: MaiPage should be deleted in a future release.
 // Plan in what release it should be deleted.
@@ -60,24 +58,6 @@ Page {
         }
     }
 
-    states: [
-        State {
-            when: NetworkInformation.reachability !== NetworkInformation.Reachability.Online
-            PropertyChanges {
-                target: offlinePane
-                visible: true
-            }
-            PropertyChanges {
-                target: root
-                enabled: false
-            }
-            PropertyChanges {
-                target: stackLayout
-                visible: false
-            }
-        }
-    ]
-
     Component.onCompleted: {
         updateViews();
     }
@@ -94,7 +74,7 @@ Page {
 
             Image {
                 source: "wifi-off.svg"
-                sourceSize: "32x32"
+                sourceSize: Qt.size(32, 32)
                 Layout.alignment: Qt.AlignHCenter
                 Layout.bottomMargin: 10
             }

@@ -2,7 +2,7 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 import Cara.Controls
-import Cara.Utils
+import Cara.Controls
 import "qrc:/qt/qml/Cara/Utils/utils.js" as JS
 
 Item {

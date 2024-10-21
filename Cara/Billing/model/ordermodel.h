@@ -21,6 +21,7 @@ public:
         ProductRole = Qt::UserRole,
         QuantityRole,
         TotalRole,
+        PriceRole
     };
 
     explicit OrderModel(QObject *parent = nullptr);

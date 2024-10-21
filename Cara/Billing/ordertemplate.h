@@ -26,6 +26,8 @@ public:
 signals:
     void orderChanged();
 
+    void errorOccurred(const QString &errorString);
+
 private:
     // IOrderTemplate interface
     void loadHtml();

@@ -9,14 +9,17 @@
 namespace EntityLayer {
 class DetailsEntity : public QObject
 {
-
 public:
+    static DetailsEntity *fromJson(const QJsonObject &data);
+
     explicit DetailsEntity(QObject *parent = nullptr);
 
     void setQuantity(int quantity);
     int quantity() const;
 
-    int total() const;
+    double price() const;
+
+    double total() const;
     QBindable<int> bindableTotal() const;
     
     void setProduct(const Product &product);
@@ -29,7 +32,8 @@ signals:
 
 private:
     QProperty<int> quantity_;
-    QProperty<int> total_;
+    QProperty<double> price_;
+    QProperty<double> total_;
     
     QProperty<Product> product_;
 };

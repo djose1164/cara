@@ -7,6 +7,8 @@ namespace DataLayer {
 class IBillRepository
 {
 public:
+    using SalespersonId = int;
+
     virtual ~IBillRepository();
 
     virtual void fetchByCustomerId(int customerId) = 0;
@@ -17,7 +19,7 @@ public:
 
     [[nodiscard]] virtual QNetworkReply *fetchUnpaidBills() = 0;
 
-    [[nodiscard]] virtual QNetworkReply *fetchOrdersInQueue() = 0;
+    [[nodiscard]] virtual QNetworkReply *fetchOrdersInQueue(SalespersonId spId = 0) = 0;
 };
 }
 

@@ -17,34 +17,26 @@ Drawer {
 
     interactive: false
 
-    SelectorHeaderItem {
-        id: searchHeader
-        anchors {
-            top: parent.top
-            left: parent.left
-            right: parent.right
-        }
-
-        title: "Seleccionar cliente"
-        onCloseClicked: root.close()
-    }
-
     CustomerViewItem {
         id: customerView
-        anchors {
-            top: searchHeader.bottom
-            topMargin: 20
-            bottom: parent.bottom
-            left: parent.left
-            right: parent.right
-        }
-
-        searchText: searchHeader.searchText
+        anchors.fill: parent
+        header: searchHeader
+        searchText: (headerItem as SelectorHeaderItem).searchText
         customerModel: CustomerManager.model
         Layout.fillHeight: true
         onCustomerSelected: customer => {
             root.customerSelected(customer);
             root.close();
+        }
+    }
+
+    Component {
+        id: searchHeader
+        SelectorHeaderItem {
+            width: customerView.width
+            z: 2
+            title: "Seleccionar cliente"
+            onCloseClicked: root.close()
         }
     }
 }

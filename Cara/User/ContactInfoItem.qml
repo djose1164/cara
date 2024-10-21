@@ -55,9 +55,9 @@ Item {
 
     function toJson() {
         return {
-            telephone: phoneNumber.text ? phoneNumber.text : null,
-            homephone: homePhone.text ? homePhone.text : null,
-            email: email.text ? email.text : null
+            telephone: (phoneNumber.text.length > 0) ? phoneNumber.text : null,
+            homephone: homePhone.text,
+            email: email.text.length > 0 ? email.text : null
         };
     }
 }

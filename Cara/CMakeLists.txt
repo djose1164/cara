@@ -24,7 +24,6 @@ qt_add_qml_module(${PROJECT_NAME}
         cara-logo-v1.png
         cara-mobile-icon.ico
         cara-mobile-icon.png
-        .env
     SOURCES
         abstractresource.h abstractresource.cpp
         config.h.in
@@ -45,7 +44,6 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
     BillingLibplugin
     CustomerLibplugin
     DataLibplugin
-    InventoryLibplugin
     ProductLibplugin
     ReviewLibplugin
     ShoppingLibplugin
@@ -54,7 +52,6 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
     UtilsLibplugin
     salespersonplugin
     ControlsLibplugin
-    NetworkLibplugin
 )
 
 target_include_directories(CaraLib
@@ -69,9 +66,10 @@ add_subdirectory(Statistics)
 add_subdirectory(Product)
 add_subdirectory(Authentication)
 add_subdirectory(Shopping)
-add_subdirectory(Inventory)
+add_subdirectory(ProductInventory)
 add_subdirectory(Salesperson)
 add_subdirectory(User)
 add_subdirectory(Billing)
 add_subdirectory(Customer)
 add_subdirectory(Review)
+add_subdirectory(common)

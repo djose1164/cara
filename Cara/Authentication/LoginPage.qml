@@ -6,7 +6,7 @@ import QtQuick.Templates as T
 import Cara.User
 import Cara.Authentication
 import Cara.Salesperson
-import Cara.Utils
+import Cara.Controls
 
 Item {
     id: root
@@ -122,7 +122,7 @@ Item {
             case Login.InvalidCredentials:
                 return "Usuario o contraseña incorrecta.";
             default:
-                return "Ha ocurrido un error. Favor de intentar mas tarde.";
+                return "Ha ocurrido un error. Favor de intentar más tarde.";
         }
         onButtonClicked: close()
     }

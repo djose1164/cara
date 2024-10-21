@@ -1,8 +1,8 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
-import Cara.Utils
-import Cara.Inventory
+import Cara.Controls
+import Cara.ProductInventory
 import Cara.Salesperson
 import Cara.Billing
 
@@ -15,7 +15,15 @@ Item {
     }
 
     property alias choosenProducts: selectedProductsView.model
+    property alias productSelectorModel: productSelector.productModel
     property alias calculator: costCalculator
+    property alias selectedProductsDelegate: selectedProductsView.delegate
+    property alias selectorDelegate: productSelector.delegate
+    property alias selectorModel: productSelector.model
+    readonly property alias implicitViewWidth: selectedProductsView.implicitViewWidth
+    readonly property alias implicitViewHeight: selectedProductsView.implicitViewHeight
+    readonly property alias selectedProductsView: selectedProductsView
+    readonly property alias selectionModel: productSelector.selectionModel
 
     implicitWidth: stackLayout.implicitWidth
     implicitHeight: stackLayout.implicitHeight
@@ -55,8 +63,8 @@ Item {
 
     ProductSelector {
         id: productSelector
-        width: app.width
-        height: app.height
+        width: ApplicationWindow.window.width
+        height: ApplicationWindow.window.height
         salespersonId: SalespersonSettings.salespersonId
         selectedProducts: selectedProductsView.model
     }
@@ -74,7 +82,9 @@ Item {
     function validate() {
         if (costCalculator.total === 0)
             throw "Debes agregar al menos un producto a la orden";
+    }
 
+    function validateStocks() {
         for (let i = 0; i < choosenProducts.count; ++i)
             enoughStocksFor(choosenProducts.get(i));
     }
@@ -98,6 +108,5 @@ Item {
 
     function refreshSelector() {
         productSelector.deselectAll();
-        productSelector.refresh();
     }
 }

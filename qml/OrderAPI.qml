@@ -1,9 +1,4 @@
 import QtQuick
-import QtQuick.Controls
-import QtQuick.Layouts
-import QtQuick.Dialogs
-import Cara.Customer
-import Cara.Product
 import Cara.Utils
 
 // TODO: Update implementation to use the new types.

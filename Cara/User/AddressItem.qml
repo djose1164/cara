@@ -2,6 +2,7 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 import Cara.Controls
+import Cara.Billing
 import "qrc:/address"
 
 Item {

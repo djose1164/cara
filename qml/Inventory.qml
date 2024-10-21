@@ -1,15 +1,18 @@
+pragma ComponentBehavior: Bound
+
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 import QtQuick.Templates as T
-import Cara.Utils
+import Cara.Controls
 import Cara.Product
-import Cara.Network
+import Cara.ProductInventory
+import Cara.Salesperson
 
 Page {
     id: root
 
-    required property int salespersonId
+    property int salespersonId
     readonly property T.StackView stackView: StackView.view
 
     title: "Inventario"
@@ -24,43 +27,45 @@ Page {
             ToolTip.timeout: 5000
         }
 
-        onBackClicked: stackView.pop()
+        onBackClicked: root.stackView.popCurrentItem()
+    }
+
+    Component.onCompleted: {
+        if (internal.isCurrentSalesperson)
+            return;
+
+        productModel.update();
     }
 
     StackLayout {
         id: stackLayout
         anchors.fill: parent
         anchors.topMargin: 5
+        currentIndex: internal.model.count < 1 ? 1 : 0
 
         // FIXME: A new component `InventoryView` must be created.
         ProductView {
             id: productView
             salespersonId: root.salespersonId
-            onEntriesAdded: total => { if (total === 0) stackLayout.currentIndex = 1 }
-
+            listView.model: internal.model
             delegate: ItemDelegate {
                 id: item
-                required property int id
-                required property var product
-                required property var warehouse
-                required property int quantity_available
-                required property int minimum_stock_level
-                required property int maximum_stock_level
-                required property int reorder_point
-                readonly property bool hasImages: item.product.images && item.product.images.length
+                required property var model
+                required property int quantityAvailable
+                required property int minimunStockLevel
+                required property int maximunStockLevel
+                required property int reorderPoint
+                readonly property bool hasImages: model.images && model.images.length
 
                 onClicked: {
-                    item.product.image_url = thumbnail.source;
                     stackView.push(
-                        "qrc:/qt/qml/Cara/Inventory/InventoryForm.qml",
+                        "qrc:/qt/qml/Cara/ProductInventory/InventoryForm.qml",
                         {
-                            inventoryId: id,
-                            product,
-                            warehouse,
-                            minimunStockLevel: minimum_stock_level,
-                            maximunStockLevel: maximum_stock_level,
-                            reorderPoint: reorder_point,
-                            quantityAvailable: quantity_available
+                            model,
+                            minimunStockLevel,
+                            maximunStockLevel,
+                            reorderPoint,
+                            quantityAvailable,
                         }
                     );
                 }
@@ -76,12 +81,19 @@ Page {
 
                     width: parent.width
                     height: 100
-                    detailed: `Disponible ${quantity_available}`
-                    source: item.hasImages ? Api.uploadsPath + item.product.images[0].image_url : "qrc:/cara-logo-v1.png" //root.images && root.images.length ? Constants.uploadsPath + images[0].image_url : "qrc:/cara-logo-v1.png"
-                    name: item.product.name
+                    detailed: `Disponible ${item.quantityAvailable}`
+                    source: item.model.imageUrl
+                    name: item.model.productName
                 }
             }
+
+            BusyIndicator {
+                id: busyIndicator
+                anchors.centerIn: parent
+                visible: productView.listView.isEmpty && productModel.status === ProductModel.Busy
+            }
         }
+
         Item {
             Label {
                 id: label
@@ -89,11 +101,28 @@ Page {
                 width: parent.width*.9
                 horizontalAlignment: Label.AlignHCenter
                 text: "Tu inventario esta vacio. Intenta crear una nueva [Orden de Compra](qrc:/orders/BuyOrder.qml)."
-                onLinkActivated: link => stackView.push(link)
+                onLinkActivated: link => root.stackView.pushItem(link)
                 textFormat: Label.MarkdownText
                 font.pointSize: 14
                 wrapMode: Label.WordWrap
             }
         }
+    }
+
+    ProductModel {
+        id: productModel
+        repository: SellerProductRepositoryREST {
+            sellerId: root.salespersonId
+        }
+
+        //onUpdated:
+    }
+
+    QtObject {
+        id: internal
+        readonly property bool isCurrentSalesperson: root.salespersonId === SalespersonSettings.salespersonId
+        readonly property ProductModel model: isCurrentSalesperson ? ProductInventoryController
+                                                                        .inventory
+                                                                   : productModel
     }
 }

@@ -20,7 +20,10 @@ public:
         CreditConsumedRole,
         CreditLimitRole,
         SalespersonIdRole,
-        SalespersonTypeRole
+        SalespersonTypeRole,
+        ForenameRole,
+        SurnameRole,
+        FullnameRole
     };
 
     explicit SalespersonModel(QObject *parent = nullptr);

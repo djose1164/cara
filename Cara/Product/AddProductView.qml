@@ -1,18 +1,13 @@
 import QtQuick
 import QtQuick.Controls
-import QtQuick.Layouts
-import QtQuick.Dialogs
 import QtQuick.Controls.Material
-import Cara.Customer
 import "qrc:/orders"
-
-import Cara.Utils
 
 // TODO: Update implementation to use the new types.
 Column {
     id: root
 
-    property alias valueRoleType: productEntry.valueRoleType
+    required property int salespersonId
     property int payment: 2
     property var details
     readonly property alias entriesCount: productEntry.count
@@ -24,8 +19,10 @@ Column {
     signal entryUpdated
 
     spacing: 20
-    Component.onCompleted: payment = 0
     onOkClicked: productEntry.okClicked()
+    Component.onCompleted: {
+        root.payment = 0;
+    }
 
     ProductEntry {
         id: productEntry

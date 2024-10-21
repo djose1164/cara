@@ -1,12 +1,12 @@
 #ifndef BILLENTITY_H
 #define BILLENTITY_H
 
-#include "payment.h"
-#include "model/ordermodel.h"
-#include "Customer/entity/customer.h"
-#include "orderstatus.h"
 #include <QObject>
 #include <QtQml>
+#include "Customer/entity/customer.h"
+#include "model/ordermodel.h"
+#include "orderstatus.h"
+#include "payment.h"
 
 namespace Entity {
 using Model::OrderModel;
@@ -46,18 +46,24 @@ public:
     bool done() const;
     void setDone(bool newDone);
 
+    int quantityOfProducts() const;
+
+    int totalToPay() const;
+
 public slots:
     void appendDetail(EntityLayer::DetailsEntity *const detail);
 
 private:
     QProperty<int> orderId_;
-    OrderModel *details_;
+    QProperty<OrderModel *> details_;
     Entity::Payment payment_;
     OrderStatus *orderStatus_;
     QProperty<QDateTime> date_;
     Entity::Customer customer_;
     bool isTaken_;
     bool done_;
+    QProperty<int> quantityOfProducts_;
+    QProperty<int> totalToPay_;
 };
 }
 

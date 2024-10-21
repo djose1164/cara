@@ -2,7 +2,7 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 
-RowLayout {
+Item {
     id: root
 
     property alias customerNameTxt: customerNameLbl.text
@@ -11,25 +11,33 @@ RowLayout {
 
     signal deleteClicked
 
-    spacing: 0
+    implicitWidth: rowLayout.implicitWidth
+    implicitHeight: rowLayout.implicitHeight
 
-    Label {
-        id: customerNameLbl
-        Layout.preferredWidth: implicitWidth*1.1
-        font.pointSize: 12
-        font.bold: true
-    }
+    RowLayout {
+        id: rowLayout
+        anchors.fill: parent
+        spacing: 0
 
-    Label {
-        id: dateLbl
-        Layout.fillWidth: true
-        Layout.alignment: Qt.AlignLeft
-        font.pointSize: 10
-    }
+        Label {
+            id: customerNameLbl
+            Layout.preferredWidth: implicitWidth*1.1
+            font.pointSize: 12
+            font.bold: true
+        }
 
-    CommentMenuButton {
-        id: commentMenuButton
-        Layout.alignment: Qt.AlignRight
-        onDeleteClicked: root.deleteClicked()
+        Label {
+            id: dateLbl
+            wrapMode: Label.Wrap
+            Layout.fillWidth: true
+            Layout.alignment: Qt.AlignLeft
+            font.pointSize: 10
+        }
+
+        CommentMenuButton {
+            id: commentMenuButton
+            Layout.alignment: Qt.AlignRight
+            onDeleteClicked: root.deleteClicked()
+        }
     }
 }

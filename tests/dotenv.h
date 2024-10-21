@@ -40,7 +40,6 @@
 #include <cctype>
 #include <QDebug>
 #include <QFile>
-#include <QDirIterator>
 
 ///
 /// Utility class for loading environment variables from a file.
@@ -325,12 +324,7 @@ inline std::pair<std::string, bool> dotenv::resolve_vars(size_t iline, const std
 
 inline void dotenv::do_init(int flags, const char* filename)
 {
-    QDirIterator it(":", QDirIterator::Subdirectories);
-    while (it.hasNext()) {
-        qDebug() << it.next();
-    }
-
-    QFile f{QStringLiteral(":/qt/qml/Cara/") + filename};
+    QFile f{QStringLiteral(":/") + filename};
 
     if (f.open(QFile::ReadOnly))
     {

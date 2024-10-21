@@ -1,8 +1,10 @@
+pragma ComponentBehavior: Bound
+
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 import QtQuick.Templates as T
-import Cara.Utils
+import Cara.Controls
 import Cara.Product
 import Cara.Billing
 import Cara.Network
@@ -64,16 +66,21 @@ Page {
                 clip: true
                 model: orderDetails
                 delegate: ProductCard {
+                    id: productCard
                     required property var product
                     required property int quantity
+                    required property double price
 
                     width: listView.width
                     height: 100
-                    imageUrl: product.images && product.images.length ? Api.uploadsPath + product.images[0].image_url : "qrc:/cara-logo-v1.png"
-                    productName: product.name
-                    productPrice: product.buy_price
-                    spinBox.value: quantity
-                    total: product.buy_price * quantity
+                    enabled: false
+                    imageUrl: productCard.product.images
+                              && productCard.product.images.length ? Api.uploadsPath + product.images[0].image_url
+                                                                   : "qrc:/cara-logo-v1.png"
+                    productName: productCard.product.name
+                    productPrice: productCard.price
+                    spinBox.value: productCard.quantity
+                    total: productCard.price * productCard.quantity
                 }
             }
         }

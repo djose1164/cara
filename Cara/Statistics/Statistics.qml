@@ -2,8 +2,7 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Templates as T
 import QtQuick.Layouts
-import Cara.Utils
-import Cara.Product
+import Cara.Controls
 
 Page {
     id: root
@@ -191,7 +190,7 @@ Page {
     function populate(data, model): void {
         model.append([
             {title: "Total de ventas", value: data.latest_sales.order_qty.toString(), sectionString: "Ventas"},
-            {title: "Producto mas vendido", value: data.most_selling.name, sectionString: "Productos"},
+            {title: "Producto más vendido", value: data.most_selling.name, sectionString: "Productos"},
         ]);
         const runningOuttaStocks = data.running_outta_stocks;
         model.append({title: "Producto punto a agotarse", value: runningOuttaStocks[0].product_name, sectionString: "Productos"});

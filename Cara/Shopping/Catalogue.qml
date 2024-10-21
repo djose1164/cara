@@ -3,23 +3,26 @@ import QtQuick.Controls
 import QtQuick.Layouts
 import QtQuick.Templates as T
 import Cara.Shopping
-import Cara.Utils
+import Cara.Controls
 import Cara.Product
-import Cara.Inventory
-import Cara.Network
+import Cara.ProductInventory
 
 Page {
     id: root
 
     readonly property T.StackView stackView: StackView.view
+    readonly property ProductModel productModel: ProductInventoryController.catalog
 
     title: "Catalogo"
     header: TitleHeader {
         title: root.title
-        onBackClicked: stackView.pop()
+        onBackClicked: root.stackView.popCurrentItem()
     }
 
-    Component.onCompleted: catalogueRepository.fetchProducts()
+    Component.onCompleted: {
+        if (productModel.count === 0)
+            catalogueRepository.fetchProducts();
+    }
 
     StackLayout {
         id: stackLayout
@@ -29,7 +32,7 @@ Page {
         // FIXME: A new component `InventoryView` must be created.
         ListView {
             id: productView
-            model: productModel
+            model: root.productModel
             delegate: ItemDelegate {
                 id: item
                 required property int productId
@@ -37,8 +40,7 @@ Page {
                 required property var images
                 required property string description
                 required property string productName
-                required property int sellPrice
-                required property int buyPrice
+                required property int price
                 required property url imageUrl
                 required property var model
 
@@ -46,17 +48,13 @@ Page {
                 height: 100
 
                 onClicked: {
-                    stackView.push("qrc:/qt/qml/Cara/Product/ProductForm.qml", {
-                        productId,
-                        name: productName,
-                        images,
-                        categoryId,
-                        description,
-                        buyPrice,
-                        sellPrice,
-                        product: item.model,
-                        mode: "edit"
-                   });
+                    const path = "qrc:/qt/qml/Cara/Product/EditProductPage.qml";
+                    root.stackView.pushItem(path, {model});
+                    const currentItem = (root.stackView.currentItem as ProductForm);
+                    currentItem.refreshRequested.connect(productId => {
+                        console.log("Handling editRefreshRequested in Catalogue. productId: "+productId);
+                        root.productModel.refreshBuyPriceHistory(productId);
+                    });
                 }
 
                 ProductThumbnail {
@@ -67,10 +65,15 @@ Page {
 
                     width: parent.width
                     height: 100
-                    source: imageUrl.toString() ? imageUrl : "qrc:/cara-logo-v1.png"
-                    name: productName
-                    detailed: description
+                    source: item.imageUrl.toString() ? item.imageUrl : "qrc:/cara-logo-v1.png"
+                    name: item.productName
+                    detailed: item.description
                 }
+            }
+
+            BusyIndicator {
+                anchors.centerIn: parent
+                running: productView.count === 0
             }
         }
 
@@ -81,7 +84,7 @@ Page {
                 width: parent.width*.9
                 horizontalAlignment: Label.AlignHCenter
                 text: "Tu inventario esta vacio. Intenta crear una nueva [Orden de Compra](qrc:/orders/BuyOrder.qml)."
-                onLinkActivated: link => stackView.push(link)
+                onLinkActivated: link => root.stackView.pushItem(link)
                 textFormat: Label.MarkdownText
                 font.pointSize: 14
                 wrapMode: Label.WordWrap
@@ -91,15 +94,15 @@ Page {
 
     CatalogueRepository {
         id: catalogueRepository
-        onAllProductsFetched: products => productModel.updateFromList(products)
+        onAllProductsFetched: products => root.productModel.updateFromList(products)
     }
 
-    ProductModel {
-        id: productModel
-    }
+    // ProductModel {
+    //     id: productModel
+    // }
 
     RoundButton {
-        onClicked: stackView.pushItem("qrc:/qt/qml/Cara/Product/ProductForm.qml", {productModel: listModel})
+        onClicked: root.stackView.pushItem("qrc:/qt/qml/Cara/Product/AddProductPage.qml", {productModel})
         anchors {
             bottom: parent.bottom
             bottomMargin: 15

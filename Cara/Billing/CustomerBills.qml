@@ -1,8 +1,5 @@
 import QtQuick
-import QtQuick.Layouts
 import QtQuick.Controls
-import Qt.labs.qmlmodels
-import Cara.Utils
 
 ListView {
     id: root

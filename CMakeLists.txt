@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.20)
 
-project(CaraClient VERSION 0.19.1 LANGUAGES CXX)
+project(CaraClient VERSION 0.20.0 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -11,12 +11,18 @@ find_package(Qt6 6.7 REQUIRED
     COMPONENTS Qml Quick Core Network Svg Test PrintSupport Graphs QuickTest REQUIRED)
 
 qt_standard_project_setup(REQUIRES 6.7)
-qt_policy(SET QTP0001 NEW)
+qt_policy(
+    SET QTP0001 NEW
+)
+
+qt_policy(
+    SET QTP0004 NEW
+)
 
 add_subdirectory(Cara)
 
 if((LINUX OR WIN32) AND NOT CMAKE_BUILD_TYPE STREQUAL "Release")
-    # add_subdirectory(tests)
+    add_subdirectory(tests)
 endif()
 
 if (WIN32)
@@ -75,4 +81,7 @@ if (ANDROID)
     include(${android_openssl_SOURCE_DIR}/android_openssl.cmake)
 
     add_android_openssl_libraries(${PROJECT_NAME})
+endif()
+if (ANDROID)
+    include(/home/djose1164/Android/Sdk/android_openssl/CMakeLists.txt)
 endif()

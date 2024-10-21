@@ -4,15 +4,8 @@
 #include <QtConcurrent>
 #include "abstractdocument.h"
 #include "uniquefilenamegenerator.h"
-#include "utils.h"
 
 using namespace Qt::StringLiterals;
-
-namespace
-{
-constexpr auto htmlPath{":/qt/qml/Billing/order-model.html"_L1};
-constexpr auto stylePath{":/qt/qml/Billing/style.css"_L1};
-}
 
 namespace Billing
 {

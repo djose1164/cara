@@ -1,15 +1,14 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
-import Cara.Shopping as Catalogue
-import Cara.Utils
-import Cara.Product
 
 
 Popup {
     id: root
 
     property alias state: pane.state
+    readonly property alias label: label
+    property alias text: textLabel.text
 
     anchors.centerIn: Overlay.overlay
 
@@ -20,41 +19,51 @@ Popup {
             State {
                 name: "busy"
                 PropertyChanges {
-                    target: stackLayout
-                    currentIndex: 0
+                    stackLayout.currentIndex: 0
                 }
             },
             State {
                 name: "success"
                 PropertyChanges {
-                    target: stackLayout
-                    currentIndex: 1
+                    stackLayout.currentIndex: 1
                 }
                 PropertyChanges {
-                    target: label
-                    text: "Operacion realizada con exito!"
+                    label.text: "Operacion realizada con exito!"
                 }
             },
             State {
                 name: "error"
                 PropertyChanges {
-                    target: stackLayout
-                    currentIndex: 1
+                    stackLayout.currentIndex: 1
                 }
                 PropertyChanges {
-                    target: label
-                    text: "No se pudo completar la operacion."
+                    label.text: "No se pudo completar la operacion."
                 }
             }
         ]
 
         StackLayout {
             id: stackLayout
-            anchors.centerIn: parent
+            anchors.fill: parent
 
             BusyIndicator {}
 
-            Label { id: label }
+            ColumnLayout {
+                spacing: 10
+                Label {
+                    id: label
+                    wrapMode: Label.Wrap
+                    font.bold: true
+                    font.pointSize: 12
+                    Layout.fillWidth: true
+                }
+
+                Label {
+                    id: textLabel
+                    wrapMode: Label.Wrap
+                    Layout.fillWidth: true
+                }
+            }
         }
     }
 }

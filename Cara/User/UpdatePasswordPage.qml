@@ -1,7 +1,7 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Dialogs
-import Cara.Utils
+import Cara.Controls
 import Cara.User
 import Cara.Authentication
 
@@ -25,6 +25,7 @@ BackPage {
 
         PasswordItem {
             id: passwordItem
+            width: column.width
         }
 
         Button {

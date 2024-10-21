@@ -2,9 +2,9 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Templates as T
 import Cara.Billing
-import Cara.Utils
 import Cara.Shopping
 import Cara.User
+import Cara.Controls
 import "qrc:/filters"
 
 Page {

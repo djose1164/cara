@@ -1,13 +1,13 @@
 import QtQuick
 import QtQuick.Controls
-import QtQuick.Layouts
+import QtNetwork
+import Cara
 import Cara.Data
 import Cara.Authentication as Auth
 import Cara.User
-import Cara.Utils
 import Cara.Salesperson
-import Cara
-import Cara.Customer
+import Cara.Controls
+import Cara.ProductInventory
 
 ApplicationWindow {
     id: app
@@ -85,7 +85,7 @@ ApplicationWindow {
             }
             onConnectionRefused: {
                 const message = "No se ha podido establecer una conexión con el servidor. "
-                              + "Intenta de nuevo mas tarde.";
+                              + "Intenta de nuevo más tarde.";
                 appStack.replace("qrc:/errors/ErrorPage.qml", {message});
             }
             onUpgradeRequired: {
@@ -93,6 +93,11 @@ ApplicationWindow {
                 appStack.replace("qrc:/errors/ErrorPage.qml", {message});
             }
             onErrorOccurred: message => {
+                if (NetworkInformation.reachability !== NetworkInformation.Reachability.Disconnected) {
+                    stackView.replaceCurrentItem(app.mainPage);
+                    console.log("No internet: NetworkInformation.Reachability.Disconnected");
+                    return;
+                }
                 console.log("onErrorOccurred: "+message);
                 appStack.replace("qrc:/errors/ErrorPage.qml", {message});
             }
@@ -124,9 +129,18 @@ ApplicationWindow {
         tokenManager: Auth.TokenManager
         store: Auth.TokenStore {}
         onAuthenticated: data => {
+            LoginManager.loggingIn();
             print("Login: authenticated: ");
-            //Auth.TokenManager.accessToken = JSON.parse(data).access_token;
             userController.getUserById(UserSettings.userId);
+            LoginManager.loggedIn();
+        }
+    }
+
+    Connections {
+        target: LoginManager
+
+        function onLoggedIn() {
+            ProductInventoryController.updateSellerInventory(SalespersonSettings.salespersonId);
         }
     }
 
@@ -149,14 +163,14 @@ ApplicationWindow {
         if (Qt.platform.os === "android") {
             if (appStack.depth > 1) {
                 close.accepted = false;
-                appStack.pop();
+                appStack.popCurrentItem();
                 return;
             }
 
             const currentSV = appStack.currentItem.currentStackView;
             if (currentSV instanceof StackView && currentSV.depth > 1) {
                 close.accepted = false;
-                currentSV.pop()
+                currentSV.popCurrentItem();
                 return;
             }
         }

@@ -17,11 +17,14 @@ qt_add_qml_module(salesperson
         AssociateSalesperson.qml
         CreditOverview.qml
         NewSalesperson.qml
+        ProfitCalculatorPage.qml
+        SalespeopleSelector.qml
         SalespersonManager.qml
         SalespersonSettings.qml
         delegate/AssociateSalespersonDelegate.qml
     RESOURCES
         salesperson.svg
+        profit_calculator.svg
     SOURCES
         salespersoncontroller.h salespersoncontroller.cpp
         data/salespersonrepository.h data/salespersonrepository.cpp
@@ -36,4 +39,4 @@ target_include_directories(salesperson
     PRIVATE business data ../Data ../User ../Utils ../authentication ../
 )
 
-target_link_libraries(salesperson PRIVATE NetworkLib)
+target_link_libraries(salesperson PRIVATE NetworkLib CommonLib)

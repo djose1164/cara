@@ -2,7 +2,7 @@ import QtQuick
 import QtQuick.Dialogs
 import QtQuick.Controls
 import QtQuick.Layouts
-import Cara.Utils
+import Cara.Controls
 import Cara.User
 import Cara.Review
 

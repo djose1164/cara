@@ -2,12 +2,13 @@
 #define USERENTITY_H
 
 #include "address.h"
+#include "common/ipersonname.h"
 #include <QObject>
 #include <QQmlEngine>
 
 namespace Entity
 {
-class UserEntity
+class UserEntity : public IPersonName
 {
     Q_GADGET
     QML_VALUE_TYPE(user)
@@ -17,6 +18,7 @@ class UserEntity
     Q_PROPERTY(QString email READ email WRITE setEmail FINAL)
     Q_PROPERTY(QString forename READ forename WRITE setForename FINAL)
     Q_PROPERTY(QString surname READ surname WRITE setSurname FINAL)
+    Q_PROPERTY(QString fullname READ fullname FINAL)
     Q_PROPERTY(int customerId READ customerId WRITE setCustomerId FINAL)
     Q_PROPERTY(int userId READ userId WRITE setUserId FINAL)
     Q_PROPERTY(UserTypes userType READ userType WRITE setUserType FINAL)
@@ -40,6 +42,7 @@ public:
     };
     Q_ENUM(UserTypes)
     
+    [[deprecated("Use the overloaded version of QJsonObject instead.")]]
     static UserEntity fromJson(const QByteArray &data);
 
     UserEntity();
@@ -53,10 +56,10 @@ public:
     QString password() const;
     void setPassword(const QString &newPassword);
 
-    QString forename() const;
+    QString forename() const override;
     void setForename(const QString &newForename);
 
-    QString surname() const;
+    QString surname() const override;
     void setSurname(const QString &newSurname);
 
     int customerId() const;
@@ -96,6 +99,10 @@ public:
 
     Address address() const;
     void setAddress(const Address &newAddress);
+
+    QString fullname() const override;
+
+    static UserEntity fromJson(const QJsonObject &json);
 
 private:
     QString username_;
