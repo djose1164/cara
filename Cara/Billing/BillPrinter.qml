@@ -12,6 +12,7 @@ Item {
 
     PdfOrderPrinter {
         id: printer
+        filenameGenerator: UniqueFilenameGenerator {}
         onOrderPrinted: path => {
             fileUtils.removeOldestFiles(BillingSettings.maximumSavedPdfFiles,
                                         internal.docsPath,

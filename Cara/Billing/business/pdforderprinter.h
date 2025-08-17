@@ -5,22 +5,24 @@
 #include <QObject>
 #include <QPrinter>
 #include <QQmlEngine>
-#include "filenamegenerator.h"
 
 class QPrinter;
 class QTextDocument;
 
 namespace Billing
 {
+
+class AbstractPrinter;
 class AbstractDocument;
+class FilenameGenerator;
 class PdfOrderPrinter : public QObject
 {
     Q_OBJECT
     QML_ELEMENT
-    Q_PROPERTY(QString path READ path WRITE setPath NOTIFY pathChanged FINAL)
     Q_PROPERTY(Status status READ status WRITE setStatus NOTIFY statusChanged FINAL)
     Q_PROPERTY(AbstractDocument *document READ document WRITE setDocument NOTIFY
                    documentChanged FINAL)
+    Q_PROPERTY(FilenameGenerator *filenameGenerator READ filenameGenerator WRITE setFilenameGenerator NOTIFY filenameGeneratorChanged FINAL)
 public:
     enum class Status
     {
@@ -32,9 +34,6 @@ public:
 
     explicit PdfOrderPrinter(QObject *parent = nullptr);
 
-    QString path() const;
-    void setPath(const QString &newPath);
-
     Status status() const;
     void setStatus(const Status &newStatus);
 
@@ -43,6 +42,9 @@ public:
 
     AbstractDocument *document() const;
     void setDocument(AbstractDocument *newDocument);
+
+    FilenameGenerator *filenameGenerator() const;
+    void setFilenameGenerator(FilenameGenerator *newFilenameGenerator);
 
 public slots:
     void print();
@@ -58,15 +60,19 @@ signals:
 
     void orderPrinted(const QString &path);
 
+    void filenameGeneratorChanged();
+
 private:
     void printBill();
 
+    static AbstractPrinter *createPlatformPrinter(QObject *parent = nullptr);
+
 private:
-    QString path_;
     Status status_;
     AbstractDocument *document_;
-    std::unique_ptr<FilenameGenerator> filenameGenerator_;
+    FilenameGenerator *filenameGenerator_;
     std::unique_ptr<QPrinter> printer_;
+    AbstractPrinter *orderPrinter_;
 };
 }
 

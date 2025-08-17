@@ -190,7 +190,9 @@ BackPage {
         }
         onBillPrinted: path => {
             processingIndicator.close();
-            ShareUtils.share("file://" + path);
+            const os = Qt.platform.os;
+            if (os === "android" || os === "ios")
+                ShareUtils.share("file://" + path);
         }
     }
 

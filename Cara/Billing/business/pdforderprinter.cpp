@@ -1,9 +1,16 @@
 #include "pdforderprinter.h"
 #include <QStandardPaths>
 #include <QTextDocument>
-#include <QtConcurrent>
 #include "abstractdocument.h"
-#include "uniquefilenamegenerator.h"
+#include "abstractprinter.h"
+#include "filenamegenerator.h"
+#include "generalprinter.h"
+#if !defined(Q_OS_WASM)
+#include <QtConcurrent>
+#else
+#include "wasmprinter.h"
+#endif
+
 
 using namespace Qt::StringLiterals;
 
@@ -11,38 +18,39 @@ namespace Billing
 {
 PdfOrderPrinter::PdfOrderPrinter(QObject *parent)
     : QObject{parent}
-    , path_{QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation)}
     , status_{Status::Idle}
     , document_{}
-    , filenameGenerator_{std::make_unique<UniqueFilenameGenerator>()}
+    , filenameGenerator_{nullptr}
     , printer_{std::make_unique<QPrinter>(QPrinter::HighResolution)}
+    , orderPrinter_{createPlatformPrinter(this)}
+
 {
     printer_->setPageSize(QPageSize::A4);
-}
 
-QString PdfOrderPrinter::path() const
-{
-    return path_;
-}
-
-void PdfOrderPrinter::setPath(const QString &newPath)
-{
-    if (path_ == newPath)
-        return;
-    path_ = newPath;
-    emit pathChanged();
+    connect(orderPrinter_, &AbstractPrinter::orderPrinted,
+            this, &PdfOrderPrinter::orderPrinted);
 }
 
 void PdfOrderPrinter::print()
 {
-    auto result{QtConcurrent::run([&] { printBill(); })};
+    if (filenameGenerator_ == nullptr)
+    {
+        qCritical() << "PdfOrderPrinter::print: filenameGenerator_ cant be null.";
+        return;
+    }
+
+    orderPrinter_->setFilenameGenerator(filenameGenerator_);
+    orderPrinter_->setDocument(document_);
+    orderPrinter_->print();
+
+    //auto result{QtConcurrent::run([&] { printBill(); })};
 }
 
 void PdfOrderPrinter::printBill()
 {
     using enum Status;
 
-    const QString filename{path_ + filenameGenerator_->getFilename()};
+    const QString filename{filenameGenerator_->getFilename()};
     printer_->setOutputFileName(filename);
 
     const QSizeF pageSize{printer_->pageRect(QPrinter::Point).size()};
@@ -61,6 +69,28 @@ void PdfOrderPrinter::printBill()
 
     Q_ASSERT(this);
     emit orderPrinted(filename);
+}
+
+AbstractPrinter *PdfOrderPrinter::createPlatformPrinter(QObject *parent)
+{
+#ifdef Q_OS_WASM
+    return new WasmPrinter{parent};
+#else
+    return new GeneralPrinter{parent};
+#endif
+}
+
+FilenameGenerator *PdfOrderPrinter::filenameGenerator() const
+{
+    return filenameGenerator_;
+}
+
+void PdfOrderPrinter::setFilenameGenerator(FilenameGenerator *newFilenameGenerator)
+{
+    if (filenameGenerator_ == newFilenameGenerator)
+        return;
+    filenameGenerator_ = newFilenameGenerator;
+    emit filenameGeneratorChanged();
 }
 
 AbstractDocument *PdfOrderPrinter::document() const
