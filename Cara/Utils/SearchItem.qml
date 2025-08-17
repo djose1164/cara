@@ -1,5 +1,5 @@
 import QtQuick
-import QtQuick.Controls
+import QtQuick.Controls.Material
 import QtQuick.Layouts
 import Cara.Controls
 
@@ -28,9 +28,11 @@ Item {
         SearchField {
             id: searchField
             placeholderText: "Buscar"
-            Layout.maximumHeight: root.height * .7
+            Layout.fillHeight: true
             Layout.rightMargin: rowLayout.spacing
             Layout.fillWidth: true
+            Layout.topMargin: rowLayout.spacing
+            Layout.bottomMargin: rowLayout.spacing
             onTextEdited: root.textEdited()
         }
 

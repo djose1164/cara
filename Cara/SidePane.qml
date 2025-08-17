@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
+import QtQuick.Templates as T
 import Cara.Salesperson
 import Cara.User
 import Cara.Authentication
@@ -8,7 +9,7 @@ import Cara.Authentication
 Drawer {
     id: root
 
-    required property StackView stackView
+    required property T.StackView stackView
     readonly property bool isGuest: UserSettings.userTypeId === UserEntity.Guest
 
     width: {

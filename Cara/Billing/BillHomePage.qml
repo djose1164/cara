@@ -33,9 +33,8 @@ Page {
         State {
             when: billProxyModel.count === 0
             PropertyChanges {
-                target: label
-                visible: true
-                text: "No se ha encontrado ninguna orden con los filtros establecidos."
+                label.visible: true
+                label.text: "No se ha encontrado ninguna orden con los filtros establecidos."
             }
         },
         State {

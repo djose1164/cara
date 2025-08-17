@@ -53,6 +53,8 @@ qt_add_qml_module(ControlsLib
         datevalidator.h datevalidator.cpp
     DEPENDENCIES
         QtQuick QtQuick.Controls
+        QML_FILES EntitySelector.qml
+        QML_FILES EntityCard.qml
 )
 
 target_link_libraries(ControlsLib PRIVATE Qt6::Gui)
