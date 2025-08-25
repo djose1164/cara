@@ -95,7 +95,6 @@ qt_add_qml_module(BillingLib
         salemodel.h salemodel.cpp
         salerepository.h
         uniquefilenamegenerator.h uniquefilenamegenerator.cpp
-        sqlitecommissionrepository.h sqlitecommissionrepository.cpp
         sqlitecommissionmodel.h sqlitecommissionmodel.cpp
         commissioncontroller.h commissioncontroller.cpp
         abstractcommissionmodel.h

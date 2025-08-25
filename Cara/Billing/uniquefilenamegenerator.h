@@ -7,11 +7,16 @@ namespace Billing
 {
 class UniqueFilenameGenerator : public FilenameGenerator
 {
+    Q_OBJECT
+    QML_ELEMENT
 public:
-    UniqueFilenameGenerator();
+    UniqueFilenameGenerator(QObject *parent = nullptr);
 
     // FilenameGenerator interface
     QString getFilename() const override;
+
+private:
+    const QString documentsPath_;
 };
 }
 
