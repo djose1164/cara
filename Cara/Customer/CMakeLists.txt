@@ -27,6 +27,7 @@ qt_add_qml_module(CustomerLib
         PersonalInformationForm.qml
         SelectedCustomer.qml
         PersonalInfoItem.qml
+        CustomerOutstandingOrders.qml
     SOURCES
         customermodel.h customermodel.cpp
         customerrepository.h customerrepository.cpp
@@ -34,6 +35,9 @@ qt_add_qml_module(CustomerLib
         entity/customer.h entity/customer.cpp
         model/customerproxymodel.h model/customerproxymodel.cpp
         business/customercontroller.h business/customercontroller.cpp
+        restcustomerrepository.h restcustomerrepository.cpp
+        outstandingcustomersproxymodel.h outstandingcustomersproxymodel.cpp
+        customeroutstandingordermodel.h customeroutstandingordermodel.cpp
     RESOURCES
         person.svg
         person-add.svg

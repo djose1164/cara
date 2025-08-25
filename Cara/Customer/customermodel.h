@@ -1,7 +1,6 @@
 #ifndef CUSTOMERMODEL_H
 #define CUSTOMERMODEL_H
 
-#include "customerrepository.h"
 #include <QAbstractListModel>
 #include <QQmlEngine>
 #include <QJsonObject>
@@ -15,7 +14,7 @@ class CustomerModel : public QAbstractListModel
 
     Q_PROPERTY(int count READ count NOTIFY countChanged FINAL)
 public:
-    using SalespersonId = Business::CustomerRepository::SalespersonId;
+    using SalespersonId = int;
 
     enum class RoleNames
     {

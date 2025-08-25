@@ -1,3 +1,4 @@
+pragma ComponentBehavior: Bound
 import QtQuick
 import QtQuick.Controls
 import Cara.Customer
@@ -10,8 +11,8 @@ Item {
     property bool searchEnabled: CustomerManager.state !== "fetching"
 
     property alias searchText: customerProxy.text
-    property alias header: listView.header
-    property alias headerItem: listView.headerItem
+    property Component header
+    property alias headerItem: headerLoader.item
 
     signal customerSelected(customer: var)
     signal customerClicked(customerId: int)
@@ -21,23 +22,34 @@ Item {
             name: "contentNotFound"
             when: CustomerManager.state === "contentNotFound"
             PropertyChanges {
-                target: errorPane
-                visible: true
+                errorPane.visible: true
             }
         },
         State {
             when: CustomerManager.state === "errorOccurred"
             PropertyChanges {
-                target: errorPane
-                visible: true
-                text: CustomerManager.errorString
+                errorPane.visible: true
+                errorPane.text: CustomerManager.errorString
             }
         }
     ]
 
+    Loader {
+        id: headerLoader
+        height: ApplicationWindow.window?.height * .2 || 60
+        anchors.right: parent.right
+        anchors.left: parent.left
+        anchors.top: parent.top
+        anchors.bottom: listView.top
+        sourceComponent: root.header
+    }
+
     ListView {
         id: listView
-        anchors.fill: parent
+        anchors.right: parent.right
+        anchors.left: parent.left
+        anchors.top: headerLoader.status !== Loader.Null ? headerLoader.bottom : parent.top
+        anchors.bottom: parent.bottom
         delegate: CustomerCard {
             required property var model
             required fullname
@@ -46,8 +58,8 @@ Item {
             width: listView.width
             height: 75
             onClicked: {
-                customerSelected(model);
-                customerClicked(customerId);
+                root.customerSelected(model);
+                root.customerClicked(customerId);
             }
         }
         model: customerProxy
@@ -73,6 +85,6 @@ Item {
 
     CustomerProxyModel {
         id: customerProxy
-        sourceModel: customerModel
+        sourceModel: root.customerModel
     }
 }

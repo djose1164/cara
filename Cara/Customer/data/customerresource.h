@@ -2,7 +2,6 @@
 #define CUSTOMERRESOURCE_H
 
 #include "abstractresource.h"
-#include "customerrepository.h"
 #include <QObject>
 #include <QQmlEngine>
 #include <QNetworkAccessManager>
@@ -10,7 +9,7 @@
 namespace Data
 {
 class CustomerResource
-    : public AbstractResource, public Business::CustomerRepository
+    : public AbstractResource
 {
     Q_OBJECT
     QML_ELEMENT
@@ -34,7 +33,7 @@ public:
     void setPath(const QString &newPath);
 
 public slots:
-    void readBySalespersonId(SalespersonId salespersonId) override final;
+    void readBySalespersonId(SalespersonId salespersonId);
     void readByUserId(UserId id);
     void readSummary(CustomerId id);
 

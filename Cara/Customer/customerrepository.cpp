@@ -1,6 +1,6 @@
 #include "customerrepository.h"
 
-namespace Business
+namespace Customer
 {
 CustomerRepository::~CustomerRepository() {}
 }

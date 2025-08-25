@@ -1,7 +1,7 @@
 ﻿#include "customerresource.h"
 #include "httpstatuscodes.h"
-#include <QJsonObject>
 #include <QJsonDocument>
+#include <QJsonObject>
 #include <QNetworkReply>
 #include <QRestAccessManager>
 #include <QRestReply>
@@ -20,7 +20,6 @@ namespace Data
 {
 CustomerResource::CustomerResource(QObject *parent)
     : AbstractResource{parent}
-    , Business::CustomerRepository{}
     , data_{}
     , errorString_{}
     , path_{}
