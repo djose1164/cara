@@ -1,5 +1,5 @@
 import QtQuick
-import QtQuick.Controls
+import QtQuick.Controls.Universal
 
 Item {
     id: root
@@ -19,7 +19,7 @@ Item {
         anchors.fill: parent
         verticalAlignment: TextField.AlignVCenter
         rightPadding: lupa.width + font.pixelSize
-        focus: root.visible
+        focus: true
         Keys.onEnterPressed: shouldAccept()
         Keys.onReturnPressed: shouldAccept()
         EnterKey.type: Qt.EnterKeySearch
@@ -33,7 +33,7 @@ Item {
         anchors.verticalCenter: textField.verticalCenter
         source: "qrc:/icons/search.svg"
 
-        sourceSize: "16x16"
+        sourceSize: Qt.size(16, 16)
 
         TapHandler {
             onTapped: shouldAccept()

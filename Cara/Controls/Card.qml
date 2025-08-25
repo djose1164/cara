@@ -11,11 +11,12 @@ Item {
 
     signal clicked
 
+    implicitWidth: frame.implicitWidth
+    implicitHeight: frame.implicitHeight
+
     Frame {
         id: frame
-        width: root.width
-        height: root.height
-        //border.width: 1
+        anchors.fill: parent
 
         RowLayout {
             anchors.fill: parent
@@ -24,7 +25,7 @@ Item {
 
             Image {
                 id: image
-                sourceSize: "32x32"
+                sourceSize: Qt.size(32, 32)
                 Layout.alignment: Qt.AlignCenter
             }
 

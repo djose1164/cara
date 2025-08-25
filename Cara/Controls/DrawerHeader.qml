@@ -12,11 +12,13 @@ Rectangle {
 
     signal closeClicked
 
-    height: 50
+    implicitWidth: rowLayout.implicitWidth
+    implicitHeight: rowLayout.implicitHeight
     z: 100
     color: "white"
 
     RowLayout {
+        id: rowLayout
         anchors.fill: parent
 
         CloseButton {
@@ -25,7 +27,7 @@ Rectangle {
         }
 
         Label {
-            visible: midBtnVisible
+            visible: root.midBtnVisible
             text: root.title
             font.pointSize: 14
             font.bold: true
@@ -34,7 +36,7 @@ Rectangle {
 
         Loader {
             id: menuLoader
-            Layout.fillWidth: !midBtnVisible
+            Layout.fillWidth: !root.midBtnVisible
             Layout.maximumHeight: root.height
         }
     }
