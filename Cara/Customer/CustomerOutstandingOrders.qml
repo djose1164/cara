@@ -45,6 +45,7 @@ Page {
                 Layout.fillWidth: true
                 Layout.fillHeight: true
                 onSearchClosed: root.state = ""
+                background.color: Material.primary
             }
         }
     }

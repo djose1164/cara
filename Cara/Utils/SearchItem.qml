@@ -8,6 +8,7 @@ Item {
 
     readonly property alias leadingBtn: leadingBtn
     readonly property alias displayText: searchField.displayText
+    property alias background: background
 
     signal searchClosed
     signal textEdited
@@ -18,6 +19,8 @@ Item {
     RowLayout {
         id: rowLayout
         anchors.fill: parent
+        z: 20
+
         ToolButton {
             id: leadingBtn
             icon.source: "qrc:/left_arrow"
@@ -28,7 +31,6 @@ Item {
         SearchField {
             id: searchField
             placeholderText: "Buscar"
-            Layout.fillHeight: true
             Layout.rightMargin: rowLayout.spacing
             Layout.fillWidth: true
             Layout.topMargin: rowLayout.spacing
@@ -37,6 +39,13 @@ Item {
         }
 
         Item {}
+    }
+
+    Rectangle {
+        id: background
+        anchors.fill: parent
+        color: "white"
+        z: 10
     }
 
     function endSearch() {

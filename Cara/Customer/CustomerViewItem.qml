@@ -36,12 +36,12 @@ Item {
 
     Loader {
         id: headerLoader
-        height: ApplicationWindow.window?.height * .2 || 60
+        height: ApplicationWindow.window?.height * .12
         anchors.right: parent.right
         anchors.left: parent.left
         anchors.top: parent.top
-        anchors.bottom: listView.top
         sourceComponent: root.header
+        z: 100
     }
 
     ListView {
@@ -64,7 +64,6 @@ Item {
         }
         model: customerProxy
         spacing: 20
-        clip: true
         headerPositioning: ListView.PullBackHeader
 
         BusyIndicator {

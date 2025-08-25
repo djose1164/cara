@@ -1,4 +1,5 @@
 import QtQuick
+import QtQuick.Controls
 import QtQuick.Layouts
 import Cara.Controls
 
@@ -36,8 +37,8 @@ Item {
 
     CustomerSelector {
         id: customerSelector
-        width: app.width
-        height: app.height
+        width: ApplicationWindow.window.width
+        height: ApplicationWindow.window.height
         onCustomerSelected: customer => {
             selectedCustomer.customer = customer;
             internal.hasSelection = true;

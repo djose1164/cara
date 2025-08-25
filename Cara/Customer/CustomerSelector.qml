@@ -1,4 +1,5 @@
 pragma ComponentBehavior: Bound
+
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
@@ -35,7 +36,6 @@ Drawer {
         id: searchHeader
         SelectorHeaderItem {
             width: customerView.width
-            z: 2
             title: "Seleccionar cliente"
             onCloseClicked: root.close()
         }
