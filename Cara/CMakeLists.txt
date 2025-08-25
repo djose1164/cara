@@ -4,6 +4,18 @@ project(CaraLib LANGUAGES CXX)
 set(CMAKE_AUTORCC ON)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
+add_library(LoginHelper STATIC
+    loginhelper.h loginhelper.cpp)
+
+target_link_libraries(LoginHelper
+    PRIVATE Qt6::Core Qt6::Qml Qt6::Test AuthenticationLib UserLib UtilsLib)
+
+qt_add_library(EnvHelper STATIC
+    dotenv.h)
+
+qt_add_resources(LoginHelper "LoginHelper_env"
+    FILES .env)
+
 qt_add_library(${PROJECT_NAME} STATIC)
 
 qt_add_qml_module(${PROJECT_NAME}
@@ -33,7 +45,6 @@ qt_add_qml_module(${PROJECT_NAME}
 
 set(CARA_VERSION ${CMAKE_PROJECT_VERSION})
 string(TIMESTAMP TODAY "%d/%m/%Y")
-message("Todays is ${TODAY}")
 set(CARA_BUILD_TIME ${TODAY})
 configure_file(config.h.in ${CMAKE_CURRENT_SOURCE_DIR}/config.h @ONLY)
 

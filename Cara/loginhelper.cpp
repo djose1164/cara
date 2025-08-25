@@ -1,12 +1,13 @@
 #include "loginhelper.h"
 //#include "Authentication/data/restuserauthentication.h"
-#include "data/tokenstore.h"
+#include "Authentication/entity/credential.h"
 #include "Authentication/login.h"
+#include "User/data/localuserstore.h"
+#include "Authentication/data/restuserauthentication.h"
+#include "Authentication/data/tokenstore.h"
+#include "dotenv.h"
 #include <QCoreApplication>
 #include <QtTest>
-#include "User/data/localuserstore.h"
-#include "data/restuserauthentication.h"
-#include "dotenv.h"
 
 void LoginHelper::login()
 {

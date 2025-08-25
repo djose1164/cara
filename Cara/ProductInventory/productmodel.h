@@ -66,6 +66,7 @@ public:
     Q_INVOKABLE bool contains(const EntityLayer::Product &product) const;
     Q_INVOKABLE QModelIndex find(int productId) const;
     Q_INVOKABLE QJsonArray toJsonArray() const;
+    QModelIndex find(const std::function<bool(const EntityLayer::Product &)> &predicate) const;
 
     ProductInventory::IProductRepository *repository() const;
     void setRepository(ProductInventory::IProductRepository *newRepository);
@@ -73,9 +74,11 @@ public:
     Status status() const;
     void setStatus(Status newStatus);
 
+    void setProducts(const QList<EntityLayer::Product> &products);
+    void setProducts(QList<EntityLayer::Product> &&products);
+
 public slots:
     void update();
-    void updateFromList(const QList<EntityLayer::Product> &products);
 
     void editFromList(const QVariantList &list) noexcept;
 
@@ -87,6 +90,9 @@ public slots:
     void removeByProductId(ProductId id);
 
     void refreshBuyPriceHistory(ProductId id) noexcept;
+
+private slots:
+    void productsFetched(const QList<EntityLayer::Product> &products) noexcept;
 
 signals:
     void repositoryChanged();

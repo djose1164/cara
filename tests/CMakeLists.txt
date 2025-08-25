@@ -27,7 +27,6 @@ function(SETUP_TESTS)
        endforeach()
 endfunction()
 
-include_directories(../Cara/Product)
 include_directories(../Cara/Customer)
 include_directories(../Cara/User)
 include_directories(../Cara/Billing)
@@ -56,4 +55,3 @@ SETUP_TESTS(
 add_subdirectory(UnitQMLTests)
 add_subdirectory(Billing)
 add_subdirectory(User)
-add_subdirectory(Product)

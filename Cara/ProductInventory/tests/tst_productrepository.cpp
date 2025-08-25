@@ -1,5 +1,5 @@
-#include "Shopping/productrepository.h"
-#include "loginhelper.h"
+#include "../loginhelper.h"
+#include "productrepository.h"
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QSignalSpy>
@@ -43,8 +43,8 @@ void TestProductRepository::init()
 
 void TestProductRepository::test_shouldEmitAddedIfAddingSuccess() const
 {
-    Catalogue::ProductRepository repository{};
-    QSignalSpy spy{&repository, &Catalogue::ProductRepository::added};
+    ProductInventory::ProductRepository repository{};
+    QSignalSpy spy{&repository, &ProductInventory::ProductRepository::added};
 
     QVERIFY(spy.isValid());
 

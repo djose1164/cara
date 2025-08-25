@@ -26,6 +26,7 @@ void CatalogProductRepository::add(const EntityLayer::Product &product)
 void CatalogProductRepository::update()
 {
     const auto request{api_->createRequest(path())};
+    qDebug() << "CatalogProductRepository::update: " << request.url();
 
     const auto reply = manager_->get(request);
 

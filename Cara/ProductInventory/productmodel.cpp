@@ -24,7 +24,6 @@ ProductModel::ProductModel(IProductRepository *newRepository, QObject *parent)
     , repository_{newRepository}
     , status_{Status::Idle}
 {
-    qDebug() << "ProductModel::ProductModel: constructor";
     makeConnections();
 }
 
@@ -169,19 +168,16 @@ bool ProductModel::contains(const EntityLayer::Product &product) const
 
 QModelIndex ProductModel::find(int productId) const
 {
-    const auto res = std::find_if(data_.begin(),
-                                  data_.end(),
-                                  [productId](const EntityLayer::Product &p)
-                                  {
-                                      return p.productId() == productId;
-                                  });
+    return find([productId](const EntityLayer::Product &p) -> bool {
+        return p.productId() == productId;
+    });
+}
 
-    if (res == data_.end())
-    {
-        return {};
-    }
+QModelIndex ProductModel::find(const std::function<bool(const EntityLayer::Product &)> &predicate) const
+{
+    const auto res{std::ranges::find_if(data_, predicate)};
 
-    return index(std::distance(data_.begin(), res));
+    return res != data_.end() ? index(std::distance(data_.begin(), res)) : QModelIndex();
 }
 
 QJsonArray ProductModel::toJsonArray() const
@@ -210,16 +206,22 @@ void ProductModel::update()
     repository_->update();
 }
 
-void ProductModel::updateFromList(const QList<EntityLayer::Product> &products)
+void ProductModel::setProducts(const QList<EntityLayer::Product> &products)
 {
-    qDebug() << "ProductModel::updateFromList: updating...";
     beginResetModel();
     data_.clear();
     data_ = products;
     endResetModel();
     emit countChanged();
-    emit updated();
-    qDebug() << "ProductModel::updateFromList: updating...Done";
+}
+
+void ProductModel::setProducts(QList<EntityLayer::Product> &&products)
+{
+    beginResetModel();
+    data_.clear();
+    data_ = std::move(products);
+    endResetModel();
+    emit countChanged();
 }
 
 void ProductModel::editFromList(const QVariantList &list) noexcept
@@ -366,20 +368,22 @@ void ProductModel::refreshBuyPriceHistory(ProductId id) noexcept
             productRepository, [productRepository]{ productRepository->deleteLater(); });
 }
 
+void ProductModel::productsFetched(const QList<EntityLayer::Product> &products) noexcept
+{
+    setProducts(products);
+    setStatus(Status::Idle);
+    emit updated();
+    qDebug() << "ProductModel::productsFetched: adding products to list...count: " << products.count();
+}
+
 void ProductModel::makeConnections() noexcept
 {
-    qDebug() << "ProductModel::makeConnections: " << repository_;
     if (repository_)
     {
         connect(repository_,
                 &IProductRepository::fetched,
                 this,
-                [&](const QList<EntityLayer::Product> &products)
-                {
-                    updateFromList(products);
-                    setStatus(Status::Idle);
-                    qDebug() << "ProductModel::makeConnections: adding products to list...count: " << products.count();
-                });
+                &ProductModel::productsFetched);
     }
 }
 

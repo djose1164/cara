@@ -40,7 +40,7 @@ void TestProfitCalculator::init()
     calculator_->setModel(model_.get());
 
     const auto productModel{qobject_cast<ProductInventory::ProductModel *>(model_.get())};
-    productModel->updateFromList(
+    productModel->setProducts(
         QList<Product>{Product{1, 100, 5}, Product{2, 200, 6}, Product{3, 180, 2}});
 }
 
@@ -81,7 +81,7 @@ void TestProfitCalculator::test_shouldCalculateTotalProfitCorrectlyWithSinglePro
     constexpr double percentage{wholePercentage / 100.0};
 
     const auto productModel{qobject_cast<ProductInventory::ProductModel *>(model_.get())};
-    productModel->updateFromList(QList{Product{1, 100, 5}});
+    productModel->setProducts(QList{Product{1, 100, 5}});
 
     calculator_->setPercentage(wholePercentage);
     // calculator_->setProductList(QList<Product *>{new Product(1, 100 * multi, 0)});

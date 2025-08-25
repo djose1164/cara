@@ -3,7 +3,6 @@
 #include <QJsonObject>
 #include <QSignalSpy>
 #include <QTest>
-#include "pricehistoryrepository.h"
 #include "restpricehistoryrepository.h"
 
 using namespace Qt::StringLiterals;
