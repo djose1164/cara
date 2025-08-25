@@ -11,9 +11,8 @@ namespace ProductInventory {
 class ProductInventoryController : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(ProductModel *catalog READ catalog NOTIFY catalogChanged FINAL)
-    Q_PROPERTY(ProductModel *inventory READ inventory NOTIFY inventoryChanged FINAL)
-    Q_PROPERTY(IProductRepository *repository READ repository WRITE setRepository NOTIFY repositoryChanged FINAL)
+    Q_PROPERTY(ProductInventory::ProductModel *catalog READ catalog NOTIFY catalogChanged FINAL)
+    Q_PROPERTY(ProductInventory::ProductModel *inventory READ inventory NOTIFY inventoryChanged FINAL)
     QML_ELEMENT
     QML_SINGLETON
 public:
@@ -25,9 +24,6 @@ public:
     ProductModel *inventory() const;
     void setInventory(ProductModel *newInventory);
 
-    IProductRepository *repository() const;
-    void setRepository(IProductRepository *newRepository);
-
 public slots:
     void updateSellerInventory(int sellerId) noexcept;
 
@@ -36,14 +32,11 @@ signals:
 
     void inventoryChanged();
 
-    void repositoryChanged();
-
 private:
     void initCatalog() noexcept;
 
     ProductModel *catalog_;
     ProductModel *inventory_;
-    IProductRepository *repository_;
 };
 
 } // namespace ProductInventory

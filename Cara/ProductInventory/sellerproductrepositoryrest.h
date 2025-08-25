@@ -16,6 +16,7 @@ public:
     using SellerId = int;
 
     explicit SellerProductRepositoryREST(QObject *parent = nullptr);
+    SellerProductRepositoryREST(SellerId sellerId, QObject *parent = nullptr);
 
     SellerId sellerId() const;
     void setSellerId(SellerId newSellerId);

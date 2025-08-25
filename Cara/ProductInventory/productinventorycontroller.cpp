@@ -38,46 +38,31 @@ void ProductInventoryController::setInventory(ProductModel *newInventory)
     emit inventoryChanged();
 }
 
-IProductRepository *ProductInventoryController::repository() const
-{
-    return repository_;
-}
-
-void ProductInventoryController::setRepository(IProductRepository *newRepository)
-{
-    if (repository_ == newRepository)
-        return;
-    repository_ = newRepository;
-    emit repositoryChanged();
-}
-
 void ProductInventoryController::updateSellerInventory(int sellerId) noexcept
 {
     const auto tempRepo{new SellerProductRepositoryREST};
     tempRepo->setSellerId(sellerId);
-    connect(tempRepo, &IProductRepository::fetched,
-            this, [this, tempRepo]
-                  {
-                      setRepository(nullptr);
-                      tempRepo->deleteLater();
-                  });
 
     inventory_->setRepository(tempRepo);
     inventory_->update();
+
+    connect(tempRepo, &IProductRepository::fetched, this, [this, tempRepo = std::move(tempRepo)] {
+        tempRepo->deleteLater();
+        inventory_->setRepository(nullptr);
+        qDebug() << "ProductInventoryController::updateSellerInventory: tempRepo->deleteLater();";
+    });
 }
 
 void ProductInventoryController::initCatalog() noexcept
 {
     const auto tempRepo{new CatalogProductRepository};
-    connect(tempRepo, &IProductRepository::fetched,
-            this, [this, tempRepo]
-                  {
-                      setRepository(nullptr);
-                      tempRepo->deleteLater();
-                  });
-
     catalog_->setRepository(tempRepo);
     catalog_->update();
+
+    connect(tempRepo, &IProductRepository::fetched, this, [this, tempRepo = std::move(tempRepo)] {
+        tempRepo->deleteLater();
+        inventory_->setRepository(nullptr);
+    });
 }
 
 } // namespace ProductInventory

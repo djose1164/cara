@@ -8,8 +8,8 @@ import Cara.ProductInventory
 Item {
     id: root
 
-    property alias model: productModel
     property alias delegate: listView.delegate
+    readonly property alias model: productModel
     readonly property alias implicitViewWidth: listView.width
     readonly property alias implicitViewHeight: listView.height
 
@@ -50,11 +50,6 @@ Item {
     ProductModel { id: productModel }
 
     function toJson() {
-        const products = [];
-        for (let i = 0; i < model.count; ++i) {
-            const product = model.get(i);
-            products.push({product_id: product.productId, quantity: product.selectedQty});
-        }
-        return products;
+        return productModel.toJsonArray();
     }
 }

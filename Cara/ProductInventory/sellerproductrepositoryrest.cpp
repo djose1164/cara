@@ -26,7 +26,13 @@ void SellerProductRepositoryREST::setSellerId(SellerId newSellerId)
 }
 
 SellerProductRepositoryREST::SellerProductRepositoryREST(QObject *parent)
+    : SellerProductRepositoryREST{-1, parent}
+{
+}
+
+SellerProductRepositoryREST::SellerProductRepositoryREST(SellerId sellerId, QObject *parent)
     : IProductRepository{parent}
+    , sellerId_{sellerId}
 {
     setPath("inventory/"_L1);
 }

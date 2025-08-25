@@ -22,7 +22,7 @@ constexpr auto thruDateField{"thru_date"_L1};
 QDateTime dateTimeWithTZ(QStringView dateString)
 {
     auto &&date{QDateTime::fromString(dateString, Qt::ISODate)};
-    date.setTimeZone(QTimeZone{Qt::UTC});
+    date.setTimeZone(QTimeZone{QTimeZone::UTC});
     return date;
 }
 
@@ -133,7 +133,7 @@ void PriceHistoryModel::setRepository(PriceHistoryRepository *newRepository)
         return;
 
     if (repository_)
-        repository_->disconnect();
+        repository_->disconnect(this);
 
     repository_ = newRepository;
 

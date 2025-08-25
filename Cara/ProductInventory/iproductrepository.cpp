@@ -7,9 +7,9 @@ namespace ProductInventory
 
 IProductRepository::IProductRepository(QObject *parent)
     : QObject{parent}
-    , path_{}
     , manager_{QNAMSingleton::qram()}
     , api_{Network::NetworkRequestSingleton::instance().api()}
+    , path_{}
 {
 }
 

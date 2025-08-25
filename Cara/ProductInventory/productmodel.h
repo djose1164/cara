@@ -4,12 +4,8 @@
 #include "iproductrepository.h"
 #include "productentity.h"
 #include <QAbstractListModel>
-#include <QObject>
 #include <QQmlEngine>
 
-
-namespace ProductInventory { class ProductRepository; }
-namespace Business { class IInventoryRepository; }
 namespace ProductInventory
 {
 class ProductModel : public QAbstractListModel
@@ -69,6 +65,7 @@ public:
     Q_INVOKABLE EntityLayer::Product get(int index) const;
     Q_INVOKABLE bool contains(const EntityLayer::Product &product) const;
     Q_INVOKABLE QModelIndex find(int productId) const;
+    Q_INVOKABLE QJsonArray toJsonArray() const;
 
     ProductInventory::IProductRepository *repository() const;
     void setRepository(ProductInventory::IProductRepository *newRepository);
@@ -97,8 +94,6 @@ signals:
     void updated();
     void added();
 
-    void productRepositoryChanged();
-
     void buyPriceHistoryRefreshed();
 
     void statusChanged();
@@ -114,7 +109,7 @@ private:
     void editFromJson(const QJsonObject &json) noexcept;
 
     QList<EntityLayer::Product> data_;
-    IProductRepository *repository_;
+    QPointer<IProductRepository> repository_;
     Status status_;
 };
 }

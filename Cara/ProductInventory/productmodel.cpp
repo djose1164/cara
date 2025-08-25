@@ -24,6 +24,7 @@ ProductModel::ProductModel(IProductRepository *newRepository, QObject *parent)
     , repository_{newRepository}
     , status_{Status::Idle}
 {
+    qDebug() << "ProductModel::ProductModel: constructor";
     makeConnections();
 }
 
@@ -183,14 +184,28 @@ QModelIndex ProductModel::find(int productId) const
     return index(std::distance(data_.begin(), res));
 }
 
+QJsonArray ProductModel::toJsonArray() const
+{
+    QJsonArray array;
+    std::ranges::for_each(data_, [&](const auto &product) {
+        QJsonObject json;
+        json["product_id"_L1] = product.productId();
+        json["quantity"_L1] = product.selectedQty();
+        array.append(std::move(json));
+    });
+    return array;
+}
+
 void ProductModel::update()
 {
+    qDebug() << "ProductModel::update: " << repository_;
     if (!repository_)
     {
         qWarning("ProductModel::update: a repository needs to be set.");
         return;
     }
 
+    qDebug() << "ProductModel::update: updating...";
     setStatus(Status::Busy);
     repository_->update();
 }
@@ -256,7 +271,6 @@ void ProductModel::addProduct(const QVariantMap &map) noexcept
                     productRepository->deleteLater();
                 });
         productRepository->add(map);
-        //repository_->add(EntityLayer::Product::fromMap(map));
     }
     catch (const ValidationError &err)
     {
@@ -354,6 +368,7 @@ void ProductModel::refreshBuyPriceHistory(ProductId id) noexcept
 
 void ProductModel::makeConnections() noexcept
 {
+    qDebug() << "ProductModel::makeConnections: " << repository_;
     if (repository_)
     {
         connect(repository_,
@@ -363,18 +378,18 @@ void ProductModel::makeConnections() noexcept
                 {
                     updateFromList(products);
                     setStatus(Status::Idle);
+                    qDebug() << "ProductModel::makeConnections: adding products to list...count: " << products.count();
                 });
     }
 }
 
 QJsonObject ProductModel::findLatestPrice(const QJsonArray &array) const noexcept
 {
-    for (const auto &item : array)
-    {
-        if (item["thru_date"_L1].isNull())
-            return item.toObject();
-    }
-    return {};
+    auto it = std::ranges::find_if(array, [](const auto &item) -> bool {
+        return item["thru_date"_L1].isNull();
+    });
+
+    return it != array.end() ? (*it).toObject() : QJsonObject{};
 }
 
 ProductInventory::IProductRepository *ProductModel::repository() const
@@ -392,12 +407,12 @@ void ProductModel::setRepository(ProductInventory::IProductRepository *newReposi
     repository_ = newRepository;
     makeConnections();
 
-    emit productRepositoryChanged();
+    emit repositoryChanged();
 }
 
 QHash<int, QByteArray> ProductModel::roleNames() const
 {
-    static const QHash<int, QByteArray> hash{
+    return {
         {int(RoleNames::ProductIdRole), "productId"_ba},
         {int(RoleNames::ProductNameRole), "productName"_ba},
         {int(RoleNames::DescriptionRole), "description"_ba},
@@ -417,7 +432,6 @@ QHash<int, QByteArray> ProductModel::roleNames() const
         {int(RoleNames::MinimumStockLevelRole), "minimunStockLevel"_ba},
         {int(RoleNames::WarehouseNameRole), "warehouseName"_ba}
     };
-    return hash;
 }
 
 }

@@ -137,10 +137,6 @@ Item {
         }
     }
 
-    SellerProductRepositoryREST {
-        id: sellerProductRepository
-    }
-
     QtObject {
         id: internal
         property bool isAcceptBtnEnabled

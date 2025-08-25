@@ -164,6 +164,14 @@ QList<Product> Product::fromJsonArray(const QJsonArray &array)
     return productList;
 }
 
+QJsonObject Product::toJsonObject() const
+{
+    QJsonObject json;
+    json["product_id"_L1] = productId_;
+    json["quantity"_L1] = selectedQty_;
+    return json;
+}
+
 bool Product::operator==(const Product &rhs) const
 {
     return productId_ == rhs.productId() && images_ == rhs.images_;

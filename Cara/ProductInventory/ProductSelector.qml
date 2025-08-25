@@ -9,11 +9,10 @@ Drawer {
     id: root
 
     required property int salespersonId
-    required property ProductModel selectedProducts
+    property alias selectedProducts: productView.selectedProducts
     property alias productModel: productView.model
     property alias delegate: productView.delegate
-    property alias model: productView.model
-    property alias selectionModel: productView.selectionModel
+    readonly property alias selectionModel: productView.selectionModel
 
     signal productSelected(products: ProductModel)
 
@@ -22,7 +21,6 @@ Drawer {
     ProductViewItem {
         id: productView
         anchors.fill: parent
-        selectedProducts: root.selectedProducts
         onCloseClicked: root.close()
     }
 

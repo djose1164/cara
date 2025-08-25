@@ -59,6 +59,7 @@ public:
     int productId() const;
 
     Q_INVOKABLE QByteArray toJson() const;
+    QJsonObject toJsonObject() const;
 
     int maximumStockLevel() const;
     void setMaximumStockLevel(int newMaximumStockLevel);

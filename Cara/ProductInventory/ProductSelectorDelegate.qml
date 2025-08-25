@@ -28,7 +28,6 @@ ItemDelegate {
         Label {
             width: root.width - image.implicitWidth
             text: root.text
-
         }
     }
 
@@ -37,7 +36,7 @@ ItemDelegate {
             if (!root.selection.hasSelection)
                 return "transparent";
             const selectedById = root.productModel.find(root.productId);
-            if (selection.isSelected(selectedById))
+            if (root.selection.isSelected(selectedById))
                 return "cornflowerblue";
             return "transparent";
         }
