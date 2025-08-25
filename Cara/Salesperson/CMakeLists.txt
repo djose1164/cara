@@ -1,5 +1,4 @@
 qt_add_library(salesperson STATIC)
-
 set_target_properties(salesperson PROPERTIES AUTOMOC ON)
 
 set_source_files_properties(SalespersonManager.qml PROPERTIES
@@ -18,19 +17,21 @@ qt_add_qml_module(salesperson
         CreditOverview.qml
         NewSalesperson.qml
         ProfitCalculatorPage.qml
-        SalespeopleSelector.qml
         SalespersonManager.qml
         SalespersonSettings.qml
         delegate/AssociateSalespersonDelegate.qml
+        SellerSelector.qml
     RESOURCES
         salesperson.svg
         profit_calculator.svg
     SOURCES
-        salespersoncontroller.h salespersoncontroller.cpp
+        abstractsellermodel.h
         data/salespersonrepository.h data/salespersonrepository.cpp
         data/salespersonrepositoryimp.h data/salespersonrepositoryimp.cpp
         salesperson.h salesperson.cpp
+        salespersoncontroller.h salespersoncontroller.cpp
         salespersonmodel.h salespersonmodel.cpp
+        sqlitesellermodel.h sqlitesellermodel.cpp
     DEPENDENCIES
         User
 )
@@ -39,4 +40,4 @@ target_include_directories(salesperson
     PRIVATE business data ../Data ../User ../Utils ../authentication ../
 )
 
-target_link_libraries(salesperson PRIVATE NetworkLib CommonLib)
+target_link_libraries(salesperson PRIVATE Qt6::Sql NetworkLib CommonLib)

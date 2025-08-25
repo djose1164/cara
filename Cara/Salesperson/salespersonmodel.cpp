@@ -107,8 +107,8 @@ void SalespersonModel::insert(int index, const Entity::Salesperson &salesperson)
     emit countChanged();
 }
 
-void SalespersonModel::append(const Entity::Salesperson &salesperson)
+void SalespersonModel::append(const QVariantMap &salesperson)
 {
-    insert(count(), salesperson);
+    insert(count(), Entity::Salesperson::fromMap(salesperson));
 }
 }

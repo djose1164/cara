@@ -21,7 +21,9 @@ BackPage {
             id: menu
             MenuItem {
                 text: "Ver historial"
-                onTriggered: root.stackView.pushItem(Qt.resolvedUrl("../Billing/CommissionPage.qml"), {commissionModel})
+                onTriggered: {
+                    root.stackView.pushItem(Qt.resolvedUrl("../Billing/CommissionPage.qml"),
+                                            {commissionController})}
             }
 
             MenuItem {
@@ -53,9 +55,9 @@ BackPage {
             anchors.margins: internal.marginSize
             spacing: 20
 
-            SalespeopleSelector {
-                id: spSelector
-                adminId: root.adminId
+            SellerSelector {
+                id: sellerSelector
+                sellerModel: internal.sellerModel
                 Layout.fillWidth: true
             }
 
@@ -63,15 +65,15 @@ BackPage {
                 id: providerSelector
                 Layout.fillWidth: true
                 onActivated: {
-                    if (selected) productModel.update()
+                    if (selected) commissionController.productModel.update()
                 }
             }
 
             ProductSale {
                 id: productSale
                 enabled: providerSelector.currentIndex !== -1
-                         && productModel.count > 0
-                selectorModel: productModel
+                         && commissionController.productModel.count > 0
+                selectorModel: commissionController.productModel
                 selectedProductsDelegate: ProfitProductDelegate {
                     width: productSale.implicitViewWidth
                     onDeleted: (idx, id) => productSale.selectedProductsView.deleteClicked(idx, id)
@@ -86,7 +88,7 @@ BackPage {
                     imageUrl: model.imageUrl
                     text: `<h3>${model.productName}</h3>`
                           + `${model.description}`
-                    productModel: productSale.productSelectorModel
+                    productModel: productSale.selectorModel
                     selection: productSale.selectionModel
                 }
 
@@ -163,11 +165,14 @@ BackPage {
         }
     }
 
-    ProductModel {
-        id: productModel
-        repository: SupplierProductRepository {
-            supplierId: providerSelector.currentValue || 0
-        }
+    CommissionController {
+        id: commissionController
+        supplierId: providerSelector.currentValue || 0
+    }
+
+    SQLiteProductModel {
+        id: sqlProductModel
+        Component.onCompleted: console.log("SQLiteProductModel: count: ", sqlProductModel.rowCount())
     }
 
     ProfitCalculator {
@@ -180,6 +185,11 @@ BackPage {
         id: commissionModel
         repository: RestCommissionRepository {}
         onCommissionAddedSuccessfully: messageDialog.show("Exito", "Comision guardada.")
+    }
+
+    SQLiteCommissionModel {
+        id: sqliteModel
+        productModel: sqlProductModel
     }
 
     MessageDialog {
@@ -208,12 +218,14 @@ BackPage {
     function saveSale() {
         try {
             root.validateForm();
-            commissionModel.append({
+            //commissionModel.append({
+            sqliteModel.append({
                 adminId,
                 rate: spinBox.value/100,
-                salespersonId: spSelector.currentValue,
+                salespersonId: sellerSelector.sellerId,
                 paymentDate: datePicker.selectedDate,
-                commissionItems: root.getCommissionItems()
+                commissionItems: root.getCommissionItems(),
+                amount: calculator.total.toFixed(2)
             });
         } catch (err) {
             messageDialog.show("Error", err);
@@ -222,7 +234,7 @@ BackPage {
     }
 
     function validateForm() {
-        if (!spSelector.selected)
+        if (!sellerSelector.selected && sellerSelector.sellerId != -1)
             throw "Necesitas seleccionar un vendedor";
         else if (!providerSelector.selected)
             throw "Necesitas seleccionar un suplidor";

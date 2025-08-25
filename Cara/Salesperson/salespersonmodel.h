@@ -1,6 +1,7 @@
 #ifndef SALESPERSONMODEL_H
 #define SALESPERSONMODEL_H
 
+#include "abstractsellermodel.h"
 #include "salesperson.h"
 #include <QAbstractListModel>
 #include <QObject>
@@ -8,7 +9,7 @@
 
 namespace Model
 {
-class SalespersonModel : public QAbstractListModel
+class SalespersonModel : public QAbstractListModel, public Seller::AbstractSellerModel
 {
     Q_OBJECT
     QML_ELEMENT
@@ -28,19 +29,17 @@ public:
 
     explicit SalespersonModel(QObject *parent = nullptr);
 
-
     // QAbstractItemModel interface
     int rowCount(const QModelIndex &parent) const override;
     QVariant data(const QModelIndex &index, int role) const override;
     bool setData(const QModelIndex &index, const QVariant &value, int role) override;
     QHash<int, QByteArray> roleNames() const override;
 
-    int count() const;
+    int count() const override;
 
 public slots:
-    void insert(int index, const Entity::Salesperson &salesperson);
-    void append(const Entity::Salesperson &salesperson);
-
+    void insert(int index, const Entity::Salesperson &salesperson) override;
+    void append(const QVariantMap &salesperson) override;
 
 signals:
     void countChanged();
