@@ -9,10 +9,21 @@ import Cara.Controls
 BackPage {
     id: root
 
-    required property CommissionModel repository
+    required property var repository
     required property var model
 
     title: "Detalles"
+
+    Component.onCompleted: {
+        console.log("model: ",model);
+        console.log("model: ",model.commissionId);
+        console.log("repository:", repository);
+        console.log("repository:", repository.commissionId);
+        console.log("root.model.paymentDate: ",typeof(root.model.paymentDate))
+        console.log("root.model.paymentDate: ",root.model.paymentDate)
+        console.log("isPaymenDateValid:",internal.isPaymenDateValid)
+
+    }
 
     component CardBox : GroupBox {
         id: cardBox
@@ -26,8 +37,8 @@ BackPage {
             anchors.fill: parent
             source: "qrc:/qt/qml/Cara/Customer/person.svg"
             text: internal.cardTemplate
-            .arg(cardBox.name)
-            .arg(cardBox.identifier)
+                    .arg(cardBox.name)
+                    .arg(cardBox.identifier)
         }
     }
 
@@ -93,20 +104,17 @@ BackPage {
                     Image {
                         source: internal.isPaymenDateValid ? "paid.png" : "unpaid.png"
                         sourceSize: Qt.size(80, 80)
-                        //fillMode: Image.PreserveAspectFit
                         Layout.alignment: Qt.AlignHCenter
-                        // Layout.maximumWidth: Math.min(64, parent.width / 2)
-                        // Layout.maximumHeight: Math.min(parent.height / 2, 64)
                     }
 
                     Label {
                         text: {
                             if (internal.isPaymenDateValid)
-                            return `<h3>Pagado el: ${root.model.paymentDate.toLocaleDateString()}
-                            ${model.paymentDate.toLocaleTimeString(Locale.ShortFormat)}</h3>`
+                                return `<h3>Pagado el: ${root.model.paymentDate.toLocaleDateString()}
+                                        ${model.paymentDate.toLocaleTimeString(Locale.ShortFormat)}</h3>`;
                             else
-                            return "<h3>Aún no se ha efectuado el pago. "
-                            + `El monto a pagar es de RD$${model.amount}</h3>`
+                                return "<h3>Aún no se ha efectuado el pago. "
+                                        + `El monto a pagar es de RD$${model.amount}</h3>`;
                         }
                         wrapMode: Label.Wrap
                         Layout.fillWidth: true

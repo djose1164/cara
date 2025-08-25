@@ -44,7 +44,7 @@ void CommissionModel::fetchCommissions()
     setBusy(true);
 }
 
-void CommissionModel::commissionsFetched(const QList<Commission> &commissionList)
+void CommissionModel::commissionsFetched(const QList<Billing::Commission> &commissionList)
 {
     beginResetModel();
     data_ = commissionList;
@@ -53,7 +53,7 @@ void CommissionModel::commissionsFetched(const QList<Commission> &commissionList
     setBusy(false);
 }
 
-void CommissionModel::commissionAdded(const Commission &commission)
+void CommissionModel::commissionAdded(const Billing::Commission &commission)
 {
     const qsizetype count{data_.count()};
     beginInsertRows(QModelIndex{}, count, count);
@@ -82,6 +82,22 @@ bool CommissionModel::busy() const
 QBindable<bool> CommissionModel::bindableBusy()
 {
     return &busy_;
+}
+
+QAbstractItemModel *CommissionModel::itemModel()
+{
+    return static_cast<QAbstractItemModel *>(this);
+}
+
+void CommissionModel::scheduleDelete()
+{
+    deleteLater();
+}
+
+void CommissionModel::fetchCommissionsBySellerId(SellerId sellerId)
+{
+    if (repository_)
+        repository_->fetchCommissionsBySalespersonId(sellerId);
 }
 
 int CommissionModel::rowCount(const QModelIndex &parent) const
@@ -189,7 +205,7 @@ void CommissionModel::append(const QVariantMap &map)
     }
     catch (const std::invalid_argument &err)
     {
-        emit errorOccurred(err.what(), CommissionRepository::Error::FailedToAdd);
+        emit errorOccurred(CommissionRepository::Error::FailedToAdd, err.what());
     }
 }
 

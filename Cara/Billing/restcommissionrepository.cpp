@@ -29,7 +29,9 @@ RestCommissionRepository::RestCommissionRepository(QObject *parent)
 }
 
 void RestCommissionRepository::fetchCommissionsBySalespersonId(int spId)
-{}
+{
+    fetchCommissions();
+}
 
 void RestCommissionRepository::fetchCommissions()
 {
@@ -39,7 +41,7 @@ void RestCommissionRepository::fetchCommissions()
                   {
                       if (!reply.isSuccess())
                       {
-                          emit errorOccuerred(reply.errorString(), Error::FailedToFetch);
+                          emit errorOccuerred(Error::FailedToFetch, reply.errorString());
                           return;
                       }
 
@@ -59,7 +61,7 @@ void RestCommissionRepository::fetchCommissions()
                       {
                           qWarning() << json;
                           qWarning() << "json is not object or doesn't contain "_ba + commissionsField;
-                          emit errorOccuerred("json is not object or doesn't contain 'commissions'"_ba, Error::FailedToFetch);
+                          emit errorOccuerred(Error::FailedToFetch, "json is not object or doesn't contain 'commissions'"_L1);
                       }
                   });
 }
@@ -75,7 +77,7 @@ void RestCommissionRepository::addCommission(const Commission &commission)
                     {
                         if (!reply.isSuccess())
                         {
-                            emit errorOccuerred(reply.errorString(), Error::FailedToAdd);
+                            emit errorOccuerred(Error::FailedToAdd, reply.errorString());
                             return;
                         }
 
@@ -91,8 +93,8 @@ void RestCommissionRepository::patchCommission(const Commission &commission, std
 {
     if (not commission.isPatchable())
     {
-        emit errorOccuerred("The commission is valid to be patched."_L1,
-                            Error::FailedToPatch);
+        emit errorOccuerred(Error::FailedToPatch,
+                            "The commission is valid to be patched."_L1);
         return;
     }
 
@@ -105,7 +107,7 @@ void RestCommissionRepository::patchCommission(const Commission &commission, std
                     {
                         if (not reply.isSuccess())
                         {
-                            emit errorOccuerred(reply.errorString(), Error::FailedToPatch);
+                            emit errorOccuerred(Error::FailedToPatch, reply.errorString());
                             return;
                         }
                         qDebug() << "RestCommissionRepository::patchCommission: calling callback";

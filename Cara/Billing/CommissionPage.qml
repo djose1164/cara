@@ -4,26 +4,26 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 import QtQuick.Templates as T
-import Cara.Billing
 import Cara.Controls
 
 ListView {
     id: root
 
-    required property CommissionModel commissionModel
+    property var commissionModel
+    required property CommissionController commissionController
     readonly property T.StackView stackView: StackView.view
 
     header: Header {}
     headerPositioning: ListView.OverlayHeader
     footer: Legend {}
     footerPositioning: ListView.PullBackFooter
-    model: root.commissionModel
+    model: root.commissionController.commissionModel
     delegate: CommissionDelegate {}
     spacing: 5
 
     Component.onCompleted: {
-        if (commissionModel.rowCount() === 0)
-            commissionModel.fetchCommissions();
+        if (commissionController.commissionModel.rowCount() === 0)
+            commissionController.fetchCommissions();
     }
 
     component Header: ToolBar {
@@ -91,8 +91,8 @@ ListView {
     component CommissionDelegate : Item {
         id: commissionDelegate
         required property var model
-        required property int salespersonId
-        required property int commissionId
+        required property int sellerId
+         property string identifier: model.commissionId ?? model.uniqueCode.slice(0, 15)
         required property int adminId
         required property double amount
 
@@ -107,9 +107,9 @@ ListView {
             }
 
             text: `
-            # de comision: <b>${commissionDelegate.commissionId}</b>
+            # de comision: <b>${commissionDelegate.identifier}</b>
             <br>
-            ID de vendedor: <b>${commissionDelegate.salespersonId}</b>
+            ID de vendedor: <b>${commissionDelegate.sellerId}</b>
             <br>
             ID de admin: <b>${commissionDelegate.adminId}</b>
             <br>

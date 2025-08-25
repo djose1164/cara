@@ -1,5 +1,5 @@
 if (NOT EMSCRIPTEN)
-    find_package(Qt6 6.7 REQUIRED Concurrent)
+    find_package(Qt6 REQUIRED Concurrent Core)
 endif()
 
 qt_add_library(BillingLib STATIC)
@@ -63,7 +63,6 @@ qt_add_qml_module(BillingLib
         business/ordercontroller.h business/ordercontroller.cpp
         business/orderrepository.h business/orderrepository.cpp
         business/orderresource.h business/orderresource.cpp
-        sqlitecommissionrepository.h sqlitecommissionrepository.cpp
         business/pay.h business/pay.cpp
         business/paymentcontroller.h business/paymentcontroller.cpp
         business/pdforderprinter.h business/pdforderprinter.cpp
@@ -98,6 +97,8 @@ qt_add_qml_module(BillingLib
         uniquefilenamegenerator.h uniquefilenamegenerator.cpp
         sqlitecommissionrepository.h sqlitecommissionrepository.cpp
         sqlitecommissionmodel.h sqlitecommissionmodel.cpp
+        commissioncontroller.h commissioncontroller.cpp
+        abstractcommissionmodel.h
     RESOURCES
         order-model.html style.css
         pdf-icon.svg
@@ -151,4 +152,5 @@ else()
             Qt6::Concurrent
             UtilsLib
     )
+target_link_libraries(BillingLib PRIVATE Qt6::Core)
 endif()

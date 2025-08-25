@@ -19,7 +19,7 @@ ProductCard {
 
     QtObject {
         id: internal
-        readonly property double profitPerUnit: root.model.price - model.supplierPrice
+        readonly property double profitPerUnit: root.model.price - root.model.supplierPrice
         readonly property double profitTotal: profitPerUnit * root.model.selectedQty
         readonly property double imgSize: Math.min(root.width/2, root.height/2)
     }

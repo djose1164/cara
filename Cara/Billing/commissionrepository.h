@@ -42,7 +42,7 @@ public:
 signals:
     void fetched(const QList<Commission> &commissionList);
 
-    void errorOccuerred(const QString &errorString, Error error);
+    void errorOccuerred(Error error, const QString &errorString);
 
     void added(const Commission &commission);
 };

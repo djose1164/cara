@@ -1,6 +1,7 @@
 #ifndef COMMISSIONMODEL_H
 #define COMMISSIONMODEL_H
 
+#include "abstractcommissionmodel.h"
 #include "commission.h"
 #include "commissionrepository.h"
 #include <QAbstractListModel>
@@ -10,13 +11,15 @@
 namespace Billing
 {
 
-class CommissionModel : public QAbstractListModel
+class CommissionModel : public QAbstractListModel, public AbstractCommissionModel
 {
     Q_OBJECT
     Q_PROPERTY(Billing::CommissionRepository *repository READ repository WRITE setRepository NOTIFY repositoryChanged FINAL)
     Q_PROPERTY(bool busy READ busy BINDABLE bindableBusy FINAL)
     QML_ELEMENT
 public:
+    using SellerId = int;
+
     enum class RoleNames
     {
         CommissionIdRole = Qt::UserRole,
@@ -49,23 +52,28 @@ public:
     bool busy() const;
     QBindable<bool> bindableBusy();
 
+    QAbstractItemModel *itemModel() override;
+    void scheduleDelete() override;
+
+    void fetchCommissionsBySellerId(SellerId sellerId) override;
+
 public slots:
-    void append(const QVariantMap &map);
-    void fetchCommissions();
+    void append(const QVariantMap &map) override;
+    void fetchCommissions() override;
 
 private slots:
-    void commissionsFetched(const QList<Commission> &commissionList);
+    void commissionsFetched(const QList<Billing::Commission> &commissionList);
 
-    void commissionAdded(const Commission &commission);
+    void commissionAdded(const Billing::Commission &commission);
 
     void commissionPatched(const QList<int> &roles);
 
 signals:
-    void errorOccurred(const QString &errorString, CommissionRepository::Error error);
-
     void repositoryChanged();
 
     void commissionAddedSuccessfully();
+
+    void errorOccurred(CommissionRepository::Error error, const QString &errorString);
 
 private:
     void setBusy(bool newBusy);
@@ -73,7 +81,7 @@ private:
     void patch(RoleNames role);
 
     QList<Commission> data_;
-    CommissionRepository *repository_;
+    QPointer<CommissionRepository> repository_;
     QProperty<bool> busy_;
 };
 

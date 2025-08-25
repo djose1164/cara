@@ -18,14 +18,18 @@ class CommissionItem
     Q_PROPERTY(int supplierId READ supplierId WRITE setSupplierId NOTIFY supplierIdChanged FINAL)
     Q_PROPERTY(double unitCommission READ unitCommission WRITE setUnitCommission NOTIFY unitCommissionChanged FINAL)
     Q_PROPERTY(QUrl imageUrl READ imageUrl WRITE setImageUrl NOTIFY imageUrlChanged FINAL)
+    Q_PROPERTY(CommissionId commissionId READ commissionId WRITE setCommissionId FINAL)
     QML_VALUE_TYPE(commissionItem)
 public:
+    using CommissionId = int;
+
     CommissionItem();
     CommissionItem(int newProductId, int newQuantity, double newUnitCommission, int newSupplierId);
 
     QJsonObject toJson() const;
 
     static CommissionItem fromJson(const QJsonObject &json);
+    static CommissionItem fromMap(const QVariantMap &map);
 
     int productId() const;
     void setProductId(int newProductId);
@@ -42,12 +46,22 @@ public:
     QUrl imageUrl() const;
     void setImageUrl(const QUrl &newImageUrl);
 
+    CommissionId commissionId() const;
+    void setCommissionId(CommissionId newCommissionId);
+
+    QUuid commissionUuid() const;
+    void setCommissionUuid(const QUuid &newCommissionUuid);
+
+    static void validateMap(const QVariantMap &map);
+
 private:
     int productId_;
     int quantity_;
     int supplierId_;
     double unitCommission_;
     QUrl imageUrl_;
+    CommissionId commissionId_;
+    QUuid commissionUuid_;
 };
 
 class Commission
@@ -85,6 +99,7 @@ public:
     void setCreatedAt(const QDateTime &newCreatedAt);
 
     QList<CommissionItem> commissionItems() const;
+    QList<CommissionItem> &commissionItems();
     void setCommissionItems(const QList<CommissionItem> &newCommissionItems);
     void setCommissionItems(QList<CommissionItem> &&newCommissionItems);
 
@@ -97,6 +112,9 @@ public:
     bool isPatchable() const;
 
     double calculateGrossProfit() const;
+
+    QUuid uniqueCode() const;
+    void setUniqueCode(const QUuid &newUniqueCode);
 
 private:
     void setCommissionItems(const QJsonArray &array);
@@ -111,8 +129,13 @@ private:
     QList<CommissionItem> commissionItems_;
     Entity::Salesperson salesperson_;
     Entity::UserEntity admin_;
+    QUuid uniqueCode_;
 };
 
 } // namespace Billing
+
+QDebug operator<<(QDebug dbg, const Billing::Commission &c);
+
+QDebug operator<<(QDebug dbg, const Billing::CommissionItem &ci);
 
 #endif // COMMISSION_H

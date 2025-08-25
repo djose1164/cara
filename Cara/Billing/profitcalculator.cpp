@@ -1,5 +1,4 @@
 #include "profitcalculator.h"
-#include "Shopping/cataloguerepository.h"
 
 using namespace Qt::StringLiterals;
 
@@ -23,10 +22,6 @@ void ProfitCalculator::calculate()
     double calcTotal{};
     for (int i{}; i < productModel->count(); ++i)
     {
-        using enum ProductInventory::ProductModel::RoleNames;
-
-        //takeBuyPriceFromProductList(i);
-
         const EntityLayer::Product product{productModel->get(i)};
         const double sellPrice = product.price();
         const double buyPrice = product.buyPrice();

@@ -20,6 +20,7 @@ Commission::Commission()
     , salespersonId_{}
     , paymentDate_{}
     , createdAt_{}
+    , uniqueCode_{}
 {
 }
 
@@ -65,13 +66,17 @@ Commission Commission::fromMap(const QVariantMap &map)
 {
     Commission c;
     c.rate_ = map["rate"_L1].toDouble();
-    //c.amount_ = map["amount"_L1].toDouble();
-    const QVariantList items{map["commissionItems"_L1].toList()};
+    c.amount_ = map["amount"_L1].toDouble();
+    const QVariantList items = map["commissionItems"_L1].toList();
+
     std::ranges::for_each(items, [&](const QVariant itemVariant){
-        c.commissionItems_.append(CommissionItem::fromJson(itemVariant.toJsonObject()));
+        c.commissionItems_.append(CommissionItem::fromMap(itemVariant.toMap()));
     });
+
     c.adminId_ = map["adminId"_L1].toInt();
     c.salespersonId_ = map["salespersonId"].toInt();
+    c.setUniqueCode(QUuid{}.createUuid());
+
     if (map.contains("paymentDate"_L1) and map["paymentDate"_L1].toDateTime().isValid())
         c.paymentDate_ = map["paymentDate"_L1].toDateTime();
     return c;
@@ -86,6 +91,11 @@ void Commission::validateMap(const QVariantMap &map)
         throw std::invalid_argument{errorTemplate.arg("rate"_L1).toUtf8()};
     else if (not map.contains("adminId"_L1))
         throw std::invalid_argument{errorTemplate.arg("adminId"_L1).toUtf8()};
+    else if (not map.contains("commissionItems"_L1))
+        throw std::invalid_argument{errorTemplate.arg("commissionItems"_L1).toUtf8()};
+    std::ranges::for_each(map["commissionItems"_L1].toList(), [](const auto &ci) {
+        CommissionItem::validateMap(ci.toMap());
+    });
 }
 
 double Commission::rate() const
@@ -163,6 +173,11 @@ QList<CommissionItem> Commission::commissionItems() const
     return commissionItems_;
 }
 
+QList<CommissionItem> &Commission::commissionItems()
+{
+    return commissionItems_;
+}
+
 void Commission::setCommissionItems(const QList<CommissionItem> &newCommissionItems)
 {
     commissionItems_ = newCommissionItems;
@@ -179,6 +194,16 @@ void Commission::setCommissionItems(const QJsonArray &array)
     {
         commissionItems_.append(CommissionItem::fromJson(item.toObject()));
     }
+}
+
+QUuid Commission::uniqueCode() const
+{
+    return uniqueCode_;
+}
+
+void Commission::setUniqueCode(const QUuid &newUniqueCode)
+{
+    uniqueCode_ = newUniqueCode;
 }
 
 Entity::UserEntity Commission::admin() const
@@ -228,6 +253,8 @@ CommissionItem::CommissionItem(int newProductId, int newQuantity, double newUnit
     , supplierId_{newSupplierId}
     , unitCommission_{newUnitCommission}
     , imageUrl_{}
+    , commissionId_{}
+    , commissionUuid_{}
 {
 }
 
@@ -249,6 +276,15 @@ CommissionItem CommissionItem::fromJson(const QJsonObject &json)
     if (json.contains("unit_commission"_L1))
         ci.unitCommission_ = json["unit_commission"_L1].toString().toDouble();
     ci.imageUrl_ = EntityLayer::Product::makeUrlToPicture(json["image_url"_L1].toString());
+    return ci;
+}
+
+CommissionItem CommissionItem::fromMap(const QVariantMap &map)
+{
+    CommissionItem ci;
+    ci.setProductId(map["product_id"_L1].toInt());
+    ci.setQuantity(map["quantity"_L1].toInt());
+    ci.setSupplierId(map["supplier_id"_L1].toInt());
     return ci;
 }
 
@@ -302,4 +338,56 @@ void CommissionItem::setImageUrl(const QUrl &newImageUrl)
     imageUrl_ = newImageUrl;
 }
 
+CommissionItem::CommissionId CommissionItem::commissionId() const
+{
+    return commissionId_;
+}
+
+void CommissionItem::setCommissionId(CommissionId newCommissionId)
+{
+    commissionId_ = newCommissionId;
+}
+
+QUuid CommissionItem::commissionUuid() const
+{
+    return commissionUuid_;
+}
+
+void CommissionItem::setCommissionUuid(const QUuid &newCommissionUuid)
+{
+    commissionUuid_ = newCommissionUuid;
+}
+
+void CommissionItem::validateMap(const QVariantMap &map)
+{
+    constexpr auto errorTemplate{"Key %1 is not present."_L1};
+    if (not map.contains("product_id"_L1))
+        throw std::invalid_argument{errorTemplate.arg("product_id"_L1).toUtf8()};
+    else if (not map.contains("quantity"_L1))
+        throw std::invalid_argument{errorTemplate.arg("quantity"_L1).toUtf8()};
+    else if (not map.contains("supplier_id"_L1))
+        throw std::invalid_argument{errorTemplate.arg("supplier_id"_L1).toUtf8()};
+}
+
 } // namespace Billing
+
+
+QDebug operator<<(QDebug dbg, const Billing::Commission &c)
+{
+    dbg.nospace() << "Commission(ID=%1, rate=%2%, amount=%3, items=%4)"_L1
+                     .arg(QString::number(c.commissionId()),
+                          QString::number(c.rate()*100),
+                          QString::number(c.amount()),
+                          QString::number(c.commissionItems().count()));
+    return dbg;
+}
+
+QDebug operator<<(QDebug dbg, const Billing::CommissionItem &ci)
+{
+    dbg.nospace() << "CommissionItem(commissionId=%1, productId=%2, quantity=%3, unitCommission=%4)"_L1
+                     .arg(QString::number(ci.commissionId()),
+                          QString::number(ci.productId()),
+                          QString::number(ci.quantity()),
+                          QString::number(ci.unitCommission()));
+    return dbg;
+}

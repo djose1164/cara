@@ -89,7 +89,7 @@ Sale Sale::fromJson(const QJsonObject &json)
     // dateTime.setTimeZone(QTimeZone{Qt::UTC});
     sale.setCreatedAt(QDateTime::fromString(json[createdAtField].toString(),
                                             Qt::ISODate));
-    sale.createdAt_.setTimeZone(QTimeZone{Qt::UTC});
+    sale.createdAt_.setTimeZone(QTimeZone{QTimeZone::UTC});
 
     QList<SaleItem> salesList;
     const auto saleItems = json[saleItemsField].toArray();

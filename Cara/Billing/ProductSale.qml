@@ -14,12 +14,11 @@ Item {
         Selecting
     }
 
-    property alias choosenProducts: selectedProductsView.model
-    property alias productSelectorModel: productSelector.productModel
     property alias calculator: costCalculator
-    property alias selectedProductsDelegate: selectedProductsView.delegate
+    property alias selectorModel: productSelector.productModel
     property alias selectorDelegate: productSelector.delegate
-    property alias selectorModel: productSelector.model
+    property alias selectedProductsDelegate: selectedProductsView.delegate
+    readonly property alias choosenProducts: selectedProductsView.model
     readonly property alias implicitViewWidth: selectedProductsView.implicitViewWidth
     readonly property alias implicitViewHeight: selectedProductsView.implicitViewHeight
     readonly property alias selectedProductsView: selectedProductsView
