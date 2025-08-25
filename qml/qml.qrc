@@ -16,7 +16,6 @@
         <file>BuyOrderDetails.qml</file>
         <file>BuyOrderView.qml</file>
         <file>BuyOrderHeader.qml</file>
-        <file>OrderAPI.qml</file>
     </qresource>
     <qresource prefix="/provider"/>
     <qresource lang="qml" prefix="/errors">

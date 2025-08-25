@@ -3,7 +3,9 @@
 
 #define CARA_VERSION "@CARA_VERSION@"
 
-#include <QAnyStringView>
+#include <QString>
+
+constexpr auto CARA_BUILD_TIME{QLatin1StringView("@CARA_BUILD_TIME@")};
 
 consteval QAnyStringView getCaraVersion()
 {

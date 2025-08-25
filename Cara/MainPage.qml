@@ -14,8 +14,6 @@ Page {
 
     readonly property var user: UserSettings.entity()
 
-    readonly property alias billStack: billStack
-
     readonly property T.StackView currentStackView: stackLayout.children[stackLayout.currentIndex]
     readonly property T.StackView stackView: StackView.view
     readonly property string userHomePath: "qrc:/home/UserHome.qml"
@@ -36,14 +34,17 @@ Page {
         property int clickedCount
         property bool wasHomeLastView
 
+        isAdminOrSeller: root.userType === UserEntity.Admin
+                         || root.userType === UserEntity.Salesperson
+
+
         onHomeClicked: {
-            ++clickedCount;
+            ++clickedCount
 
             if (homeStack.isCurrentView && !wasHomeLastView) {
                 homeStack.pop(null);
-            }
-            else if (clickedCount == 2) {
-                homeStack.pop(null);
+            } else if (clickedCount == 2) {
+                homeStack.pop(null)
                 clickedCount = 0;
             }
         }
@@ -52,14 +53,14 @@ Page {
             if (homeStack.isCurrentView)
                 wasHomeLastView = false;
             else {
-                wasHomeLastView = true;
+                wasHomeLastView = true
                 clickedCount = 0;
             }
         }
     }
 
     Component.onCompleted: {
-        updateViews();
+        updateViews()
     }
 
     Pane {
@@ -114,6 +115,11 @@ Page {
         StackView {
             id: billStack
         }
+
+        StackView {
+            id: customersStack
+            initialItem: "qrc:/qt/qml/Cara/Customer/CustomerOutstandingOrders.qml"
+        }
     }
 
     BusyIndicator {
@@ -133,7 +139,7 @@ Page {
         target: LoginManager
 
         function onLoggedIn() {
-            updateViews();
+            root.updateViews();
         }
 
         function onLoggingOut() {
@@ -141,7 +147,7 @@ Page {
         }
 
         function onLoggedOut() {
-            updateViews();
+            root.updateViews();
         }
     }
 
@@ -151,19 +157,16 @@ Page {
         function onStateChanged(state: int) {
             if (state === Qt.ApplicationActive && !TokenManager.refreshing)
                 TokenManager.resumeRefreshing();
-            else if (state === Qt.ApplicationInactive && TokenManager.refreshing)
+            else if (state === Qt.ApplicationInactive
+                     && TokenManager.refreshing)
                 TokenManager.stopRefreshing();
         }
     }
 
     UserController {
         id: userController
-        onFetched: function(data) {
-            root.user = userController.create(
-                JSON.stringify(
-                    JSON.parse(data).user
-            ));
-            updateViews();
+        onFetched: function (data) {
+            root.updateViews();
             root.state = "";
         }
     }
@@ -184,22 +187,24 @@ Page {
         switch (userType) {
         case UserEntity.Admin:
         case UserEntity.Salesperson:
-            if (CustomerManager.isEmpty) spService.fetchCustomers();
+            if (CustomerManager.isEmpty)
+                spService.fetchCustomers();
             homeStack.replace(adminHomePath);
             orderStackView.replace(adminCartPath);
-            billStack.replace(internal.salespersonBillPage)
+            billStack.replace(internal.salespersonBillPage);
             break;
         case UserEntity.Guest:
             homeStack.replace(userHomePath);
             orderStackView.replace(userCartPath);
-            billStack.replaceCurrentItem(internal.billMessage)
+            billStack.replaceCurrentItem(internal.billMessage);
             break;
         case UserEntity.Customer:
         case UserEntity.User:
-            console.log("Updating views to customer/user...")
             homeStack.replace(userHomePath);
             orderStackView.replace(userCartPath);
-            billStack.replaceCurrentItem(internal.customerBillPage, {customerId: UserSettings.customerId})
+            billStack.replaceCurrentItem(internal.customerBillPage, {
+                                             "customerId": UserSettings.customerId
+                                         });
             break;
         }
     }

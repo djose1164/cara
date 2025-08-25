@@ -32,6 +32,9 @@ qt_add_qml_module(${PROJECT_NAME}
 )
 
 set(CARA_VERSION ${CMAKE_PROJECT_VERSION})
+string(TIMESTAMP TODAY "%d/%m/%Y")
+message("Todays is ${TODAY}")
+set(CARA_BUILD_TIME ${TODAY})
 configure_file(config.h.in ${CMAKE_CURRENT_SOURCE_DIR}/config.h @ONLY)
 
 target_link_libraries(${PROJECT_NAME} PRIVATE

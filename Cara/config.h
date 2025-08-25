@@ -1,13 +1,15 @@
 #ifndef CONFIG_H_IN
 #define CONFIG_H_IN
 
-#define CARA_VERSION "0.20.0"
+#define CARA_VERSION "0.21.0"
 
-#include <QAnyStringView>
+#include <QString>
+
+constexpr auto CARA_BUILD_TIME{QLatin1StringView("25/08/2025")};
 
 consteval QAnyStringView getCaraVersion()
 {
-    return "0.20.0";
+    return "0.21.0";
 }
 
 #endif // CONFIG_H_IN

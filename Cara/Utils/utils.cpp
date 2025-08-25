@@ -34,7 +34,7 @@ void setBoundaryToRequest(QAnyStringView boundary, QNetworkRequest &request)
 QDateTime stringToDateTime(QStringView dateString)
 {
     auto &&dt = QDateTime::fromString(dateString, Qt::ISODate);
-    dt.setTimeZone(QTimeZone{Qt::UTC});
+    dt.setTimeZone(QTimeZone{QTimeZone::UTC});
     return dt;
 }
 
