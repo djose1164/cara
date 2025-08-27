@@ -1,7 +1,6 @@
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
-find_package(Qt6 REQUIRED COMPONENTS Sql)
-find_package(Qt6 REQUIRED COMPONENTS Core)
+find_package(Qt6 REQUIRED COMPONENTS Sql Core)
 
 qt_add_qml_module(ProductInventoryLib STATIC
     URI Cara.ProductInventory
@@ -12,6 +11,21 @@ qt_add_qml_module(ProductInventoryLib STATIC
         ProductSelectorDelegate.qml
         ProductViewItem.qml
         SelectedProducts.qml
+        AddProductPage.qml
+        EditProductPage.qml
+        PriceHistoryPage.qml
+        ProductCard.qml
+        ProductComboBox.qml
+        ProductDelegate.qml
+        ProductForm.qml
+        ProductImage.qml
+        ProductPage.qml
+        ProductRequest.qml
+        ProductThumbnail.qml
+        ProductView.qml
+        UpdateSupplierView.qml
+        PriceDialog.qml
+        product_helper.js
     SOURCES
         catalogproductrepository.h catalogproductrepository.cpp
         ieditableproduct.h
@@ -31,14 +45,25 @@ qt_add_qml_module(ProductInventoryLib STATIC
         sqlitedatabase.h sqlitedatabase.cpp
         abstractproductmodel.h
         sqliteproductrepository.h sqliteproductrepository.cpp
+        picturerepository.cpp
+        picturerepository.h
+        pricehistorymodel.h pricehistorymodel.cpp
+        pricehistoryrepository.h
+        productentity.h productentity.cpp
+        productpicturerepository.h productpicturerepository.cpp
+        restpricehistoryrepository.h restpricehistoryrepository.cpp
+    RESOURCES
+        add_a_photo.svg
+        remove.svg
     DEPENDENCIES
-        Cara.Product
+        Cara.Network Cara.Utils Cara.Data
 )
 
 target_link_libraries(ProductInventoryLib
     PRIVATE
         NetworkLib
-        ProductLib
+        UtilsLib
+        DataLib
         Qt6::Sql)
 target_link_libraries(ProductInventoryLib PRIVATE Qt6::Core)
 

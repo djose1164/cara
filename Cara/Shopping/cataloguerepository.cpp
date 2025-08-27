@@ -14,7 +14,7 @@ constexpr auto productsField{"products"_L1};
 namespace Catalogue {
 CatalogueRepository::CatalogueRepository(QObject *parent)
     : QObject{parent}
-    , pictureRepository_{new Product::ProductPictureRepository{this}}
+    , pictureRepository_{new ProductInventory::ProductPictureRepository{this}}
     , productRepository_{new ProductRepository(pictureRepository_, this)}
     , categoryRepository_{new ProductCategoryRepository(this)}
 {

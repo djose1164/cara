@@ -3,11 +3,12 @@
 
 #include "iproductcategoryrepository.h"
 #include "ishoppingproductrepository.h"
+#include "picturerepository.h"
 #include "productentity.h"
 #include <QObject>
 #include <QQmlEngine>
 
-namespace Product
+namespace ProductInventory
 {
 class PictureRepository;
 }
@@ -67,7 +68,7 @@ signals:
     void pictureDeleted();
 
 private:
-    Product::PictureRepository *pictureRepository_;
+    ProductInventory::PictureRepository *pictureRepository_;
     IShoppingProductRepository *productRepository_;
     IProductCategoryRepository *categoryRepository_;
 };

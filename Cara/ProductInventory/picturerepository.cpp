@@ -11,7 +11,7 @@ namespace
 constexpr auto imageUrlField{"imageUrl"_L1};
 }
 
-namespace Product
+namespace ProductInventory
 {
 
 PictureRepository::~PictureRepository() = default;

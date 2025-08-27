@@ -4,7 +4,6 @@ import QtQuick.Layouts
 import QtQuick.Templates as T
 import Cara.Shopping
 import Cara.Controls
-import Cara.Product
 import Cara.ProductInventory
 
 Page {

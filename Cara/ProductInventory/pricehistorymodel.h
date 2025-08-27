@@ -6,14 +6,14 @@
 #include <QQmlEngine>
 #include "pricehistoryrepository.h"
 
-namespace Product
+namespace ProductInventory
 {
 
 class PriceHistoryModel : public QAbstractListModel
 {
     Q_OBJECT
     Q_PROPERTY(QString errorString READ default BINDABLE bindableErrorString FINAL)
-    Q_PROPERTY(Product::PriceHistoryRepository *repository READ repository WRITE setRepository NOTIFY repositoryChanged FINAL)
+    Q_PROPERTY(ProductInventory::PriceHistoryRepository *repository READ repository WRITE setRepository NOTIFY repositoryChanged FINAL)
     QML_ELEMENT
 public:
     using ProductId = int;

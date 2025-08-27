@@ -5,7 +5,7 @@
 
 class QNetworkReply;
 class QHttpMultiPart;
-namespace Product
+namespace ProductInventory
 {
 
 class PictureRepository : public QObject

@@ -2,7 +2,7 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Templates as T
 import Cara.Controls
-import Cara.Product
+import Cara.ProductInventory
 
 Item {
     id: root

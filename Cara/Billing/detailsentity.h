@@ -1,10 +1,10 @@
 #ifndef DETAILSENTITY_H
 #define DETAILSENTITY_H
 
-#include "productentity.h"
+#include "ProductInventory/productentity.h"
+#include <QBindable>
 #include <QObject>
 #include <QtQml>
-#include <QBindable>
 
 namespace EntityLayer {
 class DetailsEntity : public QObject

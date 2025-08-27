@@ -5,7 +5,6 @@ import Cara.User
 import Cara.Salesperson
 import Cara.Controls
 import Cara.Billing
-import Cara.Product
 import Cara.ProductInventory
 
 Drawer {

@@ -58,7 +58,6 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
     BillingLibplugin
     CustomerLibplugin
     DataLibplugin
-    ProductLibplugin
     ReviewLibplugin
     ShoppingLibplugin
     StatisticsLibplugin
@@ -77,7 +76,6 @@ add_subdirectory(Data)
 add_subdirectory(Network)
 add_subdirectory(Controls)
 add_subdirectory(Statistics)
-add_subdirectory(Product)
 add_subdirectory(Authentication)
 add_subdirectory(Shopping)
 add_subdirectory(ProductInventory)

@@ -18,7 +18,7 @@ private slots:
     void tst_returnsTrueWhenPriceHistoryFetchedSignalEmitsValidData();
 
 private:
-    std::unique_ptr<Product::PriceHistoryRepository> repository_;
+    std::unique_ptr<ProductInventory::PriceHistoryRepository> repository_;
 };
 
 TestProductRepository::TestProductRepository(QObject *parent)
@@ -29,8 +29,8 @@ TestProductRepository::TestProductRepository(QObject *parent)
 void TestProductRepository::tst_shouldEmitPriceHistoryFetchedSignalWhenPriceHistoryIsFetched()
 {
     constexpr int productId{2};
-    repository_ = std::make_unique<Product::RestPriceHistoryRepository>();
-    QSignalSpy spy{repository_.get(), &Product::PriceHistoryRepository::fetched};
+    repository_ = std::make_unique<ProductInventory::RestPriceHistoryRepository>();
+    QSignalSpy spy{repository_.get(), &ProductInventory::PriceHistoryRepository::fetched};
 
     QVERIFY(spy.isValid());
     repository_->fetchPriceHistoryBy(productId);
@@ -42,13 +42,13 @@ void TestProductRepository::tst_shouldEmitPriceHistoryFetchedSignalWhenPriceHist
 void TestProductRepository::tst_returnsTrueWhenPriceHistoryFetchedSignalEmitsValidData()
 {
     constexpr int productId{2};
-    repository_ = std::make_unique<Product::RestPriceHistoryRepository>();
-    QSignalSpy spy{repository_.get(), &Product::PriceHistoryRepository::fetched};
+    repository_ = std::make_unique<ProductInventory::RestPriceHistoryRepository>();
+    QSignalSpy spy{repository_.get(), &ProductInventory::PriceHistoryRepository::fetched};
 
     QVERIFY(spy.isValid());
 
     connect(repository_.get(),
-            &Product::PriceHistoryRepository::fetched,
+            &ProductInventory::PriceHistoryRepository::fetched,
             this,
             [](const QByteArray &data)
             {

@@ -7,7 +7,7 @@
 #include <QRestAccessManager>
 #include "pricehistoryrepository.h"
 
-namespace Product
+namespace ProductInventory
 {
 
 class RestPriceHistoryRepository : public PriceHistoryRepository
@@ -39,6 +39,6 @@ private:
     QProperty<QString> priceType_;
 };
 
-} // namespace Product
+} // namespace ProductInventory
 
 #endif // RESTPRICEHISTORYREPOSITORY_H

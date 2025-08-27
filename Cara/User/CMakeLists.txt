@@ -46,9 +46,9 @@ qt_add_qml_module(UserLib
 )
 
 target_include_directories(UserLib
-    PRIVATE data service ../Utils ../
+    PRIVATE data service ../
     INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
 target_link_libraries(UserLib
-    PRIVATE AuthenticationLib NetworkLib CommonLib)
+    PRIVATE AuthenticationLib NetworkLib CommonLib UtilsLib)

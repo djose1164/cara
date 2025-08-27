@@ -5,7 +5,6 @@ import QtQuick.Controls
 import QtQuick.Layouts
 import QtQuick.Templates as T
 import Cara.Controls
-import Cara.Product
 import Cara.ProductInventory
 import Cara.Salesperson
 

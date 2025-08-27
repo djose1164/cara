@@ -37,7 +37,7 @@ QString priceTypeToReadableString(QStringView priceType)
 }
 }
 
-namespace Product
+namespace ProductInventory
 {
 
 PriceHistoryModel::PriceHistoryModel(QObject *parent)

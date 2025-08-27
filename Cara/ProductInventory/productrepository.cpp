@@ -25,7 +25,7 @@ ProductRepository::ProductRepository(QObject *parent)
 {
 }
 
-ProductRepository::ProductRepository(Product::PictureRepository *pictureRepository, QObject *parent)
+ProductRepository::ProductRepository(ProductInventory::PictureRepository *pictureRepository, QObject *parent)
     : QObject{parent}
     , manager_{new QNetworkAccessManager(this)}
     , reply_{nullptr}

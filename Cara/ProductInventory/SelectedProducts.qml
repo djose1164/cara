@@ -2,7 +2,6 @@ pragma ComponentBehavior: Bound
 
 import QtQuick
 import Cara.Controls
-import Cara.Product
 import Cara.ProductInventory
 
 Item {

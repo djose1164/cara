@@ -1,5 +1,5 @@
 import QtQuick
-import Cara.Product
+import Cara.ProductInventory
 
 ProductCard {
     id: root

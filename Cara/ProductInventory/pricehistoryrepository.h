@@ -3,7 +3,7 @@
 
 #include <QQmlEngine>
 
-namespace Product
+namespace ProductInventory
 {
 
 class PriceHistoryRepository : public QObject
@@ -41,7 +41,7 @@ namespace PriceHistoryForeign
 {
 Q_NAMESPACE
 QML_NAMED_ELEMENT(PriceHistory)
-QML_FOREIGN_NAMESPACE(Product::PriceHistoryRepository)
+QML_FOREIGN_NAMESPACE(ProductInventory::PriceHistoryRepository)
 }
 
 #endif // PRICEHISTORYREPOSITORY_H

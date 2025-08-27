@@ -1,6 +1,6 @@
 #include "productpicturerepository.h"
-#include "Network/networkrequestsingleton.h"
-#include "Network/qnamsingleton.h"
+#include "networkrequestsingleton.h"
+#include "qnamsingleton.h"
 #include "utils.h"
 
 #include <QFile>
@@ -19,7 +19,7 @@ constexpr auto pictureEndpoint{"/picture"_L1};
 constexpr auto imageUrlField{"imageUrl"_L1};
 }
 
-namespace Product
+namespace ProductInventory
 {
 
 ProductPictureRepository::ProductPictureRepository(QObject *parent)
@@ -77,4 +77,4 @@ QNetworkRequest ProductPictureRepository::requestWithBoundary(QAnyStringView end
     return request;
 }
 
-} // namespace Product
+} // namespace ProductInventory

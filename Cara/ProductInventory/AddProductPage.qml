@@ -4,7 +4,6 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Dialogs
 import QtQuick.Layouts
-import Cara.Product
 import Cara.ProductInventory
 import Cara.Controls
 import Cara.Billing

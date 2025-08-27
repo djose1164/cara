@@ -1,6 +1,8 @@
 #include "productcategoryrepository.h"
 #include "constants.h"
 
+#include <QQmlEngine>
+
 namespace Catalogue {
 ProductCategoryRepository::ProductCategoryRepository(QObject *parent)
     : QObject{parent}

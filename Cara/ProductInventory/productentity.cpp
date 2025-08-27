@@ -1,6 +1,6 @@
 #include "productentity.h"
 #include "restconfig.h"
-#include "Network/apienvironment.h"
+#include "apienvironment.h"
 #include "utils.h"
 
 using namespace Qt::StringLiterals;

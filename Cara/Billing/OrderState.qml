@@ -5,7 +5,7 @@ import QtQuick.Templates as T
 import Cara.Billing
 import Cara.User
 import Cara.Customer
-import Cara.Product
+import Cara.ProductInventory
 import Cara.Controls
 
 ColumnLayout {

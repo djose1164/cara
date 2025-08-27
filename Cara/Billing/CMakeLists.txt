@@ -137,8 +137,7 @@ target_link_libraries(BillingLib
         Qt6::Sql
         UtilsLib
         CustomerLib
-        ProductLib
-    INTERFACE
+    #INTERFACE
         ProductInventoryLib
 )
 

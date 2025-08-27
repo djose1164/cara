@@ -10,7 +10,7 @@
 #include <QHttpPart>
 #include <QNetworkRequestFactory>
 
-namespace Product
+namespace ProductInventory
 {
 class PictureRepository;
 }
@@ -25,7 +25,7 @@ public:
     using PictureId = int;
 
     explicit ProductRepository(QObject *parent = nullptr);
-    ProductRepository(Product::PictureRepository *pictureRepository, QObject *parent = nullptr);
+    ProductRepository(ProductInventory::PictureRepository *pictureRepository, QObject *parent = nullptr);
 
     QString path() const;
     void setPath(const QString &newPath);
@@ -70,7 +70,7 @@ private:
     QString path_;
     QString errorString_;
     std::shared_ptr<QNetworkRequestFactory> api_;
-    Product::PictureRepository *pictureRepository_;
+    ProductInventory::PictureRepository *pictureRepository_;
 };
 } // namespace Catalogue
 

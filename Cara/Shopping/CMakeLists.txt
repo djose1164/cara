@@ -29,11 +29,10 @@ qt_add_qml_module(${PROJECT_NAME} STATIC
         productcategoryrepository.h productcategoryrepository.cpp
         productrepository.h productrepository.cpp
     DEPENDENCIES
-        Cara.User Cara.Billing Cara.Utils Cara.Product
+        Cara.User Cara.Billing Cara.Utils Cara.ProductInventory Cara.Data
 )
 
 target_include_directories(${PROJECT_NAME} PRIVATE
-    ../Data
     ../Utils
     ../Billing
     ../authentication
@@ -42,4 +41,11 @@ target_include_directories(${PROJECT_NAME} PRIVATE
 )
 
 target_link_libraries(${PROJECT_NAME}
-    PRIVATE UtilsLib AuthenticationLib UserLib BillingLib ProductLib)
+    PRIVATE
+        UtilsLib
+        AuthenticationLib
+        UserLib
+        BillingLib
+        ProductInventoryLib
+        DataLib
+)

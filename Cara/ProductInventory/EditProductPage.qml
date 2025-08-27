@@ -5,7 +5,7 @@ import QtQuick.Controls
 import QtQuick.Layouts
 import Cara.Controls
 import Cara.Shopping
-import Cara.Product
+import Cara.ProductInventory
 import "qrc:/inventory"
 import "product_helper.js" as ProductJS
 

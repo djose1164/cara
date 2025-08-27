@@ -8,7 +8,7 @@
 class QHttpMultiPart;
 class QNetworkRequestFactory;
 class QRestAccessManager;
-namespace Product
+namespace ProductInventory
 {
 
 class ProductPictureRepository : public PictureRepository
@@ -35,6 +35,6 @@ private:
     QString errorString_;
 };
 
-} // namespace Product
+} // namespace ProductInventory
 
 #endif // PRODUCTPICTUREREPOSITORY_H

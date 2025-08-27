@@ -3,7 +3,7 @@ import QtQuick.Controls
 import QtQuick.Layouts
 import Cara.User
 import Cara.Shopping
-import Cara.Product
+import Cara.ProductInventory
 import Cara.Network
 import "qrc:/qt/qml/Cara/Product/product_helper.js" as ProductJS
 

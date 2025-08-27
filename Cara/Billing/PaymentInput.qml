@@ -2,7 +2,7 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 import Cara.Billing
-import Cara.Product
+import Cara.ProductInventory
 import Cara.Controls
 
 Item {

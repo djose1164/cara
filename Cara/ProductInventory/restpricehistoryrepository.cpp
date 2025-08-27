@@ -1,6 +1,6 @@
 #include "restpricehistoryrepository.h"
-#include "Network/networkrequestsingleton.h"
-#include "Network/qnamsingleton.h"
+#include "qnamsingleton.h"
+#include "networkrequestsingleton.h"
 
 #include <QJsonArray>
 #include <QJsonDocument>
@@ -18,7 +18,7 @@ constexpr auto priceTypeField{"priceType"_L1};
 constexpr auto supplierIdField{"supplierId"_L1};
 }
 
-namespace Product
+namespace ProductInventory
 {
 
 RestPriceHistoryRepository::RestPriceHistoryRepository(QObject *parent)
@@ -133,4 +133,4 @@ void RestPriceHistoryRepository::validateMap(const QVariantMap &map)
     }
 }
 
-} // namespace Product
+} // namespace ProductInventory

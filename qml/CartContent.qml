@@ -1,6 +1,6 @@
 pragma ComponentBehavior: Bound
 import QtQuick
-import Cara.Product
+import Cara.ProductInventory
 import Cara.Shopping
 
 Item {

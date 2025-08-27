@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.20)
+cmake_minimum_required(VERSION 3.22)
 
 project(CaraClient VERSION 0.21.0 LANGUAGES CXX)
 
@@ -53,7 +53,6 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
     Qt6::Quick
     Qt6::Test
     Qt6::Sql
-    # ProductLib
     CaraLibplugin
     AuthenticationLib
 )

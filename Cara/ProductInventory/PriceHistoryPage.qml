@@ -6,7 +6,7 @@ import QtQuick.Layouts
 import QtQuick.Dialogs
 import QtQuick.Templates as T
 import Cara.Controls
-import Cara.Product
+import Cara.ProductInventory
 
 BackPage {
     id: root
