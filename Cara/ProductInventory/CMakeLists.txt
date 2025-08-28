@@ -57,6 +57,7 @@ qt_add_qml_module(ProductInventoryLib STATIC
         remove.svg
     DEPENDENCIES
         Cara.Network Cara.Utils Cara.Data
+        SOURCES selectionproxymodel.h selectionproxymodel.cpp
 )
 
 target_link_libraries(ProductInventoryLib

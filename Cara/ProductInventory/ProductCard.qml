@@ -8,8 +8,8 @@ import Cara.Controls
 Rectangle {
     id: root
 
-    required property int index
-    required property int productId
+    property int index
+    property int productId
     property string imageUrl
     property string productName
     property double productPrice

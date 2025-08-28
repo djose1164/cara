@@ -242,7 +242,6 @@ void ProductModel::editFromJson(const QJsonObject &json) noexcept
         const int newQty{currentQty + json["quantity"_L1].toInt()};
         setData(fetched, newQty, int(RoleNames::QuantityAvailableRole));
     }
-
 }
 
 ProductModel::Status ProductModel::status() const

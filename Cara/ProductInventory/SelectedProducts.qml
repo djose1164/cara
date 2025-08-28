@@ -8,7 +8,7 @@ Item {
     id: root
 
     property alias delegate: listView.delegate
-    readonly property alias model: productModel
+    property alias model: listView.model
     readonly property alias implicitViewWidth: listView.width
     readonly property alias implicitViewHeight: listView.height
 
@@ -26,7 +26,6 @@ Item {
             anchors.fill: parent
             spacing: 5
             clip: true
-            model: productModel
             delegate: ProductCard {
                 id: productCard
                 required productName
@@ -41,14 +40,8 @@ Item {
                 total: price * model.selectedQty
                 spinBox.to: model.quantityAvailable
                 spinBox.onValueChanged: productCard.model.selectedQty = spinBox.value
-                onDeleted: root.deleteClicked(index, productId)
+                onDeleted: root.deleteClicked(model.index, productCard.productId)
             }
         }
-    }
-
-    ProductModel { id: productModel }
-
-    function toJson() {
-        return productModel.toJsonArray();
     }
 }

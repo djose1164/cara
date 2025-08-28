@@ -1,7 +1,7 @@
 #ifndef COSTCALCULATOR_H
 #define COSTCALCULATOR_H
 
-#include "ProductInventory/productmodel.h"
+#include <QAbstractItemModel>
 #include <QObject>
 #include <QQmlEngine>
 #include <QQmlParserStatus>
@@ -13,13 +13,13 @@ class CostCalculator : public QObject, public QQmlParserStatus
     Q_OBJECT
     QML_ELEMENT
     Q_INTERFACES(QQmlParserStatus)
-    Q_PROPERTY(ProductInventory::ProductModel *model READ model WRITE setModel NOTIFY modelChanged FINAL REQUIRED)
+    Q_PROPERTY(QAbstractItemModel *model READ model WRITE setModel NOTIFY modelChanged FINAL REQUIRED)
     Q_PROPERTY(int total READ total WRITE setTotal NOTIFY totalChanged FINAL)
 public:
     explicit CostCalculator(QObject *parent = nullptr);
 
-    ProductInventory::ProductModel *model() const;
-    void setModel(ProductInventory::ProductModel *newModel);
+    QAbstractItemModel *model() const;
+    void setModel(QAbstractItemModel *newModel);
 
     int total() const;
     void setTotal(int newTotal);
@@ -37,7 +37,7 @@ signals:
     void totalChanged();
 
 private:
-    ProductInventory::ProductModel *model_;
+    QAbstractItemModel *model_;
     int total_;
 };
 }

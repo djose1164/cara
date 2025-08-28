@@ -1,3 +1,4 @@
+pragma ComponentBehavior: Bound
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
@@ -119,6 +120,7 @@ Page {
             message.open();
             orderTemplate.order = newOrder.order;
             productSale.refreshSelector();
+            ProductInventoryController.updateSellerInventory(SalespersonSettings.salespersonId);
         }
         onErrorOccurred: {
             errorDialog(errorString);

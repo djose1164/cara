@@ -1,4 +1,5 @@
 #include "costcalculator.h"
+#include "productmodel.h"
 
 namespace Business
 {
@@ -9,12 +10,12 @@ CostCalculator::CostCalculator(QObject *parent)
 {
 }
 
-ProductInventory::ProductModel *CostCalculator::model() const
+QAbstractItemModel *CostCalculator::model() const
 {
     return model_;
 }
 
-void CostCalculator::setModel(ProductInventory::ProductModel *newModel)
+void CostCalculator::setModel(QAbstractItemModel *newModel)
 {
     if (model_ == newModel)
         return;
@@ -38,10 +39,13 @@ void CostCalculator::setTotal(int newTotal)
 void CostCalculator::calculateTotal()
 {
     int totalPrice{};
-    for (int i{}; i < model_->count(); ++i)
+    for (int i{}; i < model_->rowCount(); ++i)
     {
-        const auto product{model_->get(i)};
-        totalPrice += product.price() * product.selectedQty();
+        using enum ProductInventory::ProductModel::RoleNames;
+        auto idx{model_->index(i, 0)};
+        const auto price{model_->data(idx, int(PriceRole)).toInt()};
+        const auto qty{model_->data(idx, int(SelectedQtyRole)).toInt()};
+        totalPrice += price * qty;
     }
     setTotal(totalPrice);
 }

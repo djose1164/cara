@@ -3,7 +3,6 @@ import QtQuick.Controls
 import QtQuick.Layouts
 import Cara.Controls
 import Cara.ProductInventory
-import Cara.Salesperson
 import Cara.Billing
 
 Item {
@@ -18,7 +17,6 @@ Item {
     property alias selectorModel: productSelector.productModel
     property alias selectorDelegate: productSelector.delegate
     property alias selectedProductsDelegate: selectedProductsView.delegate
-    readonly property alias choosenProducts: selectedProductsView.model
     readonly property alias implicitViewWidth: selectedProductsView.implicitViewWidth
     readonly property alias implicitViewHeight: selectedProductsView.implicitViewHeight
     readonly property alias selectedProductsView: selectedProductsView
@@ -41,7 +39,7 @@ Item {
             else if (count === 2)
                 return itemHeight * 1.65;
             else
-                return itemHeight * 2;
+                return itemHeight * 2.1;
         }
 
         RedirectLabel {
@@ -53,9 +51,12 @@ Item {
 
         SelectedProducts {
             id: selectedProductsView
+            model: productSelectionModel
             onRedirectClicked: productSelector.open()
-            onDeleteClicked: (_, productId) => {
-                productSelector.removeSelectionOf(productId);
+            onDeleteClicked: (index, _) => {
+                const proxyIdx = productSelectionModel.index(index,0);
+                const idx = productSelectionModel.mapToSource(proxyIdx);
+                itemSelectionModel.select(idx, ItemSelectionModel.Deselect)
             }
         }
     }
@@ -64,28 +65,40 @@ Item {
         id: productSelector
         width: ApplicationWindow.window.width
         height: ApplicationWindow.window.height
-        salespersonId: SalespersonSettings.salespersonId
-        selectedProducts: selectedProductsView.model
+        selectionModel: itemSelectionModel
+    }
+
+    SelectionProxyModel {
+        id: productSelectionModel
+        sourceModel: productSelector.productModel
+        selectionModel: itemSelectionModel
+    }
+
+    ItemSelectionModel {
+        id: itemSelectionModel
+        model: root.selectorModel
     }
 
     CostCalculator {
         id: costCalculator
-        model: selectedProductsView.model
+        model: productSelectionModel
     }
 
     QtObject {
         id: internal
-        readonly property bool hasSelection: selectedProductsView.model.count > 0
+        readonly property bool hasSelection: productSelectionModel.count > 0
     }
 
     function validate() {
-        if (costCalculator.total === 0)
+        if (!internal.hasSelection)
             throw "Debes agregar al menos un producto a la orden";
     }
 
     function validateStocks() {
-        for (let i = 0; i < choosenProducts.count; ++i)
-            enoughStocksFor(choosenProducts.get(i));
+        const productModel = productSelector.productModel;
+        for (let idx of itemSelectionModel.selectedIndexes) {
+            root.enoughStocksFor(productModel.get(idx.row));
+        }
     }
 
     function enoughStocksFor(product) {
@@ -102,10 +115,11 @@ Item {
     }
 
     function toJson() {
-        return selectedProductsView.toJson();
+        console.log("ProductSale: ", JSON.stringify(productSelectionModel.toJsonArray(),null,2))
+        return productSelectionModel.toJsonArray();
     }
 
     function refreshSelector() {
-        productSelector.deselectAll();
+        itemSelectionModel.clear();
     }
 }

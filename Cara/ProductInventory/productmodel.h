@@ -104,6 +104,8 @@ signals:
 
     void statusChanged();
 
+    void selectionModelChanged();
+
 private:
     void makeConnections() noexcept;
     QJsonObject findLatestPrice(const QJsonArray &array) const noexcept;
