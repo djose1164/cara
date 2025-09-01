@@ -307,4 +307,10 @@ Salesperson Salesperson::fromJson(const QByteArray &data)
 
     return sp;
 }
+
+Salesperson Salesperson::fromJsonObject(const QJsonObject &jsonObject)
+{
+    return fromJson(QJsonDocument(jsonObject).toJson());
+}
+
 }

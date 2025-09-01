@@ -1,21 +1,20 @@
-#include "salespersonmodel.h"
+#include "sellerlistmodel.h"
 
 using namespace Qt::StringLiterals;
 
-namespace Model
+namespace Seller
 {
-SalespersonModel::SalespersonModel(QObject *parent)
+SellerListModel::SellerListModel(QObject *parent)
     : QAbstractListModel{parent}
     , data_{}
-    , count_{}
 {}
 
-int SalespersonModel::rowCount(const QModelIndex &parent) const
+int SellerListModel::rowCount(const QModelIndex &parent) const
 {
     return count();
 }
 
-QVariant SalespersonModel::data(const QModelIndex &index, int role) const
+QVariant SellerListModel::data(const QModelIndex &index, int role) const
 {
     if (!index.isValid())
         return {};
@@ -39,11 +38,13 @@ QVariant SalespersonModel::data(const QModelIndex &index, int role) const
         return data_.at(row).surname();
     case Roles::FullnameRole:
         return "%1 %2"_L1.arg(data_.at(row).forename(), data_.at(row).surname());
+    case Roles::SellerIdRole:
+        return data_.at(row).salespersonId();
     }
     return {};
 }
 
-bool SalespersonModel::setData(const QModelIndex &index, const QVariant &value, int role)
+bool SellerListModel::setData(const QModelIndex &index, const QVariant &value, int role)
 {
     if (!index.isValid())
         return {};
@@ -74,28 +75,29 @@ bool SalespersonModel::setData(const QModelIndex &index, const QVariant &value, 
     return {};
 }
 
-QHash<int, QByteArray> SalespersonModel::roleNames() const
+QHash<int, QByteArray> SellerListModel::roleNames() const
 {
     static const QHash<int, QByteArray> hash{
-        {int(Roles::CreditAvailableRole), "creditAvailable"},
-        {int(Roles::CreditConsumedRole), "creditConsumed"},
-        {int(Roles::CreditLimitRole), "creditLimit"},
-        {int(Roles::SalespersonIdRole), "salespersonId"},
-        {int(Roles::SalespersonTypeRole), "salespersonType"},
-        {int(Roles::ForenameRole), "forename"},
-        {int(Roles::SurnameRole), "surname"},
-        {int(Roles::FullnameRole), "fullname"}
+        {int(Roles::CreditAvailableRole), "creditAvailable"_ba},
+        {int(Roles::CreditConsumedRole), "creditConsumed"_ba},
+        {int(Roles::CreditLimitRole), "creditLimit"_ba},
+        {int(Roles::SalespersonIdRole), "salespersonId"_ba},
+        {int(Roles::SalespersonTypeRole), "salespersonType"_ba},
+        {int(Roles::ForenameRole), "forename"_ba},
+        {int(Roles::SurnameRole), "surname"_ba},
+        {int(Roles::FullnameRole), "fullname"_ba},
+        {int(Roles::SellerIdRole), "sellerId"_ba},
     };
 
     return hash;
 }
 
-int SalespersonModel::count() const
+int SellerListModel::count() const
 {
     return data_.count();
 }
 
-void SalespersonModel::insert(int index, const Entity::Salesperson &salesperson)
+void SellerListModel::insert(int index, const Entity::Salesperson &salesperson)
 {
     if (index < 0 || index > count())
         return;
@@ -107,8 +109,19 @@ void SalespersonModel::insert(int index, const Entity::Salesperson &salesperson)
     emit countChanged();
 }
 
-void SalespersonModel::append(const QVariantMap &salesperson)
+void SellerListModel::append(const QVariantMap &salesperson)
 {
     insert(count(), Entity::Salesperson::fromMap(salesperson));
 }
+
+void SellerListModel::setSellers(const QList<Entity::Salesperson> &sellerList)
+{
+    qDebug() << "SellerListModel::setSellers: sellerList.count(): " << sellerList.count();
+    beginResetModel();
+    data_ = sellerList;
+    endResetModel();
+    emit countChanged();
 }
+
+} // namespace Seller
+

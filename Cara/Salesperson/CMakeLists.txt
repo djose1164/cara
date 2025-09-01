@@ -1,5 +1,4 @@
-qt_add_library(salesperson STATIC)
-set_target_properties(salesperson PROPERTIES AUTOMOC ON)
+qt_add_library(SalespersonLib STATIC)
 
 set_source_files_properties(SalespersonManager.qml PROPERTIES
     QT_QML_SINGLETON_TYPE TRUE
@@ -9,7 +8,7 @@ set_source_files_properties(SalespersonSettings.qml PROPERTIES
     QT_QML_SINGLETON_TYPE TRUE
 )
 
-qt_add_qml_module(salesperson
+qt_add_qml_module(SalespersonLib
     URI Cara.Salesperson
     VERSION 1.0
     QML_FILES
@@ -30,14 +29,15 @@ qt_add_qml_module(salesperson
         data/salespersonrepositoryimp.h data/salespersonrepositoryimp.cpp
         salesperson.h salesperson.cpp
         salespersoncontroller.h salespersoncontroller.cpp
-        salespersonmodel.h salespersonmodel.cpp
+        sellerlistmodel.h sellerlistmodel.cpp
         sqlitesellermodel.h sqlitesellermodel.cpp
     DEPENDENCIES
         User
 )
 
-target_include_directories(salesperson
+target_include_directories(SalespersonLib
     PRIVATE business data ../Data ../User ../Utils ../authentication ../
+    INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
-target_link_libraries(salesperson PRIVATE Qt6::Sql NetworkLib CommonLib)
+target_link_libraries(SalespersonLib PRIVATE Qt6::Sql NetworkLib CommonLib)

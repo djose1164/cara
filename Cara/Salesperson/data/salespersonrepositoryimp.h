@@ -8,7 +8,7 @@
 #include <QNetworkRequestFactory>
 
 namespace Data {
-class SalespersonRepositoryImpl : public QObject, public SalespersonRepository
+class SalespersonRepositoryImpl : public SalespersonRepository
 {
     Q_OBJECT
 public:
@@ -32,6 +32,8 @@ public slots:
 
     void getCustomers(int salespersonId) override;
 
+    void remove(int id) override;
+
     QNetworkReply *takeOrder(OrderId orderId, SalespersonId salespersonId) override;
 
     QNetworkReply *abandonOrder(OrderId orderId) override;
@@ -45,13 +47,6 @@ public slots:
 private slots:
     void requestFinished();
 
-signals:
-    void finished();
-    void errorOccurred();
-    void fetched();
-    void added();
-    void patched();
-
 private:
     QNetworkAccessManager *manager_;
     QNetworkReply *reply_;
@@ -60,9 +55,6 @@ private:
     QByteArray buffer_;
     const std::shared_ptr<QNetworkRequestFactory> api_;
 
-    // SalespersonRepository interface
-public:
-    void remove(int id) override;
 };
 }
 

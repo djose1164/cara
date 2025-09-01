@@ -59,9 +59,12 @@ public slots:
      */
     void canPayOrder(OrderId orderId);
 
+private slots:
+    void sellersFetched();
+
 signals:
     void errorOccurred();
-    void fetched();
+    void fetched(const QList<Entity::Salesperson> &sellerList = {});
     void added();
     void patched();
 

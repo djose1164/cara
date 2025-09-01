@@ -15,7 +15,7 @@ constexpr auto orderEndpoint{"orders"_L1};
 
 namespace Data {
 SalespersonRepositoryImpl::SalespersonRepositoryImpl(QObject *parent)
-    : QObject{parent}
+    : SalespersonRepository{parent}
     , manager_{new QNetworkAccessManager(this)}
     , reply_{nullptr}
     , path_{"salespersons"_L1}
@@ -121,7 +121,7 @@ QNetworkReply *SalespersonRepositoryImpl::markOrderAsDone(OrderId orderId)
 QNetworkReply *SalespersonRepositoryImpl::fetchSalespeopleByAdminId(AdminId adminId)
 {
     QUrlQuery query{ {"admin_id"_L1, QString::number(adminId)} };
-    return manager_->get(api_->createRequest(path_, std::move(query)));
+    return manager_->get(api_->createRequest(path_ + "/"_L1, std::move(query)));
 }
 
 QNetworkReply *SalespersonRepositoryImpl::canOrderBePaid(SalespersonId salespersonId, OrderId orderId)

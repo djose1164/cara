@@ -1,9 +1,10 @@
 #include "salespersoncontroller.h"
+#include "data/salespersonrepositoryimp.h"
+#include "salesperson.h"
+#include <QJsonArray>
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QNetworkReply>
-#include "data/salespersonrepositoryimp.h"
-#include "salesperson.h"
 
 using namespace Qt::StringLiterals;
 
@@ -23,7 +24,7 @@ SalespersonController::SalespersonController(QObject *parent)
     connect(repository, &RepositoryImpl::errorOccurred,
             this, &SalespersonController::errorOccurred);
     connect(repository, &RepositoryImpl::fetched,
-            this, &SalespersonController::fetched);
+            this, &SalespersonController::sellersFetched);
     connect(repository, &RepositoryImpl::patched,
             this, &SalespersonController::patched);
 }
@@ -46,6 +47,7 @@ void SalespersonController::readSalespeople()
     {
         setErrorString("Invalid adminId."_L1);
         emit errorOccurred();
+        qWarning() << "SalespersonController::readSalespeople: " << errorString_;
         return;
     }
 
@@ -60,7 +62,14 @@ void SalespersonController::readSalespeople()
             return;
         }
 
-        emit fetched();
+        const auto salespeopleObject = QJsonDocument::fromJson(data_).object();
+        const auto salespeopleArr = salespeopleObject["salespeople"_L1].toArray();
+        QList<Entity::Salesperson> sellerList;
+        std::ranges::for_each(salespeopleArr, [&](const auto &jsvalue) {
+            sellerList.append(Entity::Salesperson::fromJsonObject(jsvalue.toObject()));
+        });
+
+        emit fetched(sellerList);
 
         reply->deleteLater();
     });
@@ -186,6 +195,26 @@ void SalespersonController::canPayOrder(OrderId orderId)
 
         reply->deleteLater();
     });
+}
+
+void SalespersonController::sellersFetched()
+{
+    if (const auto json{QJsonDocument::fromJson(data_)};
+        json.isObject() and json.object().contains("salespeople"_L1))
+    {
+        const QJsonArray salespeople = json.object()["salespeople"_L1].toArray();
+        QList<Entity::Salesperson> sellerList;
+        std::ranges::for_each(salespeople, [&](const auto &jsvalue) {
+            auto sellerJson{QJsonDocument{jsvalue.toObject()}.toJson()};
+            auto seller{Entity::Salesperson::fromJson(sellerJson)};
+            sellerList.append(std::move(seller));
+        });
+        emit fetched(sellerList);
+    }
+    else
+    {
+        emit fetched();
+    }
 }
 
 QString SalespersonController::errorString() const

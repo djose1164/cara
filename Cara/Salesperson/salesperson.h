@@ -38,6 +38,7 @@ public:
 
     static Salesperson fromMap(const QVariantMap &data);
     static Salesperson fromJson(const QByteArray &data);
+    static Salesperson fromJsonObject(const QJsonObject &jsonObject);
 
     static const int userTypeId;
 

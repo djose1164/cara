@@ -37,6 +37,7 @@ Item {
 
                 function onSellerSelected(seller) {
                     selectedDelegate.fullname = seller.fullname;
+                    selectedDelegate.entityId = seller.sellerId;
                     root.sellerId = seller.sellerId;
                 }
             }
@@ -70,10 +71,6 @@ Item {
             header: DrawerHeader {
                 width: drawer.width
                 title: "Seleccionar vendedor asociado"
-                loader.sourceComponent: RoundButton {
-                    icon.source: "qrc:/icons/person_add.svg"
-                    onClicked: newSellerDialog.open()
-                }
                 onCloseClicked: drawer.close()
             }
             headerPositioning: ListView.OverlayHeader
@@ -95,55 +92,6 @@ Item {
                         drawer.close();
                     }
                 }
-            }
-        }
-
-        Dialog {
-            id: newSellerDialog
-            width: ApplicationWindow.window.width * .95
-            height: ApplicationWindow.window.height /2
-            anchors.centerIn: Overlay.overlay
-            title: qsTr("Agregar vendedor asociado")
-            standardButtons: Dialog.Save | Dialog.Cancel
-            onAccepted: newSellerDialog.saveSeller()
-
-            ColumnLayout {
-                anchors.fill: parent
-                anchors.margins: 20
-
-                TextField {
-                    id: forenameField
-                    placeholderText: qsTr("Nombre")
-                    Layout.fillWidth: true
-                }
-
-                TextField {
-                    id: surnameField
-                    placeholderText: qsTr("Apellido")
-                    Layout.fillWidth: true
-                }
-            }
-
-            function saveSeller() {
-                const entity = {
-                    forename: forenameField.text,
-                    surname: surnameField.text
-                };
-                console.log(JSON.stringify(entity,null,2))
-                root.sellerModel.append(entity);
-            }
-        }
-
-        MessageDialog {
-            id: messageDialog
-            text: "¡Vendedor asociado guardado con éxito!"
-        }
-
-        Connections {
-            target: root.sellerModel
-
-            function onSellerAdded() {
-                messageDialog.open();
             }
         }
     }

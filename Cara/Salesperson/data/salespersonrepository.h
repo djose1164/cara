@@ -1,18 +1,24 @@
 #ifndef SALESPERSONREPOSITORY_H
 #define SALESPERSONREPOSITORY_H
 
+#include "salesperson.h"
 #include <QByteArray>
+#include <QObject>
+#include <QQmlEngine>
 
-namespace Entity { class Salesperson; }
 class QNetworkReply;
 
 namespace Data {
-class SalespersonRepository
+class SalespersonRepository : public QObject
 {
+    Q_OBJECT
+    QML_ANONYMOUS
 public:
     using AdminId = int;
     using OrderId = int;
     using SalespersonId = int;
+
+    using QObject::QObject;
 
     virtual ~SalespersonRepository();
     
@@ -37,6 +43,14 @@ public:
     [[nodiscard]] virtual QNetworkReply *fetchSalespeopleByAdminId(AdminId adminId) = 0;
 
     [[nodiscard]] virtual QNetworkReply *canOrderBePaid(SalespersonId salespersonId, OrderId orderId) = 0;
+
+signals:
+    void finished();
+    void errorOccurred();
+    void fetched();
+    void added();
+    void patched();
+
 };
 }
 

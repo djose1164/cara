@@ -1,5 +1,5 @@
-#ifndef SALESPERSONMODEL_H
-#define SALESPERSONMODEL_H
+#ifndef SELLERLISTMODEL_H
+#define SELLERLISTMODEL_H
 
 #include "abstractsellermodel.h"
 #include "salesperson.h"
@@ -7,13 +7,13 @@
 #include <QObject>
 #include <QQmlEngine>
 
-namespace Model
+namespace Seller
 {
-class SalespersonModel : public QAbstractListModel, public Seller::AbstractSellerModel
+class SellerListModel : public QAbstractListModel, public Seller::AbstractSellerModel
 {
     Q_OBJECT
-    QML_ELEMENT
     Q_PROPERTY(int count READ count NOTIFY countChanged FINAL)
+    QML_ELEMENT
 public:
     enum class Roles
     {
@@ -24,10 +24,11 @@ public:
         SalespersonTypeRole,
         ForenameRole,
         SurnameRole,
-        FullnameRole
+        FullnameRole,
+        SellerIdRole
     };
 
-    explicit SalespersonModel(QObject *parent = nullptr);
+    explicit SellerListModel(QObject *parent = nullptr);
 
     // QAbstractItemModel interface
     int rowCount(const QModelIndex &parent) const override;
@@ -38,16 +39,17 @@ public:
     int count() const override;
 
 public slots:
+    // AbstractSellerModel interface
     void insert(int index, const Entity::Salesperson &salesperson) override;
     void append(const QVariantMap &salesperson) override;
+    void setSellers(const QList<Entity::Salesperson> &sellerList) override;
 
 signals:
     void countChanged();
 
 private:
     QList<Entity::Salesperson> data_;
-    int count_;
 };
 }
 
-#endif // SALESPERSONMODEL_H
+#endif // SELLERLISTMODEL_H

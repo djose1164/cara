@@ -85,4 +85,8 @@ void SQLiteSellerModel::setCount(int newCount)
     emit countChanged();
 }
 
+void SQLiteSellerModel::setSellers(const QList<Entity::Salesperson> &sellerList)
+{
+}
+
 } // namespace Seller

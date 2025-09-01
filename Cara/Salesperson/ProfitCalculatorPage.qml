@@ -1,5 +1,4 @@
 pragma ComponentBehavior: Bound
-
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
@@ -57,7 +56,7 @@ BackPage {
 
             SellerSelector {
                 id: sellerSelector
-                sellerModel: internal.sellerModel
+                sellerModel: commissionController.sellerModel
                 Layout.fillWidth: true
             }
 
@@ -93,7 +92,7 @@ BackPage {
                 }
 
                 Layout.fillWidth: true
-                Layout.minimumHeight: productSale.choosenProducts.count > 0 ? root.height * .4 : productSale.implicitHeight
+                Layout.minimumHeight: productSale.productSelectionModel.count > 0 ? root.height * .4 : productSale.implicitHeight
             }
 
             Label {
@@ -167,29 +166,15 @@ BackPage {
 
     CommissionController {
         id: commissionController
+        adminId: root.adminId
         supplierId: providerSelector.currentValue || 0
-    }
-
-    SQLiteProductModel {
-        id: sqlProductModel
-        Component.onCompleted: console.log("SQLiteProductModel: count: ", sqlProductModel.rowCount())
+        onCommissionAdded: messageDialog.show("Exito", "Comision guardada.")
     }
 
     ProfitCalculator {
         id: calculator
         percentage: spinBox.value
-        model: productSale.choosenProducts
-    }
-
-    CommissionModel {
-        id: commissionModel
-        repository: RestCommissionRepository {}
-        onCommissionAddedSuccessfully: messageDialog.show("Exito", "Comision guardada.")
-    }
-
-    SQLiteCommissionModel {
-        id: sqliteModel
-        productModel: sqlProductModel
+        model: productSale.productSelectionModel
     }
 
     MessageDialog {
@@ -200,11 +185,6 @@ BackPage {
             messageDialog.text = text;
             messageDialog.open();
         }
-    }
-
-    BusyPopup {
-        id: busyPopup
-        visible: commissionModel.busy && root.isPageVisible
     }
 
     QtObject {
@@ -218,14 +198,12 @@ BackPage {
     function saveSale() {
         try {
             root.validateForm();
-            //commissionModel.append({
-            sqliteModel.append({
+            commissionController.append({
                 adminId,
                 rate: spinBox.value/100,
                 salespersonId: sellerSelector.sellerId,
                 paymentDate: datePicker.selectedDate,
                 commissionItems: root.getCommissionItems(),
-                amount: calculator.total.toFixed(2)
             });
         } catch (err) {
             messageDialog.show("Error", err);

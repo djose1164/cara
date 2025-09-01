@@ -34,6 +34,9 @@ public:
     void insert(int idx, const Entity::Salesperson &seller) override;
     int count() const override;
 
+    // AbstractSellerModel interface
+    void setSellers(const QList<Entity::Salesperson> &sellerList) override;
+
     void setCount(int newCount);
 
 public slots:
