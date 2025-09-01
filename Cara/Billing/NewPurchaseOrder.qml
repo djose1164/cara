@@ -69,7 +69,7 @@ Page {
 
             PaymentInput {
                 id: paymentInput
-                calculator: productSale.calculator
+                calculator: costCalculator
                 Layout.fillWidth: true
             }
 
@@ -91,6 +91,11 @@ Page {
 
             Item {}
         }
+    }
+
+    CostCalculator {
+        id: costCalculator
+        model: productSale.productSelectionModel
     }
 
     DatePicker {

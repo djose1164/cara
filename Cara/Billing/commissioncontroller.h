@@ -11,7 +11,7 @@ namespace Seller { class AbstractSellerModel; }
 namespace Billing
 {
 class AbstractCommissionModel;
-class CommissionController : public QObject
+class CommissionController : public QObject, public QQmlParserStatus
 {
     Q_OBJECT
     Q_PROPERTY(ProductInventory::ProductModel *productModel READ productModel WRITE setProductModel
@@ -20,9 +20,13 @@ class CommissionController : public QObject
     Q_PROPERTY(ProductInventory::ProductModel *selectedProducts READ selectedProducts WRITE
                    setSelectedProducts NOTIFY selectedProductsChanged FINAL)
     Q_PROPERTY(int supplierId READ supplierId WRITE setSellerId NOTIFY supplierIdChanged FINAL)
+    Q_PROPERTY(QAbstractItemModel *sellerModel READ sellerModel WRITE setSellerModel NOTIFY
+                   sellerModelChanged FINAL)
+    Q_PROPERTY(int adminId READ adminId WRITE setAdminId NOTIFY adminIdChanged FINAL REQUIRED)
     QML_ELEMENT
 public:
     using SellerId = int;
+    using AdminId = int;
 
     explicit CommissionController(QObject *parent = nullptr);
 
@@ -37,6 +41,16 @@ public:
     ProductInventory::ProductModel *productModel() const;
     void setProductModel(ProductInventory::ProductModel *newProductModel);
 
+    QAbstractItemModel *sellerModel() const;
+    void setSellerModel(QAbstractItemModel *newSellerModel);
+
+    AdminId adminId() const;
+    void setAdminId(AdminId newAdminId);
+
+    // QQmlParserStatus interface
+    void classBegin() override;
+    void componentComplete() override;
+
 public slots:
     void append(const QVariantMap &map);
     void fetchCommissions();
@@ -44,6 +58,7 @@ public slots:
 
 private slots:
     void networkStatusChanged(QNetworkInformation::Reachability reachability);
+    void createSellerModel(QNetworkInformation::Reachability reachability);
 
 signals:
     void selectedProductsChanged();
@@ -54,15 +69,22 @@ signals:
 
     void commissionModelChanged();
 
+    void sellerModelChanged();
+
+    void adminIdChanged();
+
+    void commissionAdded();
+
 protected:
     void setCommissionModel(AbstractCommissionModel *newCommissionModel);
 
 private:
     int supplierId_;
+    AdminId adminId_;
     AbstractCommissionModel *commissionModel_;
     ProductInventory::ProductModel *productModel_;
     ProductInventory::ProductModel *selectedProducts_;
-    Seller::AbstractSellerModel *sellerModel_;
+    QAbstractItemModel *sellerModel_;
 };
 }
 

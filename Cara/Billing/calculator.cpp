@@ -1,6 +1,6 @@
 #include "calculator.h"
 
-#include <QAbstractListModel>
+#include <QAbstractItemModel>
 
 namespace Billing
 {
@@ -16,29 +16,29 @@ Calculator::~Calculator()
 {
 }
 
-QAbstractListModel *Calculator::model() const
+QAbstractItemModel *Calculator::model() const
 {
     return model_;
 }
 
-void Calculator::setModel(QAbstractListModel *newModel)
+void Calculator::setModel(QAbstractItemModel *newModel)
 {
     if (model_ == newModel)
         return;
     if (model_)
     {
-        disconnect(model_, &QAbstractListModel::dataChanged, this, &Calculator::calculate);
-        disconnect(model_, &QAbstractListModel::rowsInserted, this, &Calculator::calculate);
-        disconnect(model_, &QAbstractListModel::rowsRemoved, this, &Calculator::calculate);
+        disconnect(model_, &QAbstractItemModel::dataChanged, this, &Calculator::calculate);
+        disconnect(model_, &QAbstractItemModel::rowsInserted, this, &Calculator::calculate);
+        disconnect(model_, &QAbstractItemModel::rowsRemoved, this, &Calculator::calculate);
     }
 
     model_ = newModel;
 
     if (model_)
     {
-        connect(model_, &QAbstractListModel::dataChanged, this, &Calculator::calculate);
-        connect(model_, &QAbstractListModel::rowsInserted, this, &Calculator::calculate);
-        connect(model_, &QAbstractListModel::rowsRemoved, this, &Calculator::calculate);
+        connect(model_, &QAbstractItemModel::dataChanged, this, &Calculator::calculate);
+        connect(model_, &QAbstractItemModel::rowsInserted, this, &Calculator::calculate);
+        connect(model_, &QAbstractItemModel::rowsRemoved, this, &Calculator::calculate);
     }
     emit modelChanged();
 }

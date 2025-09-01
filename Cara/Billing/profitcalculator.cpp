@@ -17,15 +17,15 @@ void ProfitCalculator::calculate()
 {
     if (!model() or model()->rowCount() < 1 or percentage_ < 1)
         return;
-    const auto productModel{qobject_cast<ProductInventory::ProductModel *>(model())};
     const double calcPercentage{percentage_ / 100.};
     double calcTotal{};
-    for (int i{}; i < productModel->count(); ++i)
+    for (int i{}; i < model()->rowCount(); ++i)
     {
-        const EntityLayer::Product product{productModel->get(i)};
-        const double sellPrice = product.price();
-        const double buyPrice = product.buyPrice();
-        const int qty = product.selectedQty();
+        using enum ProductInventory::ProductModel::RoleNames;
+        const QModelIndex idx = model()->index(i, 0);
+        const double sellPrice = model()->data(idx, int(PriceRole)).toDouble();
+        const double buyPrice = model()->data(idx, int(BuyPriceRole)).toDouble();
+        const int qty = model()->data(idx, int(SelectedQtyRole)).toInt();
 
         calcTotal += ((sellPrice - buyPrice) * qty);
     }

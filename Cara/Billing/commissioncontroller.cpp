@@ -2,6 +2,8 @@
 #include "ProductInventory/productmodel.h"
 #include "ProductInventory/sqliteproductrepository.h"
 #include "ProductInventory/supplierproductrepository.h"
+#include "Salesperson/salespersoncontroller.h"
+#include "Salesperson/sellerlistmodel.h"
 #include "abstractcommissionmodel.h"
 #include "commissionmodel.h"
 #include "restcommissionrepository.h"
@@ -15,14 +17,14 @@ namespace Billing
 CommissionController::CommissionController(QObject *parent)
     : QObject{parent}
     , supplierId_{-1}
+    , adminId_{-1}
     , commissionModel_{}
     , productModel_{new ProductInventory::ProductModel(this)}
     , selectedProducts_{new ProductInventory::ProductModel(this)}
+    , sellerModel_{}
 {
     if (QNetworkInformation::instance() == nullptr)
         QNetworkInformation::loadDefaultBackend();
-
-    networkStatusChanged(QNetworkInformation::instance()->reachability());
 
     connect(QNetworkInformation::instance(),
             &QNetworkInformation::reachabilityChanged,
@@ -47,6 +49,38 @@ void CommissionController::setCommissionModel(AbstractCommissionModel *newCommis
     commissionModel_ = newCommissionModel;
 
     emit commissionModelChanged();
+}
+
+CommissionController::AdminId CommissionController::adminId() const
+{
+    return adminId_;
+}
+
+void CommissionController::setAdminId(AdminId newAdminId)
+{
+    if (adminId_ == newAdminId)
+        return;
+    adminId_ = newAdminId;
+    emit adminIdChanged();
+}
+
+QAbstractItemModel *CommissionController::sellerModel() const
+{
+    return sellerModel_;
+}
+
+void CommissionController::setSellerModel(QAbstractItemModel *newSellerModel)
+{
+    if (sellerModel_ == newSellerModel)
+        return;
+    if (sellerModel_)
+    {
+        sellerModel_->deleteLater();
+        sellerModel_ = nullptr;
+    }
+
+    sellerModel_ = newSellerModel;
+    emit sellerModelChanged();
 }
 
 ProductInventory::ProductModel *CommissionController::productModel() const
@@ -108,7 +142,7 @@ void CommissionController::fetchCommissionsBySellerId(SellerId sellerId)
 
 void CommissionController::networkStatusChanged(QNetworkInformation::Reachability reachability)
 {
-    qDebug() << "CommissionController::CommissionController: connect to QNetworkInformation";
+    createSellerModel(reachability);
     if (reachability == QNetworkInformation::Reachability::Online)
     {
         if (commissionModel_ == nullptr or not dynamic_cast<CommissionModel *>(commissionModel_))
@@ -117,13 +151,20 @@ void CommissionController::networkStatusChanged(QNetworkInformation::Reachabilit
             auto repository{new RestCommissionRepository(model)};
             model->setRepository(repository);
             setCommissionModel(model);
+            connect(model,
+                    &CommissionModel::commissionAddedSuccessfully,
+                    this,
+                    &CommissionController::commissionAdded);
         }
 
         const auto productRepository{productModel_->repository()};
         if (not qobject_cast<ProductInventory::SupplierProductRepository* >(productRepository))
         {
             if (productRepository)
+            {
                 productRepository->deleteLater();
+                productModel_->setRepository(nullptr);
+            }
 
             auto *repository{new ProductInventory::SupplierProductRepository(this)};
             repository->setSupplierId(supplierId_);
@@ -135,10 +176,61 @@ void CommissionController::networkStatusChanged(QNetworkInformation::Reachabilit
     }
     else
     {
-        setCommissionModel(new SQLiteCommissionModel(this));
+        auto sqliteModel{new SQLiteCommissionModel(this)};
+        setCommissionModel(sqliteModel);
+
         if (productModel_->repository())
+        {
             productModel_->repository()->deleteLater();
+            productModel_->setRepository(nullptr);
+        }
+
         productModel_->setRepository(new ProductInventory::SQLiteProductRepository(this));
+
+        connect(sqliteModel,
+                &SQLiteCommissionModel::commissionAddedSuccessfully,
+                this,
+                &CommissionController::commissionAdded);
     }
 }
+
+void CommissionController::createSellerModel(QNetworkInformation::Reachability reachability)
+{
+    if (reachability == QNetworkInformation::Reachability::Online)
+    {
+        if (sellerModel_ and qobject_cast<Seller::SellerListModel *>(sellerModel_))
+            return;
+
+        const auto sellerListModel{new Seller::SellerListModel(this)};
+        const auto sellerController{new Salesperson::SalespersonController(sellerListModel)};
+        sellerController->setAdminId(adminId_);
+        sellerController->readSalespeople();
+        setSellerModel(sellerListModel);
+
+        connect(sellerController,
+                &Salesperson::SalespersonController::fetched,
+                sellerListModel,
+                &Seller::SellerListModel::setSellers);
+    }
+    else
+    {
+        // Ofline model
+        if (sellerModel_ and qobject_cast<SQLiteCommissionModel *>(sellerModel_))
+            return;
+
+        const auto sqliteModel{new SQLiteCommissionModel(this)};
+        sqliteModel->refresh();
+        setSellerModel(sqliteModel);
+    }
+}
+
+void CommissionController::classBegin()
+{
+}
+
+void CommissionController::componentComplete()
+{
+    networkStatusChanged(QNetworkInformation::instance()->reachability());
+}
+
 }

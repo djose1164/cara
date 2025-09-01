@@ -5,7 +5,6 @@
 #include "ibillrepository.h"
 #include "queuerepository.h"
 #include <QObject>
-#include <QtQml>
 
 namespace BusinessLayer {
 using Model::BillModel;

@@ -38,8 +38,6 @@ public:
 signals:
     void percentageChanged();
 
-    void selectorModelChanged();
-
 private:
     int percentage_;
     QPropertyNotifier supplierIdHandler_;

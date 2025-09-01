@@ -14,17 +14,6 @@ BackPage {
 
     title: "Detalles"
 
-    Component.onCompleted: {
-        console.log("model: ",model);
-        console.log("model: ",model.commissionId);
-        console.log("repository:", repository);
-        console.log("repository:", repository.commissionId);
-        console.log("root.model.paymentDate: ",typeof(root.model.paymentDate))
-        console.log("root.model.paymentDate: ",root.model.paymentDate)
-        console.log("isPaymenDateValid:",internal.isPaymenDateValid)
-
-    }
-
     component CardBox : GroupBox {
         id: cardBox
         required property string name
@@ -138,8 +127,9 @@ BackPage {
 
                 ColumnLayout {
                     anchors.fill: parent
-
+                    spacing: 0
                     Repeater {
+                        id: repeater
                         model: root.model.commissionItems
                         CommissionItemDelegate {
                             Layout.fillWidth: true
@@ -150,18 +140,6 @@ BackPage {
 
             Item {}
         }
-    }
-
-    Connections {
-        target: root.repository
-
-        function onErrorOccurred(errorString: string, error: int) {
-            console.log(errorString + " - " + error);
-        }
-    }
-
-    ProcessingIndicator {
-        visible: root.repository.busy && root.isPageVisible
     }
 
     component CommissionItemDelegate : ItemDelegate {

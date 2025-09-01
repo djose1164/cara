@@ -13,7 +13,6 @@ Item {
         Selecting
     }
 
-    property alias calculator: costCalculator
     property alias selectorModel: productSelector.productModel
     property alias selectorDelegate: productSelector.delegate
     property alias selectedProductsDelegate: selectedProductsView.delegate
@@ -21,6 +20,7 @@ Item {
     readonly property alias implicitViewHeight: selectedProductsView.implicitViewHeight
     readonly property alias selectedProductsView: selectedProductsView
     readonly property alias selectionModel: productSelector.selectionModel
+    readonly property alias productSelectionModel: productSelectionModel
 
     implicitWidth: stackLayout.implicitWidth
     implicitHeight: stackLayout.implicitHeight
@@ -54,9 +54,9 @@ Item {
             model: productSelectionModel
             onRedirectClicked: productSelector.open()
             onDeleteClicked: (index, _) => {
-                const proxyIdx = productSelectionModel.index(index,0);
-                const idx = productSelectionModel.mapToSource(proxyIdx);
-                itemSelectionModel.select(idx, ItemSelectionModel.Deselect)
+                const proxyIdx = productSelectionModel.index(index, 0);
+                const sourceIdx = productSelectionModel.mapToSource(proxyIdx);
+                itemSelectionModel.select(sourceIdx, ItemSelectionModel.Deselect)
             }
         }
     }
@@ -77,11 +77,6 @@ Item {
     ItemSelectionModel {
         id: itemSelectionModel
         model: root.selectorModel
-    }
-
-    CostCalculator {
-        id: costCalculator
-        model: productSelectionModel
     }
 
     QtObject {

@@ -12,9 +12,9 @@ namespace BusinessLayer
 {
 BillBusiness::BillBusiness(QObject *parent)
     : Billing::QueueRepository{parent}
+    , billRepository_{new DataLayer::BillRepository(this)}
     , reply_{}
     , model_{nullptr}
-    , billRepository_{new DataLayer::BillRepository(this)}
 {
 }
 
