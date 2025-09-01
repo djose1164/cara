@@ -88,7 +88,5 @@ if (ANDROID)
     include(${android_openssl_SOURCE_DIR}/android_openssl.cmake)
 
     add_android_openssl_libraries(${PROJECT_NAME})
-endif()
-if (ANDROID)
     include(/home/djose1164/Android/Sdk/android_openssl/CMakeLists.txt)
 endif()

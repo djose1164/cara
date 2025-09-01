@@ -63,7 +63,7 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
     StatisticsLibplugin
     UserLibplugin
     UtilsLibplugin
-    salespersonplugin
+    SalespersonLibplugin
     ControlsLibplugin
 )
 
