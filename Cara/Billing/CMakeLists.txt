@@ -126,7 +126,7 @@ qt_add_qml_module(BillingLib
 target_include_directories(BillingLib
     PRIVATE
         business entity model data
-        ../Customer ../Data ../authentication ../Utils ../
+        ../Data ../authentication ../Utils ../
     INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
@@ -139,6 +139,8 @@ target_link_libraries(BillingLib
         CustomerLib
         ProductInventoryLib
         SalespersonLib
+        CommonLib
+        UserLib
 )
 
 if (EMSCRIPTEN)
@@ -152,3 +154,5 @@ else()
     )
 target_link_libraries(BillingLib PRIVATE Qt6::Core)
 endif()
+
+add_subdirectory(tests)

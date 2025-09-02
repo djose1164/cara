@@ -91,6 +91,8 @@ public slots:
 
     void refreshBuyPriceHistory(ProductId id) noexcept;
 
+    void clearModel() noexcept;
+
 private slots:
     void productsFetched(const QList<EntityLayer::Product> &products) noexcept;
 

@@ -1,9 +1,3 @@
-# enable_testing()
-# set(CMAKE_INCLUDE_CURRENT_DIR ON)
-
-
-# # include_directories(../Cara/Product)
-# # include_directories(../Cara/User)
 project(ProductInventoryTests LANGUAGES CXX)
 find_package(Qt6 REQUIRED COMPONENTS Test)
 
@@ -25,3 +19,5 @@ SETUP_TESTS(
    productmodel
    productrepository
 )
+
+file(COPY tesla-model-s.jpeg DESTINATION ${CMAKE_CURRENT_BINARY_DIR})

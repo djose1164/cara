@@ -52,3 +52,7 @@ target_include_directories(UserLib
 
 target_link_libraries(UserLib
     PRIVATE AuthenticationLib NetworkLib CommonLib UtilsLib)
+
+if (LINUX AND CMAKE_BUILD_TYPE STREQUAL "Debug")
+    add_subdirectory(tests)
+endif()

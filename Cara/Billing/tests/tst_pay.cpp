@@ -1,11 +1,11 @@
-#include "Billing/business/pay.h"
-#include "restservice.h"
+#include "business/pay.h"
 #include "loginhelper.h"
+#include "restservice.h"
 #include <QJsonDocument>
 #include <QJsonObject>
+#include <QRestAccessManager>
 #include <QSignalSpy>
 #include <QTest>
-#include <QRestAccessManager>
 
 class TestPay : public QObject
 {

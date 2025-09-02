@@ -1,8 +1,8 @@
 #ifndef COMMISSION_H
 #define COMMISSION_H
 
-#include "Salesperson/salesperson.h"
-#include "User/userentity.h"
+#include "userentity.h"
+#include "salesperson.h"
 #include <QDateTime>
 
 class QJsonObject;

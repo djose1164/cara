@@ -2,7 +2,6 @@
 #define PROFITCALCULATOR_H
 
 #include <QQmlEngine>
-#include "ProductInventory/productmodel.h"
 #include "calculator.h"
 
 namespace EntityLayer

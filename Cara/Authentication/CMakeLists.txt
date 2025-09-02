@@ -11,7 +11,7 @@ qt_add_qml_module(AuthenticationLib
         eye-crossed.svg
         eye.svg
     SOURCES
-    business/authenticator.h business/authenticator.cpp
+        business/authenticator.h business/authenticator.cpp
         business/irefreshable.h business/irefreshable.cpp
         business/tokenmanager.h business/tokenmanager.cpp
         business/tokennotpresent.h business/tokennotpresent.cpp
@@ -28,9 +28,11 @@ qt_add_qml_module(AuthenticationLib
 
 target_include_directories(AuthenticationLib
     PUBLIC
-        business data entity service ${CMAKE_CURRENT_SOURCE_DIR}
+        business data entity service
     PRIVATE
         ../Utils ../
+    INTERFACE
+        ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
 target_link_libraries(AuthenticationLib PUBLIC NetworkLib)

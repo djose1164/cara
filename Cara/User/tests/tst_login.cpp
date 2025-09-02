@@ -33,7 +33,6 @@ TestLogin::~TestLogin() {}
 
 void TestLogin::initTestCase()
 {
-    LoginHelper::login();
 }
 
 void TestLogin::cleanupTestCase()
@@ -66,6 +65,7 @@ void TestLogin::test_shouldEmitAuthenticatedOnceUponRefreshingToken() const
 {
     auto login = std::make_unique<Authentication::Business::Login>();
     Authentication::Service::LocalUserAuthentication auth{};
+    LoginHelper::login();
     const auto token{QSettings{}.value("Credentials/refreshToken"_L1).toString()};
 
     QVERIFY(!token.isEmpty());

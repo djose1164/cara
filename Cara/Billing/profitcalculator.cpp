@@ -1,4 +1,5 @@
 #include "profitcalculator.h"
+#include "productmodel.h"
 
 using namespace Qt::StringLiterals;
 
@@ -56,6 +57,11 @@ int ProfitCalculator::percentage() const
 
 void ProfitCalculator::setPercentage(int newPercentage)
 {
+    if (newPercentage < 1 or newPercentage > 100)
+    {
+        qWarning() << "ProfitCalculator::setPercentage: invalid percentage: " << newPercentage;
+        return;
+    }
     if (percentage_ == newPercentage)
         return;
     percentage_ = newPercentage;

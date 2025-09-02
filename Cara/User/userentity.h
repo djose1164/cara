@@ -2,7 +2,7 @@
 #define USERENTITY_H
 
 #include "address.h"
-#include "common/ipersonname.h"
+#include "ipersonname.h"
 #include <QObject>
 #include <QQmlEngine>
 

@@ -48,18 +48,23 @@ void TestProductRepository::test_shouldEmitAddedIfAddingSuccess() const
 
     QVERIFY(spy.isValid());
 
-    constexpr QLatin1StringView filepath{XSTRING(CURRENT_SOURCE_DIR)};
-    constexpr auto filename{"/tesla-model-s.jpeg"_L1};
+    auto file{QFile("./tesla-model-s.jpeg"_L1)};
+
+    QVERIFY(file.exists());
+    qDebug() << file.fileName() << "\t" << QFileInfo(file).absoluteFilePath() << "\t" << QFileInfo(file).absolutePath();
 
     QVariantList images{};
-    images.append(QVariantMap{{"image_url"_L1, QUrl::fromLocalFile(filepath + filename)}});
+    images.append(QVariantMap{
+        {"imageUrl"_L1, QUrl::fromLocalFile(QFileInfo(file).absoluteFilePath())}
+    });
     const QVariantMap map{
-        {"name", "Carro rojo"},
-        {"description", ""},
-        {"buy_price", 200},
-        {"sell_price", 300},
-        {"images", images},
-        {"category_id", 1}
+        {"name"_L1, "Carro rojo"_L1},
+        {"description"_L1, ""},
+        {"supplierPrice"_L1, 200},
+        {"supplierId"_L1, 1},
+        {"price"_L1, 300},
+        {"images"_L1, images},
+        {"categoryId"_L1, 1}
     };
     repository.add(map);
 

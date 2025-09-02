@@ -8,6 +8,7 @@ import Cara.User
 import Cara.Salesperson
 import Cara.Controls
 import Cara.ProductInventory
+import Cara.Common
 
 ApplicationWindow {
     id: app

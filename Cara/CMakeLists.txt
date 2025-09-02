@@ -2,13 +2,14 @@ cmake_minimum_required(VERSION 3.20)
 project(CaraLib LANGUAGES CXX)
 
 set(CMAKE_AUTORCC ON)
-set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 add_library(LoginHelper STATIC
     loginhelper.h loginhelper.cpp)
 
 target_link_libraries(LoginHelper
-    PRIVATE Qt6::Core Qt6::Qml Qt6::Test AuthenticationLib UserLib UtilsLib)
+    PRIVATE Qt6::Core Qt6::Qml Qt6::Test AuthenticationLib UserLib UtilsLib CommonLib)
+
+target_include_directories(LoginHelper INTERFACE ${CMAKE_CURRENT_SOURCE_DIR})
 
 qt_add_library(EnvHelper STATIC
     dotenv.h)
@@ -37,7 +38,6 @@ qt_add_qml_module(${PROJECT_NAME}
         cara-mobile-icon.ico
         cara-mobile-icon.png
     SOURCES
-        abstractresource.h abstractresource.cpp
         config.h.in
         healthresource.h healthresource.cpp
         restservice.h restservice.cpp
@@ -65,11 +65,10 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
     UtilsLibplugin
     SalespersonLibplugin
     ControlsLibplugin
+    CommonLibplugin
 )
 
-target_include_directories(CaraLib
-    PRIVATE ./Data ./Authentication
-    INTERFACE ${CMAKE_CURRENT_SOURCE_DIR})
+target_include_directories(CaraLib INTERFACE ${CMAKE_CURRENT_SOURCE_DIR})
 
 add_subdirectory(Utils)
 add_subdirectory(Data)

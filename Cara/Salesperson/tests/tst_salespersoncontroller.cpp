@@ -1,8 +1,5 @@
-#include "Authentication/data/restuserauthentication.h"
-#include "Authentication/login.h"
-#include "Salesperson/salespersoncontroller.h"
-#include "data/localuserstore.h"
 #include "loginhelper.h"
+#include "salespersoncontroller.h"
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QSignalSpy>

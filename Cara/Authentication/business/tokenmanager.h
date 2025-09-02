@@ -1,7 +1,6 @@
 #ifndef TOKENMANAGER_H
 #define TOKENMANAGER_H
 
-#include "istore.h"
 #include <QNetworkReply>
 #include <QObject>
 #include <QProperty>
@@ -9,14 +8,20 @@
 #include <QSettings>
 #include <QTimer>
 
-namespace Network { class IToken; };
+namespace Store
+{
+class IStore;
+}
+namespace Network
+{
+class IToken;
+};
 
 namespace Authentication::Business {
 class IRefreshable;
 class TokenManager : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(Store::IStore *store READ store NOTIFY storeChanged FINAL)
     Q_PROPERTY(bool refreshing READ refreshing WRITE setRefreshing NOTIFY refreshingChanged FINAL)
     Q_PROPERTY(QString accessToken READ accessToken NOTIFY accessTokenChanged FINAL)
     Q_PROPERTY(QString refreshToken READ refreshToken NOTIFY refreshTokenChanged BINDABLE bindableRefreshToken FINAL)

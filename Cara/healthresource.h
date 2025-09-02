@@ -1,8 +1,8 @@
 #ifndef HEALTHRESOURCE_H
 #define HEALTHRESOURCE_H
 
+#include "common/abstractresource.h"
 #include <QQmlEngine>
-#include "abstractresource.h"
 
 class HealthResource : public AbstractResource
 {

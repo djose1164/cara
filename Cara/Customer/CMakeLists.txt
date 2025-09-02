@@ -55,4 +55,4 @@ target_include_directories(CustomerLib PRIVATE
     ../
 )
 
-target_link_libraries(CustomerLib PRIVATE Qt6::Network)
+target_link_libraries(CustomerLib PRIVATE Qt6::Network CommonLib)

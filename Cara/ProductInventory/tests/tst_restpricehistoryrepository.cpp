@@ -7,11 +7,11 @@
 
 using namespace Qt::StringLiterals;
 
-class TestProductRepository : public QObject
+class TestRestPriceHistoryRepository : public QObject
 {
     Q_OBJECT
 public:
-    explicit TestProductRepository(QObject *parent = nullptr);
+    explicit TestRestPriceHistoryRepository(QObject *parent = nullptr);
 
 private slots:
     void tst_shouldEmitPriceHistoryFetchedSignalWhenPriceHistoryIsFetched();
@@ -21,12 +21,12 @@ private:
     std::unique_ptr<ProductInventory::PriceHistoryRepository> repository_;
 };
 
-TestProductRepository::TestProductRepository(QObject *parent)
+TestRestPriceHistoryRepository::TestRestPriceHistoryRepository(QObject *parent)
 {
 
 }
 
-void TestProductRepository::tst_shouldEmitPriceHistoryFetchedSignalWhenPriceHistoryIsFetched()
+void TestRestPriceHistoryRepository::tst_shouldEmitPriceHistoryFetchedSignalWhenPriceHistoryIsFetched()
 {
     constexpr int productId{2};
     repository_ = std::make_unique<ProductInventory::RestPriceHistoryRepository>();
@@ -39,7 +39,7 @@ void TestProductRepository::tst_shouldEmitPriceHistoryFetchedSignalWhenPriceHist
     QCOMPARE(spy.count(), 1);
 }
 
-void TestProductRepository::tst_returnsTrueWhenPriceHistoryFetchedSignalEmitsValidData()
+void TestRestPriceHistoryRepository::tst_returnsTrueWhenPriceHistoryFetchedSignalEmitsValidData()
 {
     constexpr int productId{2};
     repository_ = std::make_unique<ProductInventory::RestPriceHistoryRepository>();
@@ -81,6 +81,6 @@ void TestProductRepository::tst_returnsTrueWhenPriceHistoryFetchedSignalEmitsVal
     QVERIFY(spy.wait());
 }
 
-QTEST_MAIN(TestProductRepository)
+QTEST_MAIN(TestRestPriceHistoryRepository)
 
 #include "tst_restpricehistoryrepository.moc"

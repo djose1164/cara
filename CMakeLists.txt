@@ -27,10 +27,6 @@ qt_policy(
 
 add_subdirectory(Cara)
 
-if((LINUX OR WIN32) AND NOT CMAKE_BUILD_TYPE STREQUAL "Release")
-    #add_subdirectory(tests)
-endif()
-
 if (WIN32)
     qt_add_executable(${PROJECT_NAME}
         main.cpp
@@ -51,10 +47,7 @@ set(CARA_VERSION ${CMAKE_PROJECT_VERSION})
 
 target_link_libraries(${PROJECT_NAME} PRIVATE
     Qt6::Quick
-    Qt6::Test
-    Qt6::Sql
     CaraLibplugin
-    AuthenticationLib
 )
 
 qt_add_resources(${PROJECT_NAME} "configuration"

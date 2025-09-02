@@ -367,6 +367,14 @@ void ProductModel::refreshBuyPriceHistory(ProductId id) noexcept
             productRepository, [productRepository]{ productRepository->deleteLater(); });
 }
 
+void ProductModel::clearModel() noexcept
+{
+    beginResetModel();
+    data_.clear();
+    endResetModel();
+    emit countChanged();
+}
+
 void ProductModel::productsFetched(const QList<EntityLayer::Product> &products) noexcept
 {
     setProducts(products);

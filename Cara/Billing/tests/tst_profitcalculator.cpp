@@ -1,7 +1,12 @@
 #include <QTest>
 
-#include "calculator.h"
+#include "productmodel.h"
 #include "profitcalculator.h"
+
+namespace
+{
+constexpr int percentage{40};
+}
 
 class TestProfitCalculator : public QObject
 {
@@ -18,27 +23,27 @@ private slots:
     void test_shouldCalculateTotalProfitCorrectlyWithSingleProduct();
 
 private:
-    std::unique_ptr<Billing::ProfitCalculator> calculator_;
-    std::unique_ptr<QAbstractListModel> model_;
+    std::unique_ptr<Billing::Calculator> calculator_;
+    std::unique_ptr<QAbstractItemModel> model_;
 };
 
 TestProfitCalculator::TestProfitCalculator(QObject *parent) {}
 
 void TestProfitCalculator::initTestCase()
 {
-    model_ = std::make_unique<ProductInventory::ProductModel>();
+
 }
 
 void TestProfitCalculator::init()
 {
-    using namespace EntityLayer;
+    auto profitCalc{std::make_unique<Billing::ProfitCalculator>()};
+    profitCalc->setPercentage(percentage);
+    calculator_ = std::move(profitCalc);
 
-    constexpr int supplierId{1};
-    constexpr int percentage{40};
-
-    calculator_ = std::make_unique<Billing::ProfitCalculator>();
+    model_ = std::make_unique<ProductInventory::ProductModel>();
     calculator_->setModel(model_.get());
 
+    using namespace EntityLayer;
     const auto productModel{qobject_cast<ProductInventory::ProductModel *>(model_.get())};
     productModel->setProducts(
         QList<Product>{Product{1, 100, 5}, Product{2, 200, 6}, Product{3, 180, 2}});
@@ -48,24 +53,18 @@ void TestProfitCalculator::test_shouldCalculateTotalProfitCorrectly()
 {
     using namespace EntityLayer;
 
-    constexpr double multi{.8};
-    constexpr int percentage{40};
-    calculator_->setPercentage(percentage);
-    // calculator_->setProductList(QList<Product *>{new Product(1, 100 * multi, 0),
-    //                                              new Product(2, 200 * multi, 0),
-    //                                              new Product(3, 180 * multi, 0)});
+    constexpr double multi{percentage/100.0};
 
     calculator_->calculate();
 
-    QCOMPARE(calculator_->total(), 164.8);
+    constexpr auto expectedResult{(100*5 + 200*6 + 180*2)*multi};
+    QCOMPARE(calculator_->total(), expectedResult);
 }
 
 void TestProfitCalculator::test_shouldCalculateTotalProfitAsZeroWhenNoProducts()
 {
-    using namespace EntityLayer;
-
-    constexpr int percentage{40};
-    calculator_->setPercentage(percentage);
+    auto pm{std::make_unique<ProductInventory::ProductModel>()};
+    calculator_->setModel(pm.get());
 
     calculator_->calculate();
 
@@ -76,19 +75,16 @@ void TestProfitCalculator::test_shouldCalculateTotalProfitCorrectlyWithSinglePro
 {
     using namespace EntityLayer;
 
-    constexpr double multi{.8};
-    constexpr int wholePercentage{80};
-    constexpr double percentage{wholePercentage / 100.0};
+    constexpr double multi{percentage/100.0};
 
     const auto productModel{qobject_cast<ProductInventory::ProductModel *>(model_.get())};
     productModel->setProducts(QList{Product{1, 100, 5}});
 
-    calculator_->setPercentage(wholePercentage);
     // calculator_->setProductList(QList<Product *>{new Product(1, 100 * multi, 0)});
 
     calculator_->calculate();
 
-    constexpr double expectedTotal{((100 - (100 * multi)) * 5) * percentage};
+    constexpr double expectedTotal{(100*5)*multi};
     QCOMPARE(calculator_->total(), expectedTotal);
 }
 

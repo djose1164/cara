@@ -208,3 +208,5 @@ restconfig.h
 
 
 *.qmlls.ini
+
+config.h

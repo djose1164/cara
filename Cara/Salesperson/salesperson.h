@@ -1,7 +1,7 @@
 #ifndef SALESPERSON_H
 #define SALESPERSON_H
 
-#include "common/ipersonname.h"
+#include "ipersonname.h"
 
 #include <QObject>
 #include <QQmlEngine>

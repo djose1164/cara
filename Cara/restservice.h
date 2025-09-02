@@ -1,7 +1,7 @@
 #ifndef RESTSERVICE_H
 #define RESTSERVICE_H
 
-#include "abstractresource.h"
+#include "common/abstractresource.h"
 
 #include <QNetworkAccessManager>
 #include <QNetworkRequestFactory>
