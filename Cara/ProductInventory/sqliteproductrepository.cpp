@@ -1,6 +1,7 @@
 #include "sqliteproductrepository.h"
 
 #include <QSqlQuery>
+#include <QSqlError>
 
 using namespace Qt::StringLiterals;
 
@@ -27,7 +28,12 @@ void ProductInventory::SQLiteProductRepository::add(const EntityLayer::Product &
 void ProductInventory::SQLiteProductRepository::update()
 {
     QSqlQuery query;
-    query.exec(SELECT_SQL);
+    if (not query.exec(SELECT_SQL))
+    {
+        emit errorOccurred(Error::FailedToFetch, query.lastError().text());
+        return;
+    }
+
     QList<EntityLayer::Product> productList;
     while (query.next())
     {

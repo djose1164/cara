@@ -1,10 +1,7 @@
-project(ProductInventoryTests LANGUAGES CXX)
-find_package(Qt6 REQUIRED COMPONENTS Test)
+enable_testing(true)
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(CMAKE_AUTOMOC ON)
-
-enable_testing(true)
 
 function(SETUP_TESTS)
        foreach(_testname ${ARGN})

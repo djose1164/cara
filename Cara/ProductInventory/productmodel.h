@@ -49,6 +49,14 @@ public:
     };
     Q_ENUM(Status)
 
+    enum class Error
+    {
+        UpdateFailed,
+        RefreshPriceHistoryFailed,
+        UnknownError
+    };
+    Q_ENUM(Error)
+
     explicit ProductModel(QObject *parent = nullptr);
     ProductModel(IProductRepository *newRepository, QObject *parent = nullptr);
 
@@ -107,6 +115,8 @@ signals:
     void statusChanged();
 
     void selectionModelChanged();
+
+    void errorOccurred(Error error, const QString &errorString);
 
 private:
     void makeConnections() noexcept;

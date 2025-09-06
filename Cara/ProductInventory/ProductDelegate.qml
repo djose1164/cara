@@ -33,7 +33,7 @@ Item {
         }
 
         ItemDelegate {
-            onClicked: stackView.push("qrc:/qt/qml/Cara/Product/ProductPage.qml",
+            onClicked: stackView.push("qrc:/qt/qml/Cara/ProductInventory/ProductPage.qml",
                                       {productId, product: internal.product})
             Column {
             ProductImage {

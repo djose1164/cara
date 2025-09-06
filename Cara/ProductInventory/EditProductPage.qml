@@ -41,7 +41,7 @@ ProductForm {
 
                 MenuItem {
                     text: "Vista de producto"
-                    onTriggered: root.myStack.pushItem("Cara/Product/ProductPage.qml", {productId: model.productId, product: root.model})
+                    onTriggered: root.myStack.pushItem("Cara/ProductInventory/ProductPage.qml", {productId: model.productId, product: root.model})
                 }
 
                 MenuItem {
@@ -73,7 +73,7 @@ ProductForm {
             Button {
                 id: updatePriceBtn
                 text: "Actualizar"
-                onClicked: root.myStack.pushItem("qrc:/qt/qml/Cara/Product/PriceHistoryPage.qml", {productId: model.productId})
+                onClicked: root.myStack.pushItem("qrc:/qt/qml/Cara/ProductInventory/PriceHistoryPage.qml", {productId: model.productId})
                 Layout.fillWidth: true
             }
         }

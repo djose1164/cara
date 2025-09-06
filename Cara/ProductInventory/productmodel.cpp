@@ -198,6 +198,7 @@ void ProductModel::update()
     if (!repository_)
     {
         qWarning("ProductModel::update: a repository needs to be set.");
+        emit errorOccurred(Error::UpdateFailed, "A repository needs to be set."_L1);
         return;
     }
 
@@ -391,6 +392,15 @@ void ProductModel::makeConnections() noexcept
                 &IProductRepository::fetched,
                 this,
                 &ProductModel::productsFetched);
+        connect(repository_,
+                &IProductRepository::errorOccurred,
+                this,
+                [this](auto err, const auto &errstr) {
+                    if (err == IProductRepository::Error::FailedToFetch)
+                        emit errorOccurred(Error::UpdateFailed, errstr);
+                    else
+                        emit errorOccurred(Error::UnknownError, errstr);
+                });
     }
 }
 
