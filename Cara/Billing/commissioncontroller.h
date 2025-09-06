@@ -2,15 +2,14 @@
 #define COMMISSIONCONTROLLER_H
 
 #include "ProductInventory/productmodel.h"
+#include "abstractcommissionmodel.h"
 #include <QAbstractItemModel>
 #include <QNetworkInformation>
 #include <QQmlEngine>
 
-namespace Seller { class AbstractSellerModel; }
-
 namespace Billing
 {
-class AbstractCommissionModel;
+
 class CommissionController : public QObject, public QQmlParserStatus
 {
     Q_OBJECT
@@ -25,6 +24,14 @@ class CommissionController : public QObject, public QQmlParserStatus
     Q_PROPERTY(int adminId READ adminId WRITE setAdminId NOTIFY adminIdChanged FINAL REQUIRED)
     QML_ELEMENT
 public:
+    enum class Error
+    {
+        ProductModelError,
+        CommissionModelError,
+        SellerModelError,
+    };
+    Q_ENUM(Error)
+
     using SellerId = int;
     using AdminId = int;
 
@@ -74,6 +81,8 @@ signals:
     void adminIdChanged();
 
     void commissionAdded();
+
+    void errorOccurred(Error error, const QString &errorString);
 
 protected:
     void setCommissionModel(AbstractCommissionModel *newCommissionModel);

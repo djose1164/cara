@@ -1,6 +1,5 @@
 #include "commissioncontroller.h"
 #include "ProductInventory/productmodel.h"
-#include "ProductInventory/sqliteproductrepository.h"
 #include "ProductInventory/supplierproductrepository.h"
 #include "Salesperson/salespersoncontroller.h"
 #include "Salesperson/sellerlistmodel.h"
@@ -8,6 +7,8 @@
 #include "commissionmodel.h"
 #include "restcommissionrepository.h"
 #include "sqlitecommissionmodel.h"
+#include "sqliteproductrepository.h"
+#include "sqlitesellermodel.h"
 
 #include <QNetworkInformation>
 
@@ -142,6 +143,7 @@ void CommissionController::fetchCommissionsBySellerId(SellerId sellerId)
 
 void CommissionController::networkStatusChanged(QNetworkInformation::Reachability reachability)
 {
+    qDebug() << "CommissionController::networkStatusChanged: " << reachability;
     createSellerModel(reachability);
     if (reachability == QNetworkInformation::Reachability::Online)
     {
@@ -155,6 +157,13 @@ void CommissionController::networkStatusChanged(QNetworkInformation::Reachabilit
                     &CommissionModel::commissionAddedSuccessfully,
                     this,
                     &CommissionController::commissionAdded);
+            connect(model,
+                    &CommissionModel::errorOccurred,
+                    this,
+                    [this](auto err, const auto &errstr) {
+                        Q_UNUSED(err)
+                        emit errorOccurred(Error::CommissionModelError, errstr);
+                    });
         }
 
         const auto productRepository{productModel_->repository()};
@@ -169,9 +178,20 @@ void CommissionController::networkStatusChanged(QNetworkInformation::Reachabilit
             auto *repository{new ProductInventory::SupplierProductRepository(this)};
             repository->setSupplierId(supplierId_);
             productModel_->setRepository(repository);
-            connect(this, &CommissionController::supplierIdChanged, repository, [repository = std::move(repository), this] {
-                repository->setSupplierId(supplierId_);
-            });
+            connect(this,
+                    &CommissionController::supplierIdChanged,
+                    repository,
+                    [repository = std::move(repository), this] {
+                        repository->setSupplierId(supplierId_);
+                    });
+
+            connect(productModel_,
+                    &ProductInventory::ProductModel::errorOccurred,
+                    this,
+                    [this](auto err, const QString &errstr) {
+                        Q_UNUSED(err)
+                        emit errorOccurred(Error::ProductModelError, errstr);
+                    });
         }
     }
     else
@@ -185,12 +205,28 @@ void CommissionController::networkStatusChanged(QNetworkInformation::Reachabilit
             productModel_->setRepository(nullptr);
         }
 
-        productModel_->setRepository(new ProductInventory::SQLiteProductRepository(this));
+        //productModel_->setRepository(new ProductInventory::SQLiteProductRepository(this));
+
+        connect(productModel_,
+                &ProductInventory::ProductModel::errorOccurred,
+                this,
+                [this](auto err, const QString &errstr) {
+                    Q_UNUSED(err)
+                    emit errorOccurred(Error::ProductModelError, errstr);
+                });
 
         connect(sqliteModel,
                 &SQLiteCommissionModel::commissionAddedSuccessfully,
                 this,
                 &CommissionController::commissionAdded);
+        connect(sqliteModel,
+                &SQLiteCommissionModel::errorOccurred,
+                this,
+                [this](SQLiteCommissionModel::Error err, const QString &errstr) {
+                    Q_UNUSED(err)
+                    emit errorOccurred(Error::CommissionModelError, errstr);
+                });
+
     }
 }
 
@@ -215,10 +251,10 @@ void CommissionController::createSellerModel(QNetworkInformation::Reachability r
     else
     {
         // Ofline model
-        if (sellerModel_ and qobject_cast<SQLiteCommissionModel *>(sellerModel_))
+        if (sellerModel_ and qobject_cast<Seller::SQLiteSellerModel *>(sellerModel_))
             return;
 
-        const auto sqliteModel{new SQLiteCommissionModel(this)};
+        const auto sqliteModel{new Seller::SQLiteSellerModel(this)};
         sqliteModel->refresh();
         setSellerModel(sqliteModel);
     }

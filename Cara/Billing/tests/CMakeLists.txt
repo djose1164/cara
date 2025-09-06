@@ -1,6 +1,5 @@
 enable_testing()
 
-
 function(SETUP_TESTS)
        foreach(_testname ${ARGN})
            add_executable(${_testname} tst_${_testname}.cpp )
@@ -23,13 +22,13 @@ SETUP_TESTS(
 )
 
 qt_add_resources(restorderrepository "sample_data"
-    FILES good_order.json bad_order.json
+   FILES good_order.json bad_order.json
 )
 
 qt_add_resources(restsalerepository "restsalerepository_sample_data"
-    FILES sales.json
+   FILES sales.json
 )
 
 qt_add_resources(restcommissionrepository "restcommissionrepository_sample_data"
-    FILES insertable_commission.json
+   FILES insertable_commission.json
 )

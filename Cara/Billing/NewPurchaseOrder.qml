@@ -125,7 +125,7 @@ Page {
             message.open();
             orderTemplate.order = newOrder.order;
             productSale.refreshSelector();
-            ProductInventoryController.updateSellerInventory(SalespersonSettings.salespersonId);
+            ProductInventoryController.updateSellerInventory(UserSettings.sellerId);
         }
         onErrorOccurred: {
             errorDialog(errorString);
@@ -158,7 +158,7 @@ Page {
         try {
             validate();
             const orderJson = {
-                salesperson: { id: SalespersonSettings.salespersonId },
+                salesperson: { id: UserSettings.sellerId },
                 customer: chooseCustomer.toJson(),
                 products: productSale.toJson(),
                 pay: paymentInput.toJson(),

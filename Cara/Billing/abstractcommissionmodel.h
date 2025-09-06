@@ -12,8 +12,10 @@ public:
     using SellerId = int;
 
     enum class Error {
-        InvalidRequest, // The passed map may be invalid
-        ItemInsertFailed, // Failed to insert CommissionItem,
+        InvalidRequest, // The passed map may be invalid.
+        ItemInsertFailed, // Failed to insert CommissionItem.
+        CommissionInsertFailed, // Failed to insert Commission.
+        CommissionFetchFailed, // Failed to fetch commissions.
     };
 
     virtual ~AbstractCommissionModel() = default;

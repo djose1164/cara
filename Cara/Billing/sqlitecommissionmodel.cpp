@@ -28,7 +28,6 @@ SQLiteCommissionModel::SQLiteCommissionModel(QObject *parent)
     : QSqlQueryModel{parent}
     , productModel_{}
 {
-    fetchCommissions();
 }
 
 QVariant SQLiteCommissionModel::data(const QModelIndex &index, int role) const
@@ -118,6 +117,7 @@ void SQLiteCommissionModel::append(const QVariantMap &map)
         if (not productModel_)
         {
             qInfo() << "SQLiteCommission::append: you need to setup a ProductModel.";
+            emit errorOccurred(Error::InvalidRequest, "You need to setup a ProductModel."_L1);
             return;
         }
         Commission::validateMap(map);
@@ -170,6 +170,10 @@ void SQLiteCommissionModel::insertCommission(const Commission &commission)
     {
         qCritical() << "SQLiteCommissionModel::insertCommission: couldn't insert commission: "
                      << commission << ": " << query.lastError();
+        emit errorOccurred(Error::CommissionInsertFailed,
+                           "Couldn't insert commission: SQL error: %1"_L1.arg(
+                               query.lastError().text()));
+        return;
     }
 
     if (success)
@@ -215,7 +219,13 @@ QList<CommissionItem> SQLiteCommissionModel::fetchCommissionItems(const QUuid &c
         return {};
     }
     query.bindValue(":c_uuid"_L1, commissionId);
-    query.exec();
+    if (not query.exec())
+    {
+        constexpr auto msgerr{"Couldn't fetch fetch commissions items!"_L1};
+        qCritical() << "SQLiteCommissionModel::fetchCommissionItems: " << msgerr;
+        //emit errorOccurred(Error::CommissionFetchFailed, msgerr);
+        return {};
+    }
 
     // select product_id, quantity, unit_commission, supplier_id
     QList<CommissionItem> ciList;
@@ -271,5 +281,13 @@ void SQLiteCommissionModel::fetchCommissionsBySellerId(SellerId sellerId)
     qDebug() << "SQLiteCommissionModel::fetchCommissionsBySellerId: " << sellerId;
 }
 
-} // namespace Billing
+void SQLiteCommissionModel::classBegin()
+{
+}
 
+void SQLiteCommissionModel::componentComplete()
+{
+    fetchCommissions();
+}
+
+} // namespace Billing

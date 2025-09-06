@@ -9,7 +9,6 @@ import Cara.Billing
 import Cara.User
 import Cara.Salesperson
 import Cara.Utils
-import "qrc:/orders"
 
 BackPage {
     id: root
@@ -59,7 +58,7 @@ BackPage {
             model: root.model
             stackView: root.stackView
             paymentDetails.orderId: root.model.orderId
-            paymentDetails.salespersonId: SalespersonSettings.salespersonId
+            paymentDetails.salespersonId: UserSettings.sellerId
             paymentDetails.mode: root.mode
             commentsDrawer.height: root.height
         }
@@ -198,7 +197,7 @@ BackPage {
 
     SalespersonController {
         id: spController
-        salespersonId: SalespersonSettings.salespersonId
+        salespersonId: UserSettings.sellerId
         onOrderTook: {
             processingIndicator.close();
             root.model.taken = true;

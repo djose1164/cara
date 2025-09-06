@@ -252,7 +252,7 @@ Page {
     function fetchOrdersInQueue() {
         internal.busy = true;
         setFetchingState();
-        billBusiness.fetchOrdersInQueue(-1);
+        billBusiness.fetchOrdersInQueue(root.salespersonId);
     }
 
     function fetchCustomerBills(customerId: int) {

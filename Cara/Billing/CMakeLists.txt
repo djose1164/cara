@@ -98,6 +98,7 @@ qt_add_qml_module(BillingLib
         sqlitecommissionmodel.h sqlitecommissionmodel.cpp
         commissioncontroller.h commissioncontroller.cpp
         abstractcommissionmodel.h
+        commissionerrors.h
     RESOURCES
         order-model.html style.css
         pdf-icon.svg
@@ -155,4 +156,6 @@ else()
 target_link_libraries(BillingLib PRIVATE Qt6::Core)
 endif()
 
-add_subdirectory(tests)
+if (CMAKE_BUILD_TYPE STREQUAL "Debug")
+    add_subdirectory(tests)
+endif()

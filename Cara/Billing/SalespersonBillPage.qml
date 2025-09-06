@@ -50,10 +50,6 @@ Page {
         }
     }
 
-    Component.onCompleted: {
-        CustomerManager.populate(SalespersonSettings.salespersonId);
-    }
-
     CustomerViewItem {
         id: cvItem
         anchors.fill: parent

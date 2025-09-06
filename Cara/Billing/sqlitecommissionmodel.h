@@ -12,13 +12,14 @@ namespace Billing
 class CommissionItem;
 class Commission;
 
-class SQLiteCommissionModel : public QSqlQueryModel, virtual public AbstractCommissionModel
+class SQLiteCommissionModel : public QSqlQueryModel, public AbstractCommissionModel, public QQmlParserStatus
 {
     Q_OBJECT
     Q_PROPERTY(ProductInventory::SQLiteProductModel *productModel
                READ productModel
                WRITE setProductModel
                NOTIFY productModelChanged FINAL)
+    Q_INTERFACES(QQmlParserStatus)
     QML_ELEMENT
 public:
     // The select query this follow this column name order
@@ -38,8 +39,6 @@ public:
         GrossProfitRole
     };
 
-    Q_ENUM(Error);
-
     explicit SQLiteCommissionModel(QObject *parent = nullptr);
 
 
@@ -55,6 +54,10 @@ public:
     void scheduleDelete() override;
 
     void fetchCommissionsBySellerId(SellerId sellerId) override;
+
+    // QQmlParserStatus interface
+    void classBegin() override;
+    void componentComplete() override;
 
 public slots:
     void append(const QVariantMap &map) override;
