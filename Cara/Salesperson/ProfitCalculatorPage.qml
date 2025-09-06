@@ -169,6 +169,9 @@ BackPage {
         adminId: root.adminId
         supplierId: providerSelector.currentValue || 0
         onCommissionAdded: messageDialog.show("Exito", "Comision guardada.")
+        onErrorOccurred: (errcode, errstr) => {
+            messageDialog.show(`Codigo de error ${errcode}`, `Detalles: ${errstr}`);
+        }
     }
 
     ProfitCalculator {

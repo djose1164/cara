@@ -16,7 +16,8 @@ class Salesperson : public IPersonName
     Q_PROPERTY(int creditLimit READ creditLimit WRITE setCreditLimit FINAL)
     Q_PROPERTY(int creditConsumed READ creditConsumed WRITE setCreditConsumed  FINAL)
     Q_PROPERTY(int creditAvailable READ creditAvailable WRITE setCreditAvailable FINAL)
-    Q_PROPERTY(int adminId READ adminId WRITE setAdminId NOTIFY adminIdChanged FINAL)
+    Q_PROPERTY(int adminId READ adminId WRITE setAdminId FINAL)
+    Q_PROPERTY(int userId READ userId WRITE setUserId NOTIFY userIdChanged FINAL)
     Q_PROPERTY(QString warehouseAddress READ warehouseAddress WRITE setWarehouseAddress FINAL)
     Q_PROPERTY(QString salespersonTypeName READ salespersonTypeName WRITE setSalespersonTypeName FINAL)
     Q_PROPERTY(OrganizationId organizationId READ organizationId WRITE setOrganizationId FINAL)
@@ -84,6 +85,9 @@ public:
     UserId adminId() const;
     void setAdminId(UserId newAdminId);
 
+    UserId userId() const;
+    void setUserId(UserId newUserId);
+
     bool isValid() const;
 
     bool isAssociate() const;
@@ -110,6 +114,7 @@ private:
 private:
     SalespersonId salespersonId_;
     UserId adminId_;
+    UserId userId_;
     OrganizationId organizationId_;
 
     QString username_;

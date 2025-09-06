@@ -10,6 +10,7 @@ const int Salesperson::userTypeId{3};
 Salesperson::Salesperson()
     : salespersonId_{}
     , adminId_{}
+    , userId_{}
     , organizationId_{}
     , username_{}
     , password_{}
@@ -150,8 +151,6 @@ Salesperson::OrganizationId Salesperson::organizationId() const
 
 void Salesperson::setOrganizationId(OrganizationId newOrganizationId)
 {
-    if (organizationId_ == newOrganizationId)
-        return;
     organizationId_ = newOrganizationId;
 }
 
@@ -167,8 +166,6 @@ QString Salesperson::salespersonTypeName() const
 
 void Salesperson::setSalespersonTypeName(const QString &newSalespersonTypeName)
 {
-    if (salespersonTypeName_ == newSalespersonTypeName)
-        return;
     salespersonTypeName_ = newSalespersonTypeName;
 }
 
@@ -179,8 +176,6 @@ QString Salesperson::warehouseAddress() const
 
 void Salesperson::setWarehouseAddress(const QString &newWarehouseAddress)
 {
-    if (warehouseAddress_ == newWarehouseAddress)
-        return;
     warehouseAddress_ = newWarehouseAddress;
 }
 
@@ -191,9 +186,17 @@ Salesperson::UserId Salesperson::adminId() const
 
 void Salesperson::setAdminId(UserId newAdminId)
 {
-    if (adminId_ == newAdminId)
-        return;
     adminId_ = newAdminId;
+}
+
+void Salesperson::setUserId(UserId newUserId)
+{
+    userId_ = newUserId;
+}
+
+Salesperson::UserId Salesperson::userId() const
+{
+    return userId_;
 }
 
 bool Salesperson::isValid() const
@@ -225,8 +228,6 @@ int Salesperson::salespersonId() const
 
 void Salesperson::setSalespersonId(SalespersonId newSalespersonId)
 {
-    if (salespersonId_ == newSalespersonId)
-        return;
     salespersonId_ = newSalespersonId;
 }
 
@@ -237,8 +238,6 @@ Salesperson::SalespersonTypes Salesperson::salespersonType() const
 
 void Salesperson::setSalespersonType(const SalespersonTypes &newSalespersonType)
 {
-    if (salespersonType_ == newSalespersonType)
-        return;
     salespersonType_ = newSalespersonType;
 }
 
@@ -249,8 +248,6 @@ int Salesperson::creditAvailable() const
 
 void Salesperson::setCreditAvailable(int newCreditAvailable)
 {
-    if (creditAvailable_ == newCreditAvailable)
-        return;
     creditAvailable_ = newCreditAvailable;
 }
 
@@ -261,8 +258,6 @@ int Salesperson::creditConsumed() const
 
 void Salesperson::setCreditConsumed(int newCreditConsumed)
 {
-    if (creditConsumed_ == newCreditConsumed)
-        return;
     creditConsumed_ = newCreditConsumed;
 }
 
