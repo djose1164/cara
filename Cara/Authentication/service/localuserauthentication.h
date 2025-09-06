@@ -36,6 +36,7 @@ private:
     QNetworkAccessManager *manager_;
     QNetworkReply *reply_;
     QByteArray buffer_;
+    const QString path_;
 };
 }
 

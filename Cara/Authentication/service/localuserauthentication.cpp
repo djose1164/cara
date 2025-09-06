@@ -1,6 +1,5 @@
 #include "localuserauthentication.h"
-#include "Network/networkrequestsingleton.h"
-#include "tokenstore.h"
+#include "networkrequestsingleton.h"
 #include <QSettings>
 #include <QNetworkReply>
 #include <QJsonDocument>
@@ -9,6 +8,12 @@
 
 using namespace Qt::StringLiterals;
 
+namespace
+{
+constexpr auto accessTokenField{"access_token"_L1};
+constexpr auto userField{"user"_L1};
+}
+
 namespace Authentication::Service {
 LocalUserAuthentication::LocalUserAuthentication(QObject *parent)
     : Business::Authenticator{parent}
@@ -16,10 +21,8 @@ LocalUserAuthentication::LocalUserAuthentication(QObject *parent)
     , isAuthenticated_{}
     , manager_{new QNetworkAccessManager(this)}
     , reply_{}
+    , path_{"/users/refresh"_L1}
 {
-    Data::TokenStore ts{};
-    ts.restore();
-    setRefreshToken(ts.refresh());
 }
 
 void LocalUserAuthentication::authenticate()
@@ -33,10 +36,10 @@ void LocalUserAuthentication::authenticate()
         return;
     }
 
+    QUrlQuery query{{"include_user"_L1, "true"_L1}};
     const auto api{Network::NetworkRequestSingleton::instance().api()};
 
-    QNetworkRequest request{api->createRequest("/users/refresh/"_L1)};
-    request.setRawHeader("Authorization"_ba, "Bearer "_ba + refreshToken_.toUtf8());
+    QNetworkRequest request{api->createRequest(path_, query)}; request.setRawHeader("Authorization"_ba, "Bearer "_ba + refreshToken_.toUtf8());
 
     reply_ = manager_->get(request);
 
@@ -59,18 +62,23 @@ void LocalUserAuthentication::authenticate()
 
         isAuthenticated_ = true;
 
-        const auto resp{QJsonDocument::fromJson(buffer_).object()};
-        const auto tokenValue{resp["access_token"_L1]};
-        if (!tokenValue.isString())
+        if (const auto json{QJsonDocument::fromJson(buffer_)};
+            json.isObject() and json.object().contains(accessTokenField)
+            and json.object().contains(userField))
         {
-            qCritical() << "LocalUserAuthentication::authenticate: token isn't a string";
-            return ;
+            const auto obj{json.object()};
+            if (!obj["access_token"_L1].isString())
+            {
+                qCritical() << "LocalUserAuthentication::authenticate: token isn't a string";
+                emit errorOccurred(Error::Unknown, "token isn't a string"_L1);
+                return ;
+            }
+            const auto tokenValue{obj["access_token"_L1].toString()};
+            emit tokenReady(tokenValue);
+            emit succeeded(buffer_);
         }
-        const QString newToken{tokenValue.toString()};
 
         qDebug() << "User authenticated successfully through LocalUserAuthentication.";
-        emit succeeded(buffer_);
-        emit tokenReady(newToken);
 
         reply_->deleteLater();
     });

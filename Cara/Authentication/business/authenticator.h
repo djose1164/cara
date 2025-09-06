@@ -1,7 +1,6 @@
 #ifndef AUTHENTICATOR_H
 #define AUTHENTICATOR_H
 
-#include "Utils/httpstatuscodes.h"
 #include <QQmlEngine>
 
 namespace Authentication::Business

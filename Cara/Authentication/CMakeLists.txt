@@ -1,3 +1,6 @@
+find_package(Qt6 REQUIRED COMPONENTS Core)
+find_package(Qt6Keychain REQUIRED)
+
 qt_add_library(AuthenticationLib STATIC)
 qt_add_qml_module(AuthenticationLib
     URI Cara.Authentication
@@ -12,27 +15,29 @@ qt_add_qml_module(AuthenticationLib
         eye.svg
     SOURCES
         business/authenticator.h business/authenticator.cpp
-        business/irefreshable.h business/irefreshable.cpp
+        business/abstractaccesstokenrefresher.h
         business/tokenmanager.h business/tokenmanager.cpp
         business/tokennotpresent.h business/tokennotpresent.cpp
-        data/refresher.h data/refresher.cpp
+        data/accesstokenrefresher.h data/accesstokenrefresher.cpp
         data/restuserauthentication.h data/restuserauthentication.cpp
-        data/tokenstore.h data/tokenstore.cpp
         entity/credential.h entity/credential.cpp
         login.h login.cpp
         service/localuserauthentication.h service/localuserauthentication.cpp
-        istore.h
+        session.h session.cpp
+        abstractsession.h abstractsession.cpp
+        sessionmanager.h sessionmanager.cpp
+        abstractkeychain.h
+        keychainimpl.h keychainimpl.cpp
     DEPENDENCIES
-        Utils Cara.Network
+        Cara.Utils Cara.Network Cara.User
 )
 
 target_include_directories(AuthenticationLib
     PUBLIC
         business data entity service
-    PRIVATE
-        ../Utils ../
     INTERFACE
         ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
-target_link_libraries(AuthenticationLib PUBLIC NetworkLib)
+target_link_libraries(AuthenticationLib
+    PRIVATE Qt6::Core qt6keychain NetworkLib UserLib CommonLib UtilsLib)

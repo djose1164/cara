@@ -1,5 +1,5 @@
 #include "login.h"
-#include "Network/networkrequestsingleton.h"
+#include "networkrequestsingleton.h"
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QSettings>
@@ -9,6 +9,8 @@ using namespace Qt::StringLiterals;
 namespace
 {
 constexpr auto accessTokenField{"access_token"_L1};
+constexpr auto refreshTokenField{"refresh_token"_L1};
+constexpr auto userField{"user"_L1};
 }
 
 namespace Authentication::Business
@@ -18,9 +20,6 @@ Login::Login(QObject *parent)
     , status_{Status::UnAuthenticated}
     , mode_{AuthenticationMode::Undefined}
     , authenticator_{}
-    , store_{}
-    , token_{&Network::NetworkRequestSingleton::instance()}
-    , tokenManager_{}
 {
 }
 
@@ -34,19 +33,17 @@ void Login::authenticate()
 
 void Login::userAuthenticated(const QByteArray &data)
 {
+    qDebug() << "Login::userAuthenticated...";
     setStatus(Status::Authenticated);
 
     if (const auto json{QJsonDocument::fromJson(data)};
-        tokenManager() and json.isObject() and json.object().contains(accessTokenField))
-    {
-        tokenManager()->setAccessToken(json[accessTokenField].toString());
-        qDebug() << "Login::userAuthenticated: updating TokenManager.accessToken";
+        json.isObject())
+    {     
+        Session session {Session::fromJson(json.object())};
+        emit authenticated(session);
     }
 
-    if (store_)
-        store_->save(data);
-
-    emit authenticated(data);
+    qDebug() << "Login::userAuthenticated...Done!";
 }
 
 void Login::authenticatorConnection()
@@ -68,7 +65,7 @@ void Login::authenticatorConnection()
             &Business::Authenticator::tokenReady,
             this, [&](const QString &token)
             {
-                token_->setAccessToken(token);
+                qDebug() << "Login: tokenReady";
             }
         )
     );
@@ -94,29 +91,6 @@ void Login::authenticationFailed(Authenticator::Error error, const QString &erro
         error_ = InvalidCredentials;
     }
     emit errorOccurred(errorString);
-}
-
-TokenManager *Login::tokenManager() const
-{
-    return tokenManager_;
-}
-
-void Login::setTokenManager(TokenManager *newTokenManager)
-{
-    if (tokenManager_ == newTokenManager)
-        return;
-    tokenManager_ = newTokenManager;
-    emit tokenManagerChanged();
-}
-
-Store::IStore *Login::store()
-{
-    return store_;
-}
-
-void Login::setStore(Store::IStore *newStore)
-{
-    store_ = newStore;
 }
 
 QBindable<Authenticator::Error> Login::bindableError() const

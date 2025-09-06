@@ -3,11 +3,12 @@
 
 #include "business/authenticator.h"
 #include "istore.h"
+#include "session.h"
 #include "tokenmanager.h"
-#include <QObject>
-#include <QQmlEngine>
 #include <QByteArray>
+#include <QObject>
 #include <QProperty>
+#include <QQmlEngine>
 
 namespace Network { class IToken; };
 
@@ -20,10 +21,8 @@ class Login : public QObject
     Q_PROPERTY(Status status READ status WRITE setStatus NOTIFY statusChanged FINAL)
     Q_PROPERTY(AuthenticationMode mode READ mode WRITE setMode NOTIFY modeChanged FINAL)
     Q_PROPERTY(Authenticator *authenticator READ authenticator WRITE setAuthenticator NOTIFY authenticatorChanged FINAL REQUIRED)
-    Q_PROPERTY(Store::IStore *store READ store WRITE setStore FINAL)
     Q_PROPERTY(Authenticator::Error error BINDABLE bindableError)
     Q_PROPERTY(QString errorString BINDABLE bindableErrorString)
-    Q_PROPERTY(TokenManager *tokenManager READ tokenManager WRITE setTokenManager NOTIFY tokenManagerChanged FINAL)
     QML_ELEMENT
 public:
     enum class Status
@@ -55,18 +54,12 @@ public:
     Authenticator *authenticator() const;
     void setAuthenticator(Authenticator *newAuthenticator);
 
-    Store::IStore *store();
-    void setStore(Store::IStore *newStore);
-
     QBindable<Authenticator::Error> bindableError() const;
 
     QBindable<QString> bindableErrorString() const;
 
-    TokenManager *tokenManager() const;
-    void setTokenManager(TokenManager *newTokenManager);
-
 signals:
-    void authenticated(const QByteArray &data);
+    void authenticated(const Session &session);
     void errorOccurred(const QString &errorString);
 
     void statusChanged();
@@ -74,8 +67,6 @@ signals:
     void modeChanged();
 
     void authenticatorChanged();
-
-    void tokenManagerChanged();
 
 public slots:
     void authenticate();
@@ -89,13 +80,10 @@ private slots:
 private:
     Status status_;
     AuthenticationMode mode_;
-    Authenticator *authenticator_;
-    Store::IStore *store_;
+    QPointer<Authenticator> authenticator_;
     QList<QMetaObject::Connection> connections_;
     QProperty<Authenticator::Error> error_;
     QProperty<QString> errorString_;
-    Network::IToken *token_;
-    TokenManager *tokenManager_;
 };
 }
 

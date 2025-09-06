@@ -1,5 +1,6 @@
 #include "restuserauthentication.h"
-#include "Network/networkrequestsingleton.h"
+#include "networkrequestsingleton.h"
+#include "httpstatuscodes.h"
 #include <QSettings>
 #include <QNetworkReply>
 #include <QJsonDocument>
@@ -27,6 +28,7 @@ QByteArray RestUserAuthentication::data() const
 
 void RestUserAuthentication::authenticate()
 {
+    qDebug() << "RestUserAuthentication::authenticate: authenticating...";
     if (!credentials_.isValid())
     {
         setErrorString("RestUserAuthentication::authenticate: credentials not valid"_L1);
@@ -76,6 +78,7 @@ void RestUserAuthentication::authenticate()
             const auto httpCode{static_cast<HttpStatus::Code>(code)};
             emit errorOccurred(Authenticator::Error::Unknown, HttpStatus::reasonPhrase(httpCode));
         }
+        qDebug() << "RestUserAuthentication::authenticate: authenticating...Done!";
     });
 }
 

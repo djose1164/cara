@@ -27,9 +27,8 @@ Item {
 
         Image {
             id:loginLbl
-            anchors.topMargin: 20
             source: "qrc:/cara-logo-v1.png"
-            sourceSize: "128x128"
+            sourceSize: Qt.size(128, 128)
             Layout.alignment: Qt.AlignTop | Qt.AlignHCenter
         }
 
@@ -128,6 +127,7 @@ Item {
     }
 
     BusyPopup {
+        id: busyPopup
         objectName: "busyIndicator"
         width: root.width * .7
         height: root.height/2
@@ -144,29 +144,25 @@ Item {
 
     Login {
         id: login
-        store: LocalUserStore {
-            id: localUserStore
-        }
 
         authenticator: RestUserAuthentication {
             id: auth
             credentials {
-                username: internal.username
-                password: internal.password
+                username: usernameInput.text
+                password: passwordInput.text
             }
         }
 
-        onAuthenticated: data => {
-            const jsonData = JSON.parse(data);
-            LoginManager.loggingIn();
-            internal.saveSalespersonSettings(data);
-            UserSettings.setEntity(userController.create(data));
-            LoginManager.loggedIn();
-            root.loggedIn();
+        onAuthenticated: session => {
+            // Prevent crashing when deleting this view.
+            busyPopup.modal = false;
 
             // MainPage.qml is already in stack. No need to replace.
             if (root.stackView)
                 root.stackView.popCurrentItem();
+            SessionManager.startSession(session);
+            //SalespersonSettings.setEntity(session.seller);
+            root.loggedIn();
         }
 
         onErrorOccurred: errorString => {
@@ -175,31 +171,15 @@ Item {
         }
     }
 
-    UserController {
-        id: userController
-    }
-
-    SalespersonController {
-        id: spController
-    }
-
     QtObject {
         id: internal
         readonly property url mainPage: "qrc:/qt/qml/Cara/MainPage.qml"
-        readonly property string username: usernameInput.text
-        readonly property string password: passwordInput.text
         readonly property bool areInputsValid: !isUsernameEmpty && !isPasswordEmpty
         readonly property bool isUsernameEmpty: usernameInput.text === ""
         readonly property bool isPasswordEmpty: passwordInput.text === ""
-
-        function saveSalespersonSettings(data) {
-            const salespersonJson = JSON.parse(data).user.salesperson;
-            const salesperson = spController.fromJsonObject(salespersonJson);
-            SalespersonSettings.setEntity(salesperson);
-        }
     }
 
     function requestAuthentication() {
-
+        login.authenticate();
     }
 }

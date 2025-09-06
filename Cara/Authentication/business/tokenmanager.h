@@ -8,35 +8,24 @@
 #include <QSettings>
 #include <QTimer>
 
-namespace Store
+namespace Authentication { class AbstractAccessTokenRefresher; }
+namespace Authentication::Business
 {
-class IStore;
-}
-namespace Network
-{
-class IToken;
-};
 
-namespace Authentication::Business {
-class IRefreshable;
 class TokenManager : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(bool refreshing READ refreshing WRITE setRefreshing NOTIFY refreshingChanged FINAL)
-    Q_PROPERTY(QString accessToken READ accessToken NOTIFY accessTokenChanged FINAL)
-    Q_PROPERTY(QString refreshToken READ refreshToken NOTIFY refreshTokenChanged BINDABLE bindableRefreshToken FINAL)
-    QML_ELEMENT
-    QML_SINGLETON
+
 public:
+    explicit TokenManager(QObject *parent = nullptr);
+    ~TokenManager();
+
     QString refreshToken() const;
     void setRefreshToken(const QString &newRefreshToken);
     QBindable<QString> bindableRefreshToken() const;
 
-    static TokenManager *create(QQmlEngine *qmlEngine, QJSEngine *jsEngine);
-    static TokenManager *instance();
-
-    IRefreshable *refresher() const;
-    void setRefresher(IRefreshable *newRefresher);
+    AbstractAccessTokenRefresher *refresher() const;
+    void setRefresher(AbstractAccessTokenRefresher *newRefresher);
 
     QString errorString() const;
     void setErrorString(const QString &newErrorString);
@@ -44,13 +33,8 @@ public:
     bool refreshing() const;
     void setRefreshing(bool newRefreshing);
 
-    Store::IStore *store() const;
-    void setStore(Store::IStore *newStore);
-
     QString accessToken() const;
     void setAccessToken(const QString &newAccessToken);
-
-    void setToken(Network::IToken *newToken);
 
 public slots:
     void clear();
@@ -58,8 +42,10 @@ public slots:
     void stopRefreshing();
     void resumeRefreshing();
 
+    void start();
+    void stop();
+
 private slots:
-    void replyReady();
     void timeout();
 
 signals:
@@ -68,29 +54,22 @@ signals:
     void refreshTokenChanged();
 
     void accessTokenAvailable();
-    void errorOccurred();
+    void errorOccurred(const QString &errorString);
 
     void refreshingChanged();
 
     void storeChanged();
 
 private:
-    explicit TokenManager(QObject *parent = nullptr);
-    void refreshAccessToken();
-
     QProperty<QString> refreshToken_;
     QString accessToken_;
-    QTimer *timer_;
+    QPointer<QTimer> timer_;
     QNetworkReply *reply_;
     QString errorString_;
-    Store::IStore *store_;
 
-    IRefreshable *refresher_;
-    Network::IToken *token_;
+    AbstractAccessTokenRefresher *refresher_;
 
     bool refreshing_;
-
-    static TokenManager *instance_;
 };
 }
 
