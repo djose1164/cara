@@ -1,6 +1,6 @@
 #include "localuserstore.h"
 #include "userentity.h"
-#include "data/tokenstore.h"
+#include <QBindable>
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QSettings>
@@ -43,8 +43,6 @@ bool LocalUserStore::save(const QByteArray &data)
     settings.setValue("surname", contactData["surname"].toString());
     settings.setValue("email", contactData["contact"]["email"].toString());
     settings.endGroup();
-
-    Authentication::Data::TokenStore{}.save(data);
 
     qDebug() << "LocalUserStore::save: saving... Done";
     return true;
@@ -121,11 +119,6 @@ QString LocalUserStore::refresh() const
 {
     QSettings settings;
     return settings.value(credentialsField).toString();
-}
-
-QBindable<QString> LocalUserStore::bindableRefreshToken() const
-{
-    return {};
 }
 
 }

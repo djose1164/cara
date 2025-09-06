@@ -26,12 +26,13 @@ class UserEntity : public IPersonName
     Q_PROPERTY(bool isAdmin READ isAdmin)
     Q_PROPERTY(bool isCustomer READ isCustomer)
     Q_PROPERTY(int salespersonId READ salespersonId WRITE setSalespersonId FINAL)
+    Q_PROPERTY(int sellerId READ salespersonId WRITE setSalespersonId FINAL)
     Q_PROPERTY(QString phoneNumber READ phoneNumber WRITE setPhoneNumber FINAL)
     Q_PROPERTY(QDate birthday READ birthday WRITE setBirthday FINAL)
     Q_PROPERTY(Address address READ address WRITE setAddress FINAL)
 public:
     using UserId = int;
-    using SalespersonId = int;
+    using SellerId = int;
 
     enum class UserTypes
     {
@@ -83,8 +84,8 @@ public:
     QString accessToken() const;
     void setAccessToken(const QString &newAccessToken);
 
-    SalespersonId salespersonId() const;
-    void setSalespersonId(SalespersonId newSalespersonId);
+    SellerId salespersonId() const;
+    void setSalespersonId(SellerId newSalespersonId);
 
     QString email() const;
     void setEmail(const QString &newEmail);
@@ -115,15 +116,19 @@ private:
 
     int customerId_;
     UserId userId_;
-    SalespersonId salespersonId_;
+    SellerId sellerId_;
 
     UserTypes userType_;
     QDate birthday_;
     Address address_;
 };
+
 }
 
-namespace UserEntityForeign {
+QDebug operator<<(QDebug dbg, const Entity::UserEntity &usr);
+
+namespace UserEntityForeign
+{
 Q_NAMESPACE
 QML_FOREIGN_NAMESPACE(Entity::UserEntity)
 QML_NAMED_ELEMENT(UserEntity)

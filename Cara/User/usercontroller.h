@@ -3,6 +3,7 @@
 
 #include "contactrepository.h"
 #include "userrepository.h"
+#include "Salesperson/salesperson.h"
 #include <QObject>
 #include <QQmlEngine>
 
@@ -47,6 +48,7 @@ public slots:
 
 signals:
     void fetched(const QByteArray &data);
+    void userFetched(const Entity::UserEntity &user, const Entity::Salesperson &sp);
     void updated();
     void contactUpdated();
     void errorOccurred(HttpStatus::Code c);

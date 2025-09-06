@@ -25,14 +25,12 @@ qt_add_qml_module(UserLib
         data/contactrespositoryimpl.h data/contactrespositoryimpl.cpp
         data/localuserstore.h data/localuserstore.cpp
         data/userrepositoryimpl.h data/userrepositoryimpl.cpp
-        loginmanager.h loginmanager.cpp
         service/userservice.h service/userservice.cpp
-        session.h session.cpp
         usercontroller.h usercontroller.cpp
         userentity.h userentity.cpp
         usermodel.h usermodel.cpp
         userrepository.h userrepository.cpp
-        usersession.h usersession.cpp
+
         comment.h comment.cpp
         commentmodel.h commentmodel.cpp
         commentrepository.h
@@ -41,7 +39,6 @@ qt_add_qml_module(UserLib
         password.svg
     DEPENDENCIES
         Cara.Utils
-        Cara.Authentication
         Cara.Store
 )
 
@@ -51,7 +48,7 @@ target_include_directories(UserLib
 )
 
 target_link_libraries(UserLib
-    PRIVATE AuthenticationLib NetworkLib CommonLib UtilsLib)
+    PRIVATE NetworkLib CommonLib UtilsLib SalespersonLib)
 
 if (LINUX AND CMAKE_BUILD_TYPE STREQUAL "Debug")
     add_subdirectory(tests)

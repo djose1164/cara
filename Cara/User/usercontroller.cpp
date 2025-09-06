@@ -28,7 +28,7 @@ UserController::UserController(QObject *parent)
     , errorString_{}
 {
     const auto repo{qobject_cast<Data::UserRepositoryImpl *>(repository_)};
-    repo->setPath("users");
+    repo->setPath("users"_L1);
 
     connect(repository_, &Data::UserRepository::updated, this, &UserController::updated);
     connect(repository_, &Data::UserRepository::errorOccurred, this, [&](HttpStatus::Code c) {
@@ -116,6 +116,29 @@ void UserController::getUserById(int id)
     connect(repository_, &Data::UserRepository::fetched, this, [&, id] {
         qDebug() << "UserController::getUserById: user with id " << id << "was fetched.";
         emit fetched(repository_->buffer());
+
+        if (const auto json{QJsonDocument::fromJson(repository_->buffer())};
+            json.isObject() and json.object().contains("user"_L1))
+        {
+            const auto userJson{json.object()["user"_L1].toObject()};
+            const auto user{Entity::UserEntity::fromJson(userJson)};
+            if (userJson.contains("salesperson"_L1))
+            {
+                const auto sellerJson{userJson["salesperson"_L1].toObject()};
+                const auto seller{Entity::Salesperson::fromJsonObject(sellerJson)};
+                emit userFetched(user, seller);
+            }
+            else
+            {
+                qWarning() << "UserController::getUserById: salesperson key not present!";
+                emit errorOccurred(HttpStatus::NotFound);
+            }
+        }
+        else
+        {
+            qWarning() << "UserController::getUserById: json is not object or json doesn't contain user key!";
+            emit errorOccurred(HttpStatus::NotFound);
+        }
     });
 }
 

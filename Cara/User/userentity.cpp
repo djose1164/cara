@@ -35,8 +35,7 @@ UserEntity UserEntity::fromJson(const QByteArray &data)
     Q_ASSERT(user.username().isEmpty() == false);
     user.setCustomerId(customerObj["id"].toInt());
 
-    const auto salespersonData{QJsonDocument(userObj["salesperson"].toObject())};
-    user.setSalespersonId(salespersonData["id"].toInt());
+    user.setSalespersonId(userObj["seller_id"_L1].toInt());
 
     return user;
 }
@@ -50,7 +49,7 @@ UserEntity::UserEntity()
     , surname_{}
     , customerId_{}
     , userId_{}
-    , salespersonId_{}
+    , sellerId_{}
     , userType_{UserTypes::Guest}
 {
 
@@ -180,14 +179,14 @@ void UserEntity::clear()
 
 int UserEntity::salespersonId() const
 {
-    return salespersonId_;
+    return sellerId_;
 }
 
 void UserEntity::setSalespersonId(int newSalespersonId)
 {
-    if (salespersonId_ == newSalespersonId)
+    if (sellerId_ == newSalespersonId)
         return;
-    salespersonId_ = newSalespersonId;
+    sellerId_ = newSalespersonId;
 }
 
 QString UserEntity::email() const
@@ -287,10 +286,19 @@ UserEntity UserEntity::fromJson(const QJsonObject &json)
         user.setCustomerId(customerObj["id"_L1].toInt());
     }
 
-    const auto salespersonData{QJsonDocument(json["salesperson"_L1].toObject())};
-    user.setSalespersonId(salespersonData["id"_L1].toInt());
+    user.setSalespersonId(json["seller_id"_L1].toInt());
 
     return user;
 }
 
+}
+
+QDebug operator<<(QDebug dbg, const Entity::UserEntity &usr)
+{
+    QDebugStateSaver saver(dbg);
+    dbg.nospace() << QString("User(id=%1, username=%2, email=%3)")
+                         .arg(QString::number(usr.userId()))
+                         .arg(usr.username())
+                         .arg(usr.email());
+    return dbg;
 }

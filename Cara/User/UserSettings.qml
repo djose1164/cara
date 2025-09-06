@@ -14,6 +14,7 @@ Settings {
     property int userId
     property int userTypeId
     property int customerId
+    property int sellerId
 
     category: "User"
 
@@ -37,6 +38,7 @@ Settings {
         root.userTypeId = newUser.userType;
         root.customerId = newUser.customerId;
         root.phoneNumber = newUser.phoneNumber;
+        root.sellerId = newUser.sellerId;
     }
 
     function clear() {
@@ -48,5 +50,6 @@ Settings {
         root.userTypeId = 0;
         root.phoneNumber = "";
         root.customerId = 0;
+        root.sellerId = 0;
     }
 }

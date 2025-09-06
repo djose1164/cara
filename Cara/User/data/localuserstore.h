@@ -3,8 +3,8 @@
 
 #include "istore.h"
 #include "userentity.h"
-#include "entity/credential.h"
 #include <QObject>
+#include <QProperty>
 #include <QQmlEngine>
 
 namespace User::Data
@@ -30,11 +30,7 @@ public:
 
     void setPreviousLogin(bool newPreviousLogin);
 
-    Authentication::Entity::Credential credentials() const;
-    void setCredentials(const Authentication::Entity::Credential &newCredentials);
-
     QString refresh() const override;
-    QBindable<QString> bindableRefreshToken() const override;
 
 public slots:
     void restore() override;
@@ -52,6 +48,7 @@ private:
 
 private:
     Entity::UserEntity user_;
+    QProperty<QString> refreshToken_{};
 };
 }
 
