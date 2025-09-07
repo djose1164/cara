@@ -8,9 +8,10 @@ Page {
 
     Label {
         id: label
-        width: root.width * .9
+        width: root.width * .7
+        height: root.height / 2
         anchors.centerIn: parent
-        text: message
+        text: root.message
         font.pointSize: 14
         wrapMode: Label.WordWrap
         textFormat: Label.RichText

@@ -4,8 +4,6 @@ import QtQuick.Layouts
 import Cara.Shopping
 import Cara.User
 import Cara.Salesperson
-import "qrc:/orders" as Order
-
 
 Home {
     id: root
@@ -91,17 +89,7 @@ Home {
                 }
 
                 TapHandler {
-                    onTapped: {
-                        console.log("salespersonId:",SalespersonSettings.salespersonId)
-                        if (needUser)
-                            homeStack.push(path, {user: UserSettings.entity()});
-                        else if (showCustomers)
-                            homeStack.push(path, {salespersonId: SalespersonSettings.salespersonId});
-                        else if (admin)
-                            homeStack.push(path, {adminId: UserSettings.userId});
-                        else
-                            homeStack.push(path);
-                    }
+                    onTapped: root.tappedHandler({needUser, showCustomers, admin, path})
                 }
 
                 HoverHandler { id: control }
@@ -170,5 +158,17 @@ Home {
             name: "Cola"
             showCustomers: true
         }
+    }
+
+    function tappedHandler(map) {
+        const requirements = {};
+        if (map.needUser)
+            requirements.user = UserSettings.entity();
+        else if (map.showCustomers)
+            requirements.salespersonId = UserSettings.sellerId;
+        else if (map.admin)
+            requirements.adminId = UserSettings.userId;
+
+        homeStack.pushItem(map.path, requirements);
     }
 }

@@ -1,3 +1,4 @@
+pragma ComponentBehavior: Bound
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
@@ -66,7 +67,7 @@ Drawer {
             onClicked: {
                 UserSettings.clear();
                 SalespersonSettings.clear();
-                LoginManager.logOut();
+                SessionManager.clearSession();
                 root.close();
             }
         }

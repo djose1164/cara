@@ -119,7 +119,7 @@ Page {
 
     QtObject {
         id: internal
-        readonly property bool isCurrentSalesperson: root.salespersonId === SalespersonSettings.salespersonId
+        readonly property bool isCurrentSalesperson: root.salespersonId === UserSettings.sellerId
         readonly property ProductModel model: isCurrentSalesperson ? ProductInventoryController
                                                                         .inventory
                                                                    : productModel

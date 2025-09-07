@@ -47,9 +47,11 @@ Page {
                 height: 100
 
                 onClicked: {
-                    const path = "qrc:/qt/qml/Cara/Product/EditProductPage.qml";
+                    const path = "qrc:/qt/qml/Cara/ProductInventory/EditProductPage.qml";
                     root.stackView.pushItem(path, {model});
                     const currentItem = (root.stackView.currentItem as ProductForm);
+                    if (!currentItem)
+                        return;
                     currentItem.refreshRequested.connect(productId => {
                         console.log("Handling editRefreshRequested in Catalogue. productId: "+productId);
                         root.productModel.refreshBuyPriceHistory(productId);
@@ -96,12 +98,8 @@ Page {
         onAllProductsFetched: products => root.productModel.updateFromList(products)
     }
 
-    // ProductModel {
-    //     id: productModel
-    // }
-
     RoundButton {
-        onClicked: root.stackView.pushItem("qrc:/qt/qml/Cara/Product/AddProductPage.qml", {productModel})
+        onClicked: root.stackView.pushItem("qrc:/qt/qml/Cara/ProductInventory/AddProductPage.qml", {productModel})
         anchors {
             bottom: parent.bottom
             bottomMargin: 15

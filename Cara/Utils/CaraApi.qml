@@ -12,7 +12,7 @@ Item {
     Rest {
         id: rest
         base: Constants.base + endpoint
-        accessToken: "Bearer " + TokenManager.accessToken
+        accessToken: "Bearer " + SessionManager.accessToken
         onSucceeded: data => root.succeeded(JSON.parse(data))
         onFailed: data => root.failed(JSON.parse(data))
     }

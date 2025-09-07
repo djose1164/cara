@@ -90,7 +90,7 @@ Page {
             Object.assign(person, nameForm.toJson());
             const client = {
                 person,
-                "salesperson_id": SalespersonSettings.salespersonId
+                "salesperson_id": UserSettings.sellerId
             };
 
             clientRequest.create(client);

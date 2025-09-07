@@ -67,9 +67,7 @@ Page {
             }
 
             const creditAvailable = root.salesperson.creditAvailable;
-            if (creditAvailable >= totalAmount)
-                api.createBuyOrder(buyOrder);
-            else {
+            if (creditAvailable <= totalAmount) {
                 dialog.text = "No cuentas con suficiente credito";
                 dialog.informativeText = "Credito disponible: "+creditAvailable;
                 dialog.open();
@@ -80,7 +78,7 @@ Page {
     RestService {
         PurchaseOrder {
             id: purchaseOrder
-            path: `salespersons/${SalespersonSettings.salespersonId}/buy_orders`
+            path: `salespersons/${UserSettings.sellerId}/buy_orders`
             onOrdersFetched: resp => root.ordersReady(resp)
             onOrderPlaced: resp => root.orderPlacedHandler(resp)
             onErrorOccurred: err => root.errorOccurredHandler(err)
@@ -90,7 +88,7 @@ Page {
     SalespersonController {
         id: spController
         adminId: UserSettings.userId
-        salespersonId: SalespersonSettings.salespersonId
+        salespersonId: UserSettings.sellerId
     }
 
     MessageDialog {

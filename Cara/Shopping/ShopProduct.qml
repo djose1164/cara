@@ -5,7 +5,7 @@ import Cara.User
 import Cara.Shopping
 import Cara.ProductInventory
 import Cara.Network
-import "qrc:/qt/qml/Cara/Product/product_helper.js" as ProductJS
+import "qrc:/qt/qml/Cara/ProductInventory/product_helper.js" as ProductJS
 
 Item {
     id: root
