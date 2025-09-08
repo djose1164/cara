@@ -5,7 +5,7 @@
 
 #include <QString>
 
-constexpr auto CARA_BUILD_TIME{QLatin1StringView("27/08/2025")};
+constexpr auto CARA_BUILD_TIME{QLatin1StringView("08/09/2025")};
 
 consteval QAnyStringView getCaraVersion()
 {

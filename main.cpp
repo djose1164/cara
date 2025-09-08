@@ -2,11 +2,9 @@
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
 #include <qqmlextensionplugin.h>
-#include "Cara/Authentication/business/tokenmanager.h"
 #include "Cara/ProductInventory/sqlitedatabase.h"
 
 #include "Cara/config.h"
-#include "Cara/Network/networkrequestsingleton.h"
 
 Q_IMPORT_QML_PLUGIN(Cara_ProductInventoryPlugin)
 Q_IMPORT_QML_PLUGIN(Cara_ShoppingPlugin)
@@ -25,9 +23,6 @@ int main(int argc, char *argv[])
     app.setApplicationVersion(getCaraVersion().toString());
 
     QQmlApplicationEngine engine;
-    const auto tokenManager{engine.singletonInstance<Authentication::Business::TokenManager *>("Cara.Authentication"_L1, "TokenManager"_L1)};
-    tokenManager->setToken(&Network::NetworkRequestSingleton::instance());
-
     ProductInventory::SQLiteDatabase::initDatabase();
 
     QObject::connect(

@@ -1,13 +1,12 @@
 #ifndef NETWORKREQUESTSINGLETON_H
 #define NETWORKREQUESTSINGLETON_H
 
-#include "itoken.h"
 #include <QNetworkAccessManager>
 #include <QNetworkRequestFactory>
 
 namespace Network
 {
-class NetworkRequestSingleton : public IToken
+class NetworkRequestSingleton
 {
 public:
     static NetworkRequestSingleton &instance();
@@ -16,7 +15,7 @@ public:
     NetworkRequestSingleton operator=(const NetworkRequestSingleton &) = delete;
 
     QString accessToken() const;
-    void setAccessToken(const QString &newAccessToken) override;
+    void setAccessToken(const QString &newAccessToken);
 
     std::shared_ptr<QNetworkRequestFactory> api() const;
 

@@ -2,7 +2,6 @@ pragma ComponentBehavior: Bound
 import QtQuick
 import QtQuick.Controls
 import QtNetwork
-import QtCore
 import Cara
 import Cara.Data
 import Cara.Authentication

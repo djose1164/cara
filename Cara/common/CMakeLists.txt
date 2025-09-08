@@ -8,6 +8,7 @@ qt_add_qml_module(CommonLib
     SOURCES
         ipersonname.h
         abstractresource.h abstractresource.cpp
+        istore.h
 )
 
 target_include_directories(CommonLib INTERFACE ${CMAKE_CURRENT_SOURCE_DIR})

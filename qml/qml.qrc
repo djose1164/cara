@@ -6,13 +6,11 @@
         <file>AdminHome.qml</file>
         <file>Welcome.qml</file>
         <file>Offers.qml</file>
-        <file>RecentOrders.qml</file>
     </qresource>
     <qresource prefix="/orders">
         <file>Entry.qml</file>
         <file>BuyOrder.qml</file>
         <file>BuyOrderForm.qml</file>
-        <file>BuyOrderAPI.qml</file>
         <file>BuyOrderDetails.qml</file>
         <file>BuyOrderView.qml</file>
         <file>BuyOrderHeader.qml</file>

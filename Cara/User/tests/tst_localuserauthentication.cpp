@@ -1,6 +1,5 @@
-#include "Authentication/data/tokenstore.h"
-#include "Authentication/login.h"
 #include "Authentication/service/localuserauthentication.h"
+#include "keychainimpl.h"
 #include "loginhelper.h"
 #include <QSignalSpy>
 #include <QtTest>
@@ -34,22 +33,29 @@ void TestLocalUserAuthentication::initTestCase() const
 
 void TestLocalUserAuthentication::test_shouldReturnTrueIfAuthenticationSuccess() const
 {
-    Authentication::Data::TokenStore ts{};
-    ts.restore();
-    const QString token{ts.refresh()};
+    Authentication::KeyChainImpl keychain;
+    QSignalSpy spy{&keychain, &Authentication::KeyChainImpl::keyRestored};
+    QString token{};
+    connect(&keychain,
+            &Authentication::KeyChainImpl::keyRestored,
+            this,
+            [&](QString, const QString &value) { token = value; });
+
+    QVERIFY(spy.isValid());
+    QVERIFY(spy.wait());
 
     QVERIFY(!token.isEmpty());
 
     Authentication::Service::LocalUserAuthentication ur{};
     ur.setRefreshToken(token);
 
-    QSignalSpy spy{&ur, &Authentication::Service::LocalUserAuthentication::succeeded};
+    QSignalSpy authSpy{&ur, &Authentication::Service::LocalUserAuthentication::succeeded};
 
-    QVERIFY(spy.isValid());
+    QVERIFY(authSpy.isValid());
 
     ur.authenticate();
 
-    QVERIFY(spy.wait());
+    QVERIFY(authSpy.wait());
 
     const bool res{ur.isAuthenticated()};
 

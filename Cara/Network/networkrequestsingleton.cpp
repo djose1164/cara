@@ -22,9 +22,6 @@ NetworkRequestSingleton::NetworkRequestSingleton()
     if (api_->baseUrl().isEmpty())
         throw std::logic_error{"Base URL cannot be empty."};
 
-    const QString token{QSettings().value("Credentials/accessToken"_L1).toString()};
-    api_->setBearerToken(token.toUtf8());
-
     QHttpHeaders headers{};
     headers.append(QHttpHeaders::WellKnownHeader::ContentType, "application/json"_L1);
 

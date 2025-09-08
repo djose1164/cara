@@ -17,6 +17,7 @@ constexpr auto messageField{"message"_L1};
 
 HealthResource::HealthResource(QObject *parent)
     : AbstractResource{parent}
+    , errorString_{}
 {}
 
 QString HealthResource::path() const
@@ -48,28 +49,71 @@ void HealthResource::readStatus()
         const auto optionalJson{reply.readJson()};
         if (!reply.isSuccess())
         {
-            const QString errorMessage{
-                reply.errorString().isEmpty() ? reply.networkReply()->errorString()
-                                              : reply.errorString()
-            };
-
             if (reply.error() == QNetworkReply::ConnectionRefusedError)
-                emit connectionRefused();
+            {
+                setErrorString(u"No se ha podido establecer una conexión con el servidor. "
+                               "Intenta de nuevo más tarde."_s);
+                emit errorOccurred(errorString());
+                emit connectionRefused(errorString());
+            }
             else if (reply.httpStatus() == HttpStatus::UpgradeRequired)
-                emit upgradeRequired();
+            {
+                setErrorString("Necesitas actualizar Cara a la ultima version."_L1);
+                emit errorOccurred(errorString());
+                emit upgradeRequired(errorString());
+            }
             else
             {
                 if (optionalJson && optionalJson->isObject()
                     && optionalJson->object().contains(messageField))
-                    emit errorOccurred((*optionalJson)[messageField].toString());
+                {
+                    setErrorString((*optionalJson)[messageField].toString());
+                    emit errorOccurred(errorString());
+                }
                 else
+                {
+                    const QString errorMessage{reply.errorString().isEmpty()
+                                                   ? reply.networkReply()->errorString()
+                                                   : reply.errorString()};
+                    setErrorString(errorMessage);
                     emit errorOccurred(errorMessage);
+                }
             }
-
             return;
         }
 
-        if (optionalJson)
-            emit statusReady(optionalJson->toJson());
+        if (!optionalJson)
+            return;
+        emit statusReady(optionalJson->toJson());
+        if (optionalJson->isObject() and optionalJson->object().contains("status"_L1))
+        {
+            const QString healthStatus{optionalJson->object()["status"_L1].toString()};
+            qDebug() << "healthStatus: " << optionalJson->object();
+            if (healthStatus == "OK"_L1)
+                emit serverHealthy();
+            else
+            {
+                setErrorString("Nuestros servidores se encuentran actualmente bajo "
+                               "mantenimiento. Puedes ver como va en "
+                               "<a href=\"https://twitter.com/carardoficial\">Twiterr</a>."_L1);
+                emit errorOccurred(errorString());
+                emit serverMaintenance(errorString());
+            }
+        }
     });
+}
+
+QString HealthResource::errorString() const
+{
+    return errorString_;
+}
+
+void HealthResource::setErrorString(const QString &newErrorString)
+{
+    errorString_ = newErrorString;
+}
+
+QBindable<QString> HealthResource::bindableErrorString() const
+{
+    return &errorString_;
 }

@@ -60,7 +60,9 @@ Page {
     }
 
     Component.onCompleted: {
-        updateViews()
+        if (!SessionManager.authenticated)
+            UserSettings.clear();
+        updateViews();
     }
 
     Pane {
@@ -128,52 +130,32 @@ Page {
         visible: false
     }
 
-    SidePane {
-        id: sideMenu
-        implicitWidth: root.width
-        implicitHeight: root.height
-        stackView: root.stackView
-    }
-
-    Connections {
-        target: LoginManager
-
-        function onLoggedIn() {
-            root.updateViews();
-        }
-
-        function onLoggingOut() {
-            CustomerManager.clearModel();
-        }
-
-        function onLoggedOut() {
-            root.updateViews();
-        }
-    }
-
     Connections {
         target: Application
 
         function onStateChanged(state: int) {
-            if (state === Qt.ApplicationActive && !TokenManager.refreshing)
-                TokenManager.resumeRefreshing();
-            else if (state === Qt.ApplicationInactive
-                     && TokenManager.refreshing)
-                TokenManager.stopRefreshing();
-        }
-    }
-
-    UserController {
-        id: userController
-        onFetched: function (data) {
-            root.updateViews();
-            root.state = "";
+            // if (state === Qt.ApplicationActive && !TokenManager.refreshing)
+            //     TokenManager.resumeRefreshing();
+            // else if (state === Qt.ApplicationInactive
+            //          && TokenManager.refreshing)
+            //     TokenManager.stopRefreshing();
         }
     }
 
     SalespersonController {
         id: spService
-        salespersonId: SalespersonSettings.salespersonId
+        salespersonId: UserSettings.sellerId
+    }
+
+    Connections {
+        target: SessionManager
+
+        function onAuthenticatedChanged() {
+            if (!SessionManager.authenticated) {
+                UserSettings.clear();
+                updateView();
+            }
+        }
     }
 
     QtObject {
