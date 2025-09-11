@@ -9,6 +9,8 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(QT_QML_GENERATE_QMLLS_INI ON)
 add_compile_options(-Wall -Wextra -Wpedantic)
 
+option(BUILD_TESTS "Build the project's tests" OFF)
+
 find_package(Qt6 6.9 REQUIRED
     COMPONENTS Qml Quick Core Network Svg Test PrintSupport Graphs QuickTest Sql REQUIRED)
 
@@ -24,6 +26,10 @@ qt_policy(
 qt_policy(
     SET QTP0005 NEW
 )
+
+set(BUILD_WITH_QT6 ON CACHE BOOL "Build qtkeychain with Qt6" FORCE)
+add_subdirectory(${CMAKE_SOURCE_DIR}/3rdparty/qtkeychain)
+add_subdirectory(${CMAKE_SOURCE_DIR}/3rdparty/Qt-AES)
 
 add_subdirectory(Cara)
 
@@ -47,6 +53,7 @@ set(CARA_VERSION ${CMAKE_PROJECT_VERSION})
 
 target_link_libraries(${PROJECT_NAME} PRIVATE
     Qt6::Quick
+    Qt6::Sql
     CaraLibplugin
 )
 
