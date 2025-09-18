@@ -2,6 +2,7 @@
 #define SESSIONMANAGER_H
 
 #include "abstractsession.h"
+#include "login.h"
 #include "session.h"
 #include <QProperty>
 #include <QQmlEngine>
@@ -10,8 +11,7 @@ namespace Authentication
 {
 
 class AbstractKeyChain;
-
-namespace Business { class TokenManager; }
+class TokenManager;
 
 /**
  * @brief The SessionManager class manages the current session of the user and
@@ -28,6 +28,17 @@ class SessionManager : public AbstractSession
     QML_ELEMENT
     QML_SINGLETON
 public:
+    enum class Error
+    {
+        AuthenticationFailed,
+        ConnectionLost,
+        SessionExpired,
+        TokenMissing,
+        KeychainError,
+        Unknown
+    };
+    Q_ENUM(Error)
+
     explicit SessionManager(QObject *parent = nullptr);
 
     // AbstractSession interface
@@ -61,16 +72,20 @@ public slots:
     void authenticateRefreshToken();
 
 signals:
-    void errorOccurred(const QString &errorString);
+    void errorOccurred(Error error, const QString &errorString);
 
     void storedSessionChecked(bool found);
 
     void authenticatedChanged();
 
+private slots:
+    void handleLoginError(Login::Error error, const QString &errorString);
+    void onErrorOccurred(Error error, const QString &errorString);
+
 private:
     QProperty<QString> accessToken_;
     QProperty<QString> refreshToken_;
-    QPointer<Business::TokenManager> tokenManager_;
+    QPointer<TokenManager> tokenManager_;
     QPointer<AbstractKeyChain> keychain_;
     QProperty<Session> currentSession_;
     QPropertyNotifier tokenConn_;

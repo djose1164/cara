@@ -11,6 +11,13 @@ class AbstractKeyChain : public QObject
     Q_OBJECT
     QML_ANONYMOUS
 public:
+    enum class Error
+    {
+        ReadFailed,
+        WriteFailed,
+        DeleteFailed
+    };
+
     using QObject::QObject;
     virtual ~AbstractKeyChain() = default;
 
@@ -22,7 +29,7 @@ signals:
     void keyStored(const QString &key);
     void keyRestored(const QString &key, const QString &value);
     void keyDeleted(const QString &key);
-    void errorOccurred(const QString &errorString);
+    void errorOccurred(Error error, const QString &errorString);
 };
 
 } // namespace Authentication

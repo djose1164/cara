@@ -9,7 +9,7 @@ using namespace Qt::StringLiterals;
 
 static constexpr auto ACCESS_TOKEN_LIFESPAN{840'000};
 
-namespace Authentication::Business
+namespace Authentication
 {
 
 TokenManager::TokenManager(QObject *parent)
@@ -162,4 +162,4 @@ void TokenManager::timeout()
     });
 }
 
-} // namespace Authentication::Business
+} // namespace Authentication

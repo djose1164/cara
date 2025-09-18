@@ -1,9 +1,10 @@
 #include "localuserauthentication.h"
 #include "networkrequestsingleton.h"
-#include <QSettings>
-#include <QNetworkReply>
+#include "qnamsingleton.h"
 #include <QJsonDocument>
 #include <QJsonObject>
+#include <QNetworkReply>
+#include <QRestReply>
 #include <QSettings>
 
 using namespace Qt::StringLiterals;
@@ -12,15 +13,19 @@ namespace
 {
 constexpr auto accessTokenField{"access_token"_L1};
 constexpr auto userField{"user"_L1};
+constexpr auto codeField{"code"_L1};
+constexpr auto messageField{"message"_L1};
+constexpr auto expiredCode{"refresh_token_expired"_L1};
+constexpr auto invalidCode{"refresh_token_invalid"_L1};
+constexpr auto requiredCode{"authorization_required"_L1};
 }
 
 namespace Authentication::Service {
 LocalUserAuthentication::LocalUserAuthentication(QObject *parent)
-    : Business::Authenticator{parent}
+    : Authenticator{parent}
     , refreshToken_{}
     , isAuthenticated_{}
-    , manager_{new QNetworkAccessManager(this)}
-    , reply_{}
+    , manager_{QNAMSingleton::instance().qram()}
     , path_{"/users/refresh"_L1}
 {
 }
@@ -28,45 +33,61 @@ LocalUserAuthentication::LocalUserAuthentication(QObject *parent)
 void LocalUserAuthentication::authenticate()
 {
     qInfo() << "Authenticationg user through LocalUserAuthentication...";
-    if (refreshToken_.isEmpty())
+    if (refreshToken_.trimmed().isEmpty())
     {
         constexpr auto errorString{"refreshToken is empty."_L1};
         qCritical() << "LocalUserAuthentication::authenticate: " << errorString;
-        emit errorOccurred(Authenticator::Error::EmptyToken, errorString);
+        emit errorOccurred(Authenticator::Error::InvalidState, errorString);
         return;
     }
 
     QUrlQuery query{{"include_user"_L1, "true"_L1}};
     const auto api{Network::NetworkRequestSingleton::instance().api()};
 
-    QNetworkRequest request{api->createRequest(path_, query)}; request.setRawHeader("Authorization"_ba, "Bearer "_ba + refreshToken_.toUtf8());
+    const QByteArray token{"Bearer "_ba + refreshToken_.toUtf8()};
+    const QByteArray header{"Authorization"_ba};
+    QNetworkRequest request{api->createRequest(path_, query)};
+    request.setRawHeader(header, token.data());
 
-    reply_ = manager_->get(request);
-
-    connect(reply_, &QNetworkReply::finished, this, [&] {
+    manager_->get(request, this, [&](QRestReply &reply) {
         qDebug() << "LocalUserAuthentication::authenticate: handling response";
-        buffer_ = reply_->readAll();
+        const auto json{reply.readJson()};
 
-        const auto replyError{reply_->error()};
-        if (replyError == QNetworkReply::AuthenticationRequiredError)
+        if (not reply.isSuccess())
         {
-            emit tokenExpired();
-            return;
-        }
-        else if (replyError != QNetworkReply::NoError)
-        {
-            emit errorOccurred(Authenticator::Error::Unknown,
-                               reply_->errorString());
-            return;
+            qDebug() << "LocalUserAuthentication::authenticate: " << *json;
+            if (json and json->isObject() and json->object().contains(codeField)
+                and json->object().contains(messageField))
+            {
+                const QString code{(*json)[codeField].toString()};
+                const QString msg{(*json)[messageField].toString()};
+                const QString errstr{"%1: %2"_L1.arg(code, msg)};
+                qWarning() << "LocalUserAuthentication::authenticate: " << errstr;
+                if (code == invalidCode or code == requiredCode)
+                {
+                    emit errorOccurred(Error::InvalidState, errstr);
+                    return;
+                }
+                else if (code == expiredCode)
+                {
+                    emit tokenExpired();
+                    return;
+                }
+            }
+            else
+            {
+                // We assume there's an error the internet connection or with the server
+                // itself.
+                emit errorOccurred(Error::NetworkUnavailable, reply.errorString());
+            }
         }
 
         isAuthenticated_ = true;
 
-        if (const auto json{QJsonDocument::fromJson(buffer_)};
-            json.isObject() and json.object().contains(accessTokenField)
-            and json.object().contains(userField))
+        if (json and json->isObject() and json->object().contains(accessTokenField)
+            and json->object().contains(userField))
         {
-            const auto obj{json.object()};
+            const auto obj{json->object()};
             if (!obj["access_token"_L1].isString())
             {
                 qCritical() << "LocalUserAuthentication::authenticate: token isn't a string";
@@ -74,13 +95,11 @@ void LocalUserAuthentication::authenticate()
                 return ;
             }
             const auto tokenValue{obj["access_token"_L1].toString()};
-            emit tokenReady(tokenValue);
-            emit succeeded(buffer_);
+            emit tokenGenerated(tokenValue);
+            emit authenticationSucceeded(json->toJson());
         }
 
         qDebug() << "User authenticated successfully through LocalUserAuthentication.";
-
-        reply_->deleteLater();
     });
 }
 
@@ -95,16 +114,6 @@ void LocalUserAuthentication::setRefreshToken(const QString &newRefreshToken)
         return;
     refreshToken_ = newRefreshToken;
     emit refreshTokenChanged();
-}
-
-QByteArray LocalUserAuthentication::buffer() const
-{
-    return buffer_;
-}
-
-void LocalUserAuthentication::setBuffer(const QByteArray &newBuffer)
-{
-    buffer_ = newBuffer;
 }
 
 bool LocalUserAuthentication::isAuthenticated() const

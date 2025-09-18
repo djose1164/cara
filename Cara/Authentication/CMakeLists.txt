@@ -1,5 +1,4 @@
 find_package(Qt6 REQUIRED COMPONENTS Core)
-find_package(Qt6Keychain REQUIRED)
 
 qt_add_library(AuthenticationLib STATIC)
 qt_add_qml_module(AuthenticationLib
@@ -14,7 +13,7 @@ qt_add_qml_module(AuthenticationLib
         eye-crossed.svg
         eye.svg
     SOURCES
-        business/authenticator.h business/authenticator.cpp
+        business/authenticator.h
         business/abstractaccesstokenrefresher.h
         business/tokenmanager.h business/tokenmanager.cpp
         business/tokennotpresent.h business/tokennotpresent.cpp
@@ -41,3 +40,7 @@ target_include_directories(AuthenticationLib
 
 target_link_libraries(AuthenticationLib
     PRIVATE Qt6::Core qt6keychain NetworkLib UserLib CommonLib UtilsLib)
+if (ANDROID)
+    target_link_libraries(AuthenticationLib PRIVATE QtAES)
+    target_sources(AuthenticationLib PRIVATE androidkeychain.h androidkeychain.cpp)
+endif()

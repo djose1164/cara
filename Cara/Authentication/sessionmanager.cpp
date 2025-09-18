@@ -1,9 +1,15 @@
 #include "sessionmanager.h"
+#ifdef Q_OS_ANDROID
+#include "androidkeychain.h"
+#else
 #include "keychainimpl.h"
+#endif
 #include "localuserauthentication.h"
 #include "login.h"
 #include "networkrequestsingleton.h"
 #include "tokenmanager.h"
+
+#include <QNetworkInformation>
 
 using namespace Qt::StringLiterals;
 
@@ -17,19 +23,22 @@ namespace Authentication
 
 SessionManager::SessionManager(QObject *parent)
     : Authentication::AbstractSession{parent}
-    , authenticated_{}
     , accessToken_{}
     , refreshToken_{}
     , tokenManager_{}
+#ifdef Q_OS_ANDROID
+    , keychain_{new AndroidKeyChain(this)}
+#else
     , keychain_{new KeyChainImpl(this)}
+#endif
     , currentSession_{}
     , tokenConn_{}
+    , authenticated_{}
 {
-    checkStoredSession();
-
-    connect(this, &SessionManager::storedSessionChecked, this, [](bool found) {
+    connect(this, &SessionManager::storedSessionChecked, this, [this](bool found) {
         const auto msg = found ? "session found!"_L1 : "there's no stored session!"_L1;
         qDebug() << "SessionManager: " << msg;
+        qDebug() << "SessionManager: " << refreshToken_;
         qDebug() << "SessionManager::checkStoredSession: checking stored session...Done!";
     });
 
@@ -37,7 +46,22 @@ SessionManager::SessionManager(QObject *parent)
         qDebug() << "SessionManager::startSession: refresh token stored!";
     });
 
-    connect(keychain_, &AbstractKeyChain::errorOccurred, this, &SessionManager::errorOccurred);
+    connect(keychain_,
+            &AbstractKeyChain::errorOccurred,
+            this,
+            [this](AbstractKeyChain::Error error, const QString &errstr) {
+                switch (error)
+                {
+                    using enum AbstractKeyChain::Error;
+                case ReadFailed:
+                    emit storedSessionChecked(false);
+                    break;
+                case WriteFailed:
+                case DeleteFailed:
+                    break;
+                }
+                emit errorOccurred(Error::KeychainError, errstr);
+            });
 
     connect(keychain_,
             &AbstractKeyChain::keyRestored,
@@ -45,13 +69,13 @@ SessionManager::SessionManager(QObject *parent)
             [this](const QString &key, const QString &value) {
                 if (key != refreshKey)
                     return;
+                qDebug() << "SessionMananger: onKeyRestored: " << value;
                 refreshToken_ = value;
                 emit storedSessionChecked(not value.trimmed().isEmpty());
             });
 
-    tokenConn_ = accessToken_.addNotifier([this] {
-        Network::NetworkRequestSingleton::instance().setAccessToken(accessToken_);
-    });
+    tokenConn_ = accessToken_.addNotifier(
+        [this] { Network::NetworkRequestSingleton::instance().setAccessToken(accessToken_); });
 }
 
 bool SessionManager::isAuthenticated() const
@@ -117,11 +141,11 @@ void SessionManager::startSession(const Authentication::Session &session)
     if (tokenManager_)
         tokenManager_->deleteLater();
 
-    tokenManager_ = new Business::TokenManager(this);
+    tokenManager_ = new TokenManager(this);
     tokenManager_->setRefreshToken(refreshToken_);
     if (isNewAccessTokenEmpty)
     {
-        connect(tokenManager_, &Business::TokenManager::accessTokenChanged, this, [&] {
+        connect(tokenManager_, &TokenManager::accessTokenChanged, this, [&] {
             accessToken_ = tokenManager_->accessToken();
             tokenManager_->deleteLater();
         });
@@ -149,22 +173,71 @@ void SessionManager::authenticateRefreshToken()
     {
         const auto errmsg{"Cannot authenticate an empty token!"_L1};
         qWarning() << "SessionManager::authenticateRefreshToken: " << errmsg;
-        emit errorOccurred(errmsg);
+        emit errorOccurred(Error::TokenMissing, errmsg);
         return;
     }
 
-    auto *login{new Business::Login(this)};
+    auto *login{new Login(this)};
     auto *lsa{new Service::LocalUserAuthentication(login)};
     lsa->setRefreshToken(refreshToken_);
 
     login->setAuthenticator(lsa);
     login->authenticate();
 
-    connect(login, &Business::Login::authenticated, this, [=, this](const auto &session) {
+    connect(login, &Login::authenticated, this, [=, this](const auto &session) {
         startSession(session);
         login->deleteLater();
         qDebug() << "SessionManager::authenticateRefreshToken: authenticating...Done!";
     });
+
+    connect(login, &Login::errorOccurred, this, [=, this](Login::Error error, const QString &errstr) {
+        login->deleteLater();
+        handleLoginError(error, errstr);
+        // Something is wrong with our refresh token, so we delete it.
+        if (error == Login::Error::InvalidState)
+        {
+            keychain_->deleteKey(refreshKey);
+            qWarning() << "SessionManager::authenticateRefreshToken: refresh Key deleted due to: "
+                       << errstr;
+        }
+    });
+}
+
+void SessionManager::handleLoginError(Login::Error error, const QString &errorString)
+{
+    qWarning() << "SessionManager::handleLoginError: " << errorString;
+    switch (error)
+    {
+        using enum Authenticator::Error;
+    case InvalidCredentials:
+    case InvalidState:
+        emit errorOccurred(Error::AuthenticationFailed, errorString);
+        break;
+    case RefreshTokenExpired:
+        emit errorOccurred(Error::SessionExpired, errorString);
+        break;
+    case NetworkUnavailable:
+        emit errorOccurred(Error::ConnectionLost, errorString);
+        break;
+    case Unknown:
+        emit errorOccurred(Error::ConnectionLost, errorString);
+        break;
+    }
+}
+
+void SessionManager::onErrorOccurred(Error error, const QString &errorString)
+{
+    switch (error)
+    {
+    case Error::AuthenticationFailed:
+    case Error::ConnectionLost:
+        break;
+    case Error::SessionExpired:
+
+        break;
+    case Error::Unknown:
+        break;
+    }
 }
 
 } // namespace Authentication

@@ -1,24 +1,14 @@
 #include "login.h"
-#include "networkrequestsingleton.h"
 #include <QJsonDocument>
 #include <QJsonObject>
-#include <QSettings>
 
 using namespace Qt::StringLiterals;
 
-namespace
-{
-constexpr auto accessTokenField{"access_token"_L1};
-constexpr auto refreshTokenField{"refresh_token"_L1};
-constexpr auto userField{"user"_L1};
-}
-
-namespace Authentication::Business
+namespace Authentication
 {
 Login::Login(QObject *parent)
     : QObject{parent}
     , status_{Status::UnAuthenticated}
-    , mode_{AuthenticationMode::Undefined}
     , authenticator_{}
 {
 }
@@ -40,6 +30,7 @@ void Login::userAuthenticated(const QByteArray &data)
         json.isObject())
     {     
         Session session {Session::fromJson(json.object())};
+        setStatus(Status::Authenticated);
         emit authenticated(session);
     }
 
@@ -48,36 +39,14 @@ void Login::userAuthenticated(const QByteArray &data)
 
 void Login::authenticatorConnection()
 {
-    connections_.append(
-        connect(authenticator_,
-                &Authenticator::errorOccurred,
-                this,
-                &Login::authenticationFailed
-        )
-    );
-    connections_.append(
-        connect(authenticator_, &Authenticator::succeeded,
-            this, &Login::userAuthenticated
-        )
-    );
-    connections_.append(
-        connect(authenticator_,
-            &Business::Authenticator::tokenReady,
-            this, [&](const QString &token)
-            {
-                qDebug() << "Login: tokenReady";
-            }
-        )
-    );
-}
+    connect(authenticator_, &Authenticator::errorOccurred, this, &Login::authenticationFailed);
 
-void Login::authenticatorDisconnection()
-{
-    for (const auto &connection : connections_)
-    {
-        disconnect(connection);
-    }
-    connections_.clear();
+    connect(authenticator_, &Authenticator::authenticationSucceeded, this, &Login::userAuthenticated);
+
+    connect(authenticator_, &Authenticator::tokenGenerated, this, [&](const QString &token) {
+        Q_UNUSED(token);
+        qDebug() << "Login: tokenReady";
+    });
 }
 
 void Login::authenticationFailed(Authenticator::Error error, const QString &errorString)
@@ -87,15 +56,20 @@ void Login::authenticationFailed(Authenticator::Error error, const QString &erro
     errorString_ = errorString;
     if (error == InvalidCredentials)
     {
-        setStatus(Status::InvalidCredentials);
+        setStatus(Status::UnAuthenticated);
         error_ = InvalidCredentials;
     }
-    emit errorOccurred(errorString);
+    emit errorOccurred(error, errorString);
 }
 
 QBindable<Authenticator::Error> Login::bindableError() const
 {
     return &error_;
+}
+
+QString Login::errorString() const
+{
+    return errorString_;
 }
 
 QBindable<QString> Login::bindableErrorString() const
@@ -112,23 +86,12 @@ void Login::setAuthenticator(Authenticator *newAuthenticator)
 {
     if (authenticator_ == newAuthenticator)
         return;
-    authenticatorDisconnection();
+
+    if (authenticator_)
+        authenticator_->disconnect(this);
     authenticator_ = newAuthenticator;
     authenticatorConnection();
     emit authenticatorChanged();
-}
-
-Login::AuthenticationMode Login::mode() const
-{
-    return mode_;
-}
-
-void Login::setMode(AuthenticationMode newMode)
-{
-    if (mode_ == newMode)
-        return;
-    mode_ = newMode;
-    emit modeChanged();
 }
 
 Login::Status Login::status() const

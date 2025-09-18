@@ -2,14 +2,13 @@
 #define KEYCHAINIMPL_H
 
 #include "abstractkeychain.h"
+#include <qtkeychain/keychain.h>
 #include <QQmlEngine>
-#include <qt6keychain/keychain.h>
-
 
 namespace Authentication
 {
 
-class KeyChainImpl : public Authentication::AbstractKeyChain
+class KeyChainImpl : public AbstractKeyChain
 {
     Q_OBJECT
     QML_NAMED_ELEMENT(Keychain)
@@ -25,7 +24,6 @@ private:
     QKeychain::ReadPasswordJob readerJob_;
     QKeychain::WritePasswordJob writerJob_;
     QKeychain::DeletePasswordJob deleterJob_;
-
 };
 
 } // namespace Authentication

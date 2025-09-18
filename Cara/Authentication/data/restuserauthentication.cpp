@@ -1,29 +1,30 @@
 #include "restuserauthentication.h"
-#include "networkrequestsingleton.h"
 #include "httpstatuscodes.h"
-#include <QSettings>
-#include <QNetworkReply>
+#include "networkrequestsingleton.h"
+#include "qnamsingleton.h"
 #include <QJsonDocument>
 #include <QJsonObject>
+#include <QNetworkReply>
+#include <QRestReply>
 
 using namespace Qt::StringLiterals;
+
+namespace
+{
+constexpr auto tokenField{"access_token"_L1};
+constexpr auto loginPath{"/users/login"_L1};
+}
 
 namespace Authentication::Data
 {
 RestUserAuthentication::RestUserAuthentication(QObject *parent)
-    : Business::Authenticator{parent}
+    : Authenticator{parent}
     , credentials_{}
     , errorString_{}
-    , data_{}
-    , manager_{new QNetworkAccessManager(this)}
-    , reply_{}
+    , manager_{QNAMSingleton::instance().qram()}
     , api_{Network::NetworkRequestSingleton::instance().api()}
+    , path_{loginPath}
 {
-}
-
-QByteArray RestUserAuthentication::data() const
-{
-    return data_;
 }
 
 void RestUserAuthentication::authenticate()
@@ -33,24 +34,20 @@ void RestUserAuthentication::authenticate()
     {
         setErrorString("RestUserAuthentication::authenticate: credentials not valid"_L1);
         qCritical() << errorString_;
-        emit errorOccurred(Authenticator::Error::InvalidCredentials, errorString_);
+        emit errorOccurred(Authenticator::Error::InvalidState, errorString_);
         return;
     }
 
-    const QNetworkRequest request{api_->createRequest("/users/login"_L1)};
+    const QNetworkRequest request{api_->createRequest(path_)};
 
-    reply_ = manager_->post(request, credentials_.toJson());
+    manager_->post(request, credentials_.toJson(), this, [&](QRestReply &reply) {
 
-    connect(reply_, &QNetworkReply::finished, this, [&] {
-        reply_->deleteLater();
-        data_ = reply_->readAll();
-
-        const auto replyError{reply_->error()};
+        const auto replyError{reply.error()};
         if (replyError == QNetworkReply::AuthenticationRequiredError or replyError == QNetworkReply::ContentNotFoundError)
         {
             emit errorOccurred(
                 Authenticator::Error::InvalidCredentials,
-                reply_->errorString()
+                reply.errorString()
             );
             return;
         }
@@ -58,24 +55,29 @@ void RestUserAuthentication::authenticate()
         {
             emit errorOccurred(
                 Authenticator::Error::Unknown,
-                reply_->errorString()
+                reply.errorString()
             );
             return;
         }
 
-        const auto obj{QJsonDocument::fromJson(data_).object()};
+        const auto json = reply.readJson();
+        QJsonObject obj;
+        if (json->isObject())
+            obj = json->object();
+        else
+            return;
+
         const QString codeString{obj.value("code").toString()};
 
         if (codeString == "success"_L1 && obj.contains("user"_L1))
         {
-            emit succeeded(data_);
-            Q_ASSERT(obj["access_token"_L1].toString().isEmpty() == false);
-            emit tokenReady(obj["access_token"_L1].toString());
+            emit authenticationSucceeded(json->toJson());
+            Q_ASSERT(obj[tokenField].toString().isEmpty() == false);
+            emit tokenGenerated(obj[tokenField].toString());
         }
         else
         {
-            const int code{reply_->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt()};
-            const auto httpCode{static_cast<HttpStatus::Code>(code)};
+            const auto httpCode{static_cast<HttpStatus::Code>(reply.httpStatus())};
             emit errorOccurred(Authenticator::Error::Unknown, HttpStatus::reasonPhrase(httpCode));
         }
         qDebug() << "RestUserAuthentication::authenticate: authenticating...Done!";

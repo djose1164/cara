@@ -3,10 +3,11 @@
 
 #include "business/authenticator.h"
 #include <QObject>
-#include <QNetworkAccessManager>
+#include <QRestAccessManager>
 
-namespace Authentication::Service {
-class LocalUserAuthentication : public Business::Authenticator
+namespace Authentication::Service
+{
+class LocalUserAuthentication : public Authenticator
 {
     Q_OBJECT
     QML_ELEMENT
@@ -15,9 +16,6 @@ public:
     explicit LocalUserAuthentication(QObject *parent = nullptr);
 
     bool isAuthenticated() const;
-
-    QByteArray buffer() const;
-    void setBuffer(const QByteArray &newBuffer);
 
     QString refreshToken() const;
     void setRefreshToken(const QString &newRefreshToken);
@@ -33,11 +31,9 @@ private:
     QString refreshToken_;
     bool isAuthenticated_;
 
-    QNetworkAccessManager *manager_;
-    QNetworkReply *reply_;
-    QByteArray buffer_;
+    std::unique_ptr<QRestAccessManager> manager_;
     const QString path_;
 };
-}
+} // namespace Authentication::Service
 
 #endif // LOCALUSERAUTHENTICATION_H

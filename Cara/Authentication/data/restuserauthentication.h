@@ -3,13 +3,14 @@
 
 #include "business/authenticator.h"
 #include "entity/credential.h"
-#include <QObject>
-#include <QNetworkAccessManager>
 #include <QNetworkRequestFactory>
+#include <QObject>
+#include <QRestAccessManager>
 
+class QNetworkReply;
 namespace Authentication::Data
 {
-class RestUserAuthentication : public Business::Authenticator
+class RestUserAuthentication : public Authenticator
 {
     Q_OBJECT
     QML_ELEMENT
@@ -17,8 +18,6 @@ class RestUserAuthentication : public Business::Authenticator
     Q_PROPERTY(QString errorString READ errorString WRITE setErrorString NOTIFY errorStringChanged FINAL)
 public:
     explicit RestUserAuthentication(QObject *parent = nullptr);
-
-    QByteArray data() const;
 
     Entity::Credential credentials() const;
     void setCredentials(const Entity::Credential &newCredentials);
@@ -29,8 +28,6 @@ public:
     void setErrorString(const QString &newErrorString);
 
 signals:
-    void userCredentialChanged();
-
     void credentialsChanged();
 
     void errorStringChanged();
@@ -39,11 +36,9 @@ private:
     Entity::Credential credentials_;
     QString errorString_;
 
-    QByteArray data_;
-
-    QNetworkAccessManager *manager_;
-    QNetworkReply *reply_;
+    const std::unique_ptr<QRestAccessManager> manager_;
     const std::shared_ptr<QNetworkRequestFactory> api_;
+    const QString path_;
 };
 }
 

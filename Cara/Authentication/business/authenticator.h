@@ -3,7 +3,7 @@
 
 #include <QQmlEngine>
 
-namespace Authentication::Business
+namespace Authentication
 {
 class Authenticator : public QObject
 {
@@ -12,23 +12,24 @@ class Authenticator : public QObject
 public:
     enum class Error
     {
-        InvalidCredentials,
-        RefreshTokenExpired,
-        EmptyToken,
+        InvalidCredentials,  // user/pass or token rejected
+        RefreshTokenExpired, // Refresh token expired or invalid
+        InvalidState,        // misuse of API (e.g. empty token)
+        NetworkUnavailable,  // REST backend can’t connect
         Unknown
     };
 
     using QObject::QObject;
 
-    virtual ~Authenticator();
+    virtual ~Authenticator() = default;
 
 public slots:
     virtual void authenticate() = 0;
 
 signals:
-    void succeeded(const QByteArray &data);
+    void authenticationSucceeded(const QByteArray &data);
+    void tokenGenerated(const QString &token);
     void errorOccurred(Error error, const QString &errorString);
-    void tokenReady(const QString &token);
 };
 }
 

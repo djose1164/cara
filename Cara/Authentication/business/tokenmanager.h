@@ -9,7 +9,7 @@
 #include <QTimer>
 
 namespace Authentication { class AbstractAccessTokenRefresher; }
-namespace Authentication::Business
+namespace Authentication
 {
 
 class TokenManager : public QObject

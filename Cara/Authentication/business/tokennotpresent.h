@@ -4,7 +4,7 @@
 #include <stdexcept>
 #include <QAnyStringView>
 
-namespace Authentication::Business
+namespace Authentication
 {
 class TokenNotPresent : public std::logic_error
 {
