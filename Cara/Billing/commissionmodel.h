@@ -72,6 +72,7 @@ signals:
     void repositoryChanged();
 
     void commissionAddedSuccessfully();
+    void modelUpdated();
 
     void errorOccurred(CommissionRepository::Error error, const QString &errorString);
 

@@ -6,11 +6,15 @@
 #include "abstractcommissionmodel.h"
 #include "commissionmodel.h"
 #include "restcommissionrepository.h"
+#include "sellerproductrepositoryrest.h"
 #include "sqlitecommissionmodel.h"
+#include "sqlitedatabase.h"
 #include "sqliteproductrepository.h"
 #include "sqlitesellermodel.h"
 
 #include <QNetworkInformation>
+
+constexpr int supplierIdToSync{1};
 
 
 namespace Billing
@@ -23,14 +27,23 @@ CommissionController::CommissionController(QObject *parent)
     , productModel_{new ProductInventory::ProductModel(this)}
     , selectedProducts_{new ProductInventory::ProductModel(this)}
     , sellerModel_{}
+    , busy_{}
 {
-    if (QNetworkInformation::instance() == nullptr)
-        QNetworkInformation::loadDefaultBackend();
+    QNetworkInformation::loadDefaultBackend();
 
     connect(QNetworkInformation::instance(),
             &QNetworkInformation::reachabilityChanged,
             this,
             &CommissionController::networkStatusChanged);
+
+    connect(this,
+            &CommissionController::errorOccurred,
+            this,
+            &CommissionController::onErrorOccurred);
+    connect(this,
+            &CommissionController::commissionAdded,
+            this,
+            &CommissionController::onCommissionAdded);
 }
 
 QAbstractItemModel *CommissionController::commissionModel() const
@@ -50,6 +63,41 @@ void CommissionController::setCommissionModel(AbstractCommissionModel *newCommis
     commissionModel_ = newCommissionModel;
 
     emit commissionModelChanged();
+}
+
+void CommissionController::syncDatabase()
+{
+    if (not ProductInventory::SQLiteDatabase::needToSync())
+        return;
+
+    // Fetch product list and save it.
+    std::unique_ptr<ProductInventory::IProductRepository> repository{
+        std::make_unique<ProductInventory::SellerProductRepositoryREST>(supplierIdToSync)};
+
+    repository->update();
+
+    connect(repository.get(),
+            &ProductInventory::IProductRepository::fetched,
+            this,
+            [this, r = std::move(repository)](const auto &productList) {
+                if (ProductInventory::SQLiteDatabase::resetProducts(productList))
+                    emit databaseSynced();
+                else
+                    emit errorOccurred(Error::SyncError, "Couldn't sync database!");
+            });
+}
+
+bool CommissionController::busy() const
+{
+    return busy_;
+}
+
+void CommissionController::setBusy(bool newBusy)
+{
+    if (busy_ == newBusy)
+        return;
+    busy_ = newBusy;
+    emit busyChanged();
 }
 
 CommissionController::AdminId CommissionController::adminId() const
@@ -102,11 +150,11 @@ int CommissionController::supplierId() const
     return supplierId_;
 }
 
-void CommissionController::setSellerId(int newSellerId)
+void CommissionController::setSupplierId(int newSupplierId)
 {
-    if (supplierId_ == newSellerId)
+    if (supplierId_ == newSupplierId)
         return;
-    supplierId_ = newSellerId;
+    supplierId_ = newSupplierId;
     emit supplierIdChanged();
 }
 
@@ -123,111 +171,39 @@ void CommissionController::setSelectedProducts(ProductInventory::ProductModel *n
     emit selectedProductsChanged();
 }
 
-void CommissionController::append(const QVariantMap &map)
+void CommissionController::saveCommission(const QVariantMap &map)
 {
     if (commissionModel_)
+    {
+        setBusy(true);
         commissionModel_->append(map);
+    }
 }
 
 void CommissionController::fetchCommissions()
 {
     if (commissionModel_)
+    {
+        setBusy(true);
         commissionModel_->fetchCommissions();
+    }
 }
 
 void CommissionController::fetchCommissionsBySellerId(SellerId sellerId)
 {
     if (commissionModel_)
+    {
+        setBusy(true);
         commissionModel_->fetchCommissionsBySellerId(sellerId);
+    }
 }
 
 void CommissionController::networkStatusChanged(QNetworkInformation::Reachability reachability)
 {
     qDebug() << "CommissionController::networkStatusChanged: " << reachability;
     createSellerModel(reachability);
-    if (reachability == QNetworkInformation::Reachability::Online)
-    {
-        if (commissionModel_ == nullptr or not dynamic_cast<CommissionModel *>(commissionModel_))
-        {
-            auto model{new CommissionModel(this)};
-            auto repository{new RestCommissionRepository(model)};
-            model->setRepository(repository);
-            setCommissionModel(model);
-            connect(model,
-                    &CommissionModel::commissionAddedSuccessfully,
-                    this,
-                    &CommissionController::commissionAdded);
-            connect(model,
-                    &CommissionModel::errorOccurred,
-                    this,
-                    [this](auto err, const auto &errstr) {
-                        Q_UNUSED(err)
-                        emit errorOccurred(Error::CommissionModelError, errstr);
-                    });
-        }
-
-        const auto productRepository{productModel_->repository()};
-        if (not qobject_cast<ProductInventory::SupplierProductRepository* >(productRepository))
-        {
-            if (productRepository)
-            {
-                productRepository->deleteLater();
-                productModel_->setRepository(nullptr);
-            }
-
-            auto *repository{new ProductInventory::SupplierProductRepository(this)};
-            repository->setSupplierId(supplierId_);
-            productModel_->setRepository(repository);
-            connect(this,
-                    &CommissionController::supplierIdChanged,
-                    repository,
-                    [repository = std::move(repository), this] {
-                        repository->setSupplierId(supplierId_);
-                    });
-
-            connect(productModel_,
-                    &ProductInventory::ProductModel::errorOccurred,
-                    this,
-                    [this](auto err, const QString &errstr) {
-                        Q_UNUSED(err)
-                        emit errorOccurred(Error::ProductModelError, errstr);
-                    });
-        }
-    }
-    else
-    {
-        auto sqliteModel{new SQLiteCommissionModel(this)};
-        setCommissionModel(sqliteModel);
-
-        if (productModel_->repository())
-        {
-            productModel_->repository()->deleteLater();
-            productModel_->setRepository(nullptr);
-        }
-
-        //productModel_->setRepository(new ProductInventory::SQLiteProductRepository(this));
-
-        connect(productModel_,
-                &ProductInventory::ProductModel::errorOccurred,
-                this,
-                [this](auto err, const QString &errstr) {
-                    Q_UNUSED(err)
-                    emit errorOccurred(Error::ProductModelError, errstr);
-                });
-
-        connect(sqliteModel,
-                &SQLiteCommissionModel::commissionAddedSuccessfully,
-                this,
-                &CommissionController::commissionAdded);
-        connect(sqliteModel,
-                &SQLiteCommissionModel::errorOccurred,
-                this,
-                [this](SQLiteCommissionModel::Error err, const QString &errstr) {
-                    Q_UNUSED(err)
-                    emit errorOccurred(Error::CommissionModelError, errstr);
-                });
-
-    }
+    createProductModel(reachability);
+    createCommissionModel(reachability);
 }
 
 void CommissionController::createSellerModel(QNetworkInformation::Reachability reachability)
@@ -260,13 +236,126 @@ void CommissionController::createSellerModel(QNetworkInformation::Reachability r
     }
 }
 
+void CommissionController::createProductModel(QNetworkInformation::Reachability reachability)
+{
+    if (reachability == QNetworkInformation::Reachability::Online)
+    {
+        // online
+        const auto productRepository{productModel_->repository()};
+        if (not qobject_cast<ProductInventory::SupplierProductRepository *>(productRepository))
+        {
+            if (productRepository)
+            {
+                productRepository->deleteLater();
+                productModel_->setRepository(nullptr);
+            }
+
+            auto *repository{new ProductInventory::SupplierProductRepository(this)};
+            repository->setSupplierId(supplierId_);
+            productModel_->setRepository(repository);
+
+            connect(this,
+                    &CommissionController::supplierIdChanged,
+                    repository,
+                    [repository = std::move(repository), this] {
+                        repository->setSupplierId(supplierId_);
+                    });
+            connect(productModel_,
+                    &ProductInventory::ProductModel::errorOccurred,
+                    this,
+                    [this](auto err, const QString &errstr) {
+                        Q_UNUSED(err)
+                        emit errorOccurred(Error::ProductModelError, errstr);
+                    });
+        }
+    }
+    else
+    {
+        // offline
+        if (productModel_->repository())
+        {
+            productModel_->repository()->deleteLater();
+            productModel_->setRepository(nullptr);
+        }
+
+        productModel_->setRepository(new ProductInventory::SQLiteProductRepository(this));
+
+        connect(productModel_,
+                &ProductInventory::ProductModel::errorOccurred,
+                this,
+                [this](auto err, const QString &errstr) {
+                    Q_UNUSED(err)
+                    emit errorOccurred(Error::ProductModelError, errstr);
+                });
+    }
+}
+
+void CommissionController::createCommissionModel(QNetworkInformation::Reachability reachability)
+{
+    if (reachability == QNetworkInformation::Reachability::Online)
+    {
+        if (commissionModel_ == nullptr or not dynamic_cast<CommissionModel *>(commissionModel_))
+        {
+            auto model{new CommissionModel(this)};
+            auto repository{new RestCommissionRepository(model)};
+            model->setRepository(repository);
+
+            setCommissionModel(model);
+
+            connect(model, &CommissionModel::modelUpdated, this, [this] { setBusy(false); });
+            connect(model,
+                    &CommissionModel::commissionAddedSuccessfully,
+                    this,
+                    &CommissionController::commissionAdded);
+            connect(model,
+                    &CommissionModel::errorOccurred,
+                    this,
+                    [this](auto err, const auto &errstr) {
+                        Q_UNUSED(err)
+                        emit errorOccurred(Error::CommissionModelError, errstr);
+                    });
+        }
+    }
+    else
+    {
+        auto sqliteModel{new SQLiteCommissionModel(this)};
+        setCommissionModel(sqliteModel);
+
+        connect(sqliteModel,
+                &SQLiteCommissionModel::commissionAddedSuccessfully,
+                this,
+                &CommissionController::commissionAdded);
+        connect(sqliteModel,
+                &SQLiteCommissionModel::errorOccurred,
+                this,
+                [this](SQLiteCommissionModel::Error err, const QString &errstr) {
+                    Q_UNUSED(err)
+                    emit errorOccurred(Error::CommissionModelError, errstr);
+                });
+    }
+}
+
+void CommissionController::onCommissionAdded()
+{
+    setBusy(false);
+}
+
+void CommissionController::onErrorOccurred()
+{
+    setBusy(false);
+}
+
 void CommissionController::classBegin()
 {
 }
 
 void CommissionController::componentComplete()
 {
-    networkStatusChanged(QNetworkInformation::instance()->reachability());
+    const auto reachability{QNetworkInformation::instance()->reachability()};
+    networkStatusChanged(reachability);
+
+    if (reachability == QNetworkInformation::Reachability::Online)
+        syncDatabase();
 }
 
 }

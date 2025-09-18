@@ -51,6 +51,7 @@ void CommissionModel::commissionsFetched(const QList<Billing::Commission> &commi
     endResetModel();
 
     setBusy(false);
+    emit modelUpdated();
 }
 
 void CommissionModel::commissionAdded(const Billing::Commission &commission)

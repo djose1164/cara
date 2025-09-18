@@ -5,9 +5,9 @@ import QtQuick.Layouts
 import QtQuick.Dialogs
 import QtQuick.Templates as T
 import Cara.Customer
+import Cara.User
 import Cara.Controls
 import Cara.Billing
-import Cara.Salesperson
 import Cara.Utils
 import Cara.ProductInventory
 

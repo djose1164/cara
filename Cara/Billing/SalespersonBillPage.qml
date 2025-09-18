@@ -41,6 +41,18 @@ Page {
                     Layout.alignment: Qt.AlignRight
                     onClicked: stackLayout.currentIndex = CustomerSelector.SearchView
                 }
+
+                MoreVertButton {
+                    onClicked: menu.open()
+                    Menu {
+                        id: menu
+
+                        MenuItem {
+                            text: qsTr("Cuentas pendientes")
+                            onClicked: root.stackView.pushItem("qrc:/qt/qml/Cara/Customer/CustomerOutstandingOrders.qml")
+                        }
+                    }
+                }
             }
         }
 

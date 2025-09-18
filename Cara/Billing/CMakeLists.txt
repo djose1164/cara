@@ -156,6 +156,6 @@ else()
 target_link_libraries(BillingLib PRIVATE Qt6::Core)
 endif()
 
-if (CMAKE_BUILD_TYPE STREQUAL "Debug")
+if (CMAKE_BUILD_TYPE STREQUAL "Debug" AND BUILD_TESTS)
     add_subdirectory(tests)
 endif()

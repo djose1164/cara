@@ -26,6 +26,16 @@ ListView {
             commissionController.fetchCommissions();
     }
 
+    Pane {
+        anchors.centerIn: parent
+        visible: root.commissionController.busy
+
+        BusyIndicator  {
+            anchors.centerIn: parent
+            running: root.commissionController.busy
+        }
+    }
+
     component Header: ToolBar {
         width: root.width
         z: 2

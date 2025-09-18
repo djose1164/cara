@@ -22,6 +22,10 @@ Page {
         RowLayout {
             anchors.fill: parent
 
+            BackButton {
+                onClicked: root.stackView.popCurrentItem()
+            }
+
             Label {
                 id: label
                 horizontalAlignment: Qt.AlignHCenter
