@@ -20,6 +20,8 @@ qt_add_qml_module(SalespersonLib
         SalespersonSettings.qml
         delegate/AssociateSalespersonDelegate.qml
         SellerSelector.qml
+        CommissionSummary.qml
+        commission_logic.js
     RESOURCES
         salesperson.svg
         profit_calculator.svg
@@ -31,8 +33,9 @@ qt_add_qml_module(SalespersonLib
         salespersoncontroller.h salespersoncontroller.cpp
         sellerlistmodel.h sellerlistmodel.cpp
         sqlitesellermodel.h sqlitesellermodel.cpp
-        SOURCES sqlitesellerrepository.h sqlitesellerrepository.cpp
-        SOURCES abstractsellerrepository.h
+        sqlitesellerrepository.h sqlitesellerrepository.cpp
+        abstractsellerrepository.h
+        restsellerrepository.h restsellerrepository.cpp
 )
 
 target_include_directories(SalespersonLib
@@ -42,6 +45,6 @@ target_include_directories(SalespersonLib
 
 target_link_libraries(SalespersonLib PRIVATE Qt6::Sql NetworkLib CommonLib)
 
-if (CMAKE_BUILD_TYPE STREQUAL "Debug")
+if (CMAKE_BUILD_TYPE STREQUAL "Debug" AND LINUX AND BUILD_TESTS)
     add_subdirectory(tests)
 endif()

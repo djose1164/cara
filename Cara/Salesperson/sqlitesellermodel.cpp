@@ -3,7 +3,7 @@
 #include "salesperson.h"
 
 #include <QSqlQuery>
-#include <qsqlerror.h>
+#include <QSqlError>
 
 using namespace Qt::StringLiterals;
 

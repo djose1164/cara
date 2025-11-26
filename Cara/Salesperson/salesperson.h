@@ -20,7 +20,7 @@ class Salesperson : public IPersonName
     Q_PROPERTY(int userId READ userId WRITE setUserId NOTIFY userIdChanged FINAL)
     Q_PROPERTY(QString warehouseAddress READ warehouseAddress WRITE setWarehouseAddress FINAL)
     Q_PROPERTY(QString salespersonTypeName READ salespersonTypeName WRITE setSalespersonTypeName FINAL)
-    Q_PROPERTY(OrganizationId organizationId READ organizationId WRITE setOrganizationId FINAL)
+    Q_PROPERTY(int organizationId READ organizationId WRITE setOrganizationId FINAL)
     Q_PROPERTY(QString forename READ forename WRITE setForename FINAL)
     Q_PROPERTY(QString surname READ surname WRITE setSurname FINAL)
     QML_VALUE_TYPE(salesperson)

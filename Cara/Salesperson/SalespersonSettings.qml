@@ -38,6 +38,19 @@ Settings {
         root.creditLimit = sp.creditLimit;
         root.warehouseAddress = sp.warehouseAddress;
         root.organizationId = sp.organizationId;
+        console.log("setEntity: organizationId: ",sp.organizationId)
+    }
+
+    function setEntityFromJson(sp) {
+        root.salespersonId = sp.id;
+        root.salespersonTypeId = sp.salesperson_type_id;
+        //root.salespersonTypeName = sp.salespersonTypeName;
+        root.creditAvailable = sp.credit_available;
+        root.creditConsumed = sp.credit_consumed;
+        root.creditLimit = sp.credit_limit;
+        // root.warehouseAddress = sp.warehouseAddress;
+        root.organizationId = sp.organization.id;
+        console.log("setEntity: organizationId: ",sp.organizationId)
     }
 
     function clear() {

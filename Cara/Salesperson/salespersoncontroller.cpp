@@ -81,7 +81,7 @@ void SalespersonController::addAssociateSalesperson(const QVariantMap &data)
     if (salesperson.isPosteable())
         salespersonRepository_->addAssociateSalesperson(salesperson);
     else
-        qDebug() << "Salesperson is not valid to be posteable";
+        qDebug() << "Salesperson is not valid to be posteable: " << data;
     
     using RepositoryImpl = Data::SalespersonRepositoryImpl;
     const auto repository{static_cast<RepositoryImpl *>(salespersonRepository_)};

@@ -6,6 +6,7 @@ import QtQuick.Dialogs
 import Cara.Controls
 import Cara.Billing
 import Cara.ProductInventory
+import "commission_logic.js" as Logic
 
 BackPage {
     id: root
@@ -70,8 +71,7 @@ BackPage {
 
             ProductSale {
                 id: productSale
-                enabled: providerSelector.currentIndex !== -1
-                         && commissionController.productModel.count > 0
+                enabled: internal.productSelectionEnabled
                 selectorModel: commissionController.productModel
                 selectedProductsDelegate: ProfitProductDelegate {
                     width: productSale.implicitViewWidth
@@ -95,52 +95,6 @@ BackPage {
                 Layout.minimumHeight: productSale.productSelectionModel.count > 0 ? root.height * .4 : productSale.implicitHeight
             }
 
-            Label {
-                text: "Total de Ganancia Neto: <b>RD$%1</b>".arg(calculator.grossTotal)
-                font.pointSize: 14
-                wrapMode: Label.Wrap
-                Layout.fillWidth: true
-            }
-
-            GroupBox {
-                title: "Ganancias"
-                Layout.fillWidth: true
-                ColumnLayout {
-                    id: gbColumnLayout
-                    anchors.fill: parent
-                    spacing: 20
-
-                    RowLayout {
-                        spacing: 20
-                        Layout.fillWidth:true
-
-                        SpinBox {
-                            id: spinBox
-                            from: 1
-                            value: 5
-                            stepSize: 5
-                            editable: true
-                            validator: IntValidator {}
-                        }
-
-                        Label {
-                            text: "% de ganancia del vendedor"
-                            font.pointSize: 12
-                            wrapMode: Label.Wrap
-                            Layout.fillWidth: true
-                        }
-                    }
-
-                    Label {
-                        text: "Total de Ganancia Neto - % de ganancia: <b>$RD%1</b>"
-                        .arg(calculator.total.toFixed(2))
-                        font.pointSize: 12
-                        wrapMode: Label.Wrap
-                        Layout.fillWidth: true
-                    }
-                }
-            }
-
             RedirectLabel {
                 title: datePicker.isValid ? datePicker.dateString
                                           : "Seleccionar fecha de pago"
@@ -150,6 +104,19 @@ BackPage {
 
             DatePicker {
                 id: datePicker
+            }
+
+            Label {
+                text: "Total de Ganancia Neto: <b>RD$%1</b>".arg(calculator.grossTotal)
+                font.pointSize: 14
+                wrapMode: Label.Wrap
+                Layout.fillWidth: true
+            }
+
+            CommissionSummary {
+                id: commissionSummary
+                total: calculator.total
+                Layout.fillWidth: true
             }
 
             Button {
@@ -176,7 +143,7 @@ BackPage {
 
     ProfitCalculator {
         id: calculator
-        percentage: spinBox.value
+        percentage: commissionSummary.commissionRate * 100
         model: productSale.productSelectionModel
     }
 
@@ -196,35 +163,27 @@ BackPage {
                                              && root.height < 641 ? Math.max(scrollView.effectiveScrollBarWidth,
                                                                              Math.min(root.width*.025, root.height*.025))
                                                                   : Math.min(root.width*.07, root.height*.07)
+        readonly property bool productSelectionEnabled: providerSelector.currentIndex !== -1
+                                                        && commissionController.productModel.count > 0
     }
 
     function saveSale() {
         try {
-            root.validateForm();
-            commissionController.append({
-                adminId,
-                rate: spinBox.value/100,
-                salespersonId: sellerSelector.sellerId,
-                paymentDate: datePicker.selectedDate,
-                commissionItems: root.getCommissionItems(),
-            });
+            Logic.validateForm(sellerSelector, providerSelector, productSale);
+            commissionController.saveCommission(root.toJson());
         } catch (err) {
             messageDialog.show("Error", err);
             console.log(err);
         }
     }
 
-    function validateForm() {
-        if (!sellerSelector.selected && sellerSelector.sellerId != -1)
-            throw "Necesitas seleccionar un vendedor";
-        else if (!providerSelector.selected)
-            throw "Necesitas seleccionar un suplidor";
-        productSale.validate();
-    }
-
-    function getCommissionItems() {
-        const items = productSale.toJson();
-        items.forEach(item => item.supplier_id = providerSelector.currentValue);
-        return items;
+    function toJson() {
+        return {
+            adminId,
+            rate: commissionSummary.commissionRate,
+            salespersonId: sellerSelector.sellerId,
+            paymentDate: datePicker.selectedDate,
+            commissionItems: Logic.buildCommissionItems(productSale, providerSelector.currentValue),
+        };
     }
 }
