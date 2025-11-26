@@ -1,4 +1,5 @@
 #include "sessionmanager.h"
+#include "data/localuserstore.h"
 #ifdef Q_OS_ANDROID
 #include "androidkeychain.h"
 #else
@@ -69,7 +70,6 @@ SessionManager::SessionManager(QObject *parent)
             [this](const QString &key, const QString &value) {
                 if (key != refreshKey)
                     return;
-                qDebug() << "SessionMananger: onKeyRestored: " << value;
                 refreshToken_ = value;
                 emit storedSessionChecked(not value.trimmed().isEmpty());
             });
@@ -91,6 +91,14 @@ QBindable<bool> SessionManager::bindableIsAuthenticated() const
 QString SessionManager::accessToken() const
 {
     return accessToken_;
+}
+
+void SessionManager::setAccessToken(const QString &newAccessToken)
+{
+    if (accessToken_ == newAccessToken)
+        return;
+    accessToken_ = newAccessToken;
+    emit accessTokenChanged();
 }
 
 QBindable<QString> SessionManager::bindableAccessToken()
@@ -133,9 +141,7 @@ void SessionManager::startSession(const Authentication::Session &session)
 
     currentSession_ = session;
 
-    bool isNewAccessTokenEmpty{session.accessToken().isEmpty()};
-    if (not isNewAccessTokenEmpty)
-        accessToken_ = session.accessToken();
+    setAccessToken(session.accessToken());
 
     refreshToken_ = session.refreshToken();
     if (tokenManager_)
@@ -143,15 +149,15 @@ void SessionManager::startSession(const Authentication::Session &session)
 
     tokenManager_ = new TokenManager(this);
     tokenManager_->setRefreshToken(refreshToken_);
-    if (isNewAccessTokenEmpty)
+    if (accessToken().isEmpty())
     {
         connect(tokenManager_, &TokenManager::accessTokenChanged, this, [&] {
-            accessToken_ = tokenManager_->accessToken();
+            setAccessToken(tokenManager_->accessToken());
             tokenManager_->deleteLater();
         });
     }
 
-    qDebug() << "session.refreshToken(): " << session.refreshToken();
+    qDebug() << "session.accessToken(): " << accessToken();
     if (not session.refreshToken().isEmpty())
         keychain_->writeKey(refreshKey, session.refreshToken());
 
@@ -184,6 +190,7 @@ void SessionManager::authenticateRefreshToken()
     login->setAuthenticator(lsa);
     login->authenticate();
 
+    connect(login, &Login::dataFetched, this, &SessionManager::dataFetched);
     connect(login, &Login::authenticated, this, [=, this](const auto &session) {
         startSession(session);
         login->deleteLater();
@@ -201,6 +208,20 @@ void SessionManager::authenticateRefreshToken()
                        << errstr;
         }
     });
+}
+
+void SessionManager::loadOfflineSession()
+{
+    qDebug() << "SessionManager::loadOfflineSession: loading session...";
+    User::Data::LocalUserStore lus;
+    lus.restore();
+
+    Session s;
+    s.setUser(lus.user());
+    s.setAccessToken(accessToken_);
+    s.setRefreshToken(refreshToken_);
+    qDebug() << "SessionManager::loadOfflineSession: starting session...";
+    startSession(s);
 }
 
 void SessionManager::handleLoginError(Login::Error error, const QString &errorString)

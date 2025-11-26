@@ -3,7 +3,6 @@ import QtQuick.Controls
 import QtQuick.Layouts
 import QtQuick.Dialogs
 import QtQuick.Templates as T
-import Cara.User
 import Cara.Authentication
 import Cara.Salesperson
 import Cara.Controls
@@ -154,9 +153,6 @@ Item {
         }
 
         onAuthenticated: session => {
-            // Prevent crashing when deleting this view.
-            busyPopup.modal = false;
-
             // MainPage.qml is already in stack. No need to replace.
             if (root.stackView)
                 root.stackView.popCurrentItem();
@@ -168,6 +164,19 @@ Item {
         onErrorOccurred: errorString => {
             popup.open();
             root.errorOccurred(errorString);
+        }
+    }
+
+    Connections {
+        target: SessionManager
+
+        // TODO: this is a temporal fix.
+        function onDataFetched(json) {
+            console.log("onDataFetched(json): "+JSON.stringify(json,null,2))
+            if (json.user?.salesperson)
+                SalespersonSettings.setEntityFromJson(json.user?.salesperson);
+            else
+                throw "Error when setting up SalesperonSettings!";
         }
     }
 

@@ -31,6 +31,7 @@ void Login::userAuthenticated(const QByteArray &data)
     {     
         Session session {Session::fromJson(json.object())};
         setStatus(Status::Authenticated);
+        emit dataFetched(json.object());
         emit authenticated(session);
     }
 

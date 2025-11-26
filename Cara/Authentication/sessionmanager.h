@@ -23,7 +23,7 @@ class SessionManager : public AbstractSession
 {
     Q_OBJECT
     Q_PROPERTY(bool authenticated READ isAuthenticated NOTIFY authenticatedChanged BINDABLE bindableIsAuthenticated FINAL)
-    Q_PROPERTY(QString accessToken  BINDABLE bindableAccessToken FINAL)
+    Q_PROPERTY(QString accessToken READ accessToken NOTIFY accessTokenChanged BINDABLE bindableAccessToken FINAL)
     Q_PROPERTY(Authentication::Session currentSession READ currentSession BINDABLE bindableCurrentSession FINAL)
     QML_ELEMENT
     QML_SINGLETON
@@ -46,6 +46,7 @@ public:
     QBindable<bool> bindableIsAuthenticated() const;
 
     QString accessToken() const;
+    void setAccessToken(const QString &newAccessToken);
     QBindable<QString> bindableAccessToken();
 
     QBindable<Session> bindableCurrentSession();
@@ -71,12 +72,23 @@ public slots:
      */
     void authenticateRefreshToken();
 
+    /**
+     * @brief loadOfflineSession tries to load and start any offline/stored session.
+     * By offline/stored session we mean any user info saved locally after
+     * the last successful login. This' useful to use the app in offline mode.
+     */
+    void loadOfflineSession();
+
 signals:
     void errorOccurred(Error error, const QString &errorString);
 
     void storedSessionChecked(bool found);
 
     void authenticatedChanged();
+
+    void dataFetched(const QJsonObject &json);
+
+    void accessTokenChanged();
 
 private slots:
     void handleLoginError(Login::Error error, const QString &errorString);

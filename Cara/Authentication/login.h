@@ -7,6 +7,7 @@
 #include <QObject>
 #include <QProperty>
 #include <QQmlEngine>
+#include <QJsonObject>
 
 namespace Network { class IToken; };
 
@@ -52,6 +53,8 @@ signals:
     void statusChanged();
 
     void authenticatorChanged();
+
+    void dataFetched(const QJsonObject &json);
 
 public slots:
     void authenticate();

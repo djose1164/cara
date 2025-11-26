@@ -62,7 +62,7 @@ void LocalUserAuthentication::authenticate()
                 const QString code{(*json)[codeField].toString()};
                 const QString msg{(*json)[messageField].toString()};
                 const QString errstr{"%1: %2"_L1.arg(code, msg)};
-                qWarning() << "LocalUserAuthentication::authenticate: " << errstr;
+                qWarning() << "LocalUserAuthentication::authenticate: error: " << errstr;
                 if (code == invalidCode or code == requiredCode)
                 {
                     emit errorOccurred(Error::InvalidState, errstr);
@@ -71,6 +71,7 @@ void LocalUserAuthentication::authenticate()
                 else if (code == expiredCode)
                 {
                     emit tokenExpired();
+                    emit errorOccurred(Error::RefreshTokenExpired, errstr);
                     return;
                 }
             }
@@ -78,6 +79,7 @@ void LocalUserAuthentication::authenticate()
             {
                 // We assume there's an error the internet connection or with the server
                 // itself.
+                qDebug() << "LocalUserAuthentication::authenticate: error: " << reply.errorString();
                 emit errorOccurred(Error::NetworkUnavailable, reply.errorString());
             }
         }
