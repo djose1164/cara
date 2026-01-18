@@ -13,6 +13,8 @@ endfunction()
 
 SETUP_TESTS(
    restpricehistoryrepository
+   restsupplierrepository
+   sqlitesupplierrepository
    productmodel
    productrepository
 )

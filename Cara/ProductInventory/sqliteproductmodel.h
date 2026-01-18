@@ -35,7 +35,7 @@ public:
 
     void refresh();
 
-    EntityLayer::Product getProductById(ProductId productId) const;
+    EntityLayer::Product getProductById(ProductId productId) const override;
 
     // AbstractProductModel interface
 

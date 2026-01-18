@@ -52,12 +52,17 @@ qt_add_qml_module(ProductInventoryLib STATIC
         productentity.h productentity.cpp
         productpicturerepository.h productpicturerepository.cpp
         restpricehistoryrepository.h restpricehistoryrepository.cpp
+        selectionproxymodel.h selectionproxymodel.cpp
+        supplier.h supplier.cpp
+        suppliermodel.h suppliermodel.cpp
+        abstractsupplierrepository.h
+        sqlitesupplierrepository.h sqlitesupplierrepository.cpp
+        restsupplierrepository.h restsupplierrepository.cpp
     RESOURCES
         add_a_photo.svg
         remove.svg
     DEPENDENCIES
         Cara.Network Cara.Utils Cara.Data
-        SOURCES selectionproxymodel.h selectionproxymodel.cpp
 )
 
 target_link_libraries(ProductInventoryLib
@@ -65,12 +70,13 @@ target_link_libraries(ProductInventoryLib
         NetworkLib
         UtilsLib
         DataLib
+        Qt6::Core
         Qt6::Sql)
-target_link_libraries(ProductInventoryLib PRIVATE Qt6::Core)
+
 
 target_include_directories(ProductInventoryLib
     INTERFACE ${CMAKE_CURRENT_SOURCE_DIR})
 
-if (CMAKE_BUILD_TYPE STREQUAL "Debug")
+if (CMAKE_BUILD_TYPE STREQUAL "Debug" AND LINUX AND BUILD_TESTS)
     add_subdirectory(tests)
 endif()

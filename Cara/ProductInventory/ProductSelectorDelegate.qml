@@ -43,6 +43,7 @@ ItemDelegate {
     }
 
     onClicked: {
+        console.log("productId: "+productId)
         const selectedById = root.productModel.find(productId);
         selection.select(selectedById, ItemSelectionModel.Select | ItemSelectionModel.Toggle);
     }

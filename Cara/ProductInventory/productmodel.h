@@ -1,6 +1,7 @@
 #ifndef PRODUCTMODEL_H
 #define PRODUCTMODEL_H
 
+#include "abstractproductmodel.h"
 #include "iproductrepository.h"
 #include "productentity.h"
 #include <QAbstractListModel>
@@ -8,7 +9,7 @@
 
 namespace ProductInventory
 {
-class ProductModel : public QAbstractListModel
+class ProductModel : public QAbstractListModel, public AbstractProductModel
 {
     Q_OBJECT
     Q_PROPERTY(ProductInventory::IProductRepository *repository READ repository WRITE setRepository NOTIFY repositoryChanged FINAL)
@@ -70,10 +71,10 @@ public:
 
     int count() const;
 
-    Q_INVOKABLE EntityLayer::Product get(int index) const;
-    Q_INVOKABLE bool contains(const EntityLayer::Product &product) const;
-    Q_INVOKABLE QModelIndex find(int productId) const;
-    Q_INVOKABLE QJsonArray toJsonArray() const;
+    Q_INVOKABLE EntityLayer::Product get(int index) const override;
+    Q_INVOKABLE bool contains(const EntityLayer::Product &product) const override;
+    Q_INVOKABLE QModelIndex find(int productId) const override;
+    Q_INVOKABLE QJsonArray toJsonArray() const override;
     QModelIndex find(const std::function<bool(const EntityLayer::Product &)> &predicate) const;
 
     ProductInventory::IProductRepository *repository() const;
@@ -116,7 +117,7 @@ signals:
 
     void selectionModelChanged();
 
-    void errorOccurred(Error error, const QString &errorString);
+    void errorOccurred(ProductModel::Error error, const QString &errorString);
 
 private:
     void makeConnections() noexcept;

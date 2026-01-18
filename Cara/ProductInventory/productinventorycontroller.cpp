@@ -1,6 +1,10 @@
 #include "productinventorycontroller.h"
+#include "abstractsupplierrepository.h"
 #include "catalogproductrepository.h"
+#include "restsupplierrepository.h"
 #include "sellerproductrepositoryrest.h"
+#include "sqlitesupplierrepository.h"
+#include <QNetworkInformation>
 
 namespace ProductInventory {
 
@@ -8,8 +12,14 @@ ProductInventoryController::ProductInventoryController(QObject *parent)
     : QObject{parent}
     , catalog_{new ProductModel{this}}
     , inventory_{new ProductModel{this}}
+    , supplierModel_{new SupplierModel(this)}
 {
     initCatalog();
+    updateSupplierModel(QNetworkInformation::instance()->reachability());
+    connect(QNetworkInformation::instance(),
+            &QNetworkInformation::reachabilityChanged,
+            this,
+            &ProductInventoryController::updateSupplierModel);
 }
 
 ProductModel *ProductInventoryController::catalog() const
@@ -63,6 +73,41 @@ void ProductInventoryController::initCatalog() noexcept
         tempRepo->deleteLater();
         inventory_->setRepository(nullptr);
     });
+}
+
+void ProductInventoryController::updateSupplierModel(QNetworkInformation::Reachability reachability)
+{
+    if (supplierModel_->repository())
+        supplierModel_->repository()->deleteLater();
+
+
+    if (AbstractSupplierRepository *repository;
+        reachability == QNetworkInformation::Reachability::Online)
+    {
+        repository = new RestSupplierRepository(supplierModel_);
+        supplierModel_->setRepository(repository);
+    }
+    else
+    {
+        repository = new SQLiteSupplierRepository(supplierModel_);
+        supplierModel_->setRepository(repository);
+    }
+
+    qDebug() << "ProductInventoryController::updateSupplierModel: fetchig suppliers...";
+    supplierModel_->fetchSuppliers();
+}
+
+SupplierModel *ProductInventoryController::supplierModel() const
+{
+    return supplierModel_;
+}
+
+void ProductInventoryController::setSupplierModel(SupplierModel *newSupplierModel)
+{
+    if (supplierModel_ == newSupplierModel)
+        return;
+    supplierModel_ = newSupplierModel;
+    emit supplierModelChanged();
 }
 
 } // namespace ProductInventory

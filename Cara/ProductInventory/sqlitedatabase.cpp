@@ -1,19 +1,18 @@
 #include "sqlitedatabase.h"
-#include "iproductrepository.h"
 #include "productentity.h"
-#include "sellerproductrepositoryrest.h"
+#include "supplier.h"
+
 
 #include <QSqlDatabase>
 #include <QSqlQuery>
 #include <QSqlError>
 #include <QDate>
 
-#define DEFAULT_SELLER_FOR_DB 1
-
-#define throw_error(instance, message)                                         \
-    do {                                                                       \
-        qCritical() << "SQLiteProductModel::initDatabase: " << (message);      \
-        throw std::runtime_error{(instance).lastError().text().toUtf8()};      \
+#define throw_error(instance, message)                                    \
+    do                                                                    \
+    {                                                                     \
+        qCritical() << "SQLiteProductModel::initDatabase: " << (message); \
+        throw std::runtime_error{(instance).lastError().text().toUtf8()}; \
     } while (0)
 
 
@@ -41,7 +40,7 @@ create table if not exists commission(
     id smallint  primary key,
     unique_code text unique,
     rate decimal(4, 2) not null,
-    amount decimal(6, 2) check(amount > 0),
+    amount decimal(6, 2) check(amount > 0) not null,
     payment_date datetime,
     admin_id smallint  not null,
     seller_id smallint  not null,
@@ -73,19 +72,48 @@ create table if not exists commission_item(
 );)"_L1};
 constexpr auto COMMISSION_ITEM_INDEX{"create index if not exists idx_commissionitem_comission_id on commission_item(commission_id);"_L1};
 constexpr auto TRUNCATE_PRODUCT_OFFLINE{"delete from product_offline;"_L1};
+constexpr auto TRUNCATE_SELLER{"delete from seller;"_L1};
+constexpr auto SELLER_TABLE{
+"CREATE TABLE IF NOT EXISTS seller("
+"    id integer primary key,"
+"    unique_code text unique,"
+"    forename text,"
+"    surname text"
+"    );"_L1
+};
+constexpr auto SUPPLIER_TABLE{
+    "CREATE TABLE IF NOT EXISTS supplier("
+    "    id integer primary key,"
+    "    unique_code text unique,"
+    "    name text"
+    ");"_L1
+};
+constexpr auto INSERT_SUPPLIER{
+    "insert into supplier(id, name, unique_code) "
+    "values(:id, :name, :unique_code)"_L1};
+constexpr auto USER_TABLE{R"(create table if not exists user(
+    id integer primary key,
+    username text unique,
+    forename text not null,
+    surname text not null,
+    admin_id integer unique not null
+))"_L1};
+constexpr auto PRODUCT_VIEW{"create view if not exists product as select * from product_offline po ;"_L1};
 
-void saveProductListToDB(const QList<EntityLayer::Product> &productList)
-{
-    qDebug() << "SQLiteDatabase::saveProductListToDB: inserting products...";
-    // For each product in the list, insert it into the database.
-    std::ranges::for_each(productList, ProductInventory::SQLiteDatabase::insertProductToDB);
-
-    QSqlQuery query;
-    query.prepare("insert into sync values(:sync_date)"_L1);
-    query.bindValue(":sync_date"_L1, QDateTime::currentDateTime());
-    query.exec();
-}
-
+constexpr auto VW_COMMISSION_DETAIL{R"(
+CREATE VIEW IF NOT EXISTS vw_commission_detail
+as
+    SELECT
+        ci.product_id,
+        ci.quantity,
+        ci.unit_commission,
+        ci.supplier_id,
+        ci.commission_uuid,
+        p.name
+    FROM commission_item ci
+    JOIN product p
+        on p.product_id = ci.product_id;
+)"_L1};
 }
 
 namespace ProductInventory {
@@ -101,6 +129,7 @@ void SQLiteDatabase::initDatabase()
     QSqlDatabase dbInstance{QSqlDatabase::addDatabase(RDBMS)};
     dbInstance.setDatabaseName(databaseName.arg(dbPath_));
     qDebug() << "SQLiteDatabase::initDatabase: " << dbInstance.databaseName();
+    qDebug() << "SQLiteDatabase::initDatabase: drivers" << QSqlDatabase::drivers();
 
     if (!dbInstance.open())
     {
@@ -113,14 +142,37 @@ void SQLiteDatabase::initDatabase()
     // query.exec("drop table sync"_L1);
     // query.exec("drop table commission"_L1);
     // query.exec("drop table commission_item"_L1);
+    // query.exec("drop table seller"_L1);
+    // query.exec("drop table supplier"_L1);
+    // query.exec("drop table user"_L1);
 
     if (!query.exec(PRODUCT_OFFLINE_SQL))
     {
-        throw_error(dbInstance, "SQLiteDatabase::initDatabase: Failed to exec query.");
+        throw_error(dbInstance, "SQLiteDatabase::initDatabase: Failed to exec PRODUCT_OFFLINE_SQL query.");
+    }
+    if (!query.exec(PRODUCT_VIEW))
+    {
+        throw_error(dbInstance, "SQLiteDatabase::initDatabase: Failed to exec PRODUCT_VIEW query.");
+    }
+    if (!query.exec(VW_COMMISSION_DETAIL))
+    {
+        throw_error(dbInstance, "SQLiteDatabase::initDatabase: Failed to exec VW_COMMISSION_DETAIL query.");
+    }
+    if (!query.exec(USER_TABLE))
+    {
+        throw_error(dbInstance, "SQLiteDatabase::initDatabase: Failed to exec USER_TABLE query.");
     }
     if (!query.exec(SYNC_SQL))
     {
-        throw_error(dbInstance, "SQLiteDatabase::initDatabase: Failed to SYNC_SQL query.");
+        throw_error(dbInstance, "SQLiteDatabase::initDatabase: Failed to exec SYNC_SQL query.");
+    }
+    if (!query.exec(SELLER_TABLE))
+    {
+        throw_error(dbInstance, "SQLiteDatabase::initDatabase: Failed to exec SELLER_TABLE query.");
+    }
+    if (!query.exec(SUPPLIER_TABLE))
+    {
+        throw_error(dbInstance, "SQLiteDatabase::initDatabase: Failed to exec SELLER_TABLE query.");
     }
     if (!query.exec(COMMISSION_TABLE)
             or !query.exec(COMMISSION_INDEX)
@@ -129,12 +181,6 @@ void SQLiteDatabase::initDatabase()
     {
         qCritical() << dbInstance.lastError();
         throw_error(dbInstance, "SQLiteDatabase::initDatabase: Failed to COMMISSION_TABLES query.");
-    }
-
-    if (needToSync())
-    {
-        qDebug() << "SQLiteDatabase::initDatabase: synchronizing database.";
-        syncDB();
     }
 }
 
@@ -152,9 +198,16 @@ bool SQLiteDatabase::needToSync()
     return QDate::currentDate() >= futureSevenDays;
 }
 
+bool SQLiteDatabase::updateLastSyncDate()
+{
+    QSqlQuery query;
+    query.prepare("insert into sync values(:sync_date)"_L1);
+    query.bindValue(":sync_date"_L1, QDateTime::currentDateTime());
+    return query.exec();
+}
+
 bool SQLiteDatabase::insertProductToDB(const EntityLayer::Product &product)
 {
-    qDebug() << "SQLiteDatabase::insertProductToDB: inserting productId: " << product.productId();
     QSqlQuery query;
     query.prepare(INSERT_INTO_SQL);
     query.bindValue(":product_id"_L1, product.productId());
@@ -172,23 +225,67 @@ bool SQLiteDatabase::insertProductToDB(const EntityLayer::Product &product)
     return res;
 }
 
-void SQLiteDatabase::syncDB()
+bool SQLiteDatabase::resetProducts(const QList<EntityLayer::Product> &productList)
 {
-    // Fetch product list and save it.
-    std::unique_ptr<IProductRepository> repository{
-        std::make_unique<SellerProductRepositoryREST>(DEFAULT_SELLER_FOR_DB)
-    };
-    repository->update();
+    QSqlQuery query;
+    if (not query.exec(TRUNCATE_PRODUCT_OFFLINE))
+    {
+        qDebug() << "Could not truncate product_offline. Error: " << query.lastError();
+        return false;
+    }
 
-    QObject::connect(repository.get(),
-                     &IProductRepository::fetched,
-                     [repository = std::move(repository)](
-                         const QList<EntityLayer::Product> &products) {
-                         QSqlQuery query;
-                         if (not query.exec(TRUNCATE_PRODUCT_OFFLINE))
-                             qDebug() << "Could not truncate product_offline. Error: " << query.lastError();
-                         saveProductListToDB(products);
-                     });
+    if (not std::ranges::all_of(productList, [](const auto &p) { return insertProductToDB(p); }))
+    {
+        qWarning() << "SQLiteDatabase::insertProducts: couldn't insert every product!";
+        return false;
+    }
+
+    return true;
+}
+
+bool SQLiteDatabase::insertSupplier(const Supplier &s)
+{
+    QSqlQuery query;
+    query.prepare(INSERT_SUPPLIER);
+    query.bindValue(":id", (s.supplierId() == 0 ? QVariant{} : s.supplierId()));
+    query.bindValue(":name", s.name());
+    query.bindValue(":unique_code", s.uniqueCode());
+
+    const bool res = query.exec();
+    if (not res)
+        qCritical() << query.lastError().text();
+    return res;
+}
+
+bool SQLiteDatabase::resetSuppliers(const QList<Supplier> &supplierList)
+{
+    if (supplierList.isEmpty())
+    {
+        qDebug() << "SQLiteDatabase::resetSuppliers: supplier list is empty!";
+        return false;
+    }
+    qDebug() << "SQLiteDatabase::resetSuppliers: supplierList.cout: " << supplierList.count();
+    QSqlQuery query;
+    if (not query.exec(TRUNCATE_SELLER))
+    {
+        qDebug() << "Could not truncate seller. Error: " << query.lastError();
+        return false;
+    }
+
+    if (not std::all_of(supplierList.begin(), supplierList.end(), [](const auto &s) {
+            return insertSupplier(s);
+        }))
+    {
+        qWarning() << "SQLiteDatabase::resetSuppliers: couldn't insert every supplier! "
+                   << query.lastError().text();
+    }
+
+    return true;
+}
+
+bool SQLiteDatabase::insertSeller(const Entity::Salesperson &seller)
+{
+    return false;
 }
 
 } // namespace ProductInventory

@@ -10,7 +10,7 @@ Rectangle {
 
     property int index
     property int productId
-    property string imageUrl
+    property var imageUrl
     property string productName
     property double productPrice
     property double total
