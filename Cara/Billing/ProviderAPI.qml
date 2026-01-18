@@ -1,24 +1,28 @@
 import QtQuick
 import Cara.Utils
 
-CaraApi {
-    id: api
-    endpoint: "/providers"
+Item {
+    default property var data
 
-    signal providerCreated
-    signal providersFetched(resp: var)
+    CaraApi {
+        id: api
+        endpoint: "/providers"
+
+        signal providerCreated
+        signal providersFetched(resp: var)
+    }
 
     function createProvider(provider) {
-        succeeded.connect(function() {
-            providerCreated()
+        api.succeeded.connect(function () {
+            api.providerCreated();
         });
-        post("/", provider);
+        api.post("/", provider);
     }
 
     function fetchProviders() {
-        succeeded.connect(function(resp) {
-            providersFetched(resp.providers)
+        api.succeeded.connect(function (resp) {
+            api.providersFetched(resp.providers);
         });
-        get("/");
+        api.get("/");
     }
 }

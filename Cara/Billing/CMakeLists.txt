@@ -71,7 +71,7 @@ qt_add_qml_module(BillingLib
         commission.h commission.cpp
         commissionmodel.h commissionmodel.cpp
         commissionrepository.h
-        costcalculator.h costcalculator.cpp
+        productpricetotaler.h productpricetotaler.cpp
         data/paymentresource.h data/paymentresource.cpp
         data/restorderrepository.h data/restorderrepository.cpp
         detailsentity.h detailsentity.cpp
@@ -99,6 +99,8 @@ qt_add_qml_module(BillingLib
         commissioncontroller.h commissioncontroller.cpp
         abstractcommissionmodel.h
         commissionerrors.h
+        datapreloader.h datapreloader.cpp
+        sqlitecommissionrepository.h sqlitecommissionrepository.cpp
     RESOURCES
         order-model.html style.css
         pdf-icon.svg
@@ -122,6 +124,7 @@ qt_add_qml_module(BillingLib
         assets/customer_icon.svg
     DEPENDENCIES
         QtQuick Utils Product Customer
+        SOURCES business/pricingservice.h business/pricingservice.cpp
 )
 
 target_include_directories(BillingLib

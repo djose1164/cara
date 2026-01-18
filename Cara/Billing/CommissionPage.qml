@@ -102,7 +102,7 @@ ListView {
         id: commissionDelegate
         required property var model
         required property int sellerId
-         property string identifier: model.commissionId ?? model.uniqueCode.slice(0, 15)
+        property string identifier: model.commissionId > 0 ? model.commissionId : model.uniqueCode.toString().slice(0, 15)
         required property int adminId
         required property double amount
 

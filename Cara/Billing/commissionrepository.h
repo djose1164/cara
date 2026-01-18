@@ -1,14 +1,13 @@
 #ifndef COMMISSIONREPOSITORY_H
 #define COMMISSIONREPOSITORY_H
 
+#include "commission.h"
 #include <QObject>
 #include <QQmlEngine>
 #include <QRestReply>
 
 namespace Billing
 {
-
-class Commission;
 
 class CommissionRepository : public QObject
 {
@@ -18,20 +17,23 @@ class CommissionRepository : public QObject
     // QML_UNCREATABLE("This is an abstract class.")
 public:
     using CommissionId = int;
+    using SellerId = int;
 
     enum class Error
     {
-        FailedToFetch,
-        FailedToAdd,
-        FailedToPatch,
-        FailedToMapToEntity
+        FetchFailure,
+        AddFailure,
+        PatchFailure,
+        MappingFailure,
+        ItemInsertFailed,
+        CommissionInsertFailed
     };
 
-    explicit CommissionRepository(QObject *parent = nullptr) {}
+    explicit CommissionRepository(QObject* parent = nullptr) : QObject(parent) {}
 
     virtual ~CommissionRepository() = default;
 
-    virtual void fetchCommissionsBySalespersonId(int spId) = 0;
+    virtual void fetchCommissionsBySellerId(SellerId sellerId) = 0;
 
     virtual void fetchCommissions() = 0;
 
@@ -39,12 +41,14 @@ public:
 
     virtual void patchCommission(const Commission &commission, std::function<void()> callback = nullptr) = 0;
 
+    virtual bool supportsServerSideCalculation() const = 0;
+
 signals:
-    void fetched(const QList<Commission> &commissionList);
+    void fetched(const QList<Billing::Commission> &commissionList);
 
-    void errorOccuerred(Error error, const QString &errorString);
+    void errorOccurred(CommissionRepository::Error error, const QString &errorString);
 
-    void added(const Commission &commission);
+    void added(const Billing::Commission &commission);
 };
 
 } // namespace Billing

@@ -19,6 +19,7 @@ class CommissionItem
     Q_PROPERTY(double unitCommission READ unitCommission WRITE setUnitCommission NOTIFY unitCommissionChanged FINAL)
     Q_PROPERTY(QUrl imageUrl READ imageUrl WRITE setImageUrl NOTIFY imageUrlChanged FINAL)
     Q_PROPERTY(CommissionId commissionId READ commissionId WRITE setCommissionId FINAL)
+    Q_PROPERTY(QString productName READ productName WRITE setProductName FINAL)
     QML_VALUE_TYPE(commissionItem)
 public:
     using CommissionId = int;
@@ -54,6 +55,9 @@ public:
 
     static void validateMap(const QVariantMap &map);
 
+    QString productName() const;
+    void setProductName(const QString &newProductName);
+
 private:
     int productId_;
     int quantity_;
@@ -62,6 +66,7 @@ private:
     QUrl imageUrl_;
     CommissionId commissionId_;
     QUuid commissionUuid_;
+    QString productName_;
 };
 
 class Commission
@@ -111,7 +116,16 @@ public:
 
     bool isPatchable() const;
 
-    double calculateGrossProfit() const;
+    /**
+     * @brief isValid Check whether this commission has a uniqueCode, a valid amount
+     * and its items are not empty.
+     * @return true if the metions conditions are met, otherwise false.
+     */
+    bool isValid() const;
+
+    double getGrossProfit() const;
+
+    void calculateAmount();
 
     QUuid uniqueCode() const;
     void setUniqueCode(const QUuid &newUniqueCode);

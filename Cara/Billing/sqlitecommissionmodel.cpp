@@ -57,7 +57,7 @@ QVariant SQLiteCommissionModel::data(const QModelIndex &index, int role) const
         QUuid commissionUuid{QSqlQueryModel::data(cUuidIdx).toUuid()};
         Commission c;
         c.setCommissionItems(fetchCommissionItems(commissionUuid));
-        return c.calculateGrossProfit();
+        return c.getGrossProfit();
     }
     else if (static_cast<RoleNames>(role) == RoleNames::AdminNameRole)
     {
@@ -75,20 +75,30 @@ QVariant SQLiteCommissionModel::data(const QModelIndex &index, int role) const
 
 bool SQLiteCommissionModel::setData(const QModelIndex &index, const QVariant &value, int role)
 {
+    const QUuid uniqueCode{data(index, int(RoleNames::UniqueCodeRole)).toUuid()};
+    qDebug() << "uniqueCode: " << data(index, int(RoleNames::UniqueCodeRole));
+    bool res{};
     switch (static_cast<RoleNames>(role))
     {
         using enum RoleNames;
     case PaymentDateRole:
         QSqlQuery q;
-        q.prepare("update commission set payment_date = :paymentDate"_L1);
+        q.prepare("update commission set payment_date = :paymentDate where unique_code = :uniqueCode"_L1);
         q.bindValue(":paymentDate"_L1, value);
-        q.exec();
-        emit dataChanged(index, index, {role});
-        return true;
+        q.bindValue(":uniqueCode"_L1, uniqueCode);
+        res = q.exec();
+        if (not res) qWarning() << q.lastError().text();
+        break;
     }
 
+    if (res)
+    {
+        beginResetModel();
+        setQuery(REFRESH_SQL);
+        endResetModel();
+    }
     qDebug() << "SQLiteCommissionModel::setData: " << index << value;
-    return QSqlQueryModel::setData(index, value, role);
+    return res;
 }
 
 QHash<int, QByteArray> SQLiteCommissionModel::roleNames() const
@@ -120,9 +130,11 @@ void SQLiteCommissionModel::append(const QVariantMap &map)
             emit errorOccurred(Error::InvalidRequest, "You need to setup a ProductModel."_L1);
             return;
         }
+        qDebug() << qPrintable(QJsonDocument::fromVariant(map).toJson());
         Commission::validateMap(map);
         Commission c = Commission::fromMap(map);
         updateCommissionUnit(c.commissionItems());
+        c.setAmount(c.getGrossProfit());
         insertCommission(c);
         fetchCommissions();
     }
@@ -154,12 +166,9 @@ void SQLiteCommissionModel::insertCommission(const Commission &commission)
     query.bindValue(":seller_id"_L1, commission.salespersonId());
 
     bool success{};
-    if (query.exec())
+    if (query.exec()) // If commission inserted, asign the commission_id to each item.
     {
         std::ranges::for_each(commission.commissionItems(), [&](CommissionItem &ci) {
-            EntityLayer::Product p{productModel_->getProductById(ci.productId())};
-
-            ci.setUnitCommission(p.price() - p.buyPrice());
             ci.setCommissionId(commission.commissionId());
             ci.setCommissionUuid(commission.uniqueCode());
             if (success = insertCommissionItem(ci); not success)
@@ -245,20 +254,20 @@ QList<CommissionItem> SQLiteCommissionModel::fetchCommissionItems(const QUuid &c
 
 void SQLiteCommissionModel::updateCommissionUnit(QList<CommissionItem> &ciList)
 {
-    ProductInventory::SQLiteProductModel productModel;
+    ProductInventory::SQLiteProductModel pm;
     std::ranges::for_each(ciList, [&](auto &ci) {
-        QModelIndex idx{productModel.find(ci.productId())};
-        const auto product{productModel.get(idx.row())};
+        QModelIndex idx{pm.find(ci.productId())};
+        const auto product{pm.get(idx.row())};
         ci.setUnitCommission(product.price() - product.buyPrice());
     });
 }
 
-ProductInventory::SQLiteProductModel *SQLiteCommissionModel::productModel() const
+ProductInventory::AbstractProductModel *SQLiteCommissionModel::productModel() const
 {
     return productModel_;
 }
 
-void SQLiteCommissionModel::setProductModel(ProductInventory::SQLiteProductModel *newProductModel)
+void SQLiteCommissionModel::setProductModel(ProductInventory::AbstractProductModel *newProductModel)
 {
     if (productModel_ == newProductModel)
         return;
@@ -291,3 +300,7 @@ void SQLiteCommissionModel::componentComplete()
 }
 
 } // namespace Billing
+
+void Billing::SQLiteCommissionModel::setRepository(CommissionRepository *newRepository)
+{
+}

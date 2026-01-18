@@ -33,7 +33,8 @@ public:
         SellerNameRole,
         AdminNameRole,
         CommissionItemsRole,
-        GrossProfitRole
+        GrossProfitRole,
+        UniqueCodeRole
     };
 
     Q_ENUM(Billing::CommissionRepository::Error)
@@ -41,7 +42,7 @@ public:
     explicit CommissionModel(QObject *parent = nullptr);
 
     CommissionRepository *repository() const;
-    void setRepository(CommissionRepository *newRepository);
+    void setRepository(CommissionRepository *newRepository) override;
 
     // QAbstractItemModel interface
     int rowCount(const QModelIndex &parent) const override;
@@ -56,6 +57,8 @@ public:
     void scheduleDelete() override;
 
     void fetchCommissionsBySellerId(SellerId sellerId) override;
+
+    void clear();
 
 public slots:
     void append(const QVariantMap &map) override;
@@ -80,6 +83,14 @@ private:
     void setBusy(bool newBusy);
 
     void patch(RoleNames role);
+
+    /**
+     * @brief updateCommissionUnit Calculate the commission unit of each CommissionItem and set it.
+     * @param ciList The list of CommissionItem
+     */
+    void updateCommissionUnit(QList<CommissionItem> &ciList);
+
+private:
 
     QList<Commission> data_;
     QPointer<CommissionRepository> repository_;

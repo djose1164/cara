@@ -1,24 +1,16 @@
 import QtQuick
 import QtQuick.Controls
+import Cara.ProductInventory
 
 ComboBox {
     id: root
 
     readonly property bool selected: currentIndex !== -1
 
-    Component.onCompleted: providerApi.fetchProviders()
-
-    model:  providersModel
+    model:  ProductInventoryController.supplierModel
     textRole: "name"
-    valueRole: "id"
+    valueRole: "supplierId"
     displayText: currentIndex === -1 ? "Seleccionar suplidor" : currentText
-
-    ListModel { id: providersModel }
-
-    ProviderAPI {
-        id: providerApi
-        onProvidersFetched: providers => providers.forEach(e => providersModel.append(e))
-    }
 
     function toJson() {
         return {

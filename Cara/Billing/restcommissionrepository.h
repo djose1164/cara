@@ -14,17 +14,19 @@ namespace Billing
 class RestCommissionRepository : public CommissionRepository
 {
     Q_OBJECT
-    QML_ELEMENT
+    QML_ANONYMOUS
 public:
     explicit RestCommissionRepository(QObject *parent = nullptr);
 
-    void fetchCommissionsBySalespersonId(int spId) override;
+    void fetchCommissionsBySellerId(int spId) override;
 
     void fetchCommissions() override;
 
     void addCommission(const Commission &commission) override;
 
     void patchCommission(const Commission &commission, std::function<void()> callback = nullptr) override;
+
+    bool supportsServerSideCalculation() const override;
 
 private:
     std::unique_ptr<QRestAccessManager> manager_;

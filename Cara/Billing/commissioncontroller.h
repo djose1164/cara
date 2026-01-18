@@ -9,7 +9,7 @@
 
 namespace Billing
 {
-
+class CommissionModel;
 class CommissionController : public QObject, public QQmlParserStatus
 {
     Q_OBJECT
@@ -86,7 +86,7 @@ private slots:
     void networkStatusChanged(QNetworkInformation::Reachability reachability);
     void createSellerModel(QNetworkInformation::Reachability reachability);
     void createProductModel(QNetworkInformation::Reachability reachability);
-    void createCommissionModel(QNetworkInformation::Reachability reachability);
+    void setupModelRepository(QNetworkInformation::Reachability reachability);
 
     void onCommissionAdded();
     void onErrorOccurred();
@@ -112,9 +112,6 @@ signals:
 
     void busyChanged();
 
-protected:
-    void setCommissionModel(AbstractCommissionModel *newCommissionModel);
-
 private:
     /**
      * @brief syncDatabase Keep in sync the products table in our local sqlite db.
@@ -124,7 +121,7 @@ private:
 private:
     int supplierId_;
     AdminId adminId_;
-    AbstractCommissionModel *commissionModel_;
+    CommissionModel *commissionModel_;
     ProductInventory::ProductModel *productModel_;
     ProductInventory::ProductModel *selectedProducts_;
     QAbstractItemModel *sellerModel_;

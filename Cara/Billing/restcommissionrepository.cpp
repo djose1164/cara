@@ -21,14 +21,14 @@ namespace Billing
 {
 
 RestCommissionRepository::RestCommissionRepository(QObject *parent)
-    : CommissionRepository{this}
+    : CommissionRepository{parent}
     , manager_{new QRestAccessManager(QNAMSingleton::instance().qnam())}
     , api_{Network::NetworkRequestSingleton::instance().api()}
     , path_{"commissions"_L1}
 {
 }
 
-void RestCommissionRepository::fetchCommissionsBySalespersonId(int spId)
+void RestCommissionRepository::fetchCommissionsBySellerId(int spId)
 {
     fetchCommissions();
 }
@@ -41,7 +41,7 @@ void RestCommissionRepository::fetchCommissions()
                   {
                       if (!reply.isSuccess())
                       {
-                          emit errorOccuerred(Error::FailedToFetch, reply.errorString());
+                          emit errorOccurred(Error::FetchFailure, reply.errorString());
                           return;
                       }
 
@@ -61,7 +61,7 @@ void RestCommissionRepository::fetchCommissions()
                       {
                           qWarning() << json;
                           qWarning() << "json is not object or doesn't contain "_ba + commissionsField;
-                          emit errorOccuerred(Error::FailedToFetch, "json is not object or doesn't contain 'commissions'"_L1);
+                          emit errorOccurred(Error::FetchFailure, "json is not object or doesn't contain 'commissions'"_L1);
                       }
                   });
 }
@@ -77,7 +77,7 @@ void RestCommissionRepository::addCommission(const Commission &commission)
                     {
                         if (!reply.isSuccess())
                         {
-                            emit errorOccuerred(Error::FailedToAdd, reply.errorString());
+                            emit errorOccurred(Error::AddFailure, reply.errorString());
                             return;
                         }
 
@@ -93,8 +93,8 @@ void RestCommissionRepository::patchCommission(const Commission &commission, std
 {
     if (not commission.isPatchable())
     {
-        emit errorOccuerred(Error::FailedToPatch,
-                            "The commission is valid to be patched."_L1);
+        emit errorOccurred(Error::PatchFailure,
+                            "The commission is not valid to be patched."_L1);
         return;
     }
 
@@ -107,13 +107,18 @@ void RestCommissionRepository::patchCommission(const Commission &commission, std
                     {
                         if (not reply.isSuccess())
                         {
-                            emit errorOccuerred(Error::FailedToPatch, reply.errorString());
+                            emit errorOccurred(Error::PatchFailure, reply.errorString());
                             return;
                         }
                         qDebug() << "RestCommissionRepository::patchCommission: calling callback";
                         if (cb)
                             cb();
                     });
+}
+
+bool RestCommissionRepository::supportsServerSideCalculation() const
+{
+    return true;
 }
 
 } // namespace Billing

@@ -8,7 +8,7 @@ import Cara.Controls
 Item {
     id: root
 
-    required property CostCalculator calculator
+    required property ProductPriceTotaler calculator
 
     property alias checkState: paymentStatus.checkState
     readonly property bool isACreditOrder: paymentStatus.buttonText === "Credito"

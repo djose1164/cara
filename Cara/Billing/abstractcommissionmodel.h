@@ -6,6 +6,8 @@
 class QAbstractItemModel;
 namespace Billing
 {
+
+class CommissionRepository;
 class AbstractCommissionModel
 {
 public:
@@ -23,6 +25,7 @@ public:
     virtual void fetchCommissions() = 0;
     virtual void fetchCommissionsBySellerId(SellerId sellerId) = 0;
     virtual QAbstractItemModel *itemModel() = 0;
+    virtual void setRepository(CommissionRepository *newRepository) = 0;
     virtual void scheduleDelete() = 0;
 };
 }

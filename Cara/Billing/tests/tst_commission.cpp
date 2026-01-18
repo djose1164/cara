@@ -11,12 +11,28 @@ public:
     TestCommission(QObject *parent = nullptr);
 
 private slots:
+    void init();
+
     void test_shouldReturnTrueIfCorrectlyInitialized() const;
     void test_shouldReturnTrueIfCorrectlySerialized() const;
+    void test_calculateAmount();
+    void test_fromJson() const;
+    void test_getGrossProfit() const;
+
+private:
+    QJsonObject commissionJson_;
 };
 
 TestCommission::TestCommission(QObject *parent) : QObject(parent)
 {}
+
+void TestCommission::init()
+{
+    QFile f{":/readable_commission.json"_L1};
+    QVERIFY(f.open(QFile::ReadOnly));
+
+    commissionJson_ = QJsonDocument::fromJson(f.readAll()).object();
+}
 
 void TestCommission::test_shouldReturnTrueIfCorrectlyInitialized() const
 {
@@ -59,6 +75,35 @@ void TestCommission::test_shouldReturnTrueIfCorrectlySerialized() const
     QCOMPARE(json["salespersonId"_L1].toInt(), 1);
     QVERIFY(paymentDate.isValid());
     QVERIFY(createdAt.isValid());
+}
+
+void TestCommission::test_calculateAmount()
+{
+    auto commission{Billing::Commission::fromJson(commissionJson_)};
+
+    commission.calculateAmount();
+
+    QCOMPARE(commission.amount(), 344);
+}
+
+void TestCommission::test_fromJson() const
+{
+    QFile f{":/readable_commission.json"_L1};
+    QVERIFY(f.open(QFile::ReadOnly));
+    const auto content{QJsonDocument::fromJson(f.readAll())};
+    auto commission{Billing::Commission::fromJson(content.object())};
+
+    QVERIFY(commission.rate() > 0);
+    QVERIFY(commission.getGrossProfit() > 0);
+}
+
+void TestCommission::test_getGrossProfit() const
+{
+    auto commission{Billing::Commission::fromJson(commissionJson_)};
+
+    const double grossProfit{commission.getGrossProfit()};
+
+    QCOMPARE(grossProfit, 688);
 }
 
 QTEST_MAIN(TestCommission)

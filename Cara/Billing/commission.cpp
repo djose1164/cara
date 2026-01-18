@@ -45,8 +45,16 @@ QJsonObject Commission::toJson() const
 Commission Commission::fromJson(const QJsonObject &json)
 {
     Commission c;
-    c.rate_ = json["rate"_L1].toString().toDouble();
-    c.amount_ = json["amount"_L1].toString().toDouble();
+    if (json["rate"_L1].type() != QJsonValue::Double)
+        c.rate_ = json["rate"_L1].toString().toDouble();
+    else
+        c.rate_ = json["rate"_L1].toDouble();
+    Q_ASSERT(c.rate() > 0);
+    if (json["amount"_L1].type() != QJsonValue::Double)
+        c.amount_ = json["amount"_L1].toString().toDouble();
+    else
+        c.amount_ = json["amount"_L1].toDouble();
+    Q_ASSERT(c.amount() > 0);
     c.commissionId_ = json["id"_L1].toInt();
     c.adminId_ = json["admin_id"_L1].toInt();
     c.salespersonId_ = json["salesperson_id"].toInt();
@@ -221,7 +229,12 @@ bool Commission::isPatchable() const
     return commissionId_ > 0;
 }
 
-double Commission::calculateGrossProfit() const
+bool Commission::isValid() const
+{
+    return isPatchable() and amount() > 0 and not commissionItems_.isEmpty();
+}
+
+double Commission::getGrossProfit() const
 {
     return std::accumulate(commissionItems_.begin(),
                            commissionItems_.end(),
@@ -230,6 +243,11 @@ double Commission::calculateGrossProfit() const
                            {
                                return sum + item.unitCommission() * item.quantity();
                            });
+}
+
+void Commission::calculateAmount()
+{
+    setAmount(getGrossProfit() * rate());
 }
 
 Entity::Salesperson Commission::salesperson() const
@@ -255,6 +273,7 @@ CommissionItem::CommissionItem(int newProductId, int newQuantity, double newUnit
     , imageUrl_{}
     , commissionId_{}
     , commissionUuid_{}
+    , productName_{}
 {
 }
 
@@ -273,9 +292,12 @@ CommissionItem CommissionItem::fromJson(const QJsonObject &json)
     ci.productId_ = json["product_id"_L1].toInt();
     ci.quantity_ = json["quantity"_L1].toInt();
     ci.supplierId_ = json["supplier_id"_L1].toInt();
-    if (json.contains("unit_commission"_L1))
+    if (json.contains("unit_commission"_L1) && json["unit_commission"_L1].type() == QJsonValue::Double)
+        ci.unitCommission_ = json["unit_commission"_L1].toDouble();
+    else
         ci.unitCommission_ = json["unit_commission"_L1].toString().toDouble();
     ci.imageUrl_ = EntityLayer::Product::makeUrlToPicture(json["image_url"_L1].toString());
+    ci.setProductName(json["product_name"_L1].toString());
     return ci;
 }
 
@@ -285,6 +307,7 @@ CommissionItem CommissionItem::fromMap(const QVariantMap &map)
     ci.setProductId(map["product_id"_L1].toInt());
     ci.setQuantity(map["quantity"_L1].toInt());
     ci.setSupplierId(map["supplier_id"_L1].toInt());
+    ci.setProductName(map["product_name"_L1].toString());
     return ci;
 }
 
@@ -367,6 +390,16 @@ void CommissionItem::validateMap(const QVariantMap &map)
         throw std::invalid_argument{errorTemplate.arg("quantity"_L1).toUtf8()};
     else if (not map.contains("supplier_id"_L1))
         throw std::invalid_argument{errorTemplate.arg("supplier_id"_L1).toUtf8()};
+}
+
+QString CommissionItem::productName() const
+{
+    return productName_;
+}
+
+void CommissionItem::setProductName(const QString &newProductName)
+{
+    productName_ = newProductName;
 }
 
 } // namespace Billing

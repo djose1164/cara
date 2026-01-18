@@ -12,13 +12,13 @@ namespace Billing
 class CommissionItem;
 class Commission;
 
-class SQLiteCommissionModel : public QSqlQueryModel, public AbstractCommissionModel, public QQmlParserStatus
+class [[deprecated]] SQLiteCommissionModel : public QSqlQueryModel, public AbstractCommissionModel, public QQmlParserStatus
 {
     Q_OBJECT
-    Q_PROPERTY(ProductInventory::SQLiteProductModel *productModel
-               READ productModel
-               WRITE setProductModel
-               NOTIFY productModelChanged FINAL)
+    // Q_PROPERTY(ProductInventory::SQLiteProductModel *productModel
+    //            READ productModel
+    //            WRITE setProductModel
+    //            NOTIFY productModelChanged FINAL)
     Q_INTERFACES(QQmlParserStatus)
     QML_ELEMENT
 public:
@@ -47,8 +47,8 @@ public:
     bool setData(const QModelIndex &index, const QVariant &value, int role) override;
     QHash<int, QByteArray> roleNames() const override;
 
-    ProductInventory::SQLiteProductModel *productModel() const;
-    void setProductModel(ProductInventory::SQLiteProductModel *newProductModel);
+    ProductInventory::AbstractProductModel *productModel() const;
+    void setProductModel(ProductInventory::AbstractProductModel *newProductModel);
 
     QAbstractItemModel *itemModel() override;
     void scheduleDelete() override;
@@ -58,6 +58,7 @@ public:
     // QQmlParserStatus interface
     void classBegin() override;
     void componentComplete() override;
+
 
 public slots:
     void append(const QVariantMap &map) override;
@@ -77,7 +78,11 @@ private:
     // Calculate the commission unit of each CommissionItem and set it.
     void updateCommissionUnit(QList<CommissionItem> &ciList);
 
-    ProductInventory::SQLiteProductModel *productModel_;
+    ProductInventory::AbstractProductModel *productModel_;
+
+    // AbstractCommissionModel interface
+public:
+    void setRepository(CommissionRepository *newRepository) override;
 };
 
 } // namespace Billing

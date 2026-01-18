@@ -67,11 +67,11 @@ BackPage {
                     Label {
                         text: `
                         <h3>ID:</h3>
-                        ${internal.fontTag.arg(root.model.commissionId)}
+                        ${internal.fontTag.arg(internal.commissionIdentifier)}
                         <h3>Total ganancia neta:</h3>
                         ${internal.fontTag.arg("RD$" + model.grossProfit)}
                         <h3>% a descontar:</h3>
-                        ${internal.fontTag.arg((model.rate * 100) + "%")}
+                        ${internal.fontTag.arg(Math.ceil(model.rate * 100) + "%")}
                         <h3>Monto a pagar:</h3>
                         ${internal.fontTag.arg("RD$" + model.amount)}
                         <h3>Fecha de creación:</h3>
@@ -154,9 +154,10 @@ BackPage {
             color: "transparent"
         }
 
-        text: `<h3>Comisión unitaria: RD$${model.unitCommission}</h3>`
+        text: `<h3>${model.productName}</h3>`
+              +`<h3>Comisión unitaria: RD$${model.unitCommission}</h3>`
               + `<h3>Cantidad: ${model.quantity}</h3>`
-              + `<h3>Total: ${model.quantity * model.unitCommission}</h3>`
+              + `<h3>Total: RD$${model.quantity * model.unitCommission}</h3>`
     }
 
     QtObject {
@@ -165,5 +166,7 @@ BackPage {
         readonly property bool isPaymenDateValid: !isNaN(root.model.paymentDate)
                                                   && root.model.paymentDate <= new Date()
         readonly property string fontTag: `<font size="+1">%1</font>`
+        readonly property var commissionIdentifier: root.model.commissionId > 0 ? root.model.commissionId
+                                                                        : root.model.uniqueCode
     }
 }

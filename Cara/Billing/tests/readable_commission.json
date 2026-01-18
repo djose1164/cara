@@ -1,0 +1,22 @@
+{
+	"salesperson_id": 1,
+	"admin_id": 5,
+	"rate": 0.5,
+	"commission_items": [
+		{
+			"product_id": 2,
+			"quantity": 4,
+			"unit_commission": 35
+		},
+		{
+			"product_id": 3,
+			"quantity": 2,
+			"unit_commission": 109
+		},
+		{
+			"product_id": 4,
+			"quantity": 6,
+			"unit_commission": 55
+		}
+	]
+}

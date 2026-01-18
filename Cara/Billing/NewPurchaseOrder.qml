@@ -93,9 +93,10 @@ Page {
         }
     }
 
-    CostCalculator {
+    ProductPriceTotaler {
         id: costCalculator
         model: productSale.productSelectionModel
+        role: ProductPriceTotaler.SellPriceRole
     }
 
     DatePicker {

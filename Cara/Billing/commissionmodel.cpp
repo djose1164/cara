@@ -1,4 +1,6 @@
 #include "commissionmodel.h"
+#include "pricingservice.h"
+#include "sqliteproductmodel.h"
 
 #include <QJsonDocument>
 
@@ -9,6 +11,7 @@ namespace Billing
 
 CommissionModel::CommissionModel(QObject *parent)
     : QAbstractListModel{parent}
+    , data_{}
     , repository_{}
     , busy_{}
 {
@@ -28,7 +31,7 @@ void CommissionModel::setRepository(CommissionRepository *newRepository)
     repository_ = newRepository;
     if (repository_)
     {
-        connect(repository_, &CommissionRepository::errorOccuerred, this, &CommissionModel::errorOccurred);
+        connect(repository_, &CommissionRepository::errorOccurred, this, &CommissionModel::errorOccurred);
         connect(repository_, &CommissionRepository::fetched, this, &CommissionModel::commissionsFetched);
         connect(repository_, &CommissionRepository::added, this, &CommissionModel::commissionAdded);
     }
@@ -56,6 +59,16 @@ void CommissionModel::commissionsFetched(const QList<Billing::Commission> &commi
 
 void CommissionModel::commissionAdded(const Billing::Commission &commission)
 {
+    if (!repository_->supportsServerSideCalculation())
+    {
+        clear();
+        fetchCommissions();
+
+        setBusy(false);
+        emit commissionAddedSuccessfully();
+        return;
+    }
+
     const qsizetype count{data_.count()};
     beginInsertRows(QModelIndex{}, count, count);
     data_.append(commission);
@@ -67,12 +80,24 @@ void CommissionModel::commissionAdded(const Billing::Commission &commission)
 
 void CommissionModel::commissionPatched(const QList<int> &roles)
 {
-    // emit dataChanged()
+    Q_UNUSED(roles);
 }
 
 void CommissionModel::setBusy(bool newBusy)
 {
     busy_ = newBusy;
+}
+
+void CommissionModel::updateCommissionUnit(QList<CommissionItem> &ciList)
+{
+    auto productModel{std::make_unique<ProductInventory::SQLiteProductModel>()};
+    const auto pricingService{std::make_unique<PricingService>(productModel.get())};
+
+    std::ranges::for_each(ciList, [&](auto &ci) {
+        const auto sellPrice{pricingService->sellPriceForProduct(ci.productId())};
+        const auto buyPrice{pricingService->buyPriceForProduct(ci.productId())};
+        ci.setUnitCommission(sellPrice - buyPrice);
+    });
 }
 
 bool CommissionModel::busy() const
@@ -98,11 +123,19 @@ void CommissionModel::scheduleDelete()
 void CommissionModel::fetchCommissionsBySellerId(SellerId sellerId)
 {
     if (repository_)
-        repository_->fetchCommissionsBySalespersonId(sellerId);
+        repository_->fetchCommissionsBySellerId(sellerId);
+}
+
+void CommissionModel::clear()
+{
+    beginResetModel();
+    data_.clear();
+    endResetModel();
 }
 
 int CommissionModel::rowCount(const QModelIndex &parent) const
 {
+    Q_UNUSED(parent)
     return data_.count();
 }
 
@@ -138,7 +171,9 @@ QVariant CommissionModel::data(const QModelIndex &index, int role) const
         Q_ASSERT(entity.commissionItems().count() > 0);
         return QVariant::fromValue(entity.commissionItems());
     case RoleNames::GrossProfitRole:
-        return entity.calculateGrossProfit();
+        return entity.getGrossProfit();
+    case RoleNames::UniqueCodeRole:
+        return entity.uniqueCode();
     }
 }
 
@@ -153,8 +188,7 @@ bool CommissionModel::setData(const QModelIndex &index, const QVariant &value, i
     using enum RoleNames;
     case PaymentDateRole:
     {
-        Commission c;
-        c.setCommissionId(entity.commissionId());
+        Commission c = entity;
         auto &&paymentDate{value.toDateTime()};
         c.setPaymentDate(paymentDate.toUTC());
         setBusy(true);
@@ -189,7 +223,8 @@ QHash<int, QByteArray> CommissionModel::roleNames() const
         {int(SellerNameRole), "sellerName"_ba},
         {int(AdminNameRole), "adminName"_ba},
         {int(CommissionItemsRole), "commissionItems"_ba},
-        {int(GrossProfitRole), "grossProfit"_ba}
+        {int(GrossProfitRole), "grossProfit"_ba},
+        {int(UniqueCodeRole), "uniqueCode"_ba}
     };
 }
 
@@ -201,12 +236,21 @@ void CommissionModel::append(const QVariantMap &map)
     try
     {
         Commission::validateMap(map);
-        repository_->addCommission(Commission::fromMap(map));
+        auto commission{Commission::fromMap(map)};
+        if (!repository_->supportsServerSideCalculation())
+        {
+            updateCommissionUnit(commission.commissionItems());
+            commission.calculateAmount();
+        }
+
+        repository_->addCommission(commission);
+
         setBusy(true);
     }
     catch (const std::invalid_argument &err)
     {
-        emit errorOccurred(CommissionRepository::Error::FailedToAdd, err.what());
+        setBusy(false);
+        emit errorOccurred(CommissionRepository::Error::AddFailure, err.what());
     }
 }
 
