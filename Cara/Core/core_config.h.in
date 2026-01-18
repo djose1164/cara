@@ -1,0 +1,7 @@
+#ifndef CORE_CONFIG_H_IN
+#define CORE_CONFIG_H_IN
+
+#cmakedefine API_BASE_URL "@API_BASE_URL@"
+#cmakedefine API_ENVIRONMENT "@API_ENVIRONMENT@"
+
+#endif // CORE_CONFIG_H_IN
